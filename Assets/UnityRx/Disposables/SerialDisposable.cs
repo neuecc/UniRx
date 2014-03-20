@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace UnityRx
 {
-    public class SingleAssignmentDisposable : IDisposable
+    public class SerialDisposable : IDisposable
     {
         IDisposable disposable;
 
@@ -17,16 +17,16 @@ namespace UnityRx
             }
             set
             {
-                if (IsDisposed && value != null)
+                if (disposable != null)
                 {
-                    value.Dispose();
-                    return;
+                    disposable.Dispose();
                 }
-
-                if (disposable != null) throw new InvalidOperationException("Disposable is already set");
-                if (value == null) return;
-
                 disposable = value;
+                if (IsDisposed && disposable != null)
+                {
+                    disposable.Dispose();
+
+                }
             }
         }
 

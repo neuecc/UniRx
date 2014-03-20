@@ -55,10 +55,119 @@ namespace UnityRx.Tests
             d.Disposable = null;
         }
 
+        [TestMethod]
+        public void MultipleAssignment()
+        {
+            var d = new MultipleAssignmentDisposable();
+            d.IsDisposed.IsFalse();
+            var id1 = new IdDisp(1);
+            var id2 = new IdDisp(2);
+            var id3 = new IdDisp(3);
 
+            // dispose first
+            d.Dispose();
+            d.IsDisposed.IsTrue();
 
+            d.Disposable = id1; id1.IsDisposed.IsTrue();
+            d.Disposable = id2; id2.IsDisposed.IsTrue();
+            d.Disposable = id3; id3.IsDisposed.IsTrue();
 
+            // normal flow
+            d = new MultipleAssignmentDisposable();
+            id1 = new IdDisp(1);
+            id2 = new IdDisp(2);
+            id3 = new IdDisp(3);
 
+            d.Disposable = id1; id1.IsDisposed.IsFalse();
+            d.Dispose();
+            id1.IsDisposed.IsTrue();
+            d.Disposable = id2; id2.IsDisposed.IsTrue();
+            d.Disposable = id3; id3.IsDisposed.IsTrue();
+
+            // exception flow
+            d = new MultipleAssignmentDisposable();
+            id1 = new IdDisp(1);
+            id2 = new IdDisp(2);
+            id3 = new IdDisp(3);
+            d.Disposable = id1;
+            d.Disposable = id2;
+            d.Disposable = id3;
+            d.Dispose();
+            id1.IsDisposed.IsFalse();
+            id2.IsDisposed.IsFalse();
+            id3.IsDisposed.IsTrue();
+
+            // null
+            d = new MultipleAssignmentDisposable();
+            id1 = new IdDisp(1);
+            d.Disposable = null;
+            d.Dispose();
+            d.Disposable = null;
+        }
+
+        [TestMethod]
+        public void Serial()
+        {
+            var d = new SerialDisposable();
+            d.IsDisposed.IsFalse();
+            var id1 = new IdDisp(1);
+            var id2 = new IdDisp(2);
+            var id3 = new IdDisp(3);
+
+            // dispose first
+            d.Dispose();
+            d.IsDisposed.IsTrue();
+
+            d.Disposable = id1; id1.IsDisposed.IsTrue();
+            d.Disposable = id2; id2.IsDisposed.IsTrue();
+            d.Disposable = id3; id3.IsDisposed.IsTrue();
+
+            // normal flow
+            d = new SerialDisposable();
+            id1 = new IdDisp(1);
+            id2 = new IdDisp(2);
+            id3 = new IdDisp(3);
+
+            d.Disposable = id1; id1.IsDisposed.IsFalse();
+            d.Dispose();
+            id1.IsDisposed.IsTrue();
+            d.Disposable = id2; id2.IsDisposed.IsTrue();
+            d.Disposable = id3; id3.IsDisposed.IsTrue();
+
+            // exception flow
+            d = new SerialDisposable();
+            id1 = new IdDisp(1);
+            id2 = new IdDisp(2);
+            id3 = new IdDisp(3);
+            d.Disposable = id1;
+            id1.IsDisposed.IsFalse();
+            d.Disposable = id2;
+            id1.IsDisposed.IsTrue();
+            id2.IsDisposed.IsFalse();
+            d.Disposable = id3;
+            id2.IsDisposed.IsTrue();
+            id3.IsDisposed.IsFalse();
+
+            d.Dispose();
+            
+            id3.IsDisposed.IsTrue();
+
+            // null
+            d = new SerialDisposable();
+            id1 = new IdDisp(1);
+            d.Disposable = null;
+            d.Dispose();
+            d.Disposable = null;
+        }
+
+        [TestMethod]
+        public void Boolean()
+        {
+            var bd = new BooleanDisposable();
+            bd.IsDisposed.IsFalse();
+            bd.Dispose();
+            bd.IsDisposed.IsTrue();
+        }
 
 
         class IdDisp : IDisposable
@@ -78,7 +187,4 @@ namespace UnityRx.Tests
             }
         }
     }
-
-
-
 }
