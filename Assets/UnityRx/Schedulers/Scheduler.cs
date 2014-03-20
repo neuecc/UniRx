@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using UnityEngine;
 
 namespace UnityRx
 {
@@ -17,85 +16,53 @@ namespace UnityRx
         DateTimeOffset Now { get; }
     }
 
-    public static class Scheduler
+    public static partial class Scheduler
     {
-        public static readonly GameLoopScheduler GameLoop = new GameLoopScheduler();
-        public static readonly ImmediateScheduler Immediate = new ImmediateScheduler();
-        public static readonly ThreadPoolScheduler ThreadPool = new ThreadPoolScheduler();
-    }
+        public static readonly IScheduler Immediate = new ImmediateScheduler();
+        public static readonly IScheduler ThreadPool = new ThreadPoolScheduler();
 
-    public class GameLoopScheduler : IScheduler
-    {
-        public GameLoopScheduler()
+        class ImmediateScheduler : IScheduler
         {
-            var _ = GameLoopDispatcher.Instance;
+            public IDisposable Schedule(Action action)
+            {
+                action();
+                return Disposable.Empty;
+            }
+
+            public IDisposable Schedule(Action action, TimeSpan dueTime)
+            {
+                System.Threading.Thread.Sleep(dueTime);
+                action();
+                return Disposable.Empty;
+            }
+
+            public DateTimeOffset Now
+            {
+                get { return DateTimeOffset.Now; }
+            }
         }
 
-        IEnumerator DelayAction(Action action, TimeSpan dueTime)
+        class ThreadPoolScheduler : IScheduler
         {
-            yield return new WaitForSeconds((float)dueTime.TotalSeconds);
-            GameLoopDispatcher.Post(action);
-        }
+            public IDisposable Schedule(Action action)
+            {
+                // TODO:BooleanDisposable
+                System.Threading.ThreadPool.QueueUserWorkItem(_ => action());
+                return Disposable.Empty;
+            }
 
-        public IDisposable Schedule(Action action)
-        {
-            GameLoopDispatcher.Post(action);
-            return Disposable.Empty;
-        }
+            public IDisposable Schedule(Action action, TimeSpan dueTime)
+            {
+                var timer = new System.Threading.Timer(_ => action(), null, dueTime, TimeSpan.Zero); // TODO:is period Zero?
 
-        public IDisposable Schedule(Action action, TimeSpan dueTime)
-        {
-            GameLoopDispatcher.StartCoroutine(DelayAction(action, dueTime));
-            return Disposable.Empty;
-        }
+                // TODO:timer dispose
+                return Disposable.Empty;
+            }
 
-        public DateTimeOffset Now
-        {
-            get { return DateTimeOffset.Now; }
-        }
-    }
-
-    public class ImmediateScheduler : IScheduler
-    {
-        public IDisposable Schedule(Action action)
-        {
-            action();
-            return Disposable.Empty;
-        }
-
-        public IDisposable Schedule(Action action, TimeSpan dueTime)
-        {
-            System.Threading.Thread.Sleep(dueTime);
-            action();
-            return Disposable.Empty;
-        }
-
-        public DateTimeOffset Now
-        {
-            get { return DateTimeOffset.Now; }
-        }
-    }
-
-    public class ThreadPoolScheduler : IScheduler
-    {
-        public IDisposable Schedule(Action action)
-        {
-            // TODO:BooleanDisposable
-            ThreadPool.QueueUserWorkItem(_ => action());
-            return Disposable.Empty;
-        }
-
-        public IDisposable Schedule(Action action, TimeSpan dueTime)
-        {
-            var timer = new System.Threading.Timer(_ => action(), null, dueTime, TimeSpan.Zero); // TODO:is period Zero?
-
-            // TODO:timer dispose
-            return Disposable.Empty;
-        }
-
-        public DateTimeOffset Now
-        {
-            get { return DateTimeOffset.Now; }
+            public DateTimeOffset Now
+            {
+                get { return DateTimeOffset.Now; }
+            }
         }
     }
 }

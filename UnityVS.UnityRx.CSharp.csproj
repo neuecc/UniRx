@@ -7,14 +7,16 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{676EC39D-E9E4-59B7-4472-2C8969C426AA}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -51,15 +53,17 @@
     <Compile Include="Assets\UnityRx\CoreInterface.cs" />
     <Compile Include="Assets\UnityRx\Disposables\CompositeDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\Disposable.cs" />
-    <Compile Include="Assets\UnityRx\GameLoopDispatcher.cs" />
+    <Compile Include="Assets\UnityRx\UnityEngineBridge\GameLoopScheduler.cs" />
+    <Compile Include="Assets\UnityRx\UnityEngineBridge\GameLoopDispatcher.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Generator.cs" />
     <Compile Include="Assets\UnityRx\Observable.cs" />
-    <Compile Include="Assets\UnityRx\ObservableMonoBehaviour.cs" />
+    <Compile Include="Assets\UnityRx\UnityEngineBridge\ObservableMonoBehaviour.cs" />
     <Compile Include="Assets\UnityRx\Schedulers\Scheduler.cs" />
     <Compile Include="Assets\UnityRx\Subject.cs" />
     <Compile Include="Assets\UnityRx\Tuple.cs" />
-    <Compile Include="Assets\UnityRx\TypedMonoBehaviour.cs" />
+    <Compile Include="Assets\UnityRx\UnityEngineBridge\TypedMonoBehaviour.cs" />
     <Compile Include="Assets\UnityRx\Unit.cs" />
-    <Compile Include="Assets\UnityRx\Web\ObservableWWW.cs" />
+    <Compile Include="Assets\UnityRx\UnityEngineBridge\ObservableWWW.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

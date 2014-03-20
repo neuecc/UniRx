@@ -18,7 +18,7 @@ namespace UnityRx
 
         }
 
-        public static GameLoopDispatcher Instance
+        static GameLoopDispatcher Instance
         {
             get
             {
@@ -27,7 +27,7 @@ namespace UnityRx
             }
         }
 
-        static void Initialize()
+        public static void Initialize()
         {
             if (!initialized)
             {

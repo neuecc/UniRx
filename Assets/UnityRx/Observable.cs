@@ -15,33 +15,10 @@ namespace UnityRx
 
 
 
-    public static class Observable
+    public static partial class Observable
     {
         static readonly TimeSpan InfiniteTimeSpan = new TimeSpan(0, 0, 0, 0, -1); // from .NET 4.5
 
-        // TODO:need scheduler
-        public static IObservable<int> Range(int start, int count)
-        {
-            return Observable.Create<int>(observer =>
-            {
-                try
-                {
-                    for (int i = 0; i < count; i++)
-                    {
-                        observer.OnNext(start++);
-                    }
-                    observer.OnCompleted();
-                }
-                catch (Exception ex)
-                {
-                    observer.OnError(ex);
-                }
-
-                // TODO:Cancellable!
-                return Disposable.Empty;
-            });
-
-        }
 
         public static IObservable<TR> Select<T, TR>(this IObservable<T> source, Func<T, TR> selector)
         {
@@ -291,28 +268,6 @@ namespace UnityRx
             if (throwOnEmpty && !seenValue) throw new InvalidOperationException("No Elements.");
 
             return value;
-        }
-
-        public static IObservable<T> Create<T>(Func<IObserver<T>, IDisposable> subscribe)
-        {
-            if (subscribe == null) throw new ArgumentNullException("subscribe");
-
-            return new AnonymousObservable<T>(subscribe);
-        }
-
-        class AnonymousObservable<T> : IObservable<T>
-        {
-            readonly Func<IObserver<T>, IDisposable> subscribe;
-
-            public AnonymousObservable(Func<IObserver<T>, IDisposable> subscribe)
-            {
-                this.subscribe = subscribe;
-            }
-
-            public IDisposable Subscribe(IObserver<T> observer)
-            {
-                return subscribe(observer);
-            }
         }
     }
 }
