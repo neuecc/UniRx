@@ -138,6 +138,16 @@ namespace UnityRx
             });
         }
 
+        public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> action)
+        {
+            return source.Select(x =>
+            {
+                action(x);
+                return x;
+            });
+        }
+
+
         public static IObservable<TSource> Scan<TSource>(this IObservable<TSource> source, Func<TSource, TSource, TSource> func)
         {
             return Observable.Create<TSource>(observer =>
