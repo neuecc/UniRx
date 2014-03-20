@@ -18,18 +18,35 @@ namespace UnityRx.Tests
         public void ToObservable()
         {
             // TODO:CurrentSchduler & ImmediateSchduler
-            var msgs = new List<string>();
-            new[] { 1, 10, 100, 1000, 10000, 20000 }.ToObservable(Scheduler.Immediate)
-                .Do(i => msgs.Add("DO:" + i))
-                .Scan((x, y) =>
-                {
-                    if (y == 100) throw new Exception("execption");
-                    msgs.Add("x:" + x + " y:" + y);
-                    return x + y;
-                })
-                .Subscribe(x => msgs.Add(x.ToString()), e => msgs.Add(e.Message), () => msgs.Add("comp"));
+            {
+                var msgs = new List<string>();
+                new[] { 1, 10, 100, 1000, 10000, 20000 }.ToObservable(Scheduler.Immediate)
+                    .Do(i => msgs.Add("DO:" + i))
+                    .Scan((x, y) =>
+                    {
+                        if (y == 100) throw new Exception("execption");
+                        msgs.Add("x:" + x + " y:" + y);
+                        return x + y;
+                    })
+                    .Subscribe(x => msgs.Add(x.ToString()), e => msgs.Add(e.Message), () => msgs.Add("comp"));
 
-            msgs.Is("Do:1", "1", "Do:10", "exec", "Do:100");
+                Console.WriteLine(string.Join(",", msgs));
+            }
+
+            {
+                var msgs = new List<string>();
+                new[] { 1, 10, 100, 1000, 10000, 20000 }.ToObservable(Scheduler.Immediate)
+                    .Do(i => msgs.Add("DO:" + i))
+                    .Scan((x, y) =>
+                    {
+                        if (y == 100) throw new Exception("execption");
+                        msgs.Add("x:" + x + " y:" + y);
+                        return x + y;
+                    })
+                    .Subscribe(x => msgs.Add(x.ToString()), e => msgs.Add(e.Message), () => msgs.Add("comp"));
+
+                Console.WriteLine(string.Join(",", msgs));
+            }
         }
     }
 }
