@@ -3,11 +3,6 @@ using System.Collections;
 
 namespace UnityRx
 {
-    public interface IObservable<out T>
-    {
-        IDisposable Subscribe(IObserver<T> observer);
-    }
-
     public interface IObserver<in T>
     {
         void OnCompleted();

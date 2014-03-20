@@ -13,7 +13,10 @@ namespace UnityRx
     // try{ otherFunc(); } catch { onError() }
     // onNext();
 
-
+    public interface IObservable<out T>
+    {
+        IDisposable Subscribe(IObserver<T> observer);
+    }
 
     public static partial class Observable
     {

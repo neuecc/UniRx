@@ -5,14 +5,6 @@ using System.Text;
 
 namespace UnityRx
 {
-    public interface ISubject<in TSource, out TResult> : IObserver<TSource>, IObservable<TResult>
-    {
-    }
-
-    public interface ISubject<T> : ISubject<T, T>, IObserver<T>, IObservable<T>
-    {
-    }
-
     // TODO:need error handling
 
     public sealed class Subject<T> : ISubject<T>
@@ -51,6 +43,4 @@ namespace UnityRx
             return Disposable.Create(() => observers.Remove(node));
         }
     }
-
-    // TODO:AsyncSubject, Behavior
 }

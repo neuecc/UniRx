@@ -37,37 +37,34 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.XML" />
     <Reference Include="System.Core" />
-    <Reference Include="Boo.Lang" />
-    <Reference Include="UnityScript.Lang" />
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor">
-      <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\UnityRx\CoreInterface.cs" />
+    <Compile Include="Assets\UnityRx\Observer.cs" />
     <Compile Include="Assets\UnityRx\Disposables\CompositeDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\BooleanDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\SerialDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\MultipleAssignmentDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\SingleAssignmentDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\Disposable.cs" />
+    <Compile Include="Assets\UnityRx\Subjects\ISubject.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\GameLoopScheduler.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\GameLoopDispatcher.cs" />
     <Compile Include="Assets\UnityRx\Observable.Generator.cs" />
     <Compile Include="Assets\UnityRx\Observable.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\ObservableMonoBehaviour.cs" />
     <Compile Include="Assets\UnityRx\Schedulers\Scheduler.cs" />
-    <Compile Include="Assets\UnityRx\Subject.cs" />
-    <Compile Include="Assets\UnityRx\Tuple.cs" />
+    <Compile Include="Assets\UnityRx\Subjects\Subject.cs" />
+    <Compile Include="Assets\UnityRx\System\Tuple.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\TypedMonoBehaviour.cs" />
-    <Compile Include="Assets\UnityRx\Unit.cs" />
+    <Compile Include="Assets\UnityRx\System\Unit.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\ObservableWWW.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\UnityRx\Joins\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>
