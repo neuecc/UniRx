@@ -5,41 +5,61 @@ namespace UnityRx
 {
     public class SerialDisposable : IDisposable
     {
-        IDisposable disposable;
+        static readonly BooleanDisposable True = new BooleanDisposable(true);
 
-        public bool IsDisposed { get; private set; }
+        readonly object gate = new object();
+        IDisposable current;
+        bool disposed;
+
+        public bool IsDisposed { get { lock (gate) { return disposed; } } }
 
         public IDisposable Disposable
         {
             get
             {
-                return disposable;
+                return current;
             }
             set
             {
-                if (disposable != null)
+                var shouldDispose = false;
+                var old = default(IDisposable);
+                lock (gate)
                 {
-                    disposable.Dispose();
+                    shouldDispose = disposed;
+                    if (!shouldDispose)
+                    {
+                        old = current;
+                        current = value;
+                    }
                 }
-                disposable = value;
-                if (IsDisposed && disposable != null)
+                if (old != null)
                 {
-                    disposable.Dispose();
-
+                    old.Dispose();
+                }
+                if (shouldDispose && value != null)
+                {
+                    value.Dispose();
                 }
             }
         }
 
-
         public void Dispose()
         {
-            if (!IsDisposed)
+            var old = default(IDisposable);
+
+            lock (gate)
             {
-                IsDisposed = true;
-                if (disposable != null)
+                if (!disposed)
                 {
-                    disposable.Dispose();
+                    disposed = true;
+                    old = current;
+                    current = null;
                 }
+            }
+
+            if (old != null)
+            {
+                old.Dispose();
             }
         }
     }

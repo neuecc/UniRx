@@ -3,44 +3,66 @@ using System.Collections;
 
 namespace UnityRx
 {
+    // should be use Interlocked.CompareExchange for Threadsafe?
+    // but CompareExchange cause ExecutionEngineException on iOS.
+    // AOT...
+    // use lock instead
+
     public class SingleAssignmentDisposable : IDisposable
     {
-        IDisposable disposable;
+        readonly object gate = new object();
+        IDisposable current;
+        bool disposed;
 
-        public bool IsDisposed { get; private set; }
+        public bool IsDisposed { get { lock (gate) { return disposed; } } }
 
         public IDisposable Disposable
         {
             get
             {
-                return disposable;
+                return current;
             }
             set
             {
-                if (IsDisposed && value != null)
+                var old = default(IDisposable);
+                bool alreadyDisposed;
+                lock (gate)
+                {
+                    alreadyDisposed = disposed;
+                    old = current;
+                    if (!alreadyDisposed)
+                    {
+                        if (value == null) return;
+                        current = value;
+                    }
+                }
+
+                if (alreadyDisposed && value != null)
                 {
                     value.Dispose();
                     return;
                 }
 
-                if (disposable != null) throw new InvalidOperationException("Disposable is already set");
-                if (value == null) return;
-
-                disposable = value;
+                if (old != null) throw new InvalidOperationException("Disposable is already set");
             }
         }
 
 
         public void Dispose()
         {
-            if (!IsDisposed)
+            IDisposable old = null;
+
+            lock (gate)
             {
-                IsDisposed = true;
-                if (disposable != null)
+                if (!disposed)
                 {
-                    disposable.Dispose();
+                    disposed = true;
+                    old = current;
+                    current = null;
                 }
             }
+
+            if (old != null) old.Dispose();
         }
     }
 }

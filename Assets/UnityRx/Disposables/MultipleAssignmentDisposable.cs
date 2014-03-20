@@ -5,37 +5,65 @@ namespace UnityRx
 {
     public class MultipleAssignmentDisposable : IDisposable
     {
-        IDisposable disposable;
+        static readonly BooleanDisposable True = new BooleanDisposable(true);
 
-        public bool IsDisposed { get; private set; }
+        object gate = new object();
+        IDisposable current;
+
+        public bool IsDisposed
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return current == True;
+                }
+            }
+        }
 
         public IDisposable Disposable
         {
             get
             {
-                return disposable;
+                lock (gate)
+                {
+                    return (current == True)
+                        ? UnityRx.Disposable.Empty
+                        : current;
+                }
             }
             set
             {
-                disposable = value;
-                if (IsDisposed && disposable != null)
+                var shouldDispose = false;
+                lock (gate)
                 {
-                    disposable.Dispose();
+                    shouldDispose = (current == True);
+                    if (!shouldDispose)
+                    {
+                        current = value;
+                    }
+                }
+                if (shouldDispose && value != null)
+                {
+                    value.Dispose();
                 }
             }
         }
 
-
         public void Dispose()
         {
-            if (!IsDisposed)
+            IDisposable old = null;
+
+            lock (gate)
             {
-                IsDisposed = true;
-                if (disposable != null)
+                if (current != True)
                 {
-                    disposable.Dispose();
+                    old = current;
+                    current = True;
                 }
             }
+
+            if (old != null) old.Dispose();
         }
     }
 }

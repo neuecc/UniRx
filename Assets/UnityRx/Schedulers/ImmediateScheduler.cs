@@ -10,7 +10,7 @@ namespace UnityRx
     public static partial class Scheduler
     {
         public static readonly IScheduler Immediate = new ImmediateScheduler();
-
+        
         class ImmediateScheduler : IScheduler
         {
             public ImmediateScheduler()
