@@ -7,15 +7,39 @@ namespace UnityRx
 {
     public class CompositeDisposable : ICollection<IDisposable>, IDisposable
     {
-        readonly LinkedList<IDisposable> list = new LinkedList<IDisposable>();
+        readonly List<IDisposable> list;
 
         public bool IsDisposed { get; private set; }
+
+        public CompositeDisposable()
+        {
+            list = new List<IDisposable>();
+        }
+
+        public CompositeDisposable(int capacity)
+        {
+            list = new List<IDisposable>(capacity);
+        }
+
+        public CompositeDisposable(IEnumerable<IDisposable> disposables)
+        {
+            list = new List<IDisposable>(disposables);
+        }
+
+        public CompositeDisposable(params IDisposable[] disposables)
+        {
+            list = new List<IDisposable>(disposables);
+        }
 
         public void Add(IDisposable item)
         {
             if (!IsDisposed)
             {
-                list.AddLast(item);
+                list.Add(item);
+            }
+            else
+            {
+                item.Dispose();
             }
         }
 
@@ -53,7 +77,7 @@ namespace UnityRx
 
         public bool Remove(IDisposable item)
         {
-            throw new NotSupportedException();
+            return list.Remove(item);
         }
 
         public System.Collections.IEnumerator GetEnumerator()

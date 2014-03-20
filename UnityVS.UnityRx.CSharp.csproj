@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Assets\UnityRx\CoreInterface.cs" />
     <Compile Include="Assets\UnityRx\Disposables\CompositeDisposable.cs" />
+    <Compile Include="Assets\UnityRx\Disposables\SingleAssignmentDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\Disposable.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\GameLoopScheduler.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\GameLoopDispatcher.cs" />

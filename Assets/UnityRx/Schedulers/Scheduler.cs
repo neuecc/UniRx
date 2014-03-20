@@ -9,12 +9,53 @@ namespace UnityRx
 {
     // rx old simple scheduler
 
+    // TODO:replace schduler2
     public interface IScheduler
     {
         IDisposable Schedule(Action action);
         IDisposable Schedule(Action action, TimeSpan dueTime);
         DateTimeOffset Now { get; }
     }
+
+
+
+    // 
+    public interface IScheduler2
+    {
+        DateTimeOffset Now { get; }
+        IDisposable Schedule<TState>(TState state, Func<IScheduler, TState, IDisposable> action);
+        IDisposable Schedule<TState>(TState state, DateTimeOffset dueTime, Func<IScheduler, TState, IDisposable> action);
+        IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action);
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public static partial class Scheduler
     {

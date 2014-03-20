@@ -46,6 +46,4 @@ namespace UnityRx
             }
         }
     }
-
-    // TODO:Boolean, Cancellation, Composite, Context, Multiple, RefCount, Scheduled, Serial, SingleAssignment - Disposable
 }

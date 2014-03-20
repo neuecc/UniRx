@@ -59,9 +59,26 @@ namespace UnityRx
 
         // TODO:Converter?
 
-        public static IObservable<T> ToObservable<T>(this IEnumerable<T> source)
-        {
-            throw new NotImplementedException();
-        }
+        // TODO:Need scheduler
+
+        //public static IObservable<T> ToObservable<T>(this IEnumerable<T> source, IScheduler scheduler)
+        //{
+        //    return Observable.Create<T>(observer =>
+        //    {
+
+
+        //        return scheduler.Schedule(() =>
+        //        {
+        //            //foreach (var item in source)
+        //            //{
+        //            //    observer.OnNext(item);
+        //            //}
+
+
+        //            // 
+        //            // scheduler.Schedule(() => 10);
+        //        });
+        //    });
+        //}
     }
 }
