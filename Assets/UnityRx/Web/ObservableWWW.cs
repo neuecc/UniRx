@@ -49,7 +49,7 @@ namespace UnityRx
 
         public static IObservable<string> Get(string url)
         {
-            return AnonymousObservable.Create<string>(observer =>
+            return Observable.Create<string>(observer =>
             {
                 var e = GetWWW(url, x =>
                 {
