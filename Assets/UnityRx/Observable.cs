@@ -79,7 +79,7 @@ namespace UnityRx
 
         public static IObservable<T> Delay<T>(this IObservable<T> source, TimeSpan dueTime)
         {
-            return source.Delay(dueTime, Scheduler.GameLoop);
+            return source.Delay(dueTime, Scheduler.Immediate); // TODO:not immediate!
         }
 
         public static IObservable<T> Delay<T>(this IObservable<T> source, TimeSpan dueTime, IScheduler scheduler)
@@ -90,7 +90,7 @@ namespace UnityRx
 
                 var first = source.Subscribe(x =>
                 {
-                    var d = scheduler.Schedule(() => observer.OnNext(x), dueTime);
+                    var d = scheduler.Schedule(dueTime, () => observer.OnNext(x));
                     group.Add(d);
                 }, observer.OnError, observer.OnCompleted);
 
@@ -246,6 +246,8 @@ namespace UnityRx
 
         static T WaitCore<T>(this IObservable<T> source, bool throwOnEmpty, TimeSpan timeout)
         {
+            if (source == null) throw new ArgumentNullException("source");
+
             var semaphore = new System.Threading.ManualResetEvent(false);
 
             var seenValue = false;

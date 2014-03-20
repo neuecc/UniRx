@@ -50,6 +50,7 @@
     <Compile Include="Assets\UnityRx\Disposables\MultipleAssignmentDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\SingleAssignmentDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\Disposable.cs" />
+    <Compile Include="Assets\UnityRx\Schedulers\ImmediateScheduler.cs" />
     <Compile Include="Assets\UnityRx\Subjects\ISubject.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\GameLoopScheduler.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\GameLoopDispatcher.cs" />

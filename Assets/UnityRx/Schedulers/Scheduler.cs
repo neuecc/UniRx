@@ -7,103 +7,237 @@ using System.Threading;
 
 namespace UnityRx
 {
-    // rx old simple scheduler
-
-    // TODO:replace schduler2
     public interface IScheduler
-    {
-        IDisposable Schedule(Action action);
-        IDisposable Schedule(Action action, TimeSpan dueTime);
-        DateTimeOffset Now { get; }
-    }
-
-
-
-    // 
-    public interface IScheduler2
     {
         DateTimeOffset Now { get; }
         IDisposable Schedule<TState>(TState state, Func<IScheduler, TState, IDisposable> action);
         IDisposable Schedule<TState>(TState state, DateTimeOffset dueTime, Func<IScheduler, TState, IDisposable> action);
         IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action);
     }
-    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // Scheduler Extension
     public static partial class Scheduler
     {
-        public static readonly IScheduler Immediate = new ImmediateScheduler();
-        public static readonly IScheduler ThreadPool = new ThreadPoolScheduler();
+        // utils
 
-        class ImmediateScheduler : IScheduler
+        public static DateTimeOffset Now
         {
-            public IDisposable Schedule(Action action)
-            {
-                action();
-                return Disposable.Empty;
-            }
-
-            public IDisposable Schedule(Action action, TimeSpan dueTime)
-            {
-                System.Threading.Thread.Sleep(dueTime);
-                action();
-                return Disposable.Empty;
-            }
-
-            public DateTimeOffset Now
-            {
-                get { return DateTimeOffset.Now; }
-            }
+            get { return DateTimeOffset.Now; }
         }
 
-        class ThreadPoolScheduler : IScheduler
+        public static TimeSpan Normalize(TimeSpan timeSpan)
         {
-            public IDisposable Schedule(Action action)
-            {
-                // TODO:BooleanDisposable
-                System.Threading.ThreadPool.QueueUserWorkItem(_ => action());
-                return Disposable.Empty;
-            }
+            return timeSpan >= TimeSpan.Zero ? timeSpan : TimeSpan.Zero;
+        }
 
-            public IDisposable Schedule(Action action, TimeSpan dueTime)
-            {
-                var timer = new System.Threading.Timer(_ => action(), null, dueTime, TimeSpan.Zero); // TODO:is period Zero?
+        // schduler is too complex especially recursive.
+        // the code borrow from official rx.
 
-                // TODO:timer dispose
-                return Disposable.Empty;
-            }
+        static IDisposable Invoke(IScheduler scheduler, Action action)
+        {
+            action();
+            return Disposable.Empty;
+        }
 
-            public DateTimeOffset Now
+        public static IDisposable Schedule(this IScheduler scheduler, Action action)
+        {
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+            if (action == null) throw new ArgumentNullException("action");
+
+            return scheduler.Schedule(action, Invoke);
+        }
+
+        public static IDisposable Schedule(this IScheduler scheduler, TimeSpan dueTime, Action action)
+        {
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+            if (action == null) throw new ArgumentNullException("action");
+
+            return scheduler.Schedule(action, dueTime, Invoke);
+        }
+        public static IDisposable Schedule(this IScheduler scheduler, DateTimeOffset dueTime, Action action)
+        {
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+            if (action == null) throw new ArgumentNullException("action");
+
+            return scheduler.Schedule(action, dueTime, Invoke);
+        }
+
+        public static IDisposable Schedule(this IScheduler scheduler, Action<Action> action)
+        {
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+            if (action == null) throw new ArgumentNullException("action");
+
+            return scheduler.Schedule(action, (_action, self) => _action(() => self(_action)));
+        }
+
+        public static IDisposable Schedule<TState>(this IScheduler scheduler, TState state, Action<TState, Action<TState>> action)
+        {
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+            if (action == null) throw new ArgumentNullException("action");
+
+            return scheduler.Schedule(new Pair<TState, Action<TState, Action<TState>>> { First = state, Second = action }, InvokeRec1);
+        }
+
+        static IDisposable InvokeRec1<TState>(IScheduler scheduler, Pair<TState, Action<TState, Action<TState>>> pair)
+        {
+            var group = new CompositeDisposable(1);
+            var gate = new object();
+            var state = pair.First;
+            var action = pair.Second;
+
+            Action<TState> recursiveAction = null;
+            recursiveAction = state1 => action(state1, state2 =>
             {
-                get { return DateTimeOffset.Now; }
-            }
+                var isAdded = false;
+                var isDone = false;
+                var d = default(IDisposable);
+                d = scheduler.Schedule(state2, (scheduler1, state3) =>
+                {
+                    lock (gate)
+                    {
+                        if (isAdded)
+                            group.Remove(d);
+                        else
+                            isDone = true;
+                    }
+                    recursiveAction(state3);
+                    return Disposable.Empty;
+                });
+
+                lock (gate)
+                {
+                    if (!isDone)
+                    {
+                        group.Add(d);
+                        isAdded = true;
+                    }
+                }
+            });
+
+            recursiveAction(state);
+
+            return group;
+        }
+
+        public static IDisposable Schedule(this IScheduler scheduler, TimeSpan dueTime, Action<Action<TimeSpan>> action)
+        {
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+            if (action == null) throw new ArgumentNullException("action");
+
+            return scheduler.Schedule(action, dueTime, (_action, self) => _action(dt => self(_action, dt)));
+        }
+
+        public static IDisposable Schedule<TState>(this IScheduler scheduler, TState state, TimeSpan dueTime, Action<TState, Action<TState, TimeSpan>> action)
+        {
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+            if (action == null) throw new ArgumentNullException("action");
+
+            return scheduler.Schedule(new Pair<TState, Action<TState, Action<TState, TimeSpan>>> { First = state, Second = action }, dueTime, InvokeRec2);
+        }
+
+        static IDisposable InvokeRec2<TState>(IScheduler scheduler, Pair<TState, Action<TState, Action<TState, TimeSpan>>> pair)
+        {
+            var group = new CompositeDisposable(1);
+            var gate = new object();
+            var state = pair.First;
+            var action = pair.Second;
+
+            Action<TState> recursiveAction = null;
+            recursiveAction = state1 => action(state1, (state2, dueTime1) =>
+            {
+                var isAdded = false;
+                var isDone = false;
+                var d = default(IDisposable);
+                d = scheduler.Schedule(state2, dueTime1, (scheduler1, state3) =>
+                {
+                    lock (gate)
+                    {
+                        if (isAdded)
+                            group.Remove(d);
+                        else
+                            isDone = true;
+                    }
+                    recursiveAction(state3);
+                    return Disposable.Empty;
+                });
+
+                lock (gate)
+                {
+                    if (!isDone)
+                    {
+                        group.Add(d);
+                        isAdded = true;
+                    }
+                }
+            });
+
+            recursiveAction(state);
+
+            return group;
+        }
+
+        public static IDisposable Schedule(this IScheduler scheduler, DateTimeOffset dueTime, Action<Action<DateTimeOffset>> action)
+        {
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+            if (action == null) throw new ArgumentNullException("action");
+
+            return scheduler.Schedule(action, dueTime, (_action, self) => _action(dt => self(_action, dt)));
+        }
+
+        public static IDisposable Schedule<TState>(this IScheduler scheduler, TState state, DateTimeOffset dueTime, Action<TState, Action<TState, DateTimeOffset>> action)
+        {
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+            if (action == null) throw new ArgumentNullException("action");
+
+            return scheduler.Schedule(new Pair<TState, Action<TState, Action<TState, DateTimeOffset>>> { First = state, Second = action }, dueTime, InvokeRec3);
+        }
+
+        static IDisposable InvokeRec3<TState>(IScheduler scheduler, Pair<TState, Action<TState, Action<TState, DateTimeOffset>>> pair)
+        {
+            var group = new CompositeDisposable(1);
+            var gate = new object();
+            var state = pair.First;
+            var action = pair.Second;
+
+            Action<TState> recursiveAction = null;
+            recursiveAction = state1 => action(state1, (state2, dueTime1) =>
+            {
+                var isAdded = false;
+                var isDone = false;
+                var d = default(IDisposable);
+                d = scheduler.Schedule(state2, dueTime1, (scheduler1, state3) =>
+                {
+                    lock (gate)
+                    {
+                        if (isAdded)
+                            group.Remove(d);
+                        else
+                            isDone = true;
+                    }
+                    recursiveAction(state3);
+                    return Disposable.Empty;
+                });
+
+                lock (gate)
+                {
+                    if (!isDone)
+                    {
+                        group.Add(d);
+                        isAdded = true;
+                    }
+                }
+            });
+
+            recursiveAction(state);
+
+            return group;
+        }
+
+        [Serializable]
+        struct Pair<T1, T2>
+        {
+            public T1 First;
+            public T2 Second;
         }
     }
 }
