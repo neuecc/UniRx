@@ -152,9 +152,8 @@ namespace OfficialRx
             id3.IsDisposed.IsFalse();
 
             d.Dispose();
-
             id3.IsDisposed.IsTrue();
-
+            
             // null
             d = new SerialDisposable();
             id1 = new IdDisp(1);
@@ -164,7 +163,7 @@ namespace OfficialRx
         }
 
         [TestMethod]
-        public void BooleanRxOfficial()
+        public void Boolean()
         {
             var bd = new BooleanDisposable();
             bd.IsDisposed.IsFalse();

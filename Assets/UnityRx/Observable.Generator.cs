@@ -7,7 +7,7 @@ namespace UnityRx
 {
     public static partial class Observable
     {
-        // TODO:Range, Repeat, Return, Unfold, etc...
+        // TODO:Range, Repeat, Return, Unfold, Defer, Empty, Never etc...
 
         public static IObservable<T> Create<T>(Func<IObserver<T>, IDisposable> subscribe)
         {

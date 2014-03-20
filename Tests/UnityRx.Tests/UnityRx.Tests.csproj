@@ -67,8 +67,10 @@
     <Compile Include="DisposableTest.cs" />
     <Compile Include="ObservableTest.cs" />
     <Compile Include="OfficialRx\DisposableTestCopy.cs" />
+    <Compile Include="OfficialRx\SubjectTestCopy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchedulerTest.cs" />
+    <Compile Include="SubjectTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

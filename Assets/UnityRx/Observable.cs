@@ -233,6 +233,21 @@ namespace UnityRx
             });
         }
 
+        public static IObservable<T> Synchronize<T>(this IObservable<T> source)
+        {
+            return source.Synchronize(new object());
+        }
+
+        public static IObservable<T> Synchronize<T>(this IObservable<T> source, object gate)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                return source.Subscribe(
+                    x => { lock (gate) observer.OnNext(x); },
+                    x => { lock (gate) observer.OnError(x); },
+                    () => { lock (gate) observer.OnCompleted(); });
+            });
+        }
 
         public static T Wait<T>(this IObservable<T> source)
         {
