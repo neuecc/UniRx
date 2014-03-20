@@ -51,7 +51,11 @@ namespace UnityRx
             var node = new LinkedListNode<IObserver<T>>(observer);
             observers.AddLast(node);
 
-            return Disposable.Create(() => observers.Remove(node));
+            return Disposable.Create(() =>
+            {
+                var list = node.List;
+                if (list != null) list.Remove(node);
+            });
         }
     }
 }

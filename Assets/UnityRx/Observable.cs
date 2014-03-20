@@ -154,9 +154,17 @@ namespace UnityRx
                     }
                     else
                     {
-                        var next = func(prev, x);
-                        prev = next;
-                        observer.OnNext(next);
+                        try
+                        {
+                            prev = func(prev, x); // prev as current
+                        }
+                        catch (Exception ex)
+                        {
+                            observer.OnError(ex);
+                            return;
+                        }
+
+                        observer.OnNext(prev);
                     }
                 }, observer.OnError, observer.OnCompleted);
             });
@@ -171,9 +179,16 @@ namespace UnityRx
 
                 return source.Subscribe(x =>
                 {
-                    var next = func(prev, x);
-                    prev = next;
-                    observer.OnNext(next);
+                    try
+                    {
+                        prev = func(prev, x); // prev as next
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
+                    observer.OnNext(prev);
                 }, observer.OnError, observer.OnCompleted);
             });
         }

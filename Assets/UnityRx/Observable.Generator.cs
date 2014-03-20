@@ -31,54 +31,103 @@ namespace UnityRx
             }
         }
 
+        public static IObservable<T> Start<T>(Func<T> function)
+        {
+            return Start(function, Scheduler.ThreadPool);
+        }
+
+        public static IObservable<T> Start<T>(Func<T> function, IScheduler scheduler)
+        {
+            var subject = new AsyncSubject<T>();
+
+            scheduler.Schedule(() =>
+            {
+                var result = default(T);
+                try
+                {
+                    result = function();
+                }
+                catch (Exception exception)
+                {
+                    subject.OnError(exception);
+                    return;
+                }
+                subject.OnNext(result);
+                subject.OnCompleted();
+            });
+
+            return subject;
+        }
 
 
 
-        // TODO:need scheduler
         public static IObservable<int> Range(int start, int count)
+        {
+            return Range(start, count, Scheduler.Immediate); // TODO:Change to CurrentThreadScheduler
+        }
+
+        public static IObservable<int> Range(int start, int count, IScheduler scheduler)
         {
             return Observable.Create<int>(observer =>
             {
-                try
+                return scheduler.Schedule(0, (i, self) =>
                 {
-                    for (int i = 0; i < count; i++)
+                    if (i < count)
                     {
-                        observer.OnNext(start++);
+                        observer.OnNext(start + i);
+                        self(i + 1);
                     }
-                    observer.OnCompleted();
-                }
-                catch (Exception ex)
-                {
-                    observer.OnError(ex);
-                }
-
-                // TODO:Cancellable!
-                return Disposable.Empty;
+                    else
+                    {
+                        observer.OnCompleted();
+                    }
+                });
             });
         }
 
         // TODO:Converter?
 
-        // TODO:Need scheduler
+        public static IObservable<T> ToObservable<T>(this IEnumerable<T> source)
+        {
+            // TODO:Change to CurrentThread Scheduler?
+            return source.ToObservable(Scheduler.Immediate);
+        }
 
-        //public static IObservable<T> ToObservable<T>(this IEnumerable<T> source, IScheduler scheduler)
-        //{
-        //    return Observable.Create<T>(observer =>
-        //    {
+        public static IObservable<T> ToObservable<T>(this IEnumerable<T> source, IScheduler scheduler)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var e = source.GetEnumerator();
 
+                return scheduler.Schedule(self =>
+                {
 
-        //        return scheduler.Schedule(() =>
-        //        {
-        //            //foreach (var item in source)
-        //            //{
-        //            //    observer.OnNext(item);
-        //            //}
+                    bool moveNext;
+                    var current = default(T);
+                    try
+                    {
+                        moveNext = e.MoveNext();
+                        if (moveNext) current = e.Current;
+                    }
+                    catch (Exception ex)
+                    {
+                        e.Dispose();
+                        observer.OnError(ex);
+                        return;
+                    }
 
-
-        //            // 
-        //            // scheduler.Schedule(() => 10);
-        //        });
-        //    });
-        //}
+                    if (moveNext)
+                    {
+                        observer.OnNext(current);
+                        self();
+                    }
+                    else
+                    {
+                        e.Dispose();
+                        observer.OnCompleted();
+                    }
+                });
+            });
+        }
     }
 }
