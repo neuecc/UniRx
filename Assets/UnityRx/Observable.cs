@@ -22,7 +22,6 @@ namespace UnityRx
     {
         static readonly TimeSpan InfiniteTimeSpan = new TimeSpan(0, 0, 0, 0, -1); // from .NET 4.5
 
-
         public static IObservable<TR> Select<T, TR>(this IObservable<T> source, Func<T, TR> selector)
         {
             return Observable.Create<TR>(observer =>
@@ -50,7 +49,18 @@ namespace UnityRx
             {
                 return source.Subscribe(Observer.Create<T>(x =>
                 {
-                    if (predicate(x))
+                    var isBypass = default(bool);
+                    try
+                    {
+                        isBypass = predicate(x);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
+
+                    if (isBypass)
                     {
                         observer.OnNext(x);
                     }
@@ -132,17 +142,10 @@ namespace UnityRx
             return Observable.Create<T[]>(observer =>
             {
                 var list = new List<T>();
-                return source.Subscribe(x => list.Add(x), () =>
+                return source.Subscribe(x => list.Add(x), observer.OnError, () =>
                 {
-                    try
-                    {
-                        observer.OnNext(list.ToArray());
-                        observer.OnCompleted();
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                    }
+                    observer.OnNext(list.ToArray());
+                    observer.OnCompleted();
                 });
             });
         }
