@@ -11,7 +11,7 @@ namespace UnityRx
         T lastValue;
         bool hasValue;
         Exception lastError;
-        LinkedList<IObserver<T>> observers = new LinkedList<IObserver<T>>();
+        List<IObserver<T>> observers = new List<IObserver<T>>();
 
         public void OnCompleted()
         {
@@ -20,7 +20,7 @@ namespace UnityRx
             isStopped = true;
             if (hasValue)
             {
-                foreach (var item in observers)
+                foreach (var item in observers.ToArray())
                 {
                     item.OnNext(lastValue);
                     item.OnCompleted();
@@ -28,7 +28,7 @@ namespace UnityRx
             }
             else
             {
-                foreach (var item in observers)
+                foreach (var item in observers.ToArray())
                 {
                     item.OnCompleted();
                 }
@@ -42,7 +42,7 @@ namespace UnityRx
 
             isStopped = true;
             lastError = error;
-            foreach (var item in observers)
+            foreach (var item in observers.ToArray())
             {
                 item.OnError(error);
             }
@@ -61,14 +61,9 @@ namespace UnityRx
         {
             if (!isStopped)
             {
-                var node = new LinkedListNode<IObserver<T>>(observer);
-                observers.AddLast(node);
+                observers.Add(observer);
 
-                return Disposable.Create(() =>
-                {
-                    var list = node.List;
-                    if (list != null) list.Remove(node);
-                });
+                return Disposable.Create(() => observers.Remove(observer));
             }
             else
             {

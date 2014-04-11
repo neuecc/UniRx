@@ -23,10 +23,10 @@ namespace UnityRx
         public virtual void OnAnimatorMove() { }
 
         /// <summary>Sent to all game objects when the player gets or loses focus.</summary>
-        public virtual void OnApplicationFocus() { }
+        public virtual void OnApplicationFocus(bool focus) { }
 
         /// <summary>Sent to all game objects when the player pauses.</summary>
-        public virtual void OnApplicationPause() { }
+        public virtual void OnApplicationPause(bool pause) { }
 
         /// <summary>Sent to all game objects before the application is quit.</summary>
         public virtual void OnApplicationQuit() { }

@@ -11,19 +11,19 @@ namespace UnityRx
     public static partial class Scheduler
     {
         // TODO:UnitTest
-        // public static readonly IScheduler GameLoop = new GameLoopScheduler();
+        // public static readonly IScheduler MainThread = new MainThreadScheduler();
 
-        class GameLoopScheduler : IScheduler
+        class MainThreadScheduler : IScheduler
         {
-            public GameLoopScheduler()
+            public MainThreadScheduler()
             {
-                GameLoopDispatcher.Initialize();
+                MainThreadDispatcher.Initialize();
             }
 
             IEnumerator DelayAction(TimeSpan dueTime, Action action)
             {
                 yield return new WaitForSeconds((float)dueTime.TotalSeconds);
-                GameLoopDispatcher.Post(action);
+                MainThreadDispatcher.Post(action);
             }
 
             public DateTimeOffset Now
@@ -34,7 +34,7 @@ namespace UnityRx
             public IDisposable Schedule<TState>(TState state, Func<IScheduler, TState, IDisposable> action)
             {
                 var d = new SingleAssignmentDisposable();
-                GameLoopDispatcher.Post(() =>
+                MainThreadDispatcher.Post(() =>
                 {
                     if (!d.IsDisposed)
                     {
@@ -52,7 +52,7 @@ namespace UnityRx
             public IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action)
             {
                 var d = new SingleAssignmentDisposable();
-                GameLoopDispatcher.StartCoroutine(DelayAction(dueTime, () =>
+                MainThreadDispatcher.StartCoroutine(DelayAction(dueTime, () =>
                 {
                     if (!d.IsDisposed)
                     {

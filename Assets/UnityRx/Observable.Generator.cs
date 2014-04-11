@@ -27,7 +27,11 @@ namespace UnityRx
 
             public IDisposable Subscribe(IObserver<T> observer)
             {
-                return subscribe(observer);
+                var subscription = new SingleAssignmentDisposable();
+                var safeObserver = Observer.Create<T>(observer.OnNext, observer.OnError, observer.OnCompleted, subscription);
+                subscription.Disposable = subscribe(safeObserver);
+
+                return subscription;
             }
         }
 
@@ -79,51 +83,6 @@ namespace UnityRx
                     }
                     else
                     {
-                        observer.OnCompleted();
-                    }
-                });
-            });
-        }
-
-        // TODO:Converter?
-
-        public static IObservable<T> ToObservable<T>(this IEnumerable<T> source)
-        {
-            // TODO:Change to CurrentThread Scheduler?
-            return source.ToObservable(Scheduler.Immediate);
-        }
-
-        public static IObservable<T> ToObservable<T>(this IEnumerable<T> source, IScheduler scheduler)
-        {
-            return Observable.Create<T>(observer =>
-            {
-                var e = source.GetEnumerator();
-
-                return scheduler.Schedule(self =>
-                {
-
-                    bool moveNext;
-                    var current = default(T);
-                    try
-                    {
-                        moveNext = e.MoveNext();
-                        if (moveNext) current = e.Current;
-                    }
-                    catch (Exception ex)
-                    {
-                        e.Dispose();
-                        observer.OnError(ex);
-                        return;
-                    }
-
-                    if (moveNext)
-                    {
-                        observer.OnNext(current);
-                        self();
-                    }
-                    else
-                    {
-                        e.Dispose();
                         observer.OnCompleted();
                     }
                 });

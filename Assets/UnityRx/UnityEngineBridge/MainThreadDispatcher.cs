@@ -5,20 +5,20 @@ using UnityEngine;
 
 namespace UnityRx
 {
-    public class GameLoopDispatcher : MonoBehaviour
+    public class MainThreadDispatcher : MonoBehaviour
     {
         static object gate = new object();
         Queue<Action> actionQueue = new Queue<Action>();
 
-        static GameLoopDispatcher instance;
+        static MainThreadDispatcher instance;
         static bool initialized;
 
-        private GameLoopDispatcher()
+        private MainThreadDispatcher()
         {
 
         }
 
-        static GameLoopDispatcher Instance
+        static MainThreadDispatcher Instance
         {
             get
             {
@@ -34,7 +34,7 @@ namespace UnityRx
 
                 if (!Application.isPlaying) return;
                 initialized = true;
-                instance = new GameObject("GameLoopDispatcher").AddComponent<GameLoopDispatcher>();
+                instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
             }
 
         }

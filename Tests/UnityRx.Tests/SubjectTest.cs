@@ -143,5 +143,22 @@ namespace UnityRx.Tests
                 onCompletedCallCount.Is(0);
             }
         }
+
+        [TestMethod]
+        public void SimpleUnsubscribe()
+        {
+            var subject = new Subject<int>();
+
+            var d = subject.Select<int, int>(x =>
+            {
+                throw new Exception();
+            })
+            .Subscribe(x => Console.WriteLine(x),
+            onError: ex => Console.WriteLine(ex),
+            onCompleted: () => { });
+
+            subject.OnNext(1);
+            subject.OnNext(2);
+        }
     }
 }

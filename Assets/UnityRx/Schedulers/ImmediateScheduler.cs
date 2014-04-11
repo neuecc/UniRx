@@ -10,7 +10,7 @@ namespace UnityRx
     public static partial class Scheduler
     {
         public static readonly IScheduler Immediate = new ImmediateScheduler();
-        
+
         class ImmediateScheduler : IScheduler
         {
             public ImmediateScheduler()
@@ -34,7 +34,11 @@ namespace UnityRx
 
             public IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action)
             {
-                Thread.Sleep(Scheduler.Normalize(dueTime));
+                var wait = Scheduler.Normalize(dueTime);
+                if (wait.Ticks > 0)
+                {
+                    Thread.Sleep(wait);
+                }
                 return action(this, state);
             }
         }

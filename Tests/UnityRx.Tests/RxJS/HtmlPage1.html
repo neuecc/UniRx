@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <script src="rx.js"></script>
+
+    <script>
+        // check semantics
+
+
+        var msgs = [];
+        Rx.Observable.fromArray([1, 10, 100, 1000, 10000, 20000], Rx.Scheduler.currentThread)
+            .doAction(function (i) { msgs.push("DO:" + i) })
+            .scan(function (x, y) {
+                if (y == 100) throw new Error("execption");
+                msgs.push("x:" + x + " y:" + y);
+                return x + y;
+            })
+                    .subscribe(function (x) {
+                        msgs.push(x.toString());
+                    },
+                    function (e) {
+                        msgs.push(e);
+                    },
+                    function () {
+                        msgs.Add("comp");
+                    });
+
+        document.writeln(msgs.join(","));
+
+    </script>
+
+
+
+
+</head>
+<body>
+
+</body>
+</html>

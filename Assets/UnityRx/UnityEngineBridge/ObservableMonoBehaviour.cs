@@ -74,32 +74,32 @@ namespace UnityRx
             return onAnimatorMove ?? (onAnimatorMove = new Subject<Unit>());
         }
 
-        Subject<Unit> onApplicationFocus;
+        Subject<bool> onApplicationFocus;
 
         /// <summary>Sent to all game objects when the player gets or loses focus.</summary>
-        public override void OnApplicationFocus()
+        public override void OnApplicationFocus(bool focus)
         {
-            if (onApplicationFocus != null) onApplicationFocus.OnNext(Unit.Default);
+            if (onApplicationFocus != null) onApplicationFocus.OnNext(focus);
         }
 
         /// <summary>Sent to all game objects when the player gets or loses focus.</summary>
-        public IObservable<Unit> OnApplicationFocusAsObservable()
+        public IObservable<bool> OnApplicationFocusAsObservable()
         {
-            return onApplicationFocus ?? (onApplicationFocus = new Subject<Unit>());
+            return onApplicationFocus ?? (onApplicationFocus = new Subject<bool>());
         }
 
-        Subject<Unit> onApplicationPause;
+        Subject<bool> onApplicationPause;
 
         /// <summary>Sent to all game objects when the player pauses.</summary>
-        public override void OnApplicationPause()
+        public override void OnApplicationPause(bool pause)
         {
-            if (onApplicationPause != null) onApplicationPause.OnNext(Unit.Default);
+            if (onApplicationPause != null) onApplicationPause.OnNext(pause);
         }
 
         /// <summary>Sent to all game objects when the player pauses.</summary>
-        public IObservable<Unit> OnApplicationPauseAsObservable()
+        public IObservable<bool> OnApplicationPauseAsObservable()
         {
-            return onApplicationPause ?? (onApplicationPause = new Subject<Unit>());
+            return onApplicationPause ?? (onApplicationPause = new Subject<bool>());
         }
 
         Subject<Unit> onApplicationQuit;

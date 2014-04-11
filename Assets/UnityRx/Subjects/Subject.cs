@@ -10,14 +10,14 @@ namespace UnityRx
     public sealed class Subject<T> : ISubject<T>
     {
         bool isStopped;
-        LinkedList<IObserver<T>> observers = new LinkedList<IObserver<T>>();
+        List<IObserver<T>> observers = new List<IObserver<T>>();
 
         public void OnCompleted()
         {
             if (isStopped) return;
 
             isStopped = true;
-            foreach (var item in observers)
+            foreach (var item in observers.ToArray())
             {
                 item.OnCompleted();
             }
@@ -29,7 +29,7 @@ namespace UnityRx
             if (isStopped) return;
 
             isStopped = true;
-            foreach (var item in observers)
+            foreach (var item in observers.ToArray())
             {
                 item.OnError(error);
             }
@@ -40,7 +40,7 @@ namespace UnityRx
         {
             if (isStopped) return;
 
-            foreach (var item in observers)
+            foreach (var item in observers.ToArray())
             {
                 item.OnNext(value);
             }
@@ -48,14 +48,11 @@ namespace UnityRx
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
-            var node = new LinkedListNode<IObserver<T>>(observer);
-            observers.AddLast(node);
+            if (isStopped) return Disposable.Empty;
 
-            return Disposable.Create(() =>
-            {
-                var list = node.List;
-                if (list != null) list.Remove(node);
-            });
+            observers.Add(observer);
+
+            return Disposable.Create(() => observers.Remove(observer));
         }
     }
 }

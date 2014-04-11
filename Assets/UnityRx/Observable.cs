@@ -29,7 +29,16 @@ namespace UnityRx
             {
                 return source.Subscribe(Observer.Create<T>(x =>
                 {
-                    var v = selector(x);
+                    var v = default(TR);
+                    try
+                    {
+                        v = selector(x);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
                     observer.OnNext(v);
                 }, observer.OnError, observer.OnCompleted));
             });

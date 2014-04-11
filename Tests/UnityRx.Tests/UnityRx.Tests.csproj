@@ -67,6 +67,7 @@
     <Compile Include="DisposableTest.cs" />
     <Compile Include="ObservableTest.cs" />
     <Compile Include="OfficialRx\DisposableTestCopy.cs" />
+    <Compile Include="OfficialRx\ObservableGeneratorTestCopy.cs" />
     <Compile Include="OfficialRx\SubjectTestCopy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchedulerTest.cs" />
@@ -81,6 +82,10 @@
       <Project>{676ec39d-e9e4-59b7-4472-2c8969c426aa}</Project>
       <Name>UnityVS.UnityRx.CSharp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="RxJS\HtmlPage1.html" />
+    <Content Include="RxJS\rx.js" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

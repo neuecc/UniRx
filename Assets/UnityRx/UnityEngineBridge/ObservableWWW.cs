@@ -1,31 +1,47 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace UnityRx
 {
-    public static class ObservableWWW
+    public static partial class ObservableWWW
     {
-        static readonly Hashtable defaultHeaders = new Hashtable()
+        static IEnumerator GetWWWBytes(string url, Hashtable headers, Action<byte[]> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
         {
-            {"User-Agent", "HogeHoge"}
-        };
+            return FetchBytes(new WWW(url, null, headers), onSuccess, onError, reportProgress, cancel);
+        }
+        static IEnumerator GetWWWText(string url, Hashtable headers, Action<string> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
+        {
+            return FetchText(new WWW(url, null, headers), onSuccess, onError, reportProgress, cancel);
+        }
 
-        static IEnumerator GetWWW(string url, Action<string> onSuccess, Action<string> onError)
+        static IEnumerator PostWWWBytes(string url, WWWForm content, Action<byte[]> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
         {
-            using (var www = new WWW(url))
+            return FetchBytes(new WWW(url, content), onSuccess, onError, reportProgress, cancel);
+        }
+
+        static IEnumerator PostWWWText(string url, WWWForm content, Action<string> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
+        {
+            return FetchText(new WWW(url, content), onSuccess, onError, reportProgress, cancel);
+        }
+
+        static IEnumerator FetchText(WWW www, Action<string> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
+        {
+            using (www)
             {
-                yield return www;
-                if (www.isDone)
+                while (!www.isDone && !cancel.IsDisposed)
                 {
-                    if (www.error != null)
-                    {
-                        onError(www.error);
-                    }
-                    else
+                    if (reportProgress != null) reportProgress.Report(www.progress);
+                    yield return null;
+                }
+
+                if (www.error != null)
+                {
+                    onError(www.error);
+                }
+                else
+                {
+                    if (!cancel.IsDisposed)
                     {
                         onSuccess(www.text);
                     }
@@ -33,25 +49,37 @@ namespace UnityRx
             }
         }
 
-        //static IEnumerator PostWWW(string url, WWWForm form, Action<string> onSuccess, Action<string> onError)
-        //{
-            
-        //    using (var www = new WWW(url, form))
-        //    {
-                
-        //    }
-        //}
+        static IEnumerator FetchBytes(WWW www, Action<byte[]> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
+        {
+            using (www)
+            {
+                while (!www.isDone && !cancel.IsDisposed)
+                {
+                    if (reportProgress != null) reportProgress.Report(www.progress);
+                    yield return null;
+                }
 
-        //public static IObservable<string> Post(string url)
-        //{
+                if (www.error != null)
+                {
+                    onError(www.error);
+                }
+                else
+                {
+                    if (!cancel.IsDisposed)
+                    {
+                        onSuccess(www.bytes);
+                    }
+                }
+            }
+        }
 
-        //}
-
-        public static IObservable<string> Get(string url)
+        public static IObservable<string> Post(string url, WWWForm content, IProgress<float> progress = null)
         {
             return Observable.Create<string>(observer =>
             {
-                var e = GetWWW(url, x =>
+                var cancel = new BooleanDisposable();
+
+                var e = PostWWWText(url, content, x =>
                 {
                     try
                     {
@@ -62,11 +90,86 @@ namespace UnityRx
                     {
                         observer.OnError(ex);
                     }
-                }, x => observer.OnError(new Exception(x)));
+                }, x => observer.OnError(new Exception(x)), progress, cancel);
 
-                GameLoopDispatcher.StartCoroutine(e);
+                MainThreadDispatcher.StartCoroutine(e);
 
-                return Disposable.Empty;
+                return cancel;
+            });
+        }
+
+        public static IObservable<byte[]> PostAndGetBytes(string url, WWWForm content, IProgress<float> progress = null)
+        {
+            return Observable.Create<byte[]>(observer =>
+            {
+                var cancel = new BooleanDisposable();
+
+                var e = PostWWWBytes(url, content, x =>
+                {
+                    try
+                    {
+                        observer.OnNext(x);
+                        observer.OnCompleted();
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                    }
+                }, x => observer.OnError(new Exception(x)), progress, cancel);
+
+                MainThreadDispatcher.StartCoroutine(e);
+
+                return cancel;
+            });
+        }
+
+        public static IObservable<string> Get(string url, Hashtable headers = null, IProgress<float> progress = null)
+        {
+            return Observable.Create<string>(observer =>
+            {
+                var cancel = new BooleanDisposable();
+
+                var e = GetWWWText(url, headers ?? new Hashtable(), x =>
+                {
+                    try
+                    {
+                        observer.OnNext(x);
+                        observer.OnCompleted();
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                    }
+                }, x => observer.OnError(new Exception(x)), progress, cancel);
+
+                MainThreadDispatcher.StartCoroutine(e);
+
+                return cancel;
+            });
+        }
+
+        public static IObservable<byte[]> GetAndGetBytes(string url, Hashtable headers = null, IProgress<float> progress = null)
+        {
+            return Observable.Create<byte[]>(observer =>
+            {
+                var cancel = new BooleanDisposable();
+
+                var e = GetWWWBytes(url, headers ?? new Hashtable(), x =>
+                {
+                    try
+                    {
+                        observer.OnNext(x);
+                        observer.OnCompleted();
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                    }
+                }, x => observer.OnError(new Exception(x)), progress, cancel);
+
+                MainThreadDispatcher.StartCoroutine(e);
+
+                return cancel;
             });
         }
     }

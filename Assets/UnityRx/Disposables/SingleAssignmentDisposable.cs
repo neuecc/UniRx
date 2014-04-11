@@ -8,7 +8,7 @@ namespace UnityRx
     // AOT...
     // use lock instead
 
-    public class SingleAssignmentDisposable : IDisposable
+    public class SingleAssignmentDisposable : IDisposable, ICancelable
     {
         readonly object gate = new object();
         IDisposable current;

@@ -7,7 +7,7 @@ namespace UnityRx
 {
     // copy, modified from Rx Official
 
-    public sealed class CompositeDisposable : ICollection<IDisposable>, IDisposable
+    public sealed class CompositeDisposable : ICollection<IDisposable>, IDisposable, ICancelable
     {
         private readonly object _gate = new object();
 
