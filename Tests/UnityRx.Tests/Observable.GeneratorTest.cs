@@ -10,9 +10,16 @@ namespace UnityRx.Tests
         [TestMethod]
         public void Empty()
         {
-            
+            var material = Observable.Empty<Unit>().Materialize().ToArray().Wait();
+            material.Is(Notification.CreateOnCompleted<Unit>());
         }
 
+        [TestMethod]
+        public void Never()
+        {
+            AssertEx.Catch<TimeoutException>(() =>
+                Observable.Never<Unit>().Materialize().ToArray().Wait(TimeSpan.FromMilliseconds(10)));
+        }
 
         [TestMethod]
         public void Range()

@@ -7,12 +7,19 @@ using System.Threading.Tasks;
 using System.Reactive.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Concurrency;
+using System.Reactive;
 
 namespace OfficialRx
 {
     [TestClass]
     public class ObservableGeneratorTestCopy
     {
+        [TestMethod]
+        public void EmptyRxOfficial()
+        {
+            var material = Observable.Empty<Unit>().Materialize().ToArray().Wait();
+            material.Is(Notification.CreateOnCompleted<Unit>());
+        }
 
         [TestMethod]
         public void ToObservableTestRxOfficial()

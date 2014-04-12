@@ -7,6 +7,9 @@ namespace UnityRx
 {
     public static partial class Observable
     {
+        /// <summary>
+        /// Create anonymous observable. Observer is auto detach when error, completed.
+        /// </summary>
         public static IObservable<T> Create<T>(Func<IObserver<T>, IDisposable> subscribe)
         {
             if (subscribe == null) throw new ArgumentNullException("subscribe");
@@ -34,15 +37,54 @@ namespace UnityRx
         }
 
         /// <summary>
-        /// Empty Observable. Returns only OnCompleted
+        /// Empty Observable. Returns only OnCompleted on ImmediateScheduler.
         /// </summary>
-        public static IObservable<Unit> Empty()
+        public static IObservable<T> Empty<T>()
         {
-            return Observable.Create<Unit>(observer =>
+            return Empty<T>(Scheduler.Immediate);
+        }
+
+        /// <summary>
+        /// Empty Observable. Returns only OnCompleted on specified scheduler.
+        /// </summary>
+        public static IObservable<T> Empty<T>(IScheduler scheduler)
+        {
+            return Observable.Create<T>(observer =>
             {
-                observer.OnCompleted();
-                return Disposable.Empty;
+                return scheduler.Schedule(observer.OnCompleted);
             });
+        }
+
+        /// <summary>
+        /// Empty Observable. Returns only OnCompleted on ImmediateScheduler. witness is for type inference.
+        /// </summary>
+        public static IObservable<T> Empty<T>(T witness)
+        {
+            return Empty<T>(Scheduler.Immediate);
+        }
+
+        /// <summary>
+        /// Empty Observable. Returns only OnCompleted on specified scheduler. witness is for type inference.
+        /// </summary>
+        public static IObservable<T> Empty<T>(IScheduler scheduler, T witness)
+        {
+            return Empty<T>(scheduler);
+        }
+
+        /// <summary>
+        /// Non-Terminating Observable. It's no returns, never finish.
+        /// </summary>
+        public static IObservable<T> Never<T>()
+        {
+            return Observable.Create<T>(observer => Disposable.Empty);
+        }
+
+        /// <summary>
+        /// Non-Terminating Observable. It's no returns, never finish. witness is for type inference.
+        /// </summary>
+        public static IObservable<T> Never<T>(T witness)
+        {
+            return Never<T>();
         }
 
 
@@ -50,7 +92,7 @@ namespace UnityRx
 
 
 
-        
+
         public static IObservable<T> Start<T>(Func<T> function)
         {
             return Start(function, Scheduler.ThreadPool);
