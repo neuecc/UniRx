@@ -25,30 +25,6 @@ namespace UnityRx
             return FetchText(new WWW(url, content), onSuccess, onError, reportProgress, cancel);
         }
 
-        static IEnumerator FetchText(WWW www, Action<string> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
-        {
-            using (www)
-            {
-                while (!www.isDone && !cancel.IsDisposed)
-                {
-                    if (reportProgress != null) reportProgress.Report(www.progress);
-                    yield return null;
-                }
-
-                if (www.error != null)
-                {
-                    onError(www.error);
-                }
-                else
-                {
-                    if (!cancel.IsDisposed)
-                    {
-                        onSuccess(www.text);
-                    }
-                }
-            }
-        }
-
         static IEnumerator FetchBytes(WWW www, Action<byte[]> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
         {
             using (www)
@@ -73,6 +49,30 @@ namespace UnityRx
             }
         }
 
+        static IEnumerator FetchText(WWW www, Action<string> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
+        {
+            using (www)
+            {
+                while (!www.isDone && !cancel.IsDisposed)
+                {
+                    if (reportProgress != null) reportProgress.Report(www.progress);
+                    yield return null;
+                }
+
+                if (www.error != null)
+                {
+                    onError(www.error);
+                }
+                else
+                {
+                    if (!cancel.IsDisposed)
+                    {
+                        onSuccess(www.text);
+                    }
+                }
+            }
+        }
+
         public static IObservable<string> Post(string url, WWWForm content, IProgress<float> progress = null)
         {
             return Observable.Create<string>(observer =>
@@ -81,15 +81,8 @@ namespace UnityRx
 
                 var e = PostWWWText(url, content, x =>
                 {
-                    try
-                    {
-                        observer.OnNext(x);
-                        observer.OnCompleted();
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                    }
+                    observer.OnNext(x);
+                    observer.OnCompleted();
                 }, x => observer.OnError(new Exception(x)), progress, cancel);
 
                 MainThreadDispatcher.StartCoroutine(e);
@@ -106,15 +99,8 @@ namespace UnityRx
 
                 var e = PostWWWBytes(url, content, x =>
                 {
-                    try
-                    {
-                        observer.OnNext(x);
-                        observer.OnCompleted();
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                    }
+                    observer.OnNext(x);
+                    observer.OnCompleted();
                 }, x => observer.OnError(new Exception(x)), progress, cancel);
 
                 MainThreadDispatcher.StartCoroutine(e);
@@ -131,15 +117,8 @@ namespace UnityRx
 
                 var e = GetWWWText(url, headers ?? new Hashtable(), x =>
                 {
-                    try
-                    {
-                        observer.OnNext(x);
-                        observer.OnCompleted();
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                    }
+                    observer.OnNext(x);
+                    observer.OnCompleted();
                 }, x => observer.OnError(new Exception(x)), progress, cancel);
 
                 MainThreadDispatcher.StartCoroutine(e);
@@ -156,15 +135,8 @@ namespace UnityRx
 
                 var e = GetWWWBytes(url, headers ?? new Hashtable(), x =>
                 {
-                    try
-                    {
-                        observer.OnNext(x);
-                        observer.OnCompleted();
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                    }
+                    observer.OnNext(x);
+                    observer.OnCompleted();
                 }, x => observer.OnError(new Exception(x)), progress, cancel);
 
                 MainThreadDispatcher.StartCoroutine(e);
