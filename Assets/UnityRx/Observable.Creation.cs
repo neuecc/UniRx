@@ -7,8 +7,6 @@ namespace UnityRx
 {
     public static partial class Observable
     {
-        // TODO:Range, Repeat, Return, Unfold, Defer, Empty, Never etc...
-
         public static IObservable<T> Create<T>(Func<IObserver<T>, IDisposable> subscribe)
         {
             if (subscribe == null) throw new ArgumentNullException("subscribe");
@@ -35,6 +33,24 @@ namespace UnityRx
             }
         }
 
+        /// <summary>
+        /// Empty Observable. Returns only OnCompleted
+        /// </summary>
+        public static IObservable<Unit> Empty()
+        {
+            return Observable.Create<Unit>(observer =>
+            {
+                observer.OnCompleted();
+                return Disposable.Empty;
+            });
+        }
+
+
+
+
+
+
+        
         public static IObservable<T> Start<T>(Func<T> function)
         {
             return Start(function, Scheduler.ThreadPool);

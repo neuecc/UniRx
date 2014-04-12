@@ -5,18 +5,16 @@ using System.Linq;
 
 namespace UnityRx
 {
-    // TODO:Subject? Scheduler?
-
-    // Select, Where, SelectMany, Zip, Merge, CombineLatest, Switch, ObserveOn, Retry, Defer, Etc...
-
-    // onNext implementation guide. enclose otherFunc but onNext is not catch.
-    // try{ otherFunc(); } catch { onError() }
-    // onNext();
-
     public interface IObservable<out T>
     {
         IDisposable Subscribe(IObserver<T> observer);
     }
+
+    // Standard Query Operators
+
+    // onNext implementation guide. enclose otherFunc but onNext is not catch.
+    // try{ otherFunc(); } catch { onError() }
+    // onNext();
 
     public static partial class Observable
     {

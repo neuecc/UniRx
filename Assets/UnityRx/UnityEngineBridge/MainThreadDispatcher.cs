@@ -52,7 +52,14 @@ namespace UnityRx
                 while (actionQueue.Count != 0)
                 {
                     var action = actionQueue.Dequeue();
-                    action();
+                    try
+                    {
+                        action();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogException(ex); // Is log can't handle...?
+                    }
                 }
             }
         }

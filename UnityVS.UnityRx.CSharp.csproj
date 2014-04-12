@@ -44,10 +44,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\UnityRx\Disposables\ICancelable.cs" />
+    <Compile Include="Assets\UnityRx\Notification.cs" />
     <Compile Include="Assets\UnityRx\Notifiers\BooleanNotifier.cs" />
     <Compile Include="Assets\UnityRx\Notifiers\CountNotifier.cs" />
     <Compile Include="Assets\UnityRx\Notifiers\ScheduledNotifier.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Joins.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Events.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Concurrency.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Blocking.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Binding.cs" />
     <Compile Include="Assets\UnityRx\Observable.Conversions.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Aggregate.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Time.cs" />
     <Compile Include="Assets\UnityRx\Observer.cs" />
     <Compile Include="Assets\UnityRx\Disposables\CompositeDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\BooleanDisposable.cs" />
@@ -63,7 +71,7 @@
     <Compile Include="Assets\UnityRx\System\IProgress.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadScheduler.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadDispatcher.cs" />
-    <Compile Include="Assets\UnityRx\Observable.Generator.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Creation.cs" />
     <Compile Include="Assets\UnityRx\Observable.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\Observable.Unity.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\ObservableMonoBehaviour.cs" />
