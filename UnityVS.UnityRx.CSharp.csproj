@@ -65,6 +65,7 @@
     <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadDispatcher.cs" />
     <Compile Include="Assets\UnityRx\Observable.Generator.cs" />
     <Compile Include="Assets\UnityRx\Observable.cs" />
+    <Compile Include="Assets\UnityRx\UnityEngineBridge\Observable.Unity.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\ObservableMonoBehaviour.cs" />
     <Compile Include="Assets\UnityRx\Schedulers\Scheduler.cs" />
     <Compile Include="Assets\UnityRx\Subjects\Subject.cs" />
