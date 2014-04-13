@@ -87,10 +87,67 @@ namespace UnityRx
             return Never<T>();
         }
 
+        /// <summary>
+        /// Return single sequence on ImmediateScheduler.
+        /// </summary>
+        public static IObservable<T> Return<T>(T value)
+        {
+            return Return<T>(value, Scheduler.Immediate);
+        }
+
+        /// <summary>
+        /// Return single sequence on specified scheduler.
+        /// </summary>
+        public static IObservable<T> Return<T>(T value, IScheduler scheduler)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                return scheduler.Schedule(() =>
+                {
+                    observer.OnNext(value);
+                    observer.OnCompleted();
+                });
+            });
+        }
+
+        public static IObservable<int> Range(int start, int count)
+        {
+            return Range(start, count, Scheduler.CurrentThread);
+        }
+
+        public static IObservable<int> Range(int start, int count, IScheduler scheduler)
+        {
+            return Observable.Create<int>(observer =>
+            {
+                return scheduler.Schedule(0, (i, self) =>
+                {
+                    if (i < count)
+                    {
+                        observer.OnNext(start + i);
+                        self(i + 1);
+                    }
+                    else
+                    {
+                        observer.OnCompleted();
+                    }
+                });
+            });
+        }
 
 
 
+        //public static IObservable<T> Repeat<T>(this IObservable<T> source)
+        //{
+        //    // return source.
+        //}
 
+        //static IEnumerable<IObservable<T>> RepeatInfinite<T>(IObservable<T> source)
+        //{
+        //    while (true)
+        //    {
+        //        yield return source;
+        //    }
+        //}
 
 
         public static IObservable<T> Start<T>(Func<T> function)
@@ -122,29 +179,5 @@ namespace UnityRx
         }
 
 
-
-        public static IObservable<int> Range(int start, int count)
-        {
-            return Range(start, count, Scheduler.Immediate); // TODO:Change to CurrentThreadScheduler
-        }
-
-        public static IObservable<int> Range(int start, int count, IScheduler scheduler)
-        {
-            return Observable.Create<int>(observer =>
-            {
-                return scheduler.Schedule(0, (i, self) =>
-                {
-                    if (i < count)
-                    {
-                        observer.OnNext(start + i);
-                        self(i + 1);
-                    }
-                    else
-                    {
-                        observer.OnCompleted();
-                    }
-                });
-            });
-        }
     }
 }

@@ -55,6 +55,7 @@
     <Compile Include="Assets\UnityRx\Observable.Binding.cs" />
     <Compile Include="Assets\UnityRx\Observable.Conversions.cs" />
     <Compile Include="Assets\UnityRx\Observable.Aggregate.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Concatenate.cs" />
     <Compile Include="Assets\UnityRx\Observable.Time.cs" />
     <Compile Include="Assets\UnityRx\Observer.cs" />
     <Compile Include="Assets\UnityRx\Disposables\CompositeDisposable.cs" />

@@ -19,7 +19,7 @@ namespace OfficialRx
             // OnCompletedPattern
             {
                 var subject = new Subject<int>();
-
+                
                 var onNext = new List<int>();
                 var exception = new List<Exception>();
                 int onCompletedCallCount = 0;

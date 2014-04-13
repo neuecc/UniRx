@@ -22,6 +22,12 @@ namespace UnityRx.Tests
         }
 
         [TestMethod]
+        public void Return()
+        {
+            Observable.Return(100).Materialize().ToArray().Wait().Is(Notification.CreateOnNext(100), Notification.CreateOnCompleted<int>());
+        }
+
+        [TestMethod]
         public void Range()
         {
             Observable.Range(1, 5).ToArray().Wait().Is(1, 2, 3, 4, 5);

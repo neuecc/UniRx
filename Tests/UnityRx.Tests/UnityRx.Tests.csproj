@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="ChainingAssertion.MSTest.cs" />
     <Compile Include="DisposableTest.cs" />
+    <Compile Include="Observable.ConcatTest.cs" />
     <Compile Include="ObservableTest.cs" />
     <Compile Include="OfficialRx\DisposableTestCopy.cs" />
     <Compile Include="OfficialRx\ObservableGeneratorTestCopy.cs" />

@@ -22,6 +22,12 @@ namespace OfficialRx
         }
 
         [TestMethod]
+        public void ReturnRxOfficia()
+        {
+            Observable.Return(100).Materialize().ToArray().Wait().Is(Notification.CreateOnNext(100), Notification.CreateOnCompleted<int>());
+        }
+
+        [TestMethod]
         public void ToObservableTestRxOfficial()
         {
             {
