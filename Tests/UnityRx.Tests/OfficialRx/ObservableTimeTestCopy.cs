@@ -19,26 +19,23 @@ namespace OfficialRx
         [TestMethod]
         public void DelayRxOfficial()
         {
-            /*
+
+            var now = ThreadPoolScheduler.Instance.Now;
+
             var xs = Observable.Range(1, 3)
                 .Delay(TimeSpan.FromSeconds(1))
                 .Timestamp()
                 .ToArray()
                 .Wait();
-            */
-            var subject = new Subject<int>();
 
-            var now = ThreadPoolScheduler.Instance.Now;
-            Timestamped<Notification<int>> hoge = default(Timestamped<Notification<int>>);
-            subject.Delay(TimeSpan.FromSeconds(1))
-                .Materialize()
-                .Timestamp().Subscribe(x => hoge = x);
+            xs[0].Value.Is(1);
+            (now.AddMilliseconds(800) <= xs[0].Timestamp && xs[0].Timestamp <= now.AddMilliseconds(1200)).IsTrue();
 
-            //subject.OnNext(1);
-            //subject.OnError(new Exception());
-            subject.OnCompleted();
+            xs[1].Value.Is(2);
+            (now.AddMilliseconds(800) <= xs[1].Timestamp && xs[1].Timestamp <= now.AddMilliseconds(1200)).IsTrue();
 
-            Thread.Sleep(TimeSpan.FromSeconds(2));
+            xs[2].Value.Is(3);
+            (now.AddMilliseconds(800) <= xs[2].Timestamp && xs[2].Timestamp <= now.AddMilliseconds(1200)).IsTrue();
         }
     }
 }

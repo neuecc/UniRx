@@ -151,28 +151,32 @@ namespace UnityRx
             return Observable.Create<T>(observer =>
             {
                 var group = new CompositeDisposable();
-
                 var gate = new object();
-                var exception = default(Exception);
-                var isCompleted = false;
 
-                source.Subscribe(x =>
+                var subscription = source.Subscribe(x =>
                 {
-
-
-
-
+                    lock (gate)
+                    {
+                        var d = scheduler.Schedule(dueTime, () => observer.OnNext(x));
+                        group.Add(d);
+                    }
+                }, ex =>
+                {
+                    lock (gate)
+                    {
+                        var d = scheduler.Schedule(() => observer.OnError(ex));
+                        group.Add(d);
+                    }
+                }, () =>
+                {
+                    lock (gate)
+                    {
+                        var d = scheduler.Schedule(dueTime, observer.OnCompleted);
+                        group.Add(d);
+                    }
                 });
 
-
-
-                var first = source.Subscribe(x =>
-                {
-                    var d = scheduler.Schedule(dueTime, () => observer.OnNext(x));
-                    group.Add(d);
-                }, observer.OnError, observer.OnCompleted);
-
-                group.Add(first);
+                group.Add(subscription);
 
                 return group;
             });
