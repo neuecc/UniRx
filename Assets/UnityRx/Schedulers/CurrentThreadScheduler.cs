@@ -17,17 +17,7 @@ namespace UnityRx
             [ThreadStatic]
             static SchedulingPriorityQueue threadStaticQueue;
 
-            // TODO:Queue should set to null(guard memory leak)
-            SchedulingPriorityQueue GetQueue()
-            {
-                if (threadStaticQueue == null)
-                {
-                    threadStaticQueue = new SchedulingPriorityQueue();
-                }
-                return threadStaticQueue;
-            }
-
-            public bool IsScheduleRequired { get { return GetQueue().Count == 0; } }
+            public bool IsScheduleRequired { get { return threadStaticQueue == null; } }
 
             public DateTimeOffset Now
             {
@@ -45,7 +35,11 @@ namespace UnityRx
 
             public IDisposable Schedule<TState>(TState state, DateTimeOffset dueTime, Func<IScheduler, TState, IDisposable> action)
             {
-                var queue = GetQueue();
+                var queue = threadStaticQueue;
+                if (queue == null)
+                {
+                    queue = threadStaticQueue = new SchedulingPriorityQueue();
+                }
 
                 if (queue.Count > 0)
                 {
@@ -78,6 +72,8 @@ namespace UnityRx
                         act();
                     }
                 }
+
+                threadStaticQueue = null;
 
                 return rootCancel;
             }

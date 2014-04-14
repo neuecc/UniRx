@@ -75,7 +75,6 @@ namespace UnityRx
     /// </summary>
     /// <typeparam name="T">The type of the elements received by the observer.</typeparam>
     [Serializable]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals", Justification = "Resembles a discriminated union with finite number of subclasses (external users shouldn't create their own subtypes), each of which does override GetHashCode itself.")]
     public abstract class Notification<T> : IEquatable<Notification<T>>
     {
         /// <summary>

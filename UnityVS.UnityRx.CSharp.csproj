@@ -71,6 +71,7 @@
     <Compile Include="Assets\UnityRx\Subjects\ISubject.cs" />
     <Compile Include="Assets\UnityRx\Subjects\AsyncSubject.cs" />
     <Compile Include="Assets\UnityRx\System\IProgress.cs" />
+    <Compile Include="Assets\UnityRx\Timestamped.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadScheduler.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadDispatcher.cs" />
     <Compile Include="Assets\UnityRx\Observable.Creation.cs" />

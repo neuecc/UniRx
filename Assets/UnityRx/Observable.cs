@@ -94,47 +94,6 @@ namespace UnityRx
             });
         }
 
-        public static IObservable<T> Delay<T>(this IObservable<T> source, TimeSpan dueTime)
-        {
-            return source.Delay(dueTime, Scheduler.Immediate); // TODO:not immediate!
-        }
-
-        public static IObservable<T> Delay<T>(this IObservable<T> source, TimeSpan dueTime, IScheduler scheduler)
-        {
-            return Observable.Create<T>(observer =>
-            {
-                var group = new CompositeDisposable();
-
-                var first = source.Subscribe(x =>
-                {
-                    var d = scheduler.Schedule(dueTime, () => observer.OnNext(x));
-                    group.Add(d);
-                }, observer.OnError, observer.OnCompleted);
-
-                group.Add(first);
-
-                return group;
-            });
-        }
-
-        public static IObservable<T> ObserveOn<T>(this IObservable<T> source, IScheduler scheduler)
-        {
-            return Observable.Create<T>(observer =>
-            {
-                var group = new CompositeDisposable();
-
-                var first = source.Subscribe(x =>
-                {
-                    var d = scheduler.Schedule(() => observer.OnNext(x));
-                    group.Add(d);
-                }, observer.OnError, observer.OnCompleted);
-
-                group.Add(first);
-
-                return group;
-            });
-        }
-
         public static IObservable<T[]> ToArray<T>(this IObservable<T> source)
         {
             return Observable.Create<T[]>(observer =>
@@ -306,63 +265,6 @@ namespace UnityRx
                     }
                 }, observer.OnError, observer.OnCompleted);
             });
-        }
-
-        public static IObservable<T> Synchronize<T>(this IObservable<T> source)
-        {
-            return source.Synchronize(new object());
-        }
-
-        public static IObservable<T> Synchronize<T>(this IObservable<T> source, object gate)
-        {
-            return Observable.Create<T>(observer =>
-            {
-                return source.Subscribe(
-                    x => { lock (gate) observer.OnNext(x); },
-                    x => { lock (gate) observer.OnError(x); },
-                    () => { lock (gate) observer.OnCompleted(); });
-            });
-        }
-
-        public static T Wait<T>(this IObservable<T> source)
-        {
-            return source.WaitCore(throwOnEmpty: true, timeout: InfiniteTimeSpan);
-        }
-
-        public static T Wait<T>(this IObservable<T> source, TimeSpan timeout)
-        {
-            return source.WaitCore(throwOnEmpty: true, timeout: timeout);
-        }
-
-        static T WaitCore<T>(this IObservable<T> source, bool throwOnEmpty, TimeSpan timeout)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-
-            var semaphore = new System.Threading.ManualResetEvent(false);
-
-            var seenValue = false;
-            var value = default(T);
-            var ex = default(Exception);
-
-            using (source.Subscribe(
-                onNext: x => { seenValue = true; value = x; },
-                onError: x => { ex = x; semaphore.Set(); },
-                onCompleted: () => semaphore.Set()))
-            {
-                var waitComplete = (timeout == InfiniteTimeSpan)
-                    ? semaphore.WaitOne()
-                    : semaphore.WaitOne(timeout);
-
-                if (!waitComplete)
-                {
-                    throw new TimeoutException("OnCompleted not fired.");
-                }
-            }
-
-            if (ex != null) throw ex;
-            if (throwOnEmpty && !seenValue) throw new InvalidOperationException("No Elements.");
-
-            return value;
         }
     }
 }

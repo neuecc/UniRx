@@ -36,13 +36,13 @@ namespace OfficialRx
                     .Do(i => msgs.Add("DO:" + i))
                     .Scan((x, y) =>
                     {
-                        if (y == 100) throw new Exception("execption");
+                        if (y == 100) throw new Exception("exception");
                         msgs.Add("x:" + x + " y:" + y);
                         return x + y;
                     })
                     .Subscribe(x => msgs.Add(x.ToString()), e => msgs.Add(e.Message), () => msgs.Add("comp"));
 
-                Console.WriteLine(string.Join(",", msgs));
+                msgs.Is("DO:1", "1", "DO:10", "x:1 y:10", "11", "DO:100", "exception");
             }
 
             {
@@ -51,20 +51,24 @@ namespace OfficialRx
                     .Do(i => msgs.Add("DO:" + i))
                     .Scan((x, y) =>
                     {
-                        if (y == 100) throw new Exception("execption");
+                        if (y == 100) throw new Exception("exception");
                         msgs.Add("x:" + x + " y:" + y);
                         return x + y;
                     })
                     .Subscribe(x => msgs.Add(x.ToString()), e => msgs.Add(e.Message), () => msgs.Add("comp"));
 
-                // Console.WriteLine(string.Join(",", msgs));
+                msgs.Is("DO:1", "1", "DO:10", "x:1 y:10", "11", "DO:100", "exception",
+                    "DO:1000", "x:11 y:1000",
+                    "DO:10000", "x:1011 y:10000",
+                    "DO:20000", "x:11011 y:20000"
+                    );
             }
         }
 
         [TestMethod]
         public void RepeatRxOfficial()
         {
-            Observable.Range(3, 2, Scheduler.Immediate).Repeat().Take(10).ToArray().Wait().Is(3, 4, 3, 4, 3, 4, 3, 4, 3, 4);
+            Observable.Range(3, 2, Scheduler.CurrentThread).Repeat().Take(10).ToArray().Wait().Is(3, 4, 3, 4, 3, 4, 3, 4, 3, 4);
         }
     }
 }

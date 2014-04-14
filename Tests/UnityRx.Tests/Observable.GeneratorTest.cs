@@ -36,7 +36,16 @@ namespace UnityRx.Tests
         [TestMethod]
         public void Repeat()
         {
-            Observable.Return(10, Scheduler.CurrentThread).Repeat().Take(2).ToArray().Wait();
+            Observable.Range(1, 3, Scheduler.CurrentThread)
+                .Concat(Observable.Return(100))
+                .Repeat()
+                .Take(10)
+                .ToArray()
+                .Wait()
+                .Is(1, 2, 3, 100, 1, 2, 3, 100, 1, 2);
+            Observable.Repeat(100).Take(5).ToArray().Wait().Is(100, 100, 100, 100, 100);
+
+            Observable.Repeat(5, 3).ToArray().Wait().Is(5, 5, 5);
         }
 
         [TestMethod]
@@ -45,32 +54,43 @@ namespace UnityRx.Tests
             {
                 var msgs = new List<string>();
                 new[] { 1, 10, 100, 1000, 10000, 20000 }.ToObservable(Scheduler.CurrentThread)
-                    // .Do(i => msgs.Add("DO:" + i))
+                    .Do(i => msgs.Add("DO:" + i))
                     .Scan((x, y) =>
                     {
-                        if (y == 100) throw new Exception("execption");
+                        if (y == 100) throw new Exception("exception");
                         msgs.Add("x:" + x + " y:" + y);
                         return x + y;
                     })
                     .Subscribe(x => msgs.Add(x.ToString()), e => msgs.Add(e.Message), () => msgs.Add("comp"));
 
-                Console.WriteLine(string.Join(",", msgs));
+                msgs.Is("DO:1", "1", "DO:10", "x:1 y:10", "11", "DO:100", "exception");
             }
 
-            //{
-            //    var msgs = new List<string>();
-            //    new[] { 1, 10, 100, 1000, 10000, 20000 }.ToObservable(Scheduler.Immediate)
-            //        .Do(i => msgs.Add("DO:" + i))
-            //        .Scan((x, y) =>
-            //        {
-            //            if (y == 100) throw new Exception("execption");
-            //            msgs.Add("x:" + x + " y:" + y);
-            //            return x + y;
-            //        })
-            //        .Subscribe(x => msgs.Add(x.ToString()), e => msgs.Add(e.Message), () => msgs.Add("comp"));
+            {
+                var msgs = new List<string>();
+                new[] { 1, 10, 100, 1000, 10000, 20000 }.ToObservable(Scheduler.Immediate)
+                    .Do(i => msgs.Add("DO:" + i))
+                    .Scan((x, y) =>
+                    {
+                        if (y == 100) throw new Exception("exception");
+                        msgs.Add("x:" + x + " y:" + y);
+                        return x + y;
+                    })
+                    .Subscribe(x => msgs.Add(x.ToString()), e => msgs.Add(e.Message), () => msgs.Add("comp"));
 
-            //    Console.WriteLine(string.Join(",", msgs));
-            //}
+                msgs.Is("DO:1", "1", "DO:10", "x:1 y:10", "11", "DO:100", "exception",
+                    "DO:1000", "x:11 y:1000",
+                    "DO:10000", "x:1011 y:10000",
+                    "DO:20000", "x:11011 y:20000"
+                    );
+            }
+        }
+
+        [TestMethod]
+        public void Throw()
+        {
+            var ex = new Exception();
+            Observable.Throw<string>(ex).Materialize().ToArray().Wait().Is(Notification.CreateOnError<string>(ex));
         }
     }
 }

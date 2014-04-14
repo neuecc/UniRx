@@ -23,6 +23,13 @@ namespace UnityRx
             }
         }
 
+        public static IObservable<T> AsObservable<T>(this IObservable<T> source)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+
+            return Observable.Create<T>(observer => source.Subscribe(observer));
+        }
+
         public static IObservable<T> ToObservable<T>(this IEnumerable<T> source)
         {
             return source.ToObservable(Scheduler.CurrentThread);

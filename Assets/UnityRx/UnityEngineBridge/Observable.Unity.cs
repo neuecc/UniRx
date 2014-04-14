@@ -28,7 +28,5 @@ namespace UnityRx
                 return cancel;
             });
         }
-
-        
     }
 }
