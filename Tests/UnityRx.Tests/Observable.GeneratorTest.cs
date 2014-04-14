@@ -31,7 +31,12 @@ namespace UnityRx.Tests
         public void Range()
         {
             Observable.Range(1, 5).ToArray().Wait().Is(1, 2, 3, 4, 5);
+        }
 
+        [TestMethod]
+        public void Repeat()
+        {
+            Observable.Return(10, Scheduler.CurrentThread).Repeat().Take(2).ToArray().Wait();
         }
 
         [TestMethod]
@@ -40,7 +45,7 @@ namespace UnityRx.Tests
             {
                 var msgs = new List<string>();
                 new[] { 1, 10, 100, 1000, 10000, 20000 }.ToObservable(Scheduler.CurrentThread)
-                    .Do(i => msgs.Add("DO:" + i))
+                    // .Do(i => msgs.Add("DO:" + i))
                     .Scan((x, y) =>
                     {
                         if (y == 100) throw new Exception("execption");

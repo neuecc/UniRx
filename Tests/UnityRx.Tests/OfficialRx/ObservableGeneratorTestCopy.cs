@@ -57,8 +57,14 @@ namespace OfficialRx
                     })
                     .Subscribe(x => msgs.Add(x.ToString()), e => msgs.Add(e.Message), () => msgs.Add("comp"));
 
-                Console.WriteLine(string.Join(",", msgs));
+                // Console.WriteLine(string.Join(",", msgs));
             }
+        }
+
+        [TestMethod]
+        public void RepeatRxOfficial()
+        {
+            Observable.Range(3, 2, Scheduler.Immediate).Repeat().Take(10).ToArray().Wait().Is(3, 4, 3, 4, 3, 4, 3, 4, 3, 4);
         }
     }
 }

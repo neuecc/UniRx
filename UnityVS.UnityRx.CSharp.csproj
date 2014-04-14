@@ -48,6 +48,7 @@
     <Compile Include="Assets\UnityRx\Notifiers\BooleanNotifier.cs" />
     <Compile Include="Assets\UnityRx\Notifiers\CountNotifier.cs" />
     <Compile Include="Assets\UnityRx\Notifiers\ScheduledNotifier.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Paging.cs" />
     <Compile Include="Assets\UnityRx\Observable.Joins.cs" />
     <Compile Include="Assets\UnityRx\Observable.Events.cs" />
     <Compile Include="Assets\UnityRx\Observable.Concurrency.cs" />

@@ -18,7 +18,7 @@ namespace UnityRx.Tests
 
             int[] array = null;
             var disp = subject.ToArray().Subscribe(xs => array = xs);
-
+            
             subject.OnNext(1);
             subject.OnNext(10);
             subject.OnNext(100);

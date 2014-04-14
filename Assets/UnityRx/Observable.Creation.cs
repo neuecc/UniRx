@@ -29,8 +29,17 @@ namespace UnityRx
             public IDisposable Subscribe(IObserver<T> observer)
             {
                 var subscription = new SingleAssignmentDisposable();
+
                 var safeObserver = Observer.Create<T>(observer.OnNext, observer.OnError, observer.OnCompleted, subscription);
-                subscription.Disposable = subscribe(safeObserver);
+
+                if (Scheduler.IsCurrentThreadSchedulerScheduleRqequired)
+                {
+                    Scheduler.CurrentThread.Schedule(() => subscription.Disposable = subscribe(safeObserver));
+                }
+                else
+                {
+                    subscription.Disposable = subscribe(safeObserver);
+                }
 
                 return subscription;
             }
@@ -134,20 +143,18 @@ namespace UnityRx
             });
         }
 
+        public static IObservable<T> Repeat<T>(this IObservable<T> source)
+        {
+            return RepeatInfinite(source).Concat();
+        }
 
-
-        //public static IObservable<T> Repeat<T>(this IObservable<T> source)
-        //{
-        //    // return source.
-        //}
-
-        //static IEnumerable<IObservable<T>> RepeatInfinite<T>(IObservable<T> source)
-        //{
-        //    while (true)
-        //    {
-        //        yield return source;
-        //    }
-        //}
+        static IEnumerable<IObservable<T>> RepeatInfinite<T>(IObservable<T> source)
+        {
+            while (true)
+            {
+                yield return source;
+            }
+        }
 
 
         public static IObservable<T> Start<T>(Func<T> function)

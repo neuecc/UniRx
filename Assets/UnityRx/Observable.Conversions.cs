@@ -43,9 +43,9 @@ namespace UnityRx
                     return Disposable.Empty;
                 }
 
-                var flag = new BooleanDisposable();
+                var flag = new SingleAssignmentDisposable();
 
-                scheduler.Schedule(self =>
+                flag.Disposable = scheduler.Schedule(self =>
                 {
                     if (flag.IsDisposed)
                     {

@@ -10,11 +10,14 @@ namespace UnityRx
     {
         public static readonly IScheduler CurrentThread = new CurrentThreadScheduler();
 
+        public static bool IsCurrentThreadSchedulerScheduleRqequired { get { return (CurrentThread as CurrentThreadScheduler).IsScheduleRequired; } }
+
         class CurrentThreadScheduler : IScheduler
         {
             [ThreadStatic]
             static SchedulingPriorityQueue threadStaticQueue;
 
+            // TODO:Queue should set to null(guard memory leak)
             SchedulingPriorityQueue GetQueue()
             {
                 if (threadStaticQueue == null)
@@ -23,6 +26,8 @@ namespace UnityRx
                 }
                 return threadStaticQueue;
             }
+
+            public bool IsScheduleRequired { get { return GetQueue().Count == 0; } }
 
             public DateTimeOffset Now
             {
@@ -44,24 +49,26 @@ namespace UnityRx
 
                 if (queue.Count > 0)
                 {
-                    var b = new BooleanDisposable();
+                    var d = new SingleAssignmentDisposable();
                     queue.Enqueue(() =>
                     {
-                        if (!b.IsDisposed)
+                        if (!d.IsDisposed)
                         {
-                            action(this, state);
+                            d.Disposable = action(this, state);
                         }
-                    }, dueTime);
-                    return b;
+                    }, dueTime, d);
+                    return d;
                 }
 
-                queue.Enqueue(() => action(this, state), dueTime);
+                var rootCancel = new BooleanDisposable();
+                queue.Enqueue(() => action(this, state), dueTime, rootCancel);
 
                 while (queue.Count > 0)
                 {
                     Action act;
                     DateTimeOffset dt;
-                    using (queue.Dequeue(out act, out dt))
+                    ICancelable cancel;
+                    using (queue.Dequeue(out act, out dt, out cancel))
                     {
                         var wait = Scheduler.Normalize(dt - Now);
                         if (wait.Ticks > 0)
@@ -72,28 +79,32 @@ namespace UnityRx
                     }
                 }
 
-                return Disposable.Empty;
+                return rootCancel;
             }
         }
 
         // Pseudo PriorityQueue, Cheap implementation
         class SchedulingPriorityQueue
         {
+            // TODO:make ScheduleItem
             List<Action> actions = new List<Action>();
             List<DateTimeOffset> priorities = new List<DateTimeOffset>();
+            List<ICancelable> cancels = new List<ICancelable>();
 
             int runninngCount;
 
             public int Count { get { return runninngCount; } }
 
-            public void Enqueue(Action action, DateTimeOffset time)
+            public void Enqueue(Action action, DateTimeOffset time, ICancelable cancel)
             {
+                // TODO:reverse for?
                 for (int i = 0; i < actions.Count; i++)
                 {
                     if (priorities[i] > time)
                     {
                         actions.Insert(i, action);
                         priorities.Insert(i, time);
+                        cancels.Insert(i, cancel);
                         runninngCount++;
                         return;
                     }
@@ -101,17 +112,20 @@ namespace UnityRx
 
                 actions.Add(action);
                 priorities.Add(time);
+                cancels.Add(cancel);
                 runninngCount++;
             }
 
-            public IDisposable Dequeue(out Action action, out DateTimeOffset time)
+            public IDisposable Dequeue(out Action action, out DateTimeOffset time, out ICancelable cancel)
             {
                 if (actions.Count == 0) throw new InvalidOperationException();
 
                 action = actions[0];
                 time = priorities[0];
+                cancel = cancels[0];
                 actions.RemoveAt(0);
                 priorities.RemoveAt(0);
+                cancels.RemoveAt(0);
 
                 return Disposable.Create(() => runninngCount--);
             }
