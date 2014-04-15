@@ -67,10 +67,12 @@
   <ItemGroup>
     <Compile Include="ChainingAssertion.MSTest.cs" />
     <Compile Include="DisposableTest.cs" />
+    <Compile Include="Observable.PagingTest.cs" />
     <Compile Include="Observable.TimeTest.cs" />
     <Compile Include="Observable.ConcatTest.cs" />
     <Compile Include="ObservableTest.cs" />
     <Compile Include="OfficialRx\DisposableTestCopy.cs" />
+    <Compile Include="OfficialRx\Observable.PagingTestCopy.cs" />
     <Compile Include="OfficialRx\ObservableTimeTestCopy.cs" />
     <Compile Include="OfficialRx\ObservableGeneratorTestCopy.cs" />
     <Compile Include="OfficialRx\SubjectTestCopy.cs" />

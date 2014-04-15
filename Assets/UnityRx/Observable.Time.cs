@@ -146,39 +146,95 @@ namespace UnityRx
             return source.Delay(dueTime, Scheduler.ThreadPool);
         }
 
-        public static IObservable<T> Delay<T>(this IObservable<T> source, TimeSpan dueTime, IScheduler scheduler)
+        public static IObservable<TSource> Delay<TSource>(this IObservable<TSource> source, TimeSpan dueTime, IScheduler scheduler)
         {
-            return Observable.Create<T>(observer =>
+            // This code is borrowed from Rx(rx.codeplex.com)
+            return Observable.Create<TSource>(observer =>
             {
-                var group = new CompositeDisposable();
                 var gate = new object();
+                var q = new Queue<Timestamped<Notification<TSource>>>();
+                var active = false;
+                var running = false;
+                var cancelable = new SerialDisposable();
+                var exception = default(Exception);
 
-                var subscription = source.Subscribe(x =>
+                var subscription = source.Materialize().Timestamp(scheduler).Subscribe(notification =>
                 {
+                    var shouldRun = false;
+
                     lock (gate)
                     {
-                        var d = scheduler.Schedule(dueTime, () => observer.OnNext(x));
-                        group.Add(d);
+                        if (notification.Value.Kind == NotificationKind.OnError)
+                        {
+                            q.Clear();
+                            q.Enqueue(notification);
+                            exception = notification.Value.Exception;
+                            shouldRun = !running;
+                        }
+                        else
+                        {
+                            q.Enqueue(new Timestamped<Notification<TSource>>(notification.Value, notification.Timestamp.Add(dueTime)));
+                            shouldRun = !active;
+                            active = true;
+                        }
                     }
-                }, ex =>
-                {
-                    lock (gate)
+
+                    if (shouldRun)
                     {
-                        var d = scheduler.Schedule(() => observer.OnError(ex));
-                        group.Add(d);
-                    }
-                }, () =>
-                {
-                    lock (gate)
-                    {
-                        var d = scheduler.Schedule(dueTime, observer.OnCompleted);
-                        group.Add(d);
+                        if (exception != null)
+                            observer.OnError(exception);
+                        else
+                        {
+                            var d = new SingleAssignmentDisposable();
+                            cancelable.Disposable = d;
+                            d.Disposable = scheduler.Schedule(dueTime, self =>
+                            {
+                                lock (gate)
+                                {
+                                    if (exception != null)
+                                        return;
+                                    running = true;
+                                }
+                                Notification<TSource> result;
+
+                                do
+                                {
+                                    result = null;
+                                    lock (gate)
+                                    {
+                                        if (q.Count > 0 && q.Peek().Timestamp.CompareTo(scheduler.Now) <= 0)
+                                            result = q.Dequeue().Value;
+                                    }
+
+                                    if (result != null)
+                                        result.Accept(observer);
+                                } while (result != null);
+
+                                var shouldRecurse = false;
+                                var recurseDueTime = TimeSpan.Zero;
+                                var e = default(Exception);
+                                lock (gate)
+                                {
+                                    if (q.Count > 0)
+                                    {
+                                        shouldRecurse = true;
+                                        recurseDueTime = TimeSpan.FromTicks(Math.Max(0, q.Peek().Timestamp.Subtract(scheduler.Now).Ticks));
+                                    }
+                                    else
+                                        active = false;
+                                    e = exception;
+                                    running = false;
+                                }
+                                if (e != null)
+                                    observer.OnError(e);
+                                else if (shouldRecurse)
+                                    self(recurseDueTime);
+                            });
+                        }
                     }
                 });
 
-                group.Add(subscription);
-
-                return group;
+                return new CompositeDisposable(subscription, cancelable);
             });
         }
     }
