@@ -64,12 +64,15 @@ namespace UnityRx
                     ICancelable cancel;
                     using (queue.Dequeue(out act, out dt, out cancel))
                     {
-                        var wait = Scheduler.Normalize(dt - Now);
-                        if (wait.Ticks > 0)
+                        if (!cancel.IsDisposed)
                         {
-                            Thread.Sleep(wait);
+                            var wait = Scheduler.Normalize(dt - Now);
+                            if (wait.Ticks > 0)
+                            {
+                                Thread.Sleep(wait);
+                            }
+                            act();
                         }
-                        act();
                     }
                 }
 

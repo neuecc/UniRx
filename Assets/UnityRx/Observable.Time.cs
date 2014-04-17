@@ -8,7 +8,7 @@ namespace UnityRx
     // Timer, Interval, etc...
     public static partial class Observable
     {
-        // LongRunnning...
+        // needs LongRunnning...
 
         public static IObservable<long> Interval(TimeSpan period)
         {
@@ -235,6 +235,189 @@ namespace UnityRx
                 });
 
                 return new CompositeDisposable(subscription, cancelable);
+            });
+        }
+
+        public static IObservable<T> Sample<T>(this IObservable<T> source, TimeSpan interval)
+        {
+            return source.Sample(interval, Scheduler.ThreadPool);
+        }
+
+        public static IObservable<T> Sample<T>(this IObservable<T> source, TimeSpan interval, IScheduler scheduler)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var latestValue = default(T);
+                var isUpdated = false;
+                var isCompleted = false;
+                var gate = new object();
+
+                var scheduling = scheduler.Schedule(interval, self =>
+                {
+                    lock (gate)
+                    {
+                        if (isUpdated)
+                        {
+                            var value = latestValue;
+                            isUpdated = false;
+                            observer.OnNext(value);
+                        }
+                        if (isCompleted)
+                        {
+                            observer.OnCompleted();
+                        }
+                    }
+                    self(interval);
+                });
+
+                var sourceSubscription = new SingleAssignmentDisposable();
+                sourceSubscription.Disposable = source.Subscribe(x =>
+                {
+                    lock (gate)
+                    {
+                        latestValue = x;
+                        isUpdated = true;
+                    }
+                }, e =>
+                {
+                    lock (gate)
+                    {
+                        observer.OnError(e);
+                    }
+                }
+                , () =>
+                {
+                    lock (gate)
+                    {
+                        isCompleted = true;
+                        sourceSubscription.Dispose();
+                    }
+                });
+
+                return new CompositeDisposable { scheduling, sourceSubscription };
+            });
+        }
+
+        public static IObservable<TSource> Throttle<TSource>(this IObservable<TSource> source, TimeSpan dueTime)
+        {
+            return source.Throttle(dueTime, Scheduler.ThreadPool);
+        }
+
+        public static IObservable<TSource> Throttle<TSource>(this IObservable<TSource> source, TimeSpan dueTime, IScheduler scheduler)
+        {
+            // this code is borrowed from Rx Official(rx.codeplex.com)
+            return new AnonymousObservable<TSource>(observer =>
+            {
+                var gate = new object();
+                var value = default(TSource);
+                var hasValue = false;
+                var cancelable = new SerialDisposable();
+                var id = 0UL;
+
+                var subscription = source.Subscribe(x =>
+                    {
+                        ulong currentid;
+                        lock (gate)
+                        {
+                            hasValue = true;
+                            value = x;
+                            id = unchecked(id + 1);
+                            currentid = id;
+                        }
+                        var d = new SingleAssignmentDisposable();
+                        cancelable.Disposable = d;
+                        d.Disposable = scheduler.Schedule(dueTime, () =>
+                            {
+                                lock (gate)
+                                {
+                                    if (hasValue && id == currentid)
+                                        observer.OnNext(value);
+                                    hasValue = false;
+                                }
+                            });
+                    },
+                    exception =>
+                    {
+                        cancelable.Dispose();
+
+                        lock (gate)
+                        {
+                            observer.OnError(exception);
+                            hasValue = false;
+                            id = unchecked(id + 1);
+                        }
+                    },
+                    () =>
+                    {
+                        cancelable.Dispose();
+
+                        lock (gate)
+                        {
+                            if (hasValue)
+                                observer.OnNext(value);
+                            observer.OnCompleted();
+                            hasValue = false;
+                            id = unchecked(id + 1);
+                        }
+                    });
+
+                return new CompositeDisposable(subscription, cancelable);
+            });
+        }
+
+        public static IObservable<T> Timeout<T>(this IObservable<T> source, TimeSpan dueTime)
+        {
+            return source.Timeout(dueTime, Scheduler.ThreadPool);
+        }
+
+        public static IObservable<T> Timeout<T>(this IObservable<T> source, TimeSpan dueTime, IScheduler scheduler)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var beforeTime = scheduler.Now;
+
+                Func<IDisposable> runTimer = () => scheduler.Schedule(dueTime, () =>
+                {
+                    if (scheduler.Now - beforeTime >= dueTime)
+                    {
+                        observer.OnError(new TimeoutException());
+                    }
+                });
+
+                var timerDisposable = new SerialDisposable();
+                timerDisposable.Disposable = runTimer();
+
+                var sourceSubscription = new SingleAssignmentDisposable();
+                sourceSubscription.Disposable = source.Subscribe(x =>
+                {
+                    timerDisposable.Disposable = Disposable.Empty; // Cancel Old Timer
+                    observer.OnNext(x);
+                    beforeTime = scheduler.Now;
+                    timerDisposable.Disposable = runTimer();
+                }, observer.OnError, observer.OnCompleted);
+
+                return new CompositeDisposable { timerDisposable, sourceSubscription };
+            });
+        }
+
+        public static IObservable<T> Timeout<T>(this IObservable<T> source, DateTimeOffset dueTime)
+        {
+            return source.Timeout(dueTime, Scheduler.ThreadPool);
+        }
+
+        public static IObservable<T> Timeout<T>(this IObservable<T> source, DateTimeOffset dueTime, IScheduler scheduler)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var timerD = scheduler.Schedule(dueTime, () =>
+                {
+                    observer.OnError(new TimeoutException());
+                });
+
+                var sourceSubscription = new SingleAssignmentDisposable();
+                sourceSubscription.Disposable = source.Subscribe(observer.OnNext, observer.OnError, observer.OnCompleted);
+
+                return new CompositeDisposable { timerD, sourceSubscription };
             });
         }
     }
