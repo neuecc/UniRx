@@ -125,7 +125,7 @@ namespace UnityRx.Tests
                 .ToArray()
                 .Wait();
 
-            xs.Length.Is(2);
+            xs.Length.Is(3);
             xs[0].Value.Value.Is(5);
             xs[1].Value.Value.Is(8);
             xs[2].Kind.Is(NotificationKind.OnCompleted);
