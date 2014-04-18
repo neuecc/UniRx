@@ -89,5 +89,15 @@ namespace UnityRx
                 return flag;
             });
         }
+
+        public static IObservable<T> Cast<T>(this IObservable<object> source)
+        {
+            return source.Select(x => (T)source);
+        }
+
+        public static IObservable<T> OfType<T>(this IObservable<object> source)
+        {
+            return source.Where(x => x is T).Cast<T>();
+        }
     }
 }

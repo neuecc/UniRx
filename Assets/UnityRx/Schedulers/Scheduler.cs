@@ -67,7 +67,7 @@ namespace UnityRx
             if (scheduler == null) throw new ArgumentNullException("scheduler");
             if (action == null) throw new ArgumentNullException("action");
 
-            return scheduler.Schedule(action, (_action, self) => _action(() => self(_action)));
+            return scheduler.Schedule(action, (Action<Action> _action, Action<Action<Action>> self) => _action(() => self(_action)));
         }
 
         public static IDisposable Schedule<TState>(this IScheduler scheduler, TState state, Action<TState, Action<TState>> action)
@@ -124,7 +124,7 @@ namespace UnityRx
             if (scheduler == null) throw new ArgumentNullException("scheduler");
             if (action == null) throw new ArgumentNullException("action");
 
-            return scheduler.Schedule(action, dueTime, (_action, self) => _action(dt => self(_action, dt)));
+            return scheduler.Schedule(action, dueTime, (Action<Action<TimeSpan>> _action, Action<Action<Action<TimeSpan>>, TimeSpan> self) => _action(dt => self(_action, dt)));
         }
 
         public static IDisposable Schedule<TState>(this IScheduler scheduler, TState state, TimeSpan dueTime, Action<TState, Action<TState, TimeSpan>> action)
@@ -181,7 +181,7 @@ namespace UnityRx
             if (scheduler == null) throw new ArgumentNullException("scheduler");
             if (action == null) throw new ArgumentNullException("action");
 
-            return scheduler.Schedule(action, dueTime, (_action, self) => _action(dt => self(_action, dt)));
+            return scheduler.Schedule(action, dueTime, (Action<Action<DateTimeOffset>> _action, Action<Action<Action<DateTimeOffset>>, DateTimeOffset> self) => _action(dt => self(_action, dt)));
         }
 
         public static IDisposable Schedule<TState>(this IScheduler scheduler, TState state, DateTimeOffset dueTime, Action<TState, Action<TState, DateTimeOffset>> action)

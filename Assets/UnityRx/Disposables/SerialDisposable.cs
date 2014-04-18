@@ -5,7 +5,7 @@ namespace UnityRx
 {
     public class SerialDisposable : IDisposable, ICancelable
     {
-        static readonly BooleanDisposable True = new BooleanDisposable(true);
+        // static readonly BooleanDisposable True = new BooleanDisposable(true);
 
         readonly object gate = new object();
         IDisposable current;

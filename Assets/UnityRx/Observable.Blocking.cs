@@ -9,15 +9,15 @@ namespace UnityRx
     {
         public static T Wait<T>(this IObservable<T> source)
         {
-            return source.WaitCore(throwOnEmpty: true, timeout: InfiniteTimeSpan);
+            return WaitCore(source, true, InfiniteTimeSpan);
         }
 
         public static T Wait<T>(this IObservable<T> source, TimeSpan timeout)
         {
-            return source.WaitCore(throwOnEmpty: true, timeout: timeout);
+            return WaitCore(source, true, timeout);
         }
 
-        static T WaitCore<T>(this IObservable<T> source, bool throwOnEmpty, TimeSpan timeout)
+        static T WaitCore<T>(IObservable<T> source, bool throwOnEmpty, TimeSpan timeout)
         {
             if (source == null) throw new ArgumentNullException("source");
 

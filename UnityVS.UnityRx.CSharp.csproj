@@ -7,16 +7,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{676EC39D-E9E4-59B7-4472-2C8969C426AA}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -24,7 +22,7 @@
     <OutputPath>Temp\UnityVS_bin\Debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_4;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_4;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,62 +30,66 @@
     <OutputPath>Temp\UnityVS_bin\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_4;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE</DefineConstants>
+    <DefineConstants>TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_4;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.XML" />
     <Reference Include="System.Core" />
+    <Reference Include="Boo.Lang" />
+    <Reference Include="UnityScript.Lang" />
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\UnityRx\Disposables\BooleanDisposable.cs" />
+    <Compile Include="Assets\UnityRx\Disposables\CompositeDisposable.cs" />
+    <Compile Include="Assets\UnityRx\Disposables\Disposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\ICancelable.cs" />
+    <Compile Include="Assets\UnityRx\Disposables\MultipleAssignmentDisposable.cs" />
+    <Compile Include="Assets\UnityRx\Disposables\SerialDisposable.cs" />
+    <Compile Include="Assets\UnityRx\Disposables\SingleAssignmentDisposable.cs" />
     <Compile Include="Assets\UnityRx\Notification.cs" />
     <Compile Include="Assets\UnityRx\Notifiers\BooleanNotifier.cs" />
     <Compile Include="Assets\UnityRx\Notifiers\CountNotifier.cs" />
     <Compile Include="Assets\UnityRx\Notifiers\ScheduledNotifier.cs" />
-    <Compile Include="Assets\UnityRx\Observable.Paging.cs" />
-    <Compile Include="Assets\UnityRx\Observable.Joins.cs" />
-    <Compile Include="Assets\UnityRx\Observable.Events.cs" />
-    <Compile Include="Assets\UnityRx\Observable.Concurrency.cs" />
-    <Compile Include="Assets\UnityRx\Observable.Blocking.cs" />
-    <Compile Include="Assets\UnityRx\Observable.Binding.cs" />
-    <Compile Include="Assets\UnityRx\Observable.Conversions.cs" />
     <Compile Include="Assets\UnityRx\Observable.Aggregate.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Binding.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Blocking.cs" />
     <Compile Include="Assets\UnityRx\Observable.Concatenate.cs" />
-    <Compile Include="Assets\UnityRx\Observable.Time.cs" />
-    <Compile Include="Assets\UnityRx\Observer.cs" />
-    <Compile Include="Assets\UnityRx\Disposables\CompositeDisposable.cs" />
-    <Compile Include="Assets\UnityRx\Disposables\BooleanDisposable.cs" />
-    <Compile Include="Assets\UnityRx\Disposables\SerialDisposable.cs" />
-    <Compile Include="Assets\UnityRx\Disposables\MultipleAssignmentDisposable.cs" />
-    <Compile Include="Assets\UnityRx\Disposables\SingleAssignmentDisposable.cs" />
-    <Compile Include="Assets\UnityRx\Disposables\Disposable.cs" />
-    <Compile Include="Assets\UnityRx\Schedulers\CurrentThreadScheduler.cs" />
-    <Compile Include="Assets\UnityRx\Schedulers\ThreadPoolScheduler.cs" />
-    <Compile Include="Assets\UnityRx\Schedulers\ImmediateScheduler.cs" />
-    <Compile Include="Assets\UnityRx\Subjects\ConnectableObservable.cs" />
-    <Compile Include="Assets\UnityRx\Subjects\ISubject.cs" />
-    <Compile Include="Assets\UnityRx\Subjects\AsyncSubject.cs" />
-    <Compile Include="Assets\UnityRx\System\IProgress.cs" />
-    <Compile Include="Assets\UnityRx\Timestamped.cs" />
-    <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadScheduler.cs" />
-    <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadDispatcher.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Concurrency.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Conversions.cs" />
     <Compile Include="Assets\UnityRx\Observable.Creation.cs" />
     <Compile Include="Assets\UnityRx\Observable.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Events.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Joins.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Paging.cs" />
+    <Compile Include="Assets\UnityRx\Observable.Time.cs" />
+    <Compile Include="Assets\UnityRx\Observer.cs" />
+    <Compile Include="Assets\UnityRx\Schedulers\CurrentThreadScheduler.cs" />
+    <Compile Include="Assets\UnityRx\Schedulers\ImmediateScheduler.cs" />
+    <Compile Include="Assets\UnityRx\Schedulers\Scheduler.cs" />
+    <Compile Include="Assets\UnityRx\Schedulers\ThreadPoolScheduler.cs" />
+    <Compile Include="Assets\UnityRx\Subjects\AsyncSubject.cs" />
+    <Compile Include="Assets\UnityRx\Subjects\ConnectableObservable.cs" />
+    <Compile Include="Assets\UnityRx\Subjects\ISubject.cs" />
+    <Compile Include="Assets\UnityRx\Subjects\Subject.cs" />
+    <Compile Include="Assets\UnityRx\System\IProgress.cs" />
+    <Compile Include="Assets\UnityRx\System\Tuple.cs" />
+    <Compile Include="Assets\UnityRx\System\Unit.cs" />
+    <Compile Include="Assets\UnityRx\Timestamped.cs" />
+    <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadDispatcher.cs" />
+    <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadScheduler.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\Observable.Unity.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\ObservableMonoBehaviour.cs" />
-    <Compile Include="Assets\UnityRx\Schedulers\Scheduler.cs" />
-    <Compile Include="Assets\UnityRx\Subjects\Subject.cs" />
-    <Compile Include="Assets\UnityRx\System\Tuple.cs" />
-    <Compile Include="Assets\UnityRx\UnityEngineBridge\TypedMonoBehaviour.cs" />
-    <Compile Include="Assets\UnityRx\System\Unit.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\ObservableWWW.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\UnityRx\Joins\" />
+    <Compile Include="Assets\UnityRx\UnityEngineBridge\TypedMonoBehaviour.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

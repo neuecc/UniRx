@@ -50,7 +50,7 @@ namespace UnityRx
 
             sealed class Timer<TState> : IDisposable
             {
-                protected static readonly HashSet<System.Threading.Timer> s_timers = new HashSet<System.Threading.Timer>();
+                static readonly HashSet<System.Threading.Timer> s_timers = new HashSet<System.Threading.Timer>();
 
                 private readonly MultipleAssignmentDisposable _disposable;
 

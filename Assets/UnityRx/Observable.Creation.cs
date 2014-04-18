@@ -163,11 +163,12 @@ namespace UnityRx
         {
             return Observable.Create<int>(observer =>
             {
-                return scheduler.Schedule(0, (i, self) =>
+                return scheduler.Schedule(0, (int i, Action<int> self) =>
                 {
                     if (i < count)
                     {
-                        observer.OnNext(start + i);
+                        int v = start + i;
+                        observer.OnNext(v);
                         self(i + 1);
                     }
                     else
