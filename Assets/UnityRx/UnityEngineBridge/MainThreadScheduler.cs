@@ -10,8 +10,7 @@ namespace UnityRx
 {
     public static partial class Scheduler
     {
-        // TODO:UnitTest
-        // public static readonly IScheduler MainThread = new MainThreadScheduler();
+        public static readonly IScheduler MainThread = new MainThreadScheduler();
 
         class MainThreadScheduler : IScheduler
         {

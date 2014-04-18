@@ -34,7 +34,15 @@ namespace UnityRx
                 {
                     var d = scheduler.Schedule(() => observer.OnNext(x));
                     group.Add(d);
-                }, observer.OnError, observer.OnCompleted);
+                }, ex=>
+                {
+                    var d = scheduler.Schedule(()=> observer.OnError(ex));
+                    group.Add(d);
+                }, () =>
+                {
+                    var d = scheduler.Schedule(() => observer.OnCompleted());
+                    group.Add(d);
+                });
 
                 group.Add(first);
 

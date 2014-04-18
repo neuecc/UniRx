@@ -28,5 +28,10 @@ namespace UnityRx
                 return cancel;
             });
         }
+
+        public static IObservable<T> ObserveOnMainThread<T>(this IObservable<T> source)
+        {
+            return source.ObserveOn(Scheduler.MainThread);
+        }
     }
 }

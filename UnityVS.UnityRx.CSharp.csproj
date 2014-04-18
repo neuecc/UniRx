@@ -48,6 +48,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ObjectTest\NewBehaviourScript.cs" />
     <Compile Include="Assets\UnityRx\Disposables\BooleanDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\CompositeDisposable.cs" />
     <Compile Include="Assets\UnityRx\Disposables\Disposable.cs" />
