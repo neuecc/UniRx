@@ -194,7 +194,7 @@ namespace UnityRx
             });
         }
 
-        // TODO:needs comparer overload
+        // needs comparer overload
 
         public static IObservable<T> DistinctUntilChanged<T>(this IObservable<T> source)
         {
