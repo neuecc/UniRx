@@ -29,7 +29,7 @@ namespace UnityRx
             return Observable.Create<T>(observer =>
             {
                 var group = new CompositeDisposable();
-
+                
                 var first = source.Subscribe(x =>
                 {
                     var d = scheduler.Schedule(() => observer.OnNext(x));
