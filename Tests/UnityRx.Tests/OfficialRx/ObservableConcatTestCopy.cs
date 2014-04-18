@@ -52,7 +52,7 @@ namespace OfficialRx
 
             a.OnNext(10);
             b.OnNext(20);
-
+            
             var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
             a.CombineLatest(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
 

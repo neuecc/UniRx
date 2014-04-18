@@ -22,14 +22,20 @@ namespace UnityRx
 
         public static IObservable<TR> Select<T, TR>(this IObservable<T> source, Func<T, TR> selector)
         {
+            return Select(source, (x, i) => selector(x));
+        }
+
+        public static IObservable<TR> Select<T, TR>(this IObservable<T> source, Func<T, int, TR> selector)
+        {
             return Observable.Create<TR>(observer =>
             {
+                var index = 0;
                 return source.Subscribe(Observer.Create<T>(x =>
                 {
                     var v = default(TR);
                     try
                     {
-                        v = selector(x);
+                        v = selector(x, index++);
                     }
                     catch (Exception ex)
                     {
@@ -43,14 +49,20 @@ namespace UnityRx
 
         public static IObservable<T> Where<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
+            return Where(source, (x, i) => predicate(x));
+        }
+
+        public static IObservable<T> Where<T>(this IObservable<T> source, Func<T, int, bool> predicate)
+        {
             return Observable.Create<T>(observer =>
             {
+                var index = 0;
                 return source.Subscribe(Observer.Create<T>(x =>
                 {
                     var isBypass = default(bool);
                     try
                     {
-                        isBypass = predicate(x);
+                        isBypass = predicate(x, index++);
                     }
                     catch (Exception ex)
                     {
@@ -139,6 +151,28 @@ namespace UnityRx
             });
         }
 
+        public static IObservable<T> DefaultIfEmpty<T>(this IObservable<T> source)
+        {
+            return DefaultIfEmpty(source, default(T));
+        }
+
+        public static IObservable<T> DefaultIfEmpty<T>(this IObservable<T> source, T defaultValue)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var hasValue = false;
+
+                return source.Subscribe(x => { hasValue = true; observer.OnNext(x); }, observer.OnError, () =>
+                {
+                    if (!hasValue)
+                    {
+                        observer.OnNext(defaultValue);
+                    }
+                    observer.OnCompleted();
+                });
+            });
+        }
+
         // needs comparer overload
 
         public static IObservable<T> DistinctUntilChanged<T>(this IObservable<T> source)
@@ -191,6 +225,14 @@ namespace UnityRx
                         observer.OnNext(x);
                     }
                 }, observer.OnError, observer.OnCompleted);
+            });
+        }
+
+        public static IObservable<T> IgnoreElements<T>(this IObservable<T> source)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                return source.Subscribe(_ => { }, observer.OnError, observer.OnCompleted);
             });
         }
     }

@@ -8,6 +8,7 @@ namespace UnityRx
     // Take, Skip, etc..
     public static partial class Observable
     {
+        // needs timebase Take. Take(TimeSpan)
 
         public static IObservable<T> Take<T>(this IObservable<T> source, int count)
         {
@@ -32,7 +33,157 @@ namespace UnityRx
             });
         }
 
-        // needs timebase Take. Take(TimeSpan)
+        public static IObservable<T> TakeWhile<T>(this IObservable<T> source, Func<T, bool> predicate)
+        {
+            return TakeWhile(source, (x, i) => predicate(x));
+        }
+
+        public static IObservable<T> TakeWhile<T>(this IObservable<T> source, Func<T, int, bool> predicate)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (predicate == null) throw new ArgumentNullException("predicate");
+
+            return Observable.Create<T>(observer =>
+            {
+                var i = 0;
+                var running = true;
+
+                return source.Subscribe(x =>
+                {
+                    try
+                    {
+                        running = predicate(x, i++);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
+                    if (running)
+                    {
+                        observer.OnNext(x);
+                    }
+                    else
+                    {
+                        observer.OnCompleted();
+                    }
+                }, observer.OnError, observer.OnCompleted);
+            });
+        }
+
+        public static IObservable<T> TakeUntil<T, TOther>(this IObservable<T> source, IObservable<TOther> other)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (other == null) throw new ArgumentNullException("other");
+
+            return Observable.Create<T>(observer =>
+            {
+                var gate = new object();
+
+                var stopper = other.Synchronize(gate).Subscribe(_ => observer.OnCompleted(), observer.OnError);
+                var subscription = source.Synchronize(gate).Finally(stopper.Dispose).Subscribe(observer);
+
+                return new CompositeDisposable { stopper, subscription };
+            });
+        }
+
+        public static IObservable<T> Skip<T>(this IObservable<T> source, int count)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (count < 0) throw new ArgumentOutOfRangeException("count");
+
+            return Observable.Create<T>(observer =>
+            {
+                var index = 0;
+
+                return source.Subscribe(x =>
+                {
+                    if (index++ >= count)
+                    {
+                        observer.OnNext(x);
+                    }
+                }, observer.OnError, observer.OnCompleted);
+            });
+        }
+
+        public static IObservable<T> SkipWhile<T>(this IObservable<T> source, Func<T, bool> predicate)
+        {
+            return SkipWhile(source, (x, i) => predicate(x));
+        }
+
+        public static IObservable<T> SkipWhile<T>(this IObservable<T> source, Func<T, int, bool> predicate)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (predicate == null) throw new ArgumentNullException("predicate");
+
+            return Observable.Create<T>(observer =>
+            {
+                var i = 0;
+                var skipEnd = false;
+
+                return source.Subscribe(x =>
+                {
+                    if (!skipEnd)
+                    {
+                        try
+                        {
+                            if (!predicate(x, i++))
+                            {
+                                skipEnd = true;
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            observer.OnError(ex);
+                            return;
+                        }
+                    }
+
+                    observer.OnNext(x);
+                }, observer.OnError, observer.OnCompleted);
+            });
+        }
+
+        public static IObservable<T> SkipUntil<T, TOther>(this IObservable<T> source, IObservable<TOther> other)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var sourceSubscription = new SingleAssignmentDisposable();
+                var otherSubscription = new SingleAssignmentDisposable();
+
+                var open = false;
+
+                var gate = new object();
+
+                sourceSubscription.Disposable = source.Synchronize(gate).Subscribe(
+                    x =>
+                    {
+                        if (open) observer.OnNext(x);
+                    },
+                    observer.OnError,
+                    () =>
+                    {
+                        if (open)
+                            observer.OnCompleted();
+                    }
+                );
+
+                otherSubscription.Disposable = other.Synchronize(gate).Subscribe(
+                    x =>
+                    {
+                        open = true;
+                        otherSubscription.Dispose();
+                    },
+                    observer.OnError
+                );
+
+                return new CompositeDisposable(sourceSubscription, otherSubscription);
+            });
+        }
 
         public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, int count)
         {

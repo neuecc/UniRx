@@ -297,5 +297,80 @@ namespace UnityRx.Tests
                 l[1].Kind.Is(NotificationKind.OnCompleted);
             }
         }
+
+        [TestMethod]
+        public void TakeWhile()
+        {
+            Observable.Range(1, 10)
+                .TakeWhile(x => x <= 5)
+                .ToArray()
+                .Wait()
+                .Is(1, 2, 3, 4, 5);
+        }
+
+        [TestMethod]
+        public void TakeUntil()
+        {
+            {
+                var a = new Subject<int>();
+                var b = new Subject<int>();
+
+                var l = new List<Notification<int>>();
+
+                a.TakeUntil(b).Materialize().Subscribe(l.Add);
+
+                a.OnNext(1);
+                a.OnNext(10);
+                b.OnNext(1000);
+                l.Count.Is(3);
+                l[0].Value.Is(1);
+                l[1].Value.Is(10);
+                l[2].Kind.Is(NotificationKind.OnCompleted);
+            }
+            {
+                var a = new Subject<int>();
+                var b = new Subject<int>();
+
+                var l = new List<Notification<int>>();
+
+                a.TakeUntil(b).Materialize().Subscribe(l.Add);
+
+                a.OnNext(1);
+                a.OnNext(10);
+                b.OnCompleted();
+                l.Count.Is(2);
+                
+                b.OnNext(1000);
+                l.Count.Is(2);
+
+                a.OnNext(100);
+                l.Count.Is(3);
+                l[0].Value.Is(1);
+                l[1].Value.Is(10);
+                l[2].Value.Is(100);
+            }
+        }
+
+
+
+        [TestMethod]
+        public void Skip()
+        {
+            Observable.Range(1, 10)
+                .Skip(3)
+                .ToArray()
+                .Wait()
+                .Is(4, 5, 6, 7, 8, 9, 10);
+        }
+
+        [TestMethod]
+        public void SkipWhile()
+        {
+            Observable.Range(1, 10)
+                .SkipWhile(x => x <= 5)
+                .ToArray()
+                .Wait()
+                .Is(6, 7, 8, 9, 10);
+        }
     }
 }

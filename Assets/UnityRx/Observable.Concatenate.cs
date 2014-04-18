@@ -25,7 +25,7 @@ namespace UnityRx
 
         public static IObservable<TSource> Concat<TSource>(this IObservable<IObservable<TSource>> sources)
         {
-            // TODO:concurrent count
+            // needs concurrent count = 1
             return sources.Merge();
         }
 
@@ -262,6 +262,78 @@ namespace UnityRx
                 });
 
                 return new CompositeDisposable { lsubscription, rsubscription };
+            });
+        }
+
+        public static IObservable<T> Switch<T>(this IObservable<IObservable<T>> sources)
+        {
+            // this code is borrwed from RxOfficial(rx.codeplex.com)
+            return Observable.Create<T>(observer =>
+            {
+                var gate = new object();
+                var innerSubscription = new SerialDisposable();
+                var isStopped = false;
+                var latest = 0UL;
+                var hasLatest = false;
+                var subscription = sources.Subscribe(
+                    innerSource =>
+                    {
+                        var id = default(ulong);
+                        lock (gate)
+                        {
+                            id = unchecked(++latest);
+                            hasLatest = true;
+                        }
+
+                        var d = new SingleAssignmentDisposable();
+                        innerSubscription.Disposable = d;
+                        d.Disposable = innerSource.Subscribe(
+                        x =>
+                        {
+                            lock (gate)
+                            {
+                                if (latest == id)
+                                    observer.OnNext(x);
+                            }
+                        },
+                        exception =>
+                        {
+                            lock (gate)
+                            {
+                                if (latest == id)
+                                    observer.OnError(exception);
+                            }
+                        },
+                        () =>
+                        {
+                            lock (gate)
+                            {
+                                if (latest == id)
+                                {
+                                    hasLatest = false;
+
+                                    if (isStopped)
+                                        observer.OnCompleted();
+                                }
+                            }
+                        });
+                    },
+                    exception =>
+                    {
+                        lock (gate)
+                            observer.OnError(exception);
+                    },
+                    () =>
+                    {
+                        lock (gate)
+                        {
+                            isStopped = true;
+                            if (!hasLatest)
+                                observer.OnCompleted();
+                        }
+                    });
+
+                return new CompositeDisposable(subscription, innerSubscription);
             });
         }
     }

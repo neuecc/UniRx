@@ -243,6 +243,24 @@ namespace UnityRx
             }
         }
 
+        public static IObservable<T> Defer<T>(Func<IObservable<T>> observableFactory)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                IObservable<T> source;
+                try
+                {
+                    source = observableFactory();
+                }
+                catch (Exception ex)
+                {
+                    source = Throw<T>(ex);
+                }
+
+                return source.Subscribe(observer);
+            });
+        }
+
         public static IObservable<T> Start<T>(Func<T> function)
         {
             return Start(function, Scheduler.ThreadPool);

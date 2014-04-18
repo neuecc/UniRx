@@ -49,5 +49,22 @@ namespace UnityRx
                 return group;
             });
         }
+
+        public static IObservable<T> SubscribeOn<T>(this IObservable<T> source, IScheduler scheduler)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var m = new SingleAssignmentDisposable();
+                var d = new SerialDisposable();
+                d.Disposable = m;
+
+                m.Disposable = scheduler.Schedule(() =>
+                {
+                    d.Disposable = new ScheduledDisposable(scheduler, source.Subscribe(observer));
+                });
+
+                return d;
+            });
+        }
     }
 }
