@@ -36,5 +36,266 @@ namespace UnityRx.Tests
             xs[0].Is(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
             xs[1].Is(1000);
         }
+
+        [TestMethod]
+        public void First()
+        {
+            var s = new Subject<int>();
+
+            var l = new List<Notification<int>>();
+            {
+                s.First().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnError(new Exception());
+
+                l[0].Value.Is(10);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.First().Materialize().Subscribe(l.Add);
+
+                s.OnError(new Exception());
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.First().Materialize().Subscribe(l.Add);
+
+                s.OnCompleted();
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+        }
+
+        [TestMethod]
+        public void FirstOrDefault()
+        {
+            var s = new Subject<int>();
+
+            var l = new List<Notification<int>>();
+            {
+                s.FirstOrDefault().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnError(new Exception());
+
+                l[0].Value.Is(10);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.FirstOrDefault().Materialize().Subscribe(l.Add);
+
+                s.OnError(new Exception());
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.FirstOrDefault().Materialize().Subscribe(l.Add);
+
+                s.OnCompleted();
+
+                l[0].Value.Is(0);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+        }
+
+        [TestMethod]
+        public void Last()
+        {
+            var s = new Subject<int>();
+
+            var l = new List<Notification<int>>();
+            {
+                s.Last().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnNext(20);
+                s.OnNext(30);
+                s.OnCompleted();
+
+                l[0].Value.Is(30);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.Last().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnNext(20);
+                s.OnNext(30);
+                s.OnError(new Exception());
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.Last().Materialize().Subscribe(l.Add);
+
+                s.OnCompleted();
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+        }
+
+        [TestMethod]
+        public void LastOrDefault()
+        {
+            var s = new Subject<int>();
+
+            var l = new List<Notification<int>>();
+            {
+                s.LastOrDefault().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnNext(20);
+                s.OnNext(30);
+                s.OnCompleted();
+
+                l[0].Value.Is(30);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.LastOrDefault().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnNext(20);
+                s.OnNext(30);
+                s.OnError(new Exception());
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.LastOrDefault().Materialize().Subscribe(l.Add);
+
+                s.OnCompleted();
+
+                l[0].Value.Is(0);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+        }
+
+        [TestMethod]
+        public void Single()
+        {
+            var s = new Subject<int>();
+
+            var l = new List<Notification<int>>();
+            {
+                s.Single().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnCompleted();
+
+                l[0].Value.Is(10);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.Single().Materialize().Subscribe(l.Add);
+
+                s.OnNext(20);
+                s.OnNext(30);
+                s.OnError(new Exception());
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.Single().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnError(new Exception());
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.Single().Materialize().Subscribe(l.Add);
+
+                s.OnCompleted();
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+        }
+
+        [TestMethod]
+        public void SingleOrDefault()
+        {
+            var s = new Subject<int>();
+
+            var l = new List<Notification<int>>();
+            {
+                s.SingleOrDefault().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnCompleted();
+
+                l[0].Value.Is(10);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.SingleOrDefault().Materialize().Subscribe(l.Add);
+
+                s.OnNext(20);
+                s.OnNext(30);
+                s.OnError(new Exception());
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.SingleOrDefault().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnError(new Exception());
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.SingleOrDefault().Materialize().Subscribe(l.Add);
+
+                s.OnCompleted();
+
+                l[0].Value.Is(0);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+        }
     }
 }

@@ -141,7 +141,7 @@ namespace UnityRx
             return Observable.Create<T>(observer =>
             {
                 var value = default(T);
-                var hasValue = true;
+                var hasValue = false;
                 return source.Subscribe(x => { value = x; hasValue = true; }, observer.OnError, () =>
                 {
                     if (hasValue)
