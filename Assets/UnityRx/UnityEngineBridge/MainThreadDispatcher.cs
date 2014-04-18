@@ -31,7 +31,6 @@ namespace UnityRx
         {
             if (!initialized)
             {
-
                 if (!Application.isPlaying) return;
                 initialized = true;
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
