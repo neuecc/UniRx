@@ -104,5 +104,165 @@ namespace UnityRx
                 }));
             });
         }
+
+
+
+        public static IObservable<T> Merge<T>(this IObservable<IObservable<T>> sources)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var group = new CompositeDisposable();
+
+                var first = sources.Subscribe(innerSource =>
+                {
+                    var d = innerSource.Subscribe(observer.OnNext);
+                    group.Add(d);
+                }, observer.OnError, observer.OnCompleted);
+
+                group.Add(first);
+
+                return group;
+            });
+        }
+
+        // needs multiple zip
+
+        public static IObservable<TResult> Zip<TLeft, TRight, TResult>(this IObservable<TLeft> left, IObservable<TRight> right, Func<TLeft, TRight, TResult> selector)
+        {
+            return Observable.Create<TResult>(observer =>
+            {
+                var gate = new object();
+                var leftQ = new Queue<TLeft>();
+                bool leftCompleted = false;
+                var rightQ = new Queue<TRight>();
+                var rightCompleted = false;
+
+                Action dequeue = () =>
+                {
+                    TLeft lv;
+                    TRight rv;
+                    TResult v;
+                    if (leftQ.Count != 0 && rightQ.Count != 0)
+                    {
+                        lv = leftQ.Dequeue();
+                        rv = rightQ.Dequeue();
+                    }
+                    else if (leftCompleted || rightCompleted)
+                    {
+                        observer.OnCompleted();
+                        return;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    try
+                    {
+                        v = selector(lv, rv);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
+                    observer.OnNext(v);
+                };
+
+                var lsubscription = left.Synchronize(gate).Subscribe(x =>
+                {
+                    leftQ.Enqueue(x);
+                    dequeue();
+                }, observer.OnError, () =>
+                {
+                    leftCompleted = true;
+                    if (rightCompleted) observer.OnCompleted();
+                });
+
+
+                var rsubscription = right.Synchronize(gate).Subscribe(x =>
+                {
+                    rightQ.Enqueue(x);
+                    dequeue();
+                }, observer.OnError, () =>
+                {
+                    rightCompleted = true;
+                    if (leftCompleted) observer.OnCompleted();
+                });
+
+                return new CompositeDisposable { lsubscription, rsubscription, Disposable.Create(()=>
+                {
+                    lock(gate)
+                    {
+                        leftQ.Clear();
+                        rightQ.Clear();
+                    }
+                })};
+            });
+        }
+
+        public static IObservable<TResult> CombineLatest<TLeft, TRight, TResult>(this IObservable<TLeft> left, IObservable<TRight> right, Func<TLeft, TRight, TResult> selector)
+        {
+            return Observable.Create<TResult>(observer =>
+            {
+                var gate = new object();
+
+                var leftValue = default(TLeft);
+                var leftStarted = false;
+                bool leftCompleted = false;
+
+                var rightValue = default(TRight);
+                var rightStarted = false;
+                var rightCompleted = false;
+
+                Action run = () =>
+                {
+                    if ((leftCompleted && !leftStarted) || (rightCompleted && !rightStarted))
+                    {
+                        observer.OnCompleted();
+                        return;
+                    }
+                    else if (!(leftStarted && rightStarted))
+                    {
+                        return;
+                    }
+
+                    TResult v;
+                    try
+                    {
+                        v = selector(leftValue, rightValue);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
+                    observer.OnNext(v);
+                };
+
+                var lsubscription = left.Synchronize(gate).Subscribe(x =>
+                {
+                    leftStarted = true;
+                    leftValue = x;
+                    run();
+                }, observer.OnError, () =>
+                {
+                    leftCompleted = true;
+                    if (rightCompleted) observer.OnCompleted();
+                });
+
+                var rsubscription = right.Synchronize(gate).Subscribe(x =>
+                {
+                    rightStarted = true;
+                    rightValue = x;
+                    run();
+                }, observer.OnError, () =>
+                {
+                    rightCompleted = true;
+                    if (leftCompleted) observer.OnCompleted();
+                });
+
+                return new CompositeDisposable { lsubscription, rsubscription };
+            });
+        }
     }
 }

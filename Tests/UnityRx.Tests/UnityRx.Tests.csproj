@@ -73,6 +73,7 @@
     <Compile Include="ObservableTest.cs" />
     <Compile Include="OfficialRx\DisposableTestCopy.cs" />
     <Compile Include="OfficialRx\Observable.PagingTestCopy.cs" />
+    <Compile Include="OfficialRx\ObservableConcatTestCopy.cs" />
     <Compile Include="OfficialRx\ObservableTimeTestCopy.cs" />
     <Compile Include="OfficialRx\ObservableGeneratorTestCopy.cs" />
     <Compile Include="OfficialRx\SubjectTestCopy.cs" />

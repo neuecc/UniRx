@@ -76,24 +76,6 @@ namespace UnityRx
             return source.SelectMany(x => collectionSelector(x).Select(y => selector(x, y)));
         }
 
-        public static IObservable<T> Merge<T>(this IObservable<IObservable<T>> sources)
-        {
-            return Observable.Create<T>(observer =>
-            {
-                var group = new CompositeDisposable();
-
-                var first = sources.Subscribe(innerSource =>
-                {
-                    var d = innerSource.Subscribe(observer.OnNext);
-                    group.Add(d);
-                }, observer.OnError, observer.OnCompleted);
-
-                group.Add(first);
-
-                return group;
-            });
-        }
-
         public static IObservable<T[]> ToArray<T>(this IObservable<T> source)
         {
             return Observable.Create<T[]>(observer =>

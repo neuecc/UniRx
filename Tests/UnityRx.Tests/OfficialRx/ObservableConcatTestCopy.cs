@@ -1,25 +1,22 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Reactive.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Concurrency;
+using System.Reactive;
+using System.Reactive.Subjects;
 
-namespace UnityRx.Tests
+namespace OfficialRx
 {
     [TestClass]
-    public class ObservableConcatTest
+    public class ObservableConcatTestCopy
     {
         [TestMethod]
-        public void Concat()
-        {
-            var a = Observable.Range(1, 5, Scheduler.ThreadPool);
-            var b = Observable.Range(10, 3, Scheduler.ThreadPool);
-            var c = Observable.Return(300, Scheduler.ThreadPool);
-
-            Observable.Concat(a, b, c).ToArray().Wait().Is(1, 2, 3, 4, 5, 10, 11, 12, 300);
-        }
-
-        [TestMethod]
-        public void Zip()
+        public void ZipRxOfficial()
         {
             var a = new Subject<int>();
             var b = new Subject<int>();
@@ -46,32 +43,9 @@ namespace UnityRx.Tests
             l[1].Kind.Is(NotificationKind.OnCompleted);
         }
 
+
         [TestMethod]
-        public void Zip2()
-        {
-            var a = new Subject<int>();
-            var b = new Subject<int>();
-
-            a.OnNext(10);
-            b.OnNext(20);
-
-            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
-            a.Zip(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
-
-            a.OnNext(1000);
-            b.OnNext(2000);
-
-            a.OnCompleted();
-
-            l.Count.Is(1); // OnNext
-
-            b.OnCompleted(); // Completed!
-
-            l.Count.Is(2); // Completed!
-            l[1].Kind.Is(NotificationKind.OnCompleted);
-        }
-        [TestMethod]
-        public void CombineLatest()
+        public void CombineLatestRxOfficial()
         {
             var a = new Subject<int>();
             var b = new Subject<int>();
@@ -108,7 +82,7 @@ namespace UnityRx.Tests
         }
 
         [TestMethod]
-        public void CombineLatest2()
+        public void CombineLatestRxOfficial2()
         {
             var a = new Subject<int>();
             var b = new Subject<int>();
@@ -130,7 +104,7 @@ namespace UnityRx.Tests
         }
 
         [TestMethod]
-        public void CombineLatest3()
+        public void CombineLatestRxOfficial3()
         {
             var a = new Subject<int>();
             var b = new Subject<int>();
@@ -152,7 +126,7 @@ namespace UnityRx.Tests
         }
 
         [TestMethod]
-        public void CombineLatest4()
+        public void CombineLatestRxOfficial4()
         {
             var a = new Subject<int>();
             var b = new Subject<int>();
