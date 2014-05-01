@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace UnityRx
 {
@@ -33,5 +34,37 @@ namespace UnityRx
         //{
         //    return source.Multicast(new ReplaySubject<T>());
         //}
+
+        public static IObservable<T> RefCount<T>(this IConnectableObservable<T> source)
+        {
+            var connection = default(IDisposable);
+            var gate = new object();
+            var refCount = 0;
+
+            return Observable.Create<T>(observer =>
+            {
+                var subscription = source.Subscribe(observer);
+
+                lock (gate)
+                {
+                    if (++refCount == 1)
+                    {
+                        connection = source.Connect();
+                    }
+                }
+
+                return Disposable.Create(() =>
+                {
+                    subscription.Dispose();
+                    lock (gate)
+                    {
+                        if (--refCount == 0)
+                        {
+                            connection.Dispose(); // connection isn't null.
+                        }
+                    }
+                });
+            });
+        }
     }
 }
