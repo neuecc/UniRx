@@ -101,12 +101,68 @@ namespace UnityRx
             });
         }
 
-        public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> action)
+        public static IObservable<T> Do<T>(this IObservable<T> source, IObserver<T> observer)
         {
-            return source.Select(x =>
+            return Do(source, observer.OnNext, observer.OnError, observer.OnCompleted);
+        }
+
+
+        public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext)
+        {
+            return Do(source, onNext, _ => { }, () => { });
+        }
+
+        public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError)
+        {
+            return Do(source, onNext, onError, () => { });
+        }
+
+        public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted)
+        {
+            return Do(source, onNext, _ => { }, onCompleted);
+        }
+
+        public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted)
+        {
+            return Observable.Create<T>(observer =>
             {
-                action(x);
-                return x;
+                return source.Subscribe(x =>
+                {
+                    try
+                    {
+                        onNext(x);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
+                    observer.OnNext(x);
+                }, ex =>
+                {
+                    try
+                    {
+                        onError(ex);
+                    }
+                    catch (Exception ex2)
+                    {
+                        observer.OnError(ex2);
+                        return;
+                    }
+                    observer.OnError(ex);
+                }, () =>
+                {
+                    try
+                    {
+                        onCompleted();
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
+                    observer.OnCompleted();
+                });
             });
         }
 
