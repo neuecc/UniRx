@@ -125,8 +125,6 @@ namespace UnityRx
             });
         }
 
-        // needs multiple zip
-
         public static IObservable<TResult> Zip<TLeft, TRight, TResult>(this IObservable<TLeft> left, IObservable<TRight> right, Func<TLeft, TRight, TResult> selector)
         {
             return Observable.Create<TResult>(observer =>
@@ -200,6 +198,90 @@ namespace UnityRx
             });
         }
 
+        public static IObservable<IList<T>> Zip<T>(this IEnumerable<IObservable<T>> sources)
+        {
+            return Zip(sources.ToArray());
+        }
+
+        public static IObservable<IList<T>> Zip<T>(params IObservable<T>[] sources)
+        {
+            return Observable.Create<IList<T>>(observer =>
+            {
+                var gate = new object();
+                var length = sources.Length;
+                var queues = Enumerable.Range(0, length).Select(_ => new Queue<T>()).ToArray();
+                var isDone = new bool[length];
+
+                Action<int> dequeue = index =>
+                {
+                    lock (gate)
+                    {
+                        if (queues.All(x => x.Count > 0))
+                        {
+                            var result = queues.Select(x => x.Dequeue()).ToList();
+                            observer.OnNext(result);
+                            return;
+                        }
+
+                        if (isDone.Where((x, i) => i != index).All(x => x))
+                        {
+                            observer.OnCompleted();
+                            return;
+                        }
+                    }
+                };
+
+                var subscriptions = sources
+                    .Select((source, index) =>
+                    {
+                        var d = new SingleAssignmentDisposable();
+
+                        d.Disposable = source.Subscribe(x =>
+                        {
+                            lock (gate)
+                            {
+                                queues[index].Enqueue(x);
+                                dequeue(index);
+                            }
+                        }, ex =>
+                        {
+                            lock (gate)
+                            {
+                                observer.OnError(ex);
+                            }
+                        }, () =>
+                        {
+                            lock (gate)
+                            {
+                                isDone[index] = true;
+                                if (isDone.All(x => x))
+                                {
+                                    observer.OnCompleted();
+                                }
+                                else
+                                {
+                                    d.Dispose();
+                                }
+                            }
+                        });
+
+                        return d;
+                    })
+                    .ToArray();
+
+                return new CompositeDisposable(subscriptions) { Disposable.Create(()=>
+                {
+                    lock(gate)
+                    {
+                        foreach(var item in queues)
+                        {
+                            item.Clear();
+                        }
+                    }
+                })};
+            });
+        }
+
         public static IObservable<TResult> CombineLatest<TLeft, TRight, TResult>(this IObservable<TLeft> left, IObservable<TRight> right, Func<TLeft, TRight, TResult> selector)
         {
             return Observable.Create<TResult>(observer =>
@@ -262,6 +344,84 @@ namespace UnityRx
                 });
 
                 return new CompositeDisposable { lsubscription, rsubscription };
+            });
+        }
+
+        public static IObservable<IList<T>> CombineLatest<T>(this IEnumerable<IObservable<T>> sources)
+        {
+            return CombineLatest(sources.ToArray());
+        }
+
+        public static IObservable<IList<TSource>> CombineLatest<TSource>(params IObservable<TSource>[] sources)
+        {
+            // this code is borrwed from RxOfficial(rx.codeplex.com)
+            return Observable.Create<IList<TSource>>(observer =>
+            {
+                var srcs = sources.ToArray();
+
+                var N = srcs.Length;
+
+                var hasValue = new bool[N];
+                var hasValueAll = false;
+
+                var values = new List<TSource>(N);
+                for (int i = 0; i < N; i++)
+                    values.Add(default(TSource));
+
+                var isDone = new bool[N];
+
+                var next = new Action<int>(i =>
+                {
+                    hasValue[i] = true;
+
+                    if (hasValueAll || (hasValueAll = hasValue.All(x => x)))
+                    {
+                        var res = values.ToList();
+                        observer.OnNext(res);
+                    }
+                    else if (isDone.Where((x, j) => j != i).All(x => x))
+                    {
+                        observer.OnCompleted();
+                        return;
+                    }
+                });
+
+                var done = new Action<int>(i =>
+                {
+                    isDone[i] = true;
+
+                    if (isDone.All(x => x))
+                    {
+                        observer.OnCompleted();
+                        return;
+                    }
+                });
+
+                var subscriptions = new SingleAssignmentDisposable[N];
+
+                var gate = new object();
+
+                for (int i = 0; i < N; i++)
+                {
+                    var j = i;
+                    subscriptions[j] = new SingleAssignmentDisposable
+                    {
+                        Disposable = srcs[j].Synchronize(gate).Subscribe(
+                            x =>
+                            {
+                                values[j] = x;
+                                next(j);
+                            },
+                            observer.OnError,
+                            () =>
+                            {
+                                done(j);
+                            }
+                        )
+                    };
+                }
+
+                return new CompositeDisposable(subscriptions);
             });
         }
 

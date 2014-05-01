@@ -70,6 +70,61 @@ namespace UnityRx.Tests
             l.Count.Is(2); // Completed!
             l[1].Kind.Is(NotificationKind.OnCompleted);
         }
+
+        [TestMethod]
+        public void ZipMulti()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.Zip(a, b).Select(xs => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
+
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+
+            a.OnCompleted();
+
+            l.Count.Is(1); // OnNext
+
+            a.OnNext(1001);
+            l.Count.Is(1);
+
+            b.OnNext(5);
+            l.Count.Is(2); // Completed!
+
+            l[1].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void ZipMulti2()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.Zip(a, b).Select(xs => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+
+            a.OnCompleted();
+
+            l.Count.Is(1); // OnNext
+
+            b.OnCompleted(); // Completed!
+
+            l.Count.Is(2); // Completed!
+            l[1].Kind.Is(NotificationKind.OnCompleted);
+        }
+
         [TestMethod]
         public void CombineLatest()
         {
@@ -162,6 +217,107 @@ namespace UnityRx.Tests
 
             var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
             a.CombineLatest(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
+
+            b.OnCompleted();
+            l.Count.Is(0);
+
+            a.OnNext(30);
+            l.Count.Is(1);
+            l[0].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void CombineLatestMulti()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.CombineLatest(a, b).Select((xs) => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+            l[0].Value.Is(new { x = 1000, y = 2000 });
+
+            b.OnNext(3000);
+            l[1].Value.Is(new { x = 1000, y = 3000 });
+
+            a.OnNext(5000);
+            l[2].Value.Is(new { x = 5000, y = 3000 });
+
+            a.OnCompleted();
+            l.Count.Is(3);
+
+            a.OnNext(1001);
+            l.Count.Is(3);
+
+            b.OnNext(5);
+            l[3].Value.Is(new { x = 5000, y = 5 });
+            b.OnNext(500);
+            l[4].Value.Is(new { x = 5000, y = 500 });
+
+            b.OnCompleted();
+            l[5].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void CombineLatestMulti2()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.CombineLatest(a, b).Select((xs) => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
+
+            b.OnNext(2000);
+            a.OnCompleted();
+
+            l.Count.Is(0);
+
+            b.OnNext(30);
+            l.Count.Is(1);
+            l[0].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void CombineLatestMulti3()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.CombineLatest(a, b).Select((xs) => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(2000);
+            b.OnCompleted();
+
+            l.Count.Is(0);
+
+            a.OnNext(30);
+            l.Count.Is(1);
+            l[0].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void CombineLatestMulti4()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.CombineLatest(a, b).Select((xs) => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
 
             b.OnCompleted();
             l.Count.Is(0);
