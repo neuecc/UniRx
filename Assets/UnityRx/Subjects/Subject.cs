@@ -10,6 +10,7 @@ namespace UnityRx
     public sealed class Subject<T> : ISubject<T>
     {
         bool isStopped;
+        Exception lastError;
         List<IObserver<T>> observers = new List<IObserver<T>>();
 
         public void OnCompleted()
@@ -29,6 +30,7 @@ namespace UnityRx
             if (isStopped) return;
 
             isStopped = true;
+            lastError = error;
             foreach (var item in observers.ToArray())
             {
                 item.OnError(error);
@@ -48,11 +50,22 @@ namespace UnityRx
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
-            if (isStopped) return Disposable.Empty;
+            if (!isStopped)
+            {
+                observers.Add(observer);
 
-            observers.Add(observer);
-
-            return Disposable.Create(() => observers.Remove(observer));
+                return Disposable.Create(() => observers.Remove(observer));
+            }
+            else if (lastError != null)
+            {
+                observer.OnError(lastError);
+                return Disposable.Empty;
+            }
+            else
+            {
+                observer.OnCompleted();
+                return Disposable.Empty;
+            }
         }
     }
 }
