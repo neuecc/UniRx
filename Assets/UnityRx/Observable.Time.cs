@@ -141,6 +141,26 @@ namespace UnityRx
             return source.Select(x => new Timestamped<TSource>(x, scheduler.Now));
         }
 
+        public static IObservable<TimeInterval<TSource>> TimeInterval<TSource>(this IObservable<TSource> source)
+        {
+            return TimeInterval(source, Scheduler.ThreadPool);
+        }
+
+        public static IObservable<TimeInterval<TSource>> TimeInterval<TSource>(this IObservable<TSource> source, IScheduler scheduler)
+        {
+            return Defer(() =>
+            {
+                var last = scheduler.Now;
+                return source.Select(x =>
+                {
+                    var now = scheduler.Now;
+                    var span = now.Subtract(last);
+                    last = now;
+                    return new TimeInterval<TSource>(x, span);
+                });
+            });
+        }
+
         public static IObservable<T> Delay<T>(this IObservable<T> source, TimeSpan dueTime)
         {
             return source.Delay(dueTime, Scheduler.ThreadPool);
