@@ -34,6 +34,7 @@ namespace UnityRx
                 if (!Application.isPlaying) return;
                 initialized = true;
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
+                DontDestroyOnLoad(instance);
             }
 
         }
@@ -46,7 +47,7 @@ namespace UnityRx
 
         public void Update()
         {
-            lock (actionQueue)
+            lock (gate)
             {
                 while (actionQueue.Count != 0)
                 {
