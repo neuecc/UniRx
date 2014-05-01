@@ -86,10 +86,12 @@
     <Compile Include="Assets\UnityRx\Subjects\ConnectableObservable.cs" />
     <Compile Include="Assets\UnityRx\Subjects\ISubject.cs" />
     <Compile Include="Assets\UnityRx\Subjects\BehaviorSubject.cs" />
+    <Compile Include="Assets\UnityRx\Subjects\ReplaySubject.cs" />
     <Compile Include="Assets\UnityRx\Subjects\Subject.cs" />
     <Compile Include="Assets\UnityRx\System\IProgress.cs" />
     <Compile Include="Assets\UnityRx\System\Tuple.cs" />
     <Compile Include="Assets\UnityRx\System\Unit.cs" />
+    <Compile Include="Assets\UnityRx\TimeInterval.cs" />
     <Compile Include="Assets\UnityRx\Timestamped.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadDispatcher.cs" />
     <Compile Include="Assets\UnityRx\UnityEngineBridge\MainThreadScheduler.cs" />
