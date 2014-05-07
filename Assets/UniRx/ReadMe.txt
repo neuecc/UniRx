@@ -195,6 +195,7 @@ Yoshifumi Kawai(a.k.a. neuecc) is software developer in Japan.
 He is Director/CTO at Grani, Inc.
 Grani is top social game developer in Japan. 
 He awarded Microsoft MVP for Visual C# since 2011.
+He is known by creator of [linq.js](http://linqjs.codeplex.com/)(LINQ to Objects for JavaScript)
 
 Mail: ils@neue.cc
 Blog: http://neue.cc/ (JPN)
