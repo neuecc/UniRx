@@ -126,6 +126,39 @@ namespace UnityRx.Tests
         }
 
         [TestMethod]
+        public void WhenAll()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.WhenAll(a, b).Select(xs => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            a.OnNext(1500);
+            b.OnNext(2000);
+
+            a.OnCompleted();
+
+            l.Count.Is(0);
+
+            a.OnNext(1001);
+            l.Count.Is(0);
+
+            b.OnNext(5);
+            b.OnCompleted();
+
+            l.Count.Is(2); // Completed!
+
+            l[0].Value.x.Is(1500);
+            l[0].Value.y.Is(5);
+            l[1].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
         public void CombineLatest()
         {
             var a = new Subject<int>();

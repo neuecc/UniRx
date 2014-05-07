@@ -62,8 +62,6 @@ namespace UnityRx.Tests
         }
 
 
-
-
         [TestMethod]
         public void DistinctUntilChanged()
         {
