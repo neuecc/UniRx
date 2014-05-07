@@ -194,7 +194,7 @@ Author Info
 Yoshifumi Kawai(a.k.a. neuecc) is software developer in Japan.
 He is Director/CTO at Grani, Inc.
 Grani is top social game developer in Japan. 
-And he awarded Microsoft MVP for Visual C# since 2011.
+He awarded Microsoft MVP for Visual C# since 2011.
 
 Mail: ils@neue.cc
 Twitter: https://twitter.com/neuecc (JPN)

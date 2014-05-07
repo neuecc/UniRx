@@ -170,17 +170,20 @@ Observable.Return(42).DelayFrame(10);
 
 Reference
 ---
-RxJava Wiki | https://github.com/Netflix/RxJava/wiki
-This wiki is recommended way for learn Rx.
-You can understand behavior of all operators by graphical marble diagram.
+* [RxJava Wiki](https://github.com/Netflix/RxJava/wiki)
+ 
+This wiki is recommended way for learn Rx. You can understand behavior of all operators by graphical marble diagram.
 
-Reactive Game Architectures | http://sugarpillstudios.com/wp/?page_id=279
+* [Reactive Game Architectures](http://sugarpillstudios.com/wp/?page_id=279)
+
 Introduction to how to use Rx for Game. 
 
-Rx(Reactive Extensions) | https://rx.codeplex.com/
+* [Rx(Reactive Extensions)](https://rx.codeplex.com/)
+
 Original project home.
 
-Beginner's Guide to the Reactive Extensions | http://msdn.microsoft.com/en-us/data/gg577611
+* [Beginner's Guide to the Reactive Extensions](http://msdn.microsoft.com/en-us/data/gg577611)
+
 Many Videos and slides and documents.
 
 Author Info
@@ -188,7 +191,7 @@ Author Info
 Yoshifumi Kawai(a.k.a. neuecc) is software developer in Japan.
 He is Director/CTO at Grani, Inc.
 Grani is top social game developer in Japan. 
-And he awarded Microsoft MVP for Visual C# since 2011.
+He awarded Microsoft MVP for Visual C# since 2011.
 
 Twitter: https://twitter.com/neuecc (JPN)
 
