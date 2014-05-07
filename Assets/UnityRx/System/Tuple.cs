@@ -6,7 +6,7 @@ using System.Text;
 
 // Tuple is borrowd from mono/mcs
 
-namespace UnityRx
+namespace UniRx
 {
     public interface IStructuralEquatable
     {

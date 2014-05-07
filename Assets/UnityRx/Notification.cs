@@ -13,7 +13,7 @@ using System;
 #pragma warning disable 0659
 #pragma warning disable 0661
 
-namespace UnityRx
+namespace UniRx
 {
     /// <summary>
     /// Provides a mechanism for receiving push-based notifications and returning a response.

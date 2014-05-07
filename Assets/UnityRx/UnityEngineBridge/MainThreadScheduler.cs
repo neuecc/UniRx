@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
-namespace UnityRx
+namespace UniRx
 {
     public static partial class Scheduler
     {

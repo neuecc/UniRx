@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace UnityRx
+namespace UniRx
 {
     public static partial class ObservableWWW
     {

@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UnityRx.Tests
+namespace UniRx.Tests
 {
     [TestClass]
     public class ObservableConcatTest

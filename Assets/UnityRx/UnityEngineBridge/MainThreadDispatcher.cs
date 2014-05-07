@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UnityRx
+namespace UniRx
 {
     public class MainThreadDispatcher : MonoBehaviour
     {

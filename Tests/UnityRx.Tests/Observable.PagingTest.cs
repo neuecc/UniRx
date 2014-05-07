@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using UnityRx;
+using UniRx;
 
-namespace UnityRx.Tests
+namespace UniRx.Tests
 {
     [TestClass]
     public class ObservablePagingTest

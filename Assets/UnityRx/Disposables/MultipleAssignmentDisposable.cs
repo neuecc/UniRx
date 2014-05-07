@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace UnityRx
+namespace UniRx
 {
     public class MultipleAssignmentDisposable : IDisposable, ICancelable
     {
@@ -28,7 +28,7 @@ namespace UnityRx
                 lock (gate)
                 {
                     return (current == True)
-                        ? UnityRx.Disposable.Empty
+                        ? UniRx.Disposable.Empty
                         : current;
                 }
             }

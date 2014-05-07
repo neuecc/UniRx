@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityRx
+namespace UniRx
 {
     public class ObservableMonoBehaviour : TypedMonoBehaviour
     {

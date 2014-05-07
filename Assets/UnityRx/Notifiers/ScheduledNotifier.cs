@@ -1,6 +1,6 @@
 ﻿﻿using System;
 
-namespace UnityRx
+namespace UniRx
 {
     /// <summary>
     /// Notify value on setuped scheduler.

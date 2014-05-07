@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityRx
+namespace UniRx
 {
     // from Rx Official
 

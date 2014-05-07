@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UnityRx
+namespace UniRx
 {
     public interface ISubject<in TSource, out TResult> : IObserver<TSource>, IObservable<TResult>
     {

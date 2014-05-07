@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace UnityRx
+namespace UniRx
 {
     /// <summary>
     /// Represents a value associated with time interval information.

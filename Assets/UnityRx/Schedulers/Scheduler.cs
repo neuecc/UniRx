@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace UnityRx
+namespace UniRx
 {
     public interface IScheduler
     {

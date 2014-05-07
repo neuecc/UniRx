@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityRx;
+using UniRx;
 using System.Threading;
 using System;
 
@@ -42,7 +42,7 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         //    return 200;
         //});
 
-        //var notification = new UnityRx.ScheduledNotifier<float>(Scheduler.MainThread);
+        //var notification = new UniRx.ScheduledNotifier<float>(Scheduler.MainThread);
         //notification.Subscribe(x => Debug.Log(x));
 
         //Observable.Zip(a, b, (x, y) =>

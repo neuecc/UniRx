@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UnityRx
+namespace UniRx
 {
     // Timer, Interval, etc...
     public static partial class Observable

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UnityRx
+namespace UniRx
 {
     public sealed class ReplaySubject<T> : ISubject<T>
     {

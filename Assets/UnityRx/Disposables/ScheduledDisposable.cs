@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace UnityRx
+namespace UniRx
 {
     public sealed class ScheduledDisposable : ICancelable
     {

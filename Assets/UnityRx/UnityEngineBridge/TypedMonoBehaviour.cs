@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityRx
+namespace UniRx
 {
     /// <summary>
     /// If you want to use coroutine, implements like "new public IEnumerator OnMouseDown() { }".

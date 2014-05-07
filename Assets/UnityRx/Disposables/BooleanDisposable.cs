@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace UnityRx
+namespace UniRx
 {
     public class BooleanDisposable : IDisposable, ICancelable
     {

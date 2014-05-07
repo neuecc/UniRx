@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Threading;
 
-namespace UnityRx
+namespace UniRx
 {
     public interface IObserver<in T>
     {

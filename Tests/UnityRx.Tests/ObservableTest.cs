@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace UnityRx.Tests
+namespace UniRx.Tests
 {
     // TODO:Needs test scheduler, Test Utilities...
 

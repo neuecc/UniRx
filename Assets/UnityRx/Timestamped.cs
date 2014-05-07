@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace UnityRx
+namespace UniRx
 {
     /// <summary>
     /// Represents value with a timestamp on it.

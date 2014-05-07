@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UnityRx
+namespace UniRx
 {
     // MEMO:should be threadsafe?
 

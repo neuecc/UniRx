@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 
-namespace UnityRx
+namespace UniRx
 {
     public static partial class Scheduler
     {
