@@ -197,5 +197,6 @@ Grani is top social game developer in Japan.
 He awarded Microsoft MVP for Visual C# since 2011.
 
 Mail: ils@neue.cc
+Blog: http://neue.cc/ (JPN)
 Twitter: https://twitter.com/neuecc (JPN)
 Facebook: http://facebook.com/neuecc (JPN)

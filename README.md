@@ -193,6 +193,7 @@ He is Director/CTO at Grani, Inc.
 Grani is top social game developer in Japan. 
 He awarded Microsoft MVP for Visual C# since 2011.
 
+Blog: http://neue.cc/ (JPN)  
 Twitter: https://twitter.com/neuecc (JPN)
 
 License
