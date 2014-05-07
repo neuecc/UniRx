@@ -4,7 +4,6 @@ using UniRx;
 using System.Threading;
 using System;
 
-
 // test sandbox
 public class NewBehaviourScript : ObservableMonoBehaviour
 {
@@ -21,7 +20,89 @@ public class NewBehaviourScript : ObservableMonoBehaviour
     public override void OnMouseDown()
     {
         Debug.Log("Start MouseDown");
+
+        Observable.EveryUpdate()
+            .Subscribe(_ => Debug.Log(DateTime.Now.ToString()));
+
+
+        //Observable.Interval(TimeSpan.FromSeconds(3))
+
+        //.ObserveOnMainThread()
+
+        ObservableWWW.Get("http://google.co.jp/")
+            .Subscribe(
+                x => Debug.Log(x), // success
+                ex => Debug.LogException(ex)); // onError
+
+
+        // composing asynchronous sequence with LINQ query expressions
+        var query = from google in ObservableWWW.Get("http://google.co.jp/")
+                    from bing in ObservableWWW.Get("http://bing.co.jp/")
+                    from unknown in ObservableWWW.Get(google + bing)
+                    select new { google, bing, unknown };
+
+        var cancel = query.Subscribe(x => Debug.Log(x));
+
+        // Call Dispose is cancel.
         cancel.Dispose();
+
+
+        // Observable.WhenAll is for parallel asynchronous operation
+        // (It's like Observable.Zip but specialized for single async operations like Task.WhenAll)
+        var parallel = Observable.WhenAll(
+                ObservableWWW.Get("http://google.com/"),
+                ObservableWWW.Get("http://bing.com/"),
+                ObservableWWW.Get("http://yahoo.com/"));
+
+        parallel.Subscribe(xs =>
+        {
+            Debug.Log(xs[0]); // google
+            Debug.Log(xs[1]); // bing
+            Debug.Log(xs[2]); // yahoo
+        });
+
+
+        // work on specified scheduler, default is ThreadPool
+        var heavyMethod = Observable.Start(() =>
+        {
+            // heavy method...
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1));
+            return 10;
+        });
+
+        var heavyMethod2 = Observable.Start(() =>
+        {
+            // heavy method...
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(3));
+            return 10;
+        });
+
+        // Join and await two other thread values
+        Observable.WhenAll(heavyMethod, heavyMethod2)
+            .ObserveOnMainThread() // return to main thread
+            .Subscribe(xs =>
+            {
+                // Unity can't touch GameObject from other thread
+                // but use ObserveOnMainThread, you can touch GameObject naturally.
+                (GameObject.Find("myGuiText")).guiText.text = xs[0] + ":" + xs[1];
+            });
+
+
+
+
+
+
+
+        // notifier for progress
+        var progressNotifier = new ScheduledNotifier<float>();
+        progressNotifier.Subscribe(x => Debug.Log(x)); // write www.progress
+
+        // pass notifier to WWW.Get/Post
+        ObservableWWW.Get("http://google.com/", progress: progressNotifier).Subscribe();
+
+
+
+
 
         //Observable.Return(10)
         //    .DelayFrame(180)
