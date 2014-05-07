@@ -70,9 +70,6 @@ namespace UniRx
         /// <summary>This function is called when the behaviour becomes disabled () or inactive.</summary>
         public virtual void OnDisable() { }
 
-        /// <summary>Called on the client when the connection was lost or you disconnected from the server.</summary>
-        public virtual void OnDisconnectedFromServer(NetworkDisconnection info) { }
-
         /// <summary>Implement OnDrawGizmos if you want to draw gizmos that are also pickable and always drawn.</summary>
         public virtual void OnDrawGizmos() { }
 
@@ -81,12 +78,6 @@ namespace UniRx
 
         /// <summary>This function is called when the object becomes enabled and active.</summary>
         public virtual void OnEnable() { }
-
-        /// <summary>Called on the client when a connection attempt fails for some reason.</summary>
-        public virtual void OnFailedToConnect(NetworkConnectionError error) { }
-
-        /// <summary>Called on clients or servers when there is a problem connecting to the MasterServer.</summary>
-        public virtual void OnFailedToConnectToMasterServer(NetworkConnectionError info) { }
 
         /// <summary>OnGUI is called for rendering and handling GUI events.</summary>
         public virtual void OnGUI() { }
@@ -97,8 +88,7 @@ namespace UniRx
         /// <summary>This function is called after a new level was loaded.</summary>
         public virtual void OnLevelWasLoaded(int level) { }
 
-        /// <summary>Called on clients or servers when reporting events from the MasterServer.</summary>
-        public virtual void OnMasterServerEvent(MasterServerEvent msEvent) { }
+#if !UNITY_IPHONE
 
         /// <summary>OnMouseDown is called when the user has pressed the mouse button while over the GUIElement or Collider.</summary>
         public virtual void OnMouseDown() { }
@@ -121,17 +111,10 @@ namespace UniRx
         /// <summary>OnMouseUpAsButton is only called when the mouse is released over the same GUIElement or Collider as it was pressed.</summary>
         public virtual void OnMouseUpAsButton() { }
 
-        /// <summary>Called on objects which have been network instantiated with Network.</summary>Instantiate.</summary>
-        public virtual void OnNetworkInstantiate(NetworkMessageInfo info) { }
+#endif
 
         /// <summary>OnParticleCollision is called when a particle hits a collider.</summary>
         public virtual void OnParticleCollision(GameObject other) { }
-
-        /// <summary>Called on the server whenever a new player has successfully connected.</summary>
-        public virtual void OnPlayerConnected(NetworkPlayer player) { }
-
-        /// <summary>Called on the server whenever a player disconnected from the server.</summary>
-        public virtual void OnPlayerDisconnected(NetworkPlayer player) { }
 
         /// <summary>OnPostRender is called after a camera finished rendering the scene.</summary>
         public virtual void OnPostRender() { }
@@ -147,9 +130,6 @@ namespace UniRx
 
         /// <summary>OnRenderObject is called after camera has rendered the scene.</summary>
         public virtual void OnRenderObject() { }
-
-        /// <summary>Used to customize synchronization of variables in a script watched by a network view.</summary>
-        public virtual void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) { }
 
         /// <summary>Called on the server whenever a Network.</summary>InitializeServer was invoked and has completed.</summary>
         public virtual void OnServerInitialized() { }
@@ -186,5 +166,31 @@ namespace UniRx
 
         /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>
         public virtual void Update() { }
+
+#if !(UNITY_METRO || UNITY_WP8 || UNITY_NACL_CHROME)
+        /// <summary>Called on the client when the connection was lost or you disconnected from the server.</summary>
+        public virtual void OnDisconnectedFromServer(NetworkDisconnection info) { }
+
+        /// <summary>Called on the client when a connection attempt fails for some reason.</summary>
+        public virtual void OnFailedToConnect(NetworkConnectionError error) { }
+
+        /// <summary>Called on clients or servers when there is a problem connecting to the MasterServer.</summary>
+        public virtual void OnFailedToConnectToMasterServer(NetworkConnectionError info) { }
+
+        /// <summary>Called on clients or servers when reporting events from the MasterServer.</summary>
+        public virtual void OnMasterServerEvent(MasterServerEvent msEvent) { }
+
+        /// <summary>Called on objects which have been network instantiated with Network.</summary>Instantiate.</summary>
+        public virtual void OnNetworkInstantiate(NetworkMessageInfo info) { }
+
+        /// <summary>Called on the server whenever a new player has successfully connected.</summary>
+        public virtual void OnPlayerConnected(NetworkPlayer player) { }
+
+        /// <summary>Called on the server whenever a player disconnected from the server.</summary>
+        public virtual void OnPlayerDisconnected(NetworkPlayer player) { }
+
+        /// <summary>Used to customize synchronization of variables in a script watched by a network view.</summary>
+        public virtual void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) { }
+#endif
     }
 }

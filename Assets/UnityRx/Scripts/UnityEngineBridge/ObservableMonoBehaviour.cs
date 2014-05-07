@@ -298,20 +298,6 @@ namespace UniRx
             return onDisable ?? (onDisable = new Subject<Unit>());
         }
 
-        Subject<NetworkDisconnection> onDisconnectedFromServer;
-
-        /// <summary>Called on the client when the connection was lost or you disconnected from the server.</summary>
-        public override void OnDisconnectedFromServer(NetworkDisconnection info)
-        {
-            if (onDisconnectedFromServer != null) onDisconnectedFromServer.OnNext(info);
-        }
-
-        /// <summary>Called on the client when the connection was lost or you disconnected from the server.</summary>
-        public IObservable<NetworkDisconnection> OnDisconnectedFromServerAsObservable()
-        {
-            return onDisconnectedFromServer ?? (onDisconnectedFromServer = new Subject<NetworkDisconnection>());
-        }
-
         Subject<Unit> onDrawGizmos;
 
         /// <summary>Implement OnDrawGizmos if you want to draw gizmos that are also pickable and always drawn.</summary>
@@ -352,34 +338,6 @@ namespace UniRx
         public IObservable<Unit> OnEnableAsObservable()
         {
             return onEnable ?? (onEnable = new Subject<Unit>());
-        }
-
-        Subject<NetworkConnectionError> onFailedToConnect;
-
-        /// <summary>Called on the client when a connection attempt fails for some reason.</summary>
-        public override void OnFailedToConnect(NetworkConnectionError error)
-        {
-            if (onFailedToConnect != null) onFailedToConnect.OnNext(error);
-        }
-
-        /// <summary>Called on the client when a connection attempt fails for some reason.</summary>
-        public IObservable<NetworkConnectionError> OnFailedToConnectAsObservable()
-        {
-            return onFailedToConnect ?? (onFailedToConnect = new Subject<NetworkConnectionError>());
-        }
-
-        Subject<NetworkConnectionError> onFailedToConnectToMasterServer;
-
-        /// <summary>Called on clients or servers when there is a problem connecting to the MasterServer.</summary>
-        public override void OnFailedToConnectToMasterServer(NetworkConnectionError info)
-        {
-            if (onFailedToConnectToMasterServer != null) onFailedToConnectToMasterServer.OnNext(info);
-        }
-
-        /// <summary>Called on clients or servers when there is a problem connecting to the MasterServer.</summary>
-        public IObservable<NetworkConnectionError> OnFailedToConnectToMasterServerAsObservable()
-        {
-            return onFailedToConnectToMasterServer ?? (onFailedToConnectToMasterServer = new Subject<NetworkConnectionError>());
         }
 
         Subject<Unit> onGUI;
@@ -424,19 +382,7 @@ namespace UniRx
             return onLevelWasLoaded ?? (onLevelWasLoaded = new Subject<int>());
         }
 
-        Subject<MasterServerEvent> onMasterServerEvent;
-
-        /// <summary>Called on clients or servers when reporting events from the MasterServer.</summary>
-        public override void OnMasterServerEvent(MasterServerEvent msEvent)
-        {
-            if (onMasterServerEvent != null) onMasterServerEvent.OnNext(msEvent);
-        }
-
-        /// <summary>Called on clients or servers when reporting events from the MasterServer.</summary>
-        public IObservable<MasterServerEvent> OnMasterServerEventAsObservable()
-        {
-            return onMasterServerEvent ?? (onMasterServerEvent = new Subject<MasterServerEvent>());
-        }
+#if !UNITY_IPHONE
 
         Subject<Unit> onMouseDown;
 
@@ -536,19 +482,7 @@ namespace UniRx
             return onMouseUpAsButton ?? (onMouseUpAsButton = new Subject<Unit>());
         }
 
-        Subject<NetworkMessageInfo> onNetworkInstantiate;
-
-        /// <summary>Called on objects which have been network instantiated with Network.Instantiate.</summary>
-        public override void OnNetworkInstantiate(NetworkMessageInfo info)
-        {
-            if (onNetworkInstantiate != null) onNetworkInstantiate.OnNext(info);
-        }
-
-        /// <summary>Called on objects which have been network instantiated with Network.Instantiate.</summary>
-        public IObservable<NetworkMessageInfo> OnNetworkInstantiateAsObservable()
-        {
-            return onNetworkInstantiate ?? (onNetworkInstantiate = new Subject<NetworkMessageInfo>());
-        }
+#endif
 
         Subject<GameObject> onParticleCollision;
 
@@ -562,34 +496,6 @@ namespace UniRx
         public IObservable<GameObject> OnParticleCollisionAsObservable()
         {
             return onParticleCollision ?? (onParticleCollision = new Subject<GameObject>());
-        }
-
-        Subject<NetworkPlayer> onPlayerConnected;
-
-        /// <summary>Called on the server whenever a new player has successfully connected.</summary>
-        public override void OnPlayerConnected(NetworkPlayer player)
-        {
-            if (onPlayerConnected != null) onPlayerConnected.OnNext(player);
-        }
-
-        /// <summary>Called on the server whenever a new player has successfully connected.</summary>
-        public IObservable<NetworkPlayer> OnPlayerConnectedAsObservable()
-        {
-            return onPlayerConnected ?? (onPlayerConnected = new Subject<NetworkPlayer>());
-        }
-
-        Subject<NetworkPlayer> onPlayerDisconnected;
-
-        /// <summary>Called on the server whenever a player disconnected from the server.</summary>
-        public override void OnPlayerDisconnected(NetworkPlayer player)
-        {
-            if (onPlayerDisconnected != null) onPlayerDisconnected.OnNext(player);
-        }
-
-        /// <summary>Called on the server whenever a player disconnected from the server.</summary>
-        public IObservable<NetworkPlayer> OnPlayerDisconnectedAsObservable()
-        {
-            return onPlayerDisconnected ?? (onPlayerDisconnected = new Subject<NetworkPlayer>());
         }
 
         Subject<Unit> onPostRender;
@@ -660,20 +566,6 @@ namespace UniRx
         public IObservable<Unit> OnRenderObjectAsObservable()
         {
             return onRenderObject ?? (onRenderObject = new Subject<Unit>());
-        }
-
-        Subject<Tuple<BitStream, NetworkMessageInfo>> onSerializeNetworkView;
-
-        /// <summary>Used to customize synchronization of variables in a script watched by a network view.</summary>
-        public override void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
-        {
-            if (onSerializeNetworkView != null) onSerializeNetworkView.OnNext(Tuple.Create(stream, info));
-        }
-
-        /// <summary>Used to customize synchronization of variables in a script watched by a network view.</summary>
-        public IObservable<Tuple<BitStream, NetworkMessageInfo>> OnSerializeNetworkViewAsObservable()
-        {
-            return onSerializeNetworkView ?? (onSerializeNetworkView = new Subject<Tuple<BitStream, NetworkMessageInfo>>());
         }
 
         Subject<Unit> onServerInitialized;
@@ -843,6 +735,122 @@ namespace UniRx
         {
             return update ?? (update = new Subject<Unit>());
         }
+
+#if !(UNITY_METRO || UNITY_WP8 || UNITY_NACL_CHROME)
+
+        Subject<NetworkDisconnection> onDisconnectedFromServer;
+
+        /// <summary>Called on the client when the connection was lost or you disconnected from the server.</summary>
+        public override void OnDisconnectedFromServer(NetworkDisconnection info)
+        {
+            if (onDisconnectedFromServer != null) onDisconnectedFromServer.OnNext(info);
+        }
+
+        /// <summary>Called on the client when the connection was lost or you disconnected from the server.</summary>
+        public IObservable<NetworkDisconnection> OnDisconnectedFromServerAsObservable()
+        {
+            return onDisconnectedFromServer ?? (onDisconnectedFromServer = new Subject<NetworkDisconnection>());
+        }
+
+        Subject<NetworkConnectionError> onFailedToConnect;
+
+        /// <summary>Called on the client when a connection attempt fails for some reason.</summary>
+        public override void OnFailedToConnect(NetworkConnectionError error)
+        {
+            if (onFailedToConnect != null) onFailedToConnect.OnNext(error);
+        }
+
+        /// <summary>Called on the client when a connection attempt fails for some reason.</summary>
+        public IObservable<NetworkConnectionError> OnFailedToConnectAsObservable()
+        {
+            return onFailedToConnect ?? (onFailedToConnect = new Subject<NetworkConnectionError>());
+        }
+
+        Subject<NetworkConnectionError> onFailedToConnectToMasterServer;
+
+        /// <summary>Called on clients or servers when there is a problem connecting to the MasterServer.</summary>
+        public override void OnFailedToConnectToMasterServer(NetworkConnectionError info)
+        {
+            if (onFailedToConnectToMasterServer != null) onFailedToConnectToMasterServer.OnNext(info);
+        }
+
+        /// <summary>Called on clients or servers when there is a problem connecting to the MasterServer.</summary>
+        public IObservable<NetworkConnectionError> OnFailedToConnectToMasterServerAsObservable()
+        {
+            return onFailedToConnectToMasterServer ?? (onFailedToConnectToMasterServer = new Subject<NetworkConnectionError>());
+        }
+
+        Subject<MasterServerEvent> onMasterServerEvent;
+
+        /// <summary>Called on clients or servers when reporting events from the MasterServer.</summary>
+        public override void OnMasterServerEvent(MasterServerEvent msEvent)
+        {
+            if (onMasterServerEvent != null) onMasterServerEvent.OnNext(msEvent);
+        }
+
+        /// <summary>Called on clients or servers when reporting events from the MasterServer.</summary>
+        public IObservable<MasterServerEvent> OnMasterServerEventAsObservable()
+        {
+            return onMasterServerEvent ?? (onMasterServerEvent = new Subject<MasterServerEvent>());
+        }
+
+        Subject<NetworkMessageInfo> onNetworkInstantiate;
+
+        /// <summary>Called on objects which have been network instantiated with Network.Instantiate.</summary>
+        public override void OnNetworkInstantiate(NetworkMessageInfo info)
+        {
+            if (onNetworkInstantiate != null) onNetworkInstantiate.OnNext(info);
+        }
+
+        /// <summary>Called on objects which have been network instantiated with Network.Instantiate.</summary>
+        public IObservable<NetworkMessageInfo> OnNetworkInstantiateAsObservable()
+        {
+            return onNetworkInstantiate ?? (onNetworkInstantiate = new Subject<NetworkMessageInfo>());
+        }
+
+        Subject<NetworkPlayer> onPlayerConnected;
+
+        /// <summary>Called on the server whenever a new player has successfully connected.</summary>
+        public override void OnPlayerConnected(NetworkPlayer player)
+        {
+            if (onPlayerConnected != null) onPlayerConnected.OnNext(player);
+        }
+
+        /// <summary>Called on the server whenever a new player has successfully connected.</summary>
+        public IObservable<NetworkPlayer> OnPlayerConnectedAsObservable()
+        {
+            return onPlayerConnected ?? (onPlayerConnected = new Subject<NetworkPlayer>());
+        }
+
+        Subject<NetworkPlayer> onPlayerDisconnected;
+
+        /// <summary>Called on the server whenever a player disconnected from the server.</summary>
+        public override void OnPlayerDisconnected(NetworkPlayer player)
+        {
+            if (onPlayerDisconnected != null) onPlayerDisconnected.OnNext(player);
+        }
+
+        /// <summary>Called on the server whenever a player disconnected from the server.</summary>
+        public IObservable<NetworkPlayer> OnPlayerDisconnectedAsObservable()
+        {
+            return onPlayerDisconnected ?? (onPlayerDisconnected = new Subject<NetworkPlayer>());
+        }
+
+        Subject<Tuple<BitStream, NetworkMessageInfo>> onSerializeNetworkView;
+
+        /// <summary>Used to customize synchronization of variables in a script watched by a network view.</summary>
+        public override void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+        {
+            if (onSerializeNetworkView != null) onSerializeNetworkView.OnNext(Tuple.Create(stream, info));
+        }
+
+        /// <summary>Used to customize synchronization of variables in a script watched by a network view.</summary>
+        public IObservable<Tuple<BitStream, NetworkMessageInfo>> OnSerializeNetworkViewAsObservable()
+        {
+            return onSerializeNetworkView ?? (onSerializeNetworkView = new Subject<Tuple<BitStream, NetworkMessageInfo>>());
+        }
+
+#endif
     }
 }
 
