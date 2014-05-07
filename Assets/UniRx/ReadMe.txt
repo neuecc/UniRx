@@ -16,11 +16,15 @@ Second, send me an email at: ils@neue.cc
 
 Why Rx?
 ---
-Ordinary Unity, network operation use WWW and coroutine but coroutine is not good practice for asynchronous operation. For example, coroutine can't return result value(because return type should be IEnumerator), it can't handle exception(because yield return can't surrond with try-catch). And lack of composability. Therefore it cause operation can't separate, we have to write on huge monolithic IEnumerator.  
-
+Ordinary Unity, network operation use WWW and coroutine but coroutine is not good practice for asynchronous operation.
+Let me show some example.
+1. Coroutine can't return result value. (because return type should be IEnumerator)
+2. It also won't handle exception. (because yield return can't surrond with try-catch)
+These lack of composability cause Operation close-coupled, and we have to write huge monolithic IEnumerator.
 Rx curing asynchronous blues like that. Rx is a library to compose asynchronous and event-based programs using observable collections and LINQ-style query operators. 
   
-GameLoop, Sensor(like Kinect, Leap Motion, etc) is all of event. Rx considere event as reactive sequence which is possible to compose and perform time-based operations easily by using many LINQ query operators.
+GameLoop(every Update, OnCollisionEnter, etc), Sensor(like Kinect, Leap Motion, etc) is all of event.
+Rx considere event as reactive sequence which is possible to compose and perform time-based operations easily by using many LINQ query operators.
 
 Unity is single thread but UniRx helps multithreading for join, cancel, access GameObject etc.        
 
