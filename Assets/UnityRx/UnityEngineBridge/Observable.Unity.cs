@@ -8,24 +8,44 @@ namespace UniRx
 {
     public static partial class Observable
     {
-        public static IObservable<Unit> EveryFrame()
+        public static IObservable<Unit> EveryUpdate()
         {
             return Observable.Create<Unit>(observer =>
             {
                 var cancel = new BooleanDisposable();
 
-                MainThreadDispatcher.StartCoroutine(EveryFrameCore(observer.OnNext, cancel));
+                MainThreadDispatcher.StartCoroutine(EveryUpdateCore(observer.OnNext, cancel));
+
+                return cancel;
+            });
+        }
+        public static IObservable<Unit> EveryFixedUpdate()
+        {
+            return Observable.Create<Unit>(observer =>
+            {
+                var cancel = new BooleanDisposable();
+
+                MainThreadDispatcher.StartCoroutine(EveryFixedUpdateCore(observer.OnNext, cancel));
 
                 return cancel;
             });
         }
 
-        static IEnumerator EveryFrameCore(Action<Unit> onNext, ICancelable cancel)
+        static IEnumerator EveryUpdateCore(Action<Unit> onNext, ICancelable cancel)
         {
             while (!cancel.IsDisposed)
             {
                 onNext(Unit.Default);
                 yield return null;
+            }
+        }
+
+        static IEnumerator EveryFixedUpdateCore(Action<Unit> onNext, ICancelable cancel)
+        {
+            while (!cancel.IsDisposed)
+            {
+                yield return new UnityEngine.WaitForFixedUpdate();
+                onNext(Unit.Default);
             }
         }
 
@@ -68,6 +88,11 @@ namespace UniRx
         public static IObservable<T> ObserveOnMainThread<T>(this IObservable<T> source)
         {
             return source.ObserveOn(Scheduler.MainThread);
+        }
+
+        public static IObservable<T> SubscribeOnMainThread<T>(this IObservable<T> source)
+        {
+            return source.SubscribeOn(Scheduler.MainThread);
         }
     }
 }

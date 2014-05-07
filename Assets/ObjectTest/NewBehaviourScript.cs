@@ -12,7 +12,7 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
     public override void Awake()
     {
-        cancel = Observable.EveryFrame()
+        cancel = Observable.EveryUpdate()
             .Subscribe(_ => Debug.Log(DateTime.Now.ToString()));
 
         base.Awake();
