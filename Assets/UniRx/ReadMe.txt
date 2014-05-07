@@ -72,7 +72,7 @@ parallel.Subscribe(xs =>
 ```
 
 with progress
-```
+```csharp
 // notifier for progress
 var progressNotifier = new ScheduledNotifier<float>();
 progressNotifier.Subscribe(x => Debug.Log(x)); // write www.progress
