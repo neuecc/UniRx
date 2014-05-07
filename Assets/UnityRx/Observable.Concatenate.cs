@@ -496,5 +496,57 @@ namespace UnityRx
                 return new CompositeDisposable(subscription, innerSubscription);
             });
         }
+
+        /// <summary>
+        /// Specialized for single async operations like Task.WhenAll, Zip.Take(1)
+        /// </summary>
+        public static IObservable<T[]> WhenAll<T>(params IObservable<T>[] sources)
+        {
+            if (sources.Length == 0) return Observable.Empty<T[]>();
+
+            return Observable.Create<T[]>(observer =>
+            {
+                var gate = new object();
+                var length = sources.Length;
+                var completedCount = 0;
+                var values = new T[length];
+
+                var subscriptions = sources
+                    .Select((source, index) =>
+                    {
+                        var d = new SingleAssignmentDisposable();
+
+                        d.Disposable = source.Subscribe(x =>
+                        {
+                            lock (gate)
+                            {
+                                values[index] = x;
+                            }
+                        }, ex =>
+                        {
+                            lock (gate)
+                            {
+                                observer.OnError(ex);
+                            }
+                        }, () =>
+                        {
+                            lock (gate)
+                            {
+                                completedCount++;
+                                if (completedCount == length)
+                                {
+                                    observer.OnNext(values);
+                                    observer.OnCompleted();
+                                }
+                            }
+                        });
+
+                        return d;
+                    })
+                    .ToArray();
+
+                return new CompositeDisposable(subscriptions);
+            });
+        }
     }
 }
