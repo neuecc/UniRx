@@ -79,7 +79,7 @@ How to Use for MultiThreading
 ---
 
 ```csharp
-// Observable.Start is start factory methos on specified scheduler
+// Observable.Start is start factory methods on specified scheduler
 // default is on ThreadPool
 var heavyMethod = Observable.Start(() =>
 {
@@ -185,6 +185,13 @@ Original project home.
 * [Beginner's Guide to the Reactive Extensions](http://msdn.microsoft.com/en-us/data/gg577611)
 
 Many Videos and slides and documents.
+
+Contribute
+---
+We welcome to your contribute such as bug report, request, and pull request.  
+At first, see and please write GitHub issues.  
+Source code is available in `Assets/UniRx/Scripts`.  
+This project is using Visual Studio with [UnityVS](http://unityvs.com/).
 
 Author Info
 ---
