@@ -81,7 +81,7 @@ How to Use for MultiThreading
 ---
 
 ```csharp
-// Observable.Start is start factory methos on specified scheduler
+// Observable.Start is start factory methods on specified scheduler
 // default is on ThreadPool
 var heavyMethod = Observable.Start(() =>
 {
@@ -153,6 +153,49 @@ public class Test : ObservableMonoBehaviour
 }
 ```
 
+Convert Unity callback to IObservable
+---
+Use Subject(or AsyncSubject for async operation). For example...
+
+```csharp
+public class LogCallback
+{
+    public string Condition;
+    public string StackTrace;
+    public UnityEngine.LogType LogType;
+}
+
+public static class LogHelper
+{
+    static Subject<LogCallback> subject;
+
+    public static IObservable<LogCallback> LogCallbackAsObservable()
+    {
+        if (subject == null)
+        {
+            subject = new Subject<LogCallback>();
+
+            // Publish to Subject in callback
+            UnityEngine.Application.RegisterLogCallback((condition, stackTrace, type) =>
+            {
+                subject.OnNext(new LogCallback { Condition = condition, StackTrace = stackTrace, LogType = type });
+            });
+        }
+
+        return subject.AsObservable();
+    }
+}
+
+// method is separatable and composable
+LogHelper.LogCallbackAsObservable()
+    .Where(x => x.LogType == LogType.Warning)
+    .Subscribe();
+
+LogHelper.LogCallbackAsObservable()
+    .Where(x => x.LogType == LogType.Error)
+    .Subscribe();
+```
+
 Unity specified extra gems
 ---
 ```csharp
@@ -187,6 +230,13 @@ Original project home.
 * [Beginner's Guide to the Reactive Extensions](http://msdn.microsoft.com/en-us/data/gg577611)
 
 Many Videos and slides and documents.
+
+Contribute
+---
+We welcome to your contribute such as bug report, request, and pull request.  
+At first, see and please write GitHub issues.  
+Source code is available in `Assets/UniRx/Scripts`.  
+This project is using Visual Studio with [UnityVS](http://unityvs.com/).
 
 Author Info
 ---

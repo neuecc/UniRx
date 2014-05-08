@@ -7,7 +7,7 @@ What is UniRx?
 UniRx(Reactive Extensions for Unity) is re-implementation of .NET Reactive Extensions.    
 It's free and open source on GitHub.
 You can check latest info, source code and issues on https://github.com/neuecc/UniRx
-We welcome to your contribute such as bug report, documentation and pull request.
+We welcome to your contribute such as bug report, request, and pull request.
 
 First support, see and write GitHub issues 
 https://github.com/neuecc/UniRx/issues
@@ -85,7 +85,7 @@ How to Use for MultiThreading
 ---
 
 ```csharp
-// Observable.Start is start factory methos on specified scheduler
+// Observable.Start is start factory methods on specified scheduler
 // default is on ThreadPool
 var heavyMethod = Observable.Start(() =>
 {
