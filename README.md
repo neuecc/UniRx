@@ -151,6 +151,49 @@ public class Test : ObservableMonoBehaviour
 }
 ```
 
+Convert Unity callback to IObservable
+---
+Use Subject(or AsyncSubject for async operation). For example...
+
+```csharp
+public class LogCallback
+{
+    public string Condition;
+    public string StackTrace;
+    public UnityEngine.LogType LogType;
+}
+
+public static class LogHelper
+{
+    static Subject<LogCallback> subject;
+
+    public static IObservable<LogCallback> LogCallbackAsObservable()
+    {
+        if (subject == null)
+        {
+            subject = new Subject<LogCallback>();
+
+            // Publish to Subject in callback
+            UnityEngine.Application.RegisterLogCallback((condition, stackTrace, type) =>
+            {
+                subject.OnNext(new LogCallback { Condition = condition, StackTrace = stackTrace, LogType = type });
+            });
+        }
+
+        return subject.AsObservable();
+    }
+}
+
+// method is separatable and composable
+LogHelper.LogCallbackAsObservable()
+    .Where(x => x.LogType == LogType.Warning)
+    .Subscribe();
+
+LogHelper.LogCallbackAsObservable()
+    .Where(x => x.LogType == LogType.Error)
+    .Subscribe();
+```
+
 Unity specified extra gems
 ---
 ```csharp
