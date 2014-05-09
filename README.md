@@ -10,7 +10,7 @@ UniRx is available in Unity Asset Store soon(currently under reviewing).
 
 Why Rx?
 ---
-Ordinary Unity, network operation use WWW and coroutine but coroutine is not good practice for asynchronous operation.
+Ordinary, Unity Network operation use `WWW` and `Coroutine` but `Coroutine` is not good practice for asynchronous operation.
 
 Let me show some example.
 

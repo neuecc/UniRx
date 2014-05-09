@@ -8,44 +8,45 @@ namespace UniRx
 {
     public static partial class Observable
     {
-        public static IObservable<Unit> EveryUpdate()
+        public static IObservable<T> FromCoroutine<T>(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine)
         {
-            return Observable.Create<Unit>(observer =>
+            return Observable.Create<T>(observer =>
             {
                 var cancel = new BooleanDisposable();
 
-                MainThreadDispatcher.StartCoroutine(EveryUpdateCore(observer.OnNext, cancel));
-
-                return cancel;
-            });
-        }
-        public static IObservable<Unit> EveryFixedUpdate()
-        {
-            return Observable.Create<Unit>(observer =>
-            {
-                var cancel = new BooleanDisposable();
-
-                MainThreadDispatcher.StartCoroutine(EveryFixedUpdateCore(observer.OnNext, cancel));
+                MainThreadDispatcher.StartCoroutine(coroutine(observer, new CancellationToken(cancel)));
 
                 return cancel;
             });
         }
 
-        static IEnumerator EveryUpdateCore(Action<Unit> onNext, ICancelable cancel)
+        public static IObservable<long> EveryUpdate()
         {
-            while (!cancel.IsDisposed)
+            return FromCoroutine<long>((observer, cancellationToken) => EveryUpdateCore(observer, cancellationToken));
+        }
+
+        static IEnumerator EveryUpdateCore(IObserver<long> observer, CancellationToken cancellationToken)
+        {
+            var count = 0L;
+            while (!cancellationToken.IsCancellationRequested)
             {
-                onNext(Unit.Default);
+                observer.OnNext(count++);
                 yield return null;
             }
         }
 
-        static IEnumerator EveryFixedUpdateCore(Action<Unit> onNext, ICancelable cancel)
+        public static IObservable<long> EveryFixedUpdate()
         {
-            while (!cancel.IsDisposed)
+            return FromCoroutine<long>((observer, cancellationToken) => EveryFixedUpdateCore(observer, cancellationToken));
+        }
+
+        static IEnumerator EveryFixedUpdateCore(IObserver<long> observer, CancellationToken cancellationToken)
+        {
+            var count = 0L;
+            while (!cancellationToken.IsCancellationRequested)
             {
                 yield return new UnityEngine.WaitForFixedUpdate();
-                onNext(Unit.Default);
+                observer.OnNext(count++);
             }
         }
 
@@ -57,9 +58,9 @@ namespace UniRx
             {
                 var cancel = new BooleanDisposable();
 
-                source.Materialize().Subscribe(x=>
+                source.Materialize().Subscribe(x =>
                 {
-                    if(x.Kind == NotificationKind.OnError)
+                    if (x.Kind == NotificationKind.OnError)
                     {
                         observer.OnError(x.Exception);
                         cancel.Dispose();

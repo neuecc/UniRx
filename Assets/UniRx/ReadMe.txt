@@ -16,7 +16,7 @@ Second, send me an email at: ils@neue.cc
 
 Why Rx?
 ---
-Ordinary Unity, network operation use WWW and coroutine but coroutine is not good practice for asynchronous operation.
+Ordinary, Unity Network operation use `WWW` and `Coroutine` but `Coroutine` is not good practice for asynchronous operation.
 Let me show some example.
 1. Coroutine can't return result value. (because return type should be IEnumerator)
 2. It also won't handle exception. (because yield return can't surrond with try-catch)

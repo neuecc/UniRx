@@ -4,170 +4,80 @@ using UnityEngine;
 
 namespace UniRx
 {
+#if !(UNITY_METRO || UNITY_WP8)
+    using Hash = System.Collections.Hashtable;
+#else
+    using Hash = System.Collections.Generic.Dictionary<string, string>;
+#endif
+
     public static partial class ObservableWWW
     {
-#if !(UNITY_METRO || UNITY_WP8)
-        static IEnumerator GetWWWBytes(string url, Hashtable headers, Action<byte[]> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
-#else
-        static IEnumerator GetWWWBytes(string url, System.Collections.Generic.Dictionary<string, string> headers, Action<byte[]> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
-#endif
+        public static IObservable<string> Get(string url, Hash headers = null, IProgress<float> progress = null)
         {
-            return FetchBytes(new WWW(url, null, headers), onSuccess, onError, reportProgress, cancel);
+            return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
         }
 
-#if !(UNITY_METRO || UNITY_WP8)
-        static IEnumerator GetWWWText(string url, Hashtable headers, Action<string> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
-#else
-        static IEnumerator GetWWWText(string url, System.Collections.Generic.Dictionary<string, string> headers, Action<string> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
-#endif
+        public static IObservable<byte[]> GetAndGetBytes(string url, Hash headers = null, IProgress<float> progress = null)
         {
-            return FetchText(new WWW(url, null, headers), onSuccess, onError, reportProgress, cancel);
-        }
-
-        static IEnumerator PostWWWBytes(string url, WWWForm content, Action<byte[]> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
-        {
-            return FetchBytes(new WWW(url, content), onSuccess, onError, reportProgress, cancel);
-        }
-
-        static IEnumerator PostWWWText(string url, WWWForm content, Action<string> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
-        {
-            return FetchText(new WWW(url, content), onSuccess, onError, reportProgress, cancel);
-        }
-
-        static IEnumerator FetchBytes(WWW www, Action<byte[]> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
-        {
-            using (www)
-            {
-                while (!www.isDone && !cancel.IsDisposed)
-                {
-                    if (reportProgress != null) reportProgress.Report(www.progress);
-                    yield return null;
-                }
-
-                if (www.error != null)
-                {
-                    onError(www.error);
-                }
-                else
-                {
-                    if (!cancel.IsDisposed)
-                    {
-                        onSuccess(www.bytes);
-                    }
-                }
-            }
-        }
-
-        static IEnumerator FetchText(WWW www, Action<string> onSuccess, Action<string> onError, IProgress<float> reportProgress, ICancelable cancel)
-        {
-            using (www)
-            {
-                while (!www.isDone && !cancel.IsDisposed)
-                {
-                    if (reportProgress != null) reportProgress.Report(www.progress);
-                    yield return null;
-                }
-
-                if (www.error != null)
-                {
-                    onError(www.error);
-                }
-                else
-                {
-                    if (!cancel.IsDisposed)
-                    {
-                        onSuccess(www.text);
-                    }
-                }
-            }
+            return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
         }
 
         public static IObservable<string> Post(string url, WWWForm content, IProgress<float> progress = null)
         {
-            return Observable.Create<string>(observer =>
-            {
-                var cancel = new BooleanDisposable();
-
-                var e = PostWWWText(url, content, x =>
-                {
-                    observer.OnNext(x);
-                    observer.OnCompleted();
-                }, x => observer.OnError(new Exception(x)), progress, cancel);
-
-                MainThreadDispatcher.StartCoroutine(e);
-
-                return cancel;
-            });
+            return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content), observer, progress, cancellation));
         }
 
         public static IObservable<byte[]> PostAndGetBytes(string url, WWWForm content, IProgress<float> progress = null)
         {
-            return Observable.Create<byte[]>(observer =>
-            {
-                var cancel = new BooleanDisposable();
-
-                var e = PostWWWBytes(url, content, x =>
-                {
-                    observer.OnNext(x);
-                    observer.OnCompleted();
-                }, x => observer.OnError(new Exception(x)), progress, cancel);
-
-                MainThreadDispatcher.StartCoroutine(e);
-
-                return cancel;
-            });
+            return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content), observer, progress, cancellation));
         }
 
-#if !(UNITY_METRO || UNITY_WP8)
-        public static IObservable<string> Get(string url, Hashtable headers = null, IProgress<float> progress = null)
-#else
-        public static IObservable<string> Get(string url, System.Collections.Generic.Dictionary<string, string> headers = null, IProgress<float> progress = null)
-#endif
+        static IEnumerator FetchText(WWW www, IObserver<string> observer, IProgress<float> reportProgress, CancellationToken cancel)
         {
-            return Observable.Create<string>(observer =>
+            using (www)
             {
-                var cancel = new BooleanDisposable();
-
-#if !(UNITY_METRO || UNITY_WP8)
-                var e = GetWWWText(url, headers ?? new Hashtable(), x =>
-#else
-                var e = GetWWWText(url, headers ?? new System.Collections.Generic.Dictionary<string, string>(), x =>
-#endif
+                while (!www.isDone && !cancel.IsCancellationRequested)
                 {
-                    observer.OnNext(x);
+                    if (reportProgress != null) reportProgress.Report(www.progress);
+                    yield return null;
+                }
+
+                if (cancel.IsCancellationRequested) yield break;
+
+                if (www.error != null)
+                {
+                    observer.OnError(new Exception(www.error));
+                }
+                else
+                {
+                    observer.OnNext(www.text);
                     observer.OnCompleted();
-                }, x => observer.OnError(new Exception(x)), progress, cancel);
-
-                MainThreadDispatcher.StartCoroutine(e);
-
-                return cancel;
-            });
+                }
+            }
         }
 
-#if !(UNITY_METRO || UNITY_WP8)
-        public static IObservable<byte[]> GetAndGetBytes(string url, Hashtable headers = null, IProgress<float> progress = null)
-#else
-        public static IObservable<byte[]> GetAndGetBytes(string url, System.Collections.Generic.Dictionary<string, string> headers = null, IProgress<float> progress = null)
-#endif
+        static IEnumerator FetchBytes(WWW www, IObserver<byte[]> observer, IProgress<float> reportProgress, CancellationToken cancel)
         {
-            return Observable.Create<byte[]>(observer =>
+            using (www)
             {
-                var cancel = new BooleanDisposable();
-
-#if !(UNITY_METRO || UNITY_WP8)
-                var e = GetWWWBytes(url, headers ?? new Hashtable(), x =>
-#else
-                var e = GetWWWBytes(url, headers ?? new System.Collections.Generic.Dictionary<string, string>(), x =>
-#endif
+                while (!www.isDone && !cancel.IsCancellationRequested)
                 {
-                    observer.OnNext(x);
+                    if (reportProgress != null) reportProgress.Report(www.progress);
+                    yield return null;
+                }
+
+                if (cancel.IsCancellationRequested) yield break;
+
+                if (www.error != null)
+                {
+                    observer.OnError(new Exception(www.error));
+                }
+                else
+                {
+                    observer.OnNext(www.bytes);
                     observer.OnCompleted();
-                }, x => observer.OnError(new Exception(x)), progress, cancel);
-
-                MainThreadDispatcher.StartCoroutine(e);
-
-                return cancel;
-            });
+                }
+            }
         }
     }
 }
