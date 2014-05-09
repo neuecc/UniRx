@@ -10,7 +10,7 @@ namespace UniRx
     {
         public static readonly IScheduler CurrentThread = new CurrentThreadScheduler();
 
-        public static bool IsCurrentThreadSchedulerScheduleRqequired { get { return (CurrentThread as CurrentThreadScheduler).IsScheduleRequired; } }
+        public static bool IsCurrentThreadSchedulerScheduleRequired { get { return (CurrentThread as CurrentThreadScheduler).IsScheduleRequired; } }
 
         class CurrentThreadScheduler : IScheduler
         {

@@ -32,7 +32,7 @@ namespace UniRx
 
                 var safeObserver = Observer.Create<T>(observer.OnNext, observer.OnError, observer.OnCompleted, subscription);
 
-                if (Scheduler.IsCurrentThreadSchedulerScheduleRqequired)
+                if (Scheduler.IsCurrentThreadSchedulerScheduleRequired)
                 {
                     Scheduler.CurrentThread.Schedule(() => subscription.Disposable = subscribe(safeObserver));
                 }
