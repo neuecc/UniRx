@@ -196,6 +196,42 @@ LogHelper.LogCallbackAsObservable()
     .Subscribe();
 ```
 
+Convert Unity Coroutine to IObservable
+---
+IEnumerator with callback can convert IObservable use Observable.FromCoroutine.
+
+```csharp
+// public method
+public static IObservable<string> GetWWW(string url)
+{
+    // convert coroutine to IObservable
+    return Observable.FromCoroutine<string>((observer, cancellationToken) => GetWWWCore(url, observer, cancellationToken));
+}
+
+// IEnumerator with callback
+static IEnumerator GetWWWCore(string url, IObserver<string> observer, CancellationToken cancellationToken)
+{
+    var www = new UnityEngine.WWW(url);
+    while (!www.isDone && !cancellationToken.IsCancellationRequested)
+    {
+        yield return null;
+    }
+
+    if (cancellationToken.IsCancellationRequested) yield break;
+
+    if (www.error != null)
+    {
+        observer.OnError(new Exception(www.error));
+    }
+    else
+    {
+        observer.OnNext(www.text);
+        observer.OnCompleted();
+    }
+}
+```
+
+
 Unity specified extra gems
 ---
 ```csharp
@@ -211,6 +247,9 @@ Observable.EveryFixedUpdate().Subscribe();
 
 // delay on frame time
 Observable.Return(42).DelayFrame(10);
+
+// convert Coroutine to IObservable
+Observable.FromCoroutine((observer, token) => enumerator(observer, token)); 
 ```
 
 Reference
