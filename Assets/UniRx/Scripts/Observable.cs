@@ -77,15 +77,29 @@ namespace UniRx
                 }, observer.OnError, observer.OnCompleted));
             });
         }
+        public static IObservable<TR> SelectMany<T, TR>(this IObservable<T> source, IObservable<TR> other)
+        {
+            return SelectMany(source, _ => other);
+        }
 
         public static IObservable<TR> SelectMany<T, TR>(this IObservable<T> source, Func<T, IObservable<TR>> selector)
         {
             return source.Select(selector).Merge();
         }
 
-        public static IObservable<TR> SelectMany<T, TC, TR>(this IObservable<T> source, Func<T, IObservable<TC>> collectionSelector, Func<T, TC, TR> selector)
+        public static IObservable<TResult> SelectMany<TSource, TResult>(this IObservable<TSource> source, Func<TSource, int, IObservable<TResult>> selector)
         {
-            return source.SelectMany(x => collectionSelector(x).Select(y => selector(x, y)));
+            return source.Select(selector).Merge();
+        }
+
+        public static IObservable<TR> SelectMany<T, TC, TR>(this IObservable<T> source, Func<T, IObservable<TC>> collectionSelector, Func<T, TC, TR> resultSelector)
+        {
+            return source.SelectMany(x => collectionSelector(x).Select(y => resultSelector(x, y)));
+        }
+
+        public static IObservable<TResult> SelectMany<TSource, TCollection, TResult>(this IObservable<TSource> source, Func<TSource, int, IObservable<TCollection>> collectionSelector, Func<TSource, int, TCollection, int, TResult> resultSelector)
+        {
+            return source.SelectMany((x, i) => collectionSelector(x, i).Select((y, i2) => resultSelector(x, i, y, i2)));
         }
 
         public static IObservable<T[]> ToArray<T>(this IObservable<T> source)
