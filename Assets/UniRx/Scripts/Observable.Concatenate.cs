@@ -25,8 +25,7 @@ namespace UniRx
 
         public static IObservable<TSource> Concat<TSource>(this IObservable<IObservable<TSource>> sources)
         {
-            // needs concurrent count = 1
-            return sources.Merge();
+            return sources.Merge(maxConcurrent: 1);
         }
 
         public static IObservable<TSource> Concat<TSource>(this IObservable<TSource> first, IObservable<TSource> second)
@@ -109,17 +108,130 @@ namespace UniRx
 
         public static IObservable<T> Merge<T>(this IObservable<IObservable<T>> sources)
         {
+            // this code is borrwed from RxOfficial(rx.codeplex.com)
             return Observable.Create<T>(observer =>
             {
+                var gate = new object();
+                var isStopped = false;
+                var m = new SingleAssignmentDisposable();
+                var group = new CompositeDisposable() { m };
+
+                m.Disposable = sources.Subscribe(
+                    innerSource =>
+                    {
+                        var innerSubscription = new SingleAssignmentDisposable();
+                        group.Add(innerSubscription);
+                        innerSubscription.Disposable = innerSource.Subscribe(
+                            x =>
+                            {
+                                lock (gate)
+                                    observer.OnNext(x);
+                            },
+                            exception =>
+                            {
+                                lock (gate)
+                                    observer.OnError(exception);
+                            },
+                            () =>
+                            {
+                                group.Remove(innerSubscription);   // modification MUST occur before subsequent check
+                                if (isStopped && group.Count == 1) // isStopped must be checked before group Count to ensure outer is not creating more groups
+                                    lock (gate)
+                                        observer.OnCompleted();
+                            });
+                    },
+                    exception =>
+                    {
+                        lock (gate)
+                            observer.OnError(exception);
+                    },
+                    () =>
+                    {
+                        isStopped = true;     // modification MUST occur before subsequent check
+                        if (group.Count == 1)
+                            lock (gate)
+                                observer.OnCompleted();
+                    });
+
+                return group;
+            });
+        }
+
+        public static IObservable<T> Merge<T>(this IObservable<IObservable<T>> sources, int maxConcurrent)
+        {
+            // this code is borrwed from RxOfficial(rx.codeplex.com)
+            return Observable.Create<T>(observer =>
+            {
+                var gate = new object();
+                var q = new Queue<IObservable<T>>();
+                var isStopped = false;
                 var group = new CompositeDisposable();
+                var activeCount = 0;
 
-                var first = sources.Subscribe(innerSource =>
+                var subscribe = default(Action<IObservable<T>>);
+                subscribe = xs =>
                 {
-                    var d = innerSource.Subscribe(observer.OnNext);
-                    group.Add(d);
-                }, observer.OnError, observer.OnCompleted);
+                    var subscription = new SingleAssignmentDisposable();
+                    group.Add(subscription);
+                    subscription.Disposable = xs.Subscribe(
+                        x =>
+                        {
+                            lock (gate)
+                                observer.OnNext(x);
+                        },
+                        exception =>
+                        {
+                            lock (gate)
+                                observer.OnError(exception);
+                        },
+                        () =>
+                        {
+                            group.Remove(subscription);
+                            lock (gate)
+                            {
+                                if (q.Count > 0)
+                                {
+                                    var s = q.Dequeue();
+                                    subscribe(s);
+                                }
+                                else
+                                {
+                                    activeCount--;
+                                    if (isStopped && activeCount == 0)
+                                        observer.OnCompleted();
+                                }
+                            }
+                        });
+                };
 
-                group.Add(first);
+                group.Add(sources.Subscribe(
+                    innerSource =>
+                    {
+                        lock (gate)
+                        {
+                            if (activeCount < maxConcurrent)
+                            {
+                                activeCount++;
+                                subscribe(innerSource);
+                            }
+                            else
+                                q.Enqueue(innerSource);
+                        }
+                    },
+                    exception =>
+                    {
+                        lock (gate)
+                            observer.OnError(exception);
+                    },
+                    () =>
+                    {
+                        lock (gate)
+                        {
+                            isStopped = true;
+                            if (activeCount == 0)
+                                observer.OnCompleted();
+                        }
+                    }));
 
                 return group;
             });

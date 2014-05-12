@@ -17,6 +17,33 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         base.Awake();
     }
 
+    public override void OnMouseDown()
+    {
+        Debug.Log("click");
+
+        /*
+        var query = from google in ObservableWWW.Get("http://google.co.jp/")
+                    from bing in ObservableWWW.Get("http://bing.co.jp/")
+                    select new { google, bing };
+        */
+        var query =
+            ObservableWWW.Get("http://google.co.jp/")
+                .Do(x =>
+                {
+                    Debug.Log("fff");
+                })
+                .SelectMany(x =>
+                {
+                    return ObservableWWW.Get("http://bing.co.jp/");
+                });
+
+        query
+            .Finally(() => Debug.Log("f"))
+            .Do(x => Debug.Log("a"))
+            .Subscribe(x => Debug.Log(x), x => Debug.Log(x.ToString()));
+        base.OnMouseDown();
+    }
+
     //public override void OnMouseDown()
     //{
     //    Debug.Log("Start MouseDown");

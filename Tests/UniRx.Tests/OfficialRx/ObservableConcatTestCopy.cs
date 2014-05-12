@@ -144,5 +144,22 @@ namespace OfficialRx
             l.Count.Is(1);
             l[0].Kind.Is(NotificationKind.OnCompleted);
         }
+
+        [TestMethod]
+        public void SelectManyRxOfficial()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            var list = new List<int>();
+            a.SelectMany(_ => b).Subscribe(x => list.Add(x));
+
+            a.OnNext(10);
+            a.OnCompleted();
+            b.OnNext(100);
+
+            list.Count.Is(1);
+            list[0].Is(100);
+        }
     }
 }

@@ -75,5 +75,22 @@ namespace UniRx.Tests
 
             array.Is(1, 10, 1, 100, 5);
         }
+
+        [TestMethod]
+        public void SelectMany()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            var list = new List<int>();
+            a.SelectMany(_ => b).Subscribe(x => list.Add(x));
+
+            a.OnNext(10);
+            a.OnCompleted();
+            b.OnNext(100);
+
+            list.Count.Is(1);
+            list[0].Is(100);
+        }
     }
 }
