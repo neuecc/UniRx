@@ -6,6 +6,8 @@ namespace UniRx
     {
         readonly ICancelable source;
 
+        public static CancellationToken Empty = new CancellationToken(new BooleanDisposable());
+
         public CancellationToken(ICancelable source)
         {
             if (source == null) throw new ArgumentNullException("source");

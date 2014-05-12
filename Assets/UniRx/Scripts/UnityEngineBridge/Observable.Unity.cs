@@ -8,6 +8,11 @@ namespace UniRx
 {
     public static partial class Observable
     {
+        public static IObservable<T> FromCoroutine<T>(Func<IObserver<T>, IEnumerator> coroutine)
+        {
+            return FromCoroutine<T>((observer, _) => coroutine(observer));
+        }
+
         public static IObservable<T> FromCoroutine<T>(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine)
         {
             return Observable.Create<T>(observer =>
