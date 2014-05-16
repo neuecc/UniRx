@@ -126,7 +126,7 @@ public class Test : TypedMonoBehaviour
     }
 
     // use Coroutine, use "new" keyword
-    new public IEnumerator Awake()
+    new public IEnumerator Start()
     {
         while (true)
         {
