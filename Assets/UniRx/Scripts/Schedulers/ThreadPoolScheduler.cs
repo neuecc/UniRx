@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !UNITY_METRO
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,3 +136,5 @@ namespace UniRx
         }
     }
 }
+
+#endif

@@ -5,18 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{676EC39D-E9E4-59B7-4472-2C8969C426AA}</ProjectGuid>
+    <ProjectGuid>{55DB241B-2717-422C-3093-18D20F58B73B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -51,11 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\ObjectTest\NewBehaviourScript.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample5_ConvertFromCoroutine.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample4_ConvertFromUnityCallback.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample3_ObservableMonoBehaviour.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample2_TypedBehaviour.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample1_ObservableWWW.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample2_TypedBehaviour.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample3_ObservableMonoBehaviour.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample4_ConvertFromUnityCallback.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample5_ConvertFromCoroutine.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\BooleanDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\CompositeDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\Disposable.cs" />
@@ -105,6 +103,8 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ObservableMonoBehaviour.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ObservableWWW.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\TypedMonoBehaviour.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityWinRTBridge\Thread.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityWinRTBridge\ThreadPoolScheduler_UnityWinRT.cs" />
     <None Include="Assets\UniRx\ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
