@@ -260,7 +260,11 @@ This wiki is recommended way for learn Rx. You can understand behavior of all op
 
 * [Reactive Game Architectures](http://sugarpillstudios.com/wp/?page_id=279)
 
-Introduction to how to use Rx for Game. 
+Introduction to how to use Rx for Game.
+
+* [Introduction to Rx](http://introtorx.com/)
+
+Great online tutorial and eBook.
 
 * [Rx(Reactive Extensions)](https://rx.codeplex.com/)
 

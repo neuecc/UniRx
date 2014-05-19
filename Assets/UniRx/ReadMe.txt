@@ -264,6 +264,9 @@ You can understand behavior of all operators by graphical marble diagram.
 Reactive Game Architectures | http://sugarpillstudios.com/wp/?page_id=279
 Introduction to how to use Rx for Game. 
 
+Introduction to Rx | http://introtorx.com/
+Great online tutorial and eBook.
+
 Rx(Reactive Extensions) | https://rx.codeplex.com/
 Original project home.
 
