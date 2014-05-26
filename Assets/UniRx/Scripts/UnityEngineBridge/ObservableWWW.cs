@@ -59,7 +59,18 @@ namespace UniRx
             {
                 while (!www.isDone && !cancel.IsCancellationRequested)
                 {
-                    if (reportProgress != null) reportProgress.Report(www.progress);
+                    if (reportProgress != null)
+                    {
+                        try
+                        {
+                            reportProgress.Report(www.progress);
+                        }
+                        catch (Exception ex)
+                        {
+                            observer.OnError(ex);
+                            yield break;
+                        }
+                    }
                     yield return null;
                 }
 
@@ -83,7 +94,18 @@ namespace UniRx
             {
                 while (!www.isDone && !cancel.IsCancellationRequested)
                 {
-                    if (reportProgress != null) reportProgress.Report(www.progress);
+                    if (reportProgress != null)
+                    {
+                        try
+                        {
+                            reportProgress.Report(www.progress);
+                        }
+                        catch (Exception ex)
+                        {
+                            observer.OnError(ex);
+                            yield break;
+                        }
+                    }
                     yield return null;
                 }
 
