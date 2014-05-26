@@ -8,6 +8,7 @@ using System.Reactive.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using System.Threading;
+using System.Reactive.Concurrency;
 
 namespace OfficialRx
 {
@@ -17,6 +18,9 @@ namespace OfficialRx
         [TestMethod]
         public void SubjectOfficialRx()
         {
+            
+            
+
             // OnCompletedPattern
             {
                 var subject = new Subject<int>();

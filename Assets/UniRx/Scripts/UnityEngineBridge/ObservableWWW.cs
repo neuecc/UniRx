@@ -6,8 +6,10 @@ namespace UniRx
 {
 #if !(UNITY_METRO || UNITY_WP8)
     using Hash = System.Collections.Hashtable;
+    using HashEntry = System.Collections.DictionaryEntry;
 #else
     using Hash = System.Collections.Generic.Dictionary<string, string>;
+    using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
 #endif
 
     public static partial class ObservableWWW
@@ -27,9 +29,28 @@ namespace UniRx
             return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content), observer, progress, cancellation));
         }
 
+        public static IObservable<string> Post(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content.data, MergeHash(content.headers, headers)), observer, progress, cancellation));
+        }
+
         public static IObservable<byte[]> PostAndGetBytes(string url, WWWForm content, IProgress<float> progress = null)
         {
             return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content), observer, progress, cancellation));
+        }
+
+        public static IObservable<byte[]> PostAndGetBytes(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content.data, MergeHash(content.headers, headers)), observer, progress, cancellation));
+        }
+
+        static Hash MergeHash(Hash source1, Hash source2)
+        {
+            foreach (HashEntry item in source2)
+            {
+                source1.Add(item.Key, item.Value);
+            }
+            return source1;
         }
 
         static IEnumerator FetchText(WWW www, IObserver<string> observer, IProgress<float> reportProgress, CancellationToken cancel)
