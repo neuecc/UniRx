@@ -76,9 +76,9 @@ namespace UniRx
 
                 if (cancel.IsCancellationRequested) yield break;
 
-                if (www.error != null)
+                if (!string.IsNullOrEmpty(www.error))
                 {
-                    observer.OnError(new Exception(www.error));
+                    observer.OnError(new WWWErrorException(www.error, www.responseHeaders));
                 }
                 else
                 {
@@ -111,9 +111,9 @@ namespace UniRx
 
                 if (cancel.IsCancellationRequested) yield break;
 
-                if (www.error != null)
+                if (!string.IsNullOrEmpty(www.error))
                 {
-                    observer.OnError(new Exception(www.error));
+                    observer.OnError(new WWWErrorException(www.error, www.responseHeaders));
                 }
                 else
                 {
@@ -121,6 +121,37 @@ namespace UniRx
                     observer.OnCompleted();
                 }
             }
+        }
+    }
+
+    public class WWWErrorException : Exception
+    {
+        public string RawErrorMessage { get; private set; }
+        public bool HasResponse { get; private set; }
+        public System.Net.HttpStatusCode StatusCode { get; private set; }
+        public System.Collections.Generic.Dictionary<string, string> ResponseHeaders { get; private set; }
+
+        public WWWErrorException(string errorMessage, System.Collections.Generic.Dictionary<string, string> responseHeaders)
+        {
+            this.RawErrorMessage = errorMessage;
+            this.ResponseHeaders = responseHeaders;
+            this.HasResponse = false;
+
+            var splitted = errorMessage.Split(' ');
+            if (splitted.Length != 0)
+            {
+                int statusCode;
+                if (int.TryParse(splitted[0], out statusCode))
+                {
+                    this.HasResponse = true;
+                    this.StatusCode = (System.Net.HttpStatusCode)statusCode;
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            return RawErrorMessage;
         }
     }
 }
