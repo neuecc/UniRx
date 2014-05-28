@@ -6,7 +6,7 @@ What is UniRx?
 ---
 UniRx(Reactive Extensions for Unity) is re-implementation of .NET Reactive Extensions. Official Rx is great but can't work on Unity and has some issue of iOS AOT. This library remove there issues and add some specified utility for Unity. 
 
-UniRx is available in Unity Asset Store - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
+UniRx is available in Unity Asset Store(FREE) - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
 
 Why Rx?
 ---
