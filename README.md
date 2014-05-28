@@ -8,6 +8,8 @@ UniRx(Reactive Extensions for Unity) is re-implementation of .NET Reactive Exten
 
 UniRx is available in Unity Asset Store(FREE) - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
 
+Presentation - http://www.slideshare.net/neuecc/unirx-reactive-extensions-for-unityen
+
 Why Rx?
 ---
 Ordinary, Unity Network operation use `WWW` and `Coroutine` but `Coroutine` is not good practice for asynchronous operation.
