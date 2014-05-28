@@ -9,6 +9,7 @@ UniRx(Reactive Extensions for Unity) is re-implementation of .NET Reactive Exten
 UniRx is available in Unity Asset Store(FREE) - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
 
 Presentation - http://www.slideshare.net/neuecc/unirx-reactive-extensions-for-unityen
+Unity Forums support thread - [http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity](http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity)  
 
 Why Rx?
 ---
