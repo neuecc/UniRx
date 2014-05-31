@@ -57,7 +57,7 @@ namespace UniRx.Examples
 
             // with Error
             {
-                // when WWW has .error, throws WWWErrorException
+                // If WWW has .error, ObservableWWW throws WWWErrorException to onError pipeline.
                 // WWWErrorException has RawErrorMessage, HasResponse, StatusCode, ResponseHeaders
                 ObservableWWW.Get("http://www.google.com/404")
                     .CatchIgnore((WWWErrorException ex) =>
