@@ -79,6 +79,26 @@ progressNotifier.Subscribe(x => Debug.Log(x)); // write www.progress
 ObservableWWW.Get("http://google.com/", progress: progressNotifier).Subscribe();
 ```
 
+Error Handling
+```csharp
+// when WWW has .error, throws WWWErrorException
+// WWWErrorException has RawErrorMessage, HasResponse, StatusCode, ResponseHeaders
+ObservableWWW.Get("http://www.google.com/404")
+    .CatchIgnore((WWWErrorException ex) =>
+    {
+        Debug.Log(ex.RawErrorMessage);
+        if (ex.HasResponse)
+        {
+            Debug.Log(ex.StatusCode);
+        }
+        foreach (var item in ex.ResponseHeaders)
+        {
+            Debug.Log(item.Key + ":" + item.Value);
+        }
+    })
+    .Subscribe();
+```
+
 How to Use for MultiThreading
 ---
 
@@ -252,6 +272,9 @@ Observable.Return(42).DelayFrame(10);
 
 // convert Coroutine to IObservable
 Observable.FromCoroutine((observer, token) => enumerator(observer, token)); 
+
+// convert IObservable to Coroutine
+Observable.Range(1, 10).ToCoroutine();
 ```
 
 Reference

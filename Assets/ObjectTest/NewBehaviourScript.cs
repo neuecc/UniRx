@@ -31,6 +31,9 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
     //}
 
+
+
+
     //public override void OnMouseDown()
     //{
     //    MainThreadDispatcher.Initialize();
@@ -38,7 +41,7 @@ public class NewBehaviourScript : ObservableMonoBehaviour
     //    Observable.Interval(TimeSpan.FromSeconds(1))
     //        .ObserveOnMainThread()
     //        .Subscribe(x => (GameObject.Find("myGuiText")).guiText.text = "work fine" + x);
-            
+
 
     //    //Scheduler.ThreadPool.Schedule(() =>
     //    //{
@@ -47,7 +50,7 @@ public class NewBehaviourScript : ObservableMonoBehaviour
     //    //    (GameObject.Find("myGuiText")).guiText.text = "work fine");
 
     //    //});
-        
+
     //}
 
     //public override void OnMouseDown()

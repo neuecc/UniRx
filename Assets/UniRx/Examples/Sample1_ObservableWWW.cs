@@ -54,6 +54,26 @@ namespace UniRx.Examples
                 // pass notifier to WWW.Get/Post
                 ObservableWWW.Get("http://google.com/", progress: progressNotifier).Subscribe();
             }
+
+            // with Error
+            {
+                // when WWW has .error, throws WWWErrorException
+                // WWWErrorException has RawErrorMessage, HasResponse, StatusCode, ResponseHeaders
+                ObservableWWW.Get("http://www.google.com/404")
+                    .CatchIgnore((WWWErrorException ex) =>
+                    {
+                        Debug.Log(ex.RawErrorMessage);
+                        if (ex.HasResponse)
+                        {
+                            Debug.Log(ex.StatusCode);
+                        }
+                        foreach (var item in ex.ResponseHeaders)
+                        {
+                            Debug.Log(item.Key + ":" + item.Value);
+                        }
+                    })
+                    .Subscribe();
+            }
         }
     }
 }
