@@ -7,22 +7,6 @@ namespace UniRx
 {
     public static partial class Observable
     {
-        /// <summary>
-        /// Convert to awaitable IEnumerator.
-        /// </summary>
-        public static IEnumerator ToCoroutine<T>(this IObservable<T> source)
-        {
-            var running = true;
-            source.Subscribe(
-                ex => { running = false; },
-                () => { running = false; });
-
-            while (running)
-            {
-                yield return null;
-            }
-        }
-
         public static IObservable<T> AsObservable<T>(this IObservable<T> source)
         {
             if (source == null) throw new ArgumentNullException("source");

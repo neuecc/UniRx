@@ -17,6 +17,39 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         base.Awake();
     }
 
+    //int x;
+    //int y;
+    //int z;
+
+    //public override void Update()
+    //{
+
+    //    x = x + 10;
+    //    y = y + 10;
+    //    z = z + 10;
+    //    transform.Rotate(10, 10, 10);
+
+    //}
+
+    //public override void OnMouseDown()
+    //{
+    //    MainThreadDispatcher.Initialize();
+
+    //    Observable.Interval(TimeSpan.FromSeconds(1))
+    //        .ObserveOnMainThread()
+    //        .Subscribe(x => (GameObject.Find("myGuiText")).guiText.text = "work fine" + x);
+            
+
+    //    //Scheduler.ThreadPool.Schedule(() =>
+    //    //{
+    //    //    UniRx.Thread.Sleep(TimeSpan.FromSeconds(3));
+    //    //    Scheduler.MainThread.Schedule(() =>
+    //    //    (GameObject.Find("myGuiText")).guiText.text = "work fine");
+
+    //    //});
+        
+    //}
+
     //public override void OnMouseDown()
     //{
     //    Debug.Log("click");

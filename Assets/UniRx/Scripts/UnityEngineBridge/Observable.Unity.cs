@@ -91,6 +91,55 @@ namespace UniRx
             }
         }
 
+        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
+        public static IEnumerator ToCoroutine<T>(this IObservable<T> source)
+        {
+            return ToCoroutine<T>(source, _ => { }, _ => { }, () => { });
+        }
+
+        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
+        public static IEnumerator ToCoroutine<T>(this IObservable<T> source, IObserver<T> observer)
+        {
+            return ToCoroutine<T>(source, observer.OnNext, observer.OnError, observer.OnCompleted);
+        }
+
+        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
+        public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext)
+        {
+            return ToCoroutine<T>(source, onNext, _ => { }, () => { });
+        }
+
+        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
+        public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError)
+        {
+            return ToCoroutine<T>(source, onNext, onError, () => { });
+        }
+
+        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
+        public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted)
+        {
+            return ToCoroutine<T>(source, onNext, _ => { }, onCompleted);
+        }
+
+        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
+        public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted)
+        {
+            var running = true;
+
+            source
+                .Do(onNext, onError, onCompleted)
+                .ObserveOnMainThread()
+                .SubscribeOnMainThread()
+                .Subscribe(
+                    ex => { running = false; },
+                    () => { running = false; });
+
+            while (running)
+            {
+                yield return null;
+            }
+        }
+
         public static IObservable<T> ObserveOnMainThread<T>(this IObservable<T> source)
         {
             return source.ObserveOn(Scheduler.MainThread);
