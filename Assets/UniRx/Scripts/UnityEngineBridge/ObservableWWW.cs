@@ -26,6 +26,10 @@ namespace UniRx
         {
             return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
         }
+        public static IObservable<WWW> GetWWW(string url, Hash headers = null, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
+        }
 
         public static IObservable<string> Post(string url, WWWForm content, IProgress<float> progress = null)
         {
@@ -47,6 +51,16 @@ namespace UniRx
             return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content.data, MergeHash(content.headers, headers)), observer, progress, cancellation));
         }
 
+        public static IObservable<WWW> PostWWW(string url, WWWForm content, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content), observer, progress, cancellation));
+        }
+
+        public static IObservable<WWW> PostWWW(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content.data, MergeHash(content.headers, headers)), observer, progress, cancellation));
+        }
+
         static Hash MergeHash(Hash source1, Hash source2)
         {
             foreach (HashEntry item in source2)
@@ -54,6 +68,41 @@ namespace UniRx
                 source1.Add(item.Key, item.Value);
             }
             return source1;
+        }
+
+        static IEnumerator Fetch(WWW www, IObserver<WWW> observer, IProgress<float> reportProgress, CancellationToken cancel)
+        {
+            using (www)
+            {
+                while (!www.isDone && !cancel.IsCancellationRequested)
+                {
+                    if (reportProgress != null)
+                    {
+                        try
+                        {
+                            reportProgress.Report(www.progress);
+                        }
+                        catch (Exception ex)
+                        {
+                            observer.OnError(ex);
+                            yield break;
+                        }
+                    }
+                    yield return null;
+                }
+
+                if (cancel.IsCancellationRequested) yield break;
+
+                if (!string.IsNullOrEmpty(www.error))
+                {
+                    observer.OnError(new WWWErrorException(www));
+                }
+                else
+                {
+                    observer.OnNext(www);
+                    observer.OnCompleted();
+                }
+            }
         }
 
         static IEnumerator FetchText(WWW www, IObserver<string> observer, IProgress<float> reportProgress, CancellationToken cancel)
@@ -81,7 +130,7 @@ namespace UniRx
 
                 if (!string.IsNullOrEmpty(www.error))
                 {
-                    observer.OnError(new WWWErrorException(www.error, www.responseHeaders));
+                    observer.OnError(new WWWErrorException(www));
                 }
                 else
                 {
@@ -116,7 +165,7 @@ namespace UniRx
 
                 if (!string.IsNullOrEmpty(www.error))
                 {
-                    observer.OnError(new WWWErrorException(www.error, www.responseHeaders));
+                    observer.OnError(new WWWErrorException(www));
                 }
                 else
                 {
@@ -133,14 +182,16 @@ namespace UniRx
         public bool HasResponse { get; private set; }
         public System.Net.HttpStatusCode StatusCode { get; private set; }
         public System.Collections.Generic.Dictionary<string, string> ResponseHeaders { get; private set; }
+        public WWW WWW { get; private set; }
 
-        public WWWErrorException(string errorMessage, System.Collections.Generic.Dictionary<string, string> responseHeaders)
+        public WWWErrorException(WWW www)
         {
-            this.RawErrorMessage = errorMessage;
-            this.ResponseHeaders = responseHeaders;
+            this.WWW = www;
+            this.RawErrorMessage = www.error;
+            this.ResponseHeaders = www.responseHeaders;
             this.HasResponse = false;
 
-            var splitted = errorMessage.Split(' ');
+            var splitted = RawErrorMessage.Split(' ');
             if (splitted.Length != 0)
             {
                 int statusCode;
