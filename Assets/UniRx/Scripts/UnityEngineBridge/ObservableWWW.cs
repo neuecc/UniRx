@@ -1,4 +1,7 @@
-﻿using System;
+﻿// warning disable for Unity4.5's WWW(dictionary)
+#pragma warning disable 612, 618
+
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -155,3 +158,5 @@ namespace UniRx
         }
     }
 }
+
+#pragma warning restore 612, 618
