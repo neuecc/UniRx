@@ -9,7 +9,7 @@ It's free and open source on GitHub.
 You can check latest info, source code and issues on https://github.com/neuecc/UniRx
 We welcome to your contribute such as bug report, request, and pull request.
 
-Unity Forums support thread, ask me any questions - http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity](http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity
+Unity Forums support thread, ask me any questions - http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity
 
 Other support, see and write GitHub issues 
 https://github.com/neuecc/UniRx/issues

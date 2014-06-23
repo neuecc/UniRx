@@ -10,7 +10,7 @@ UniRx is available in Unity Asset Store(FREE) - http://u3d.as/content/neuecc/uni
 
 Presentation - http://www.slideshare.net/neuecc/unirx-reactive-extensions-for-unityen
 
-Unity Forums support thread, ask me any questions - http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity](http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity
+Unity Forums support thread, ask me any questions - http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity
 
 Why Rx?
 ---
