@@ -10,6 +10,8 @@ UniRx is available in Unity Asset Store(FREE) - http://u3d.as/content/neuecc/uni
 
 Presentation - http://www.slideshare.net/neuecc/unirx-reactive-extensions-for-unityen
 
+Unity Forums support thread, ask me any questions - http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity](http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity
+
 Why Rx?
 ---
 Ordinary, Unity Network operation use `WWW` and `Coroutine` but `Coroutine` is not good practice for asynchronous operation.
@@ -96,6 +98,107 @@ ObservableWWW.Get("http://www.google.com/404")
             Debug.Log(item.Key + ":" + item.Value);
         }
     })
+    .Subscribe();
+```
+
+How to Use for IEnumerator(as Coroutine)
+---
+IEnumerator(Coroutine) is Unity's primitive asynchronous tool. UniRx integrates coroutine and IObservable. Write async in coroutine, Orchestrate many coroutines by UniRx is best way for control asynchronous flow.
+
+```csharp
+// two coroutines
+
+IEnumerator AsyncA()
+{
+    Debug.Log("a start");
+    yield return new WaitForSeconds(1);
+    Debug.Log("a end");
+}
+
+IEnumerator AsyncB()
+{
+    Debug.Log("b start");
+    yield return new WaitForEndOfFrame();
+    Debug.Log("b end");
+}
+
+// main code
+// Observable.FromCoroutine convert IEnumerator to Observable<Unit>.
+// other shorthand, AsyncA().ToObservable()
+        
+// after completed AsyncA, run AsyncB as continuous routine.
+// UniRx expands SelectMany(IEnumerator) as SelectMany(IEnumerator.ToObservable())
+var cancel = Observable.FromCoroutine(AsyncA)
+    .SelectMany(_ => AsyncB())
+    .Subscribe();
+
+// you can stop coroutine use subscription's Dispose.
+cancel.Dispose();
+```
+
+If you needs coroutine with return value, normally we use callback. Observable.FromCoroutine supports convert coroutine to IObservable[T] with cancellation.
+
+```csharp
+// public method
+public static IObservable<string> GetWWW(string url)
+{
+    // convert coroutine to IObservable
+    return Observable.FromCoroutine<string>((observer, cancellationToken) => GetWWWCore(url, observer, cancellationToken));
+}
+
+// IObserver is callback publisher
+// note: Prinviples of IObserver is "OnNext* (OnError | Oncompleted)?" 
+static IEnumerator GetWWWCore(string url, IObserver<string> observer, CancellationToken cancellationToken)
+{
+    var www = new UnityEngine.WWW(url);
+    while (!www.isDone && !cancellationToken.IsCancellationRequested)
+    {
+        yield return null;
+    }
+
+    if (cancellationToken.IsCancellationRequested) yield break;
+
+    if (www.error != null)
+    {
+        observer.OnError(new Exception(www.error));
+    }
+    else
+    {
+        observer.OnNext(www.text);
+        observer.OnCompleted(); // IObserver needs OnCompleted after OnNext!
+    }
+}
+```
+
+more application examples, following is multiple OnNext pattern.
+
+```csharp
+public static IObservable<float> ToObservable(this UnityEngine.AsyncOperation asyncOperation)
+{
+    if (asyncOperation == null) throw new ArgumentNullException("asyncOperation");
+
+    return Observable.FromCoroutine<float>((observer, cancellationToken) => RunAsyncOperation(asyncOperation, observer, cancellationToken));
+}
+
+static IEnumerator RunAsyncOperation(UnityEngine.AsyncOperation asyncOperation, IObserver<float> observer, CancellationToken cancellationToken)
+{
+    while (!asyncOperation.isDone && !cancellationToken.IsCancellationRequested)
+    {
+        observer.OnNext(asyncOperation.progress);
+        yield return null;
+    }
+    if (!cancellationToken.IsCancellationRequested)
+    {
+        observer.OnNext(asyncOperation.progress); // push 100%
+        observer.OnCompleted();
+    }
+}
+
+// usecase
+Application.LoadLevelAsync("testscene")
+    .ToObservable()
+    .Do(x => Debug.Log(x)) // output progress
+    .Last() // last sequence is load completed
     .Subscribe();
 ```
 
@@ -217,42 +320,6 @@ LogHelper.LogCallbackAsObservable()
     .Where(x => x.LogType == LogType.Error)
     .Subscribe();
 ```
-
-Convert Unity Coroutine to IObservable
----
-IEnumerator with callback can convert IObservable use Observable.FromCoroutine.
-
-```csharp
-// public method
-public static IObservable<string> GetWWW(string url)
-{
-    // convert coroutine to IObservable
-    return Observable.FromCoroutine<string>((observer, cancellationToken) => GetWWWCore(url, observer, cancellationToken));
-}
-
-// IEnumerator with callback
-static IEnumerator GetWWWCore(string url, IObserver<string> observer, CancellationToken cancellationToken)
-{
-    var www = new UnityEngine.WWW(url);
-    while (!www.isDone && !cancellationToken.IsCancellationRequested)
-    {
-        yield return null;
-    }
-
-    if (cancellationToken.IsCancellationRequested) yield break;
-
-    if (www.error != null)
-    {
-        observer.OnError(new Exception(www.error));
-    }
-    else
-    {
-        observer.OnNext(www.text);
-        observer.OnCompleted();
-    }
-}
-```
-
 
 Unity specified extra gems
 ---
