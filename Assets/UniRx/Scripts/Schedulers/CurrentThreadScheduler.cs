@@ -24,16 +24,12 @@ namespace UniRx
                 get { return Scheduler.Now; }
             }
 
-            public IDisposable Schedule<TState>(TState state, Func<IScheduler, TState, IDisposable> action)
+            public IDisposable Schedule(Action action)
             {
-                return Schedule<TState>(state, Now, action);
-            }
-            public IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action)
-            {
-                return Schedule(state, Now + dueTime, action);
+                return Schedule(TimeSpan.Zero, action);
             }
 
-            public IDisposable Schedule<TState>(TState state, DateTimeOffset dueTime, Func<IScheduler, TState, IDisposable> action)
+            public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
                 var queue = threadStaticQueue;
                 if (queue == null)
@@ -43,19 +39,19 @@ namespace UniRx
 
                 if (queue.Count > 0)
                 {
-                    var d = new SingleAssignmentDisposable();
+                    var d = new BooleanDisposable();
                     queue.Enqueue(() =>
                     {
                         if (!d.IsDisposed)
                         {
-                            d.Disposable = action(this, state);
+                            action();
                         }
-                    }, dueTime, d);
+                    }, Now + dueTime, d);
                     return d;
                 }
 
                 var rootCancel = new BooleanDisposable();
-                queue.Enqueue(() => action(this, state), dueTime, rootCancel);
+                queue.Enqueue(action, Now + dueTime, rootCancel);
 
                 while (queue.Count > 0)
                 {
@@ -85,7 +81,7 @@ namespace UniRx
         // Pseudo PriorityQueue, Cheap implementation
         class SchedulingPriorityQueue
         {
-            // TODO:make ScheduleItem
+            // make ScheduleItem
             List<Action> actions = new List<Action>();
             List<DateTimeOffset> priorities = new List<DateTimeOffset>();
             List<ICancelable> cancels = new List<ICancelable>();
@@ -96,7 +92,7 @@ namespace UniRx
 
             public void Enqueue(Action action, DateTimeOffset time, ICancelable cancel)
             {
-                // TODO:reverse for?
+                // should use reverse for?
                 for (int i = 0; i < actions.Count; i++)
                 {
                     if (priorities[i] > time)

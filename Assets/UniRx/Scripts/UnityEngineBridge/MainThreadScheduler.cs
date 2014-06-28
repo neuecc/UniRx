@@ -29,6 +29,7 @@ namespace UniRx
 
             IEnumerator DelayAction(TimeSpan dueTime, Action action)
             {
+                // lack of accuracy, should be change impl?
                 yield return new WaitForSeconds((float)dueTime.TotalSeconds);
                 MainThreadDispatcher.Post(action);
             }
@@ -38,32 +39,32 @@ namespace UniRx
                 get { return DateTimeOffset.Now; }
             }
 
-            public IDisposable Schedule<TState>(TState state, Func<IScheduler, TState, IDisposable> action)
+            public IDisposable Schedule(Action action)
             {
-                var d = new SingleAssignmentDisposable();
+                var d = new BooleanDisposable();
                 MainThreadDispatcher.Post(() =>
                 {
                     if (!d.IsDisposed)
                     {
-                        d.Disposable = action(this, state);
+                        action();
                     }
                 });
                 return d;
             }
 
-            public IDisposable Schedule<TState>(TState state, DateTimeOffset dueTime, Func<IScheduler, TState, IDisposable> action)
+            public IDisposable Schedule(DateTimeOffset dueTime, Action action)
             {
-                return Schedule(state, dueTime - Now, action);
+                return Schedule(dueTime - Now, action);
             }
 
-            public IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action)
+            public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
-                var d = new SingleAssignmentDisposable();
+                var d = new BooleanDisposable();
                 MainThreadDispatcher.StartCoroutine(DelayAction(dueTime, () =>
                 {
                     if (!d.IsDisposed)
                     {
-                        d.Disposable = action(this, state);
+                        action();
                     }
                 }));
 
