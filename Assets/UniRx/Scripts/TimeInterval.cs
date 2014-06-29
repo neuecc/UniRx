@@ -1,5 +1,5 @@
 ﻿// original code from rx.codeplex.com
-// some modified.
+// some modified(struct to class, etc...).
 
 /* ------------------ */
 
@@ -17,7 +17,7 @@ namespace UniRx
     /// </summary>
     /// <typeparam name="T">The type of the value being annotated with time interval information.</typeparam>
     [Serializable]
-    public struct TimeInterval<T> : IEquatable<TimeInterval<T>>
+    public class TimeInterval<T> : IEquatable<TimeInterval<T>>
     {
         private readonly TimeSpan _interval;
         private readonly T _value;
