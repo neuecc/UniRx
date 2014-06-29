@@ -20,21 +20,28 @@ namespace UniRx
                 get { return Scheduler.Now; }
             }
 
-            public IDisposable Schedule<TState>(TState state, Func<IScheduler, TState, IDisposable> action)
+            public IDisposable Schedule(Action action)
             {
-                return action(this, state);
+                var d = new BooleanDisposable();
+
+                Action act = () =>
+                {
+                    if (!d.IsDisposed)
+                    {
+                        action();
+                    }
+                };
+
+                act.BeginInvoke(ar => act.EndInvoke(ar), null);
+
+                return d;
             }
 
-            public IDisposable Schedule<TState>(TState state, DateTimeOffset dueTime, Func<IScheduler, TState, IDisposable> action)
-            {
-                return Schedule(state, dueTime - Now, action);
-            }
-
-            public IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action)
+            public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
                 var wait = Scheduler.Normalize(dueTime);
 
-                var d = new SingleAssignmentDisposable();
+                var d = new BooleanDisposable();
 
                 Action act = () =>
                 {
@@ -44,23 +51,11 @@ namespace UniRx
                         {
                             Thread.Sleep(wait);
                         }
-                        d.Disposable = action(this, state);
+                        action();
                     }
                 };
 
                 act.BeginInvoke(ar => act.EndInvoke(ar), null);
-
-                //System.Threading.ThreadPool.QueueUserWorkItem(_ =>
-                //{
-                //    if (!d.IsDisposed)
-                //    {
-                //        if (wait.Ticks > 0)
-                //        {
-                //            Thread.Sleep(wait);
-                //        }
-                //        d.Disposable = action(this, state);
-                //    }
-                //});
 
                 return d;
             }

@@ -23,55 +23,49 @@ namespace UniRx
                 get { return Scheduler.Now; }
             }
 
-            public IDisposable Schedule<TState>(TState state, Func<IScheduler, TState, IDisposable> action)
+            public IDisposable Schedule(Action action)
             {
-                var d = new SingleAssignmentDisposable();
+                var d = new BooleanDisposable();
 
                 System.Threading.ThreadPool.QueueUserWorkItem(_ =>
                 {
                     if (!d.IsDisposed)
                     {
-                        d.Disposable = action(this, state);
+                        action();
                     }
                 });
 
                 return d;
             }
 
-            public IDisposable Schedule<TState>(TState state, DateTimeOffset dueTime, Func<IScheduler, TState, IDisposable> action)
+            public IDisposable Schedule(DateTimeOffset dueTime, Action action)
             {
-                return Schedule(state, dueTime - Now, action);
+                return Schedule(dueTime - Now, action);
             }
 
-            public IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action)
+            public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
-                return new Timer<TState>(this, state, dueTime, action);
+                return new Timer(dueTime, action);
             }
 
             // timer was borrwed from Rx Official
 
-            sealed class Timer<TState> : IDisposable
+            sealed class Timer : IDisposable
             {
                 static readonly HashSet<System.Threading.Timer> s_timers = new HashSet<System.Threading.Timer>();
 
-                private readonly MultipleAssignmentDisposable _disposable;
+                private readonly SingleAssignmentDisposable _disposable;
 
-                private readonly IScheduler _parent;
-                private readonly TState _state;
-
-                private Func<IScheduler, TState, IDisposable> _action;
+                private Action _action;
                 private System.Threading.Timer _timer;
 
                 private bool _hasAdded;
                 private bool _hasRemoved;
 
-                public Timer(IScheduler parent, TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action)
+                public Timer(TimeSpan dueTime, Action action)
                 {
-                    _disposable = new MultipleAssignmentDisposable();
+                    _disposable = new SingleAssignmentDisposable();
                     _disposable.Disposable = Disposable.Create(Unroot);
-
-                    _parent = parent;
-                    _state = state;
 
                     _action = action;
                     _timer = new System.Threading.Timer(Tick, null, dueTime, TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite));
@@ -91,7 +85,10 @@ namespace UniRx
                 {
                     try
                     {
-                        _disposable.Disposable = _action(_parent, _state);
+                        if (!_disposable.IsDisposed)
+                        {
+                            _action();
+                        }
                     }
                     finally
                     {
@@ -101,7 +98,7 @@ namespace UniRx
 
                 private void Unroot()
                 {
-                    _action = Nop;
+                    _action = () => { }; // NOP
 
                     var timer = default(System.Threading.Timer);
 
@@ -121,11 +118,6 @@ namespace UniRx
 
                     if (timer != null)
                         timer.Dispose();
-                }
-
-                private IDisposable Nop(IScheduler scheduler, TState state)
-                {
-                    return Disposable.Empty;
                 }
 
                 public void Dispose()

@@ -129,7 +129,7 @@ namespace UniRx
                             return;
                         }
 
-                        var e = xs.GetEnumerator();
+                        var e = xs.ToSafeEnumerable().GetEnumerator();
 
                         try
                         {
@@ -187,7 +187,7 @@ namespace UniRx
                             return;
                         }
 
-                        var e = xs.GetEnumerator();
+                        var e = xs.ToSafeEnumerable().GetEnumerator();
 
                         try
                         {

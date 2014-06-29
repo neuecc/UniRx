@@ -163,13 +163,15 @@ namespace UniRx
         {
             return Observable.Create<int>(observer =>
             {
-                return scheduler.Schedule(0, (int i, Action<int> self) =>
+                var i = 0;
+                return scheduler.Schedule((Action self) =>
                 {
                     if (i < count)
                     {
                         int v = start + i;
                         observer.OnNext(v);
-                        self(i + 1);
+                        System.Threading.Interlocked.Increment(ref i);
+                        self();
                     }
                     else
                     {

@@ -1,5 +1,5 @@
 ﻿// original code from rx.codeplex.com
-// some modified.
+// some modified(struct to class, etc...).
 
 /* ------------------ */
 
@@ -17,7 +17,7 @@ namespace UniRx
     /// </summary>
     /// <typeparam name="T">The type of the value being timestamped.</typeparam>
     [Serializable]
-    public struct Timestamped<T> : IEquatable<Timestamped<T>>
+    public class Timestamped<T> : IEquatable<Timestamped<T>>
     {
         private readonly DateTimeOffset _timestamp;
         private readonly T _value;

@@ -75,7 +75,7 @@ namespace UniRx
             {
                 var gate = new object();
                 var isDisposed = false;
-                var e = sources.GetEnumerator();
+                var e = sources.ToSafeEnumerable().GetEnumerator();
                 var subscription = new SerialDisposable();
                 var lastException = default(Exception);
 
