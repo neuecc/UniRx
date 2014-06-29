@@ -2,10 +2,10 @@
 
 namespace UniRx
 {
-    // from Rx Official
+    // from Rx Official, but convert struct to class(for iOS AOT issue)
 
     [Serializable]
-    public struct Unit : IEquatable<Unit>
+    public class Unit : IEquatable<Unit>
     {
         static readonly Unit @default = new Unit();
 
