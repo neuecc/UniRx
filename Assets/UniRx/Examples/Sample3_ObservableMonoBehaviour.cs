@@ -12,12 +12,12 @@ namespace UniRx.Examples
             // Object specified update
             // or Get Global Update Event => Observable.EveryUpdate()
             this.UpdateAsObservable()
-                .SelectMany(_ => Input.touches)
-                .Where(x => x.phase == TouchPhase.Began)
-                .Where(x => Physics.Raycast(Camera.main.ScreenPointToRay(x.position)))
+                .SelectMany(_ => Input.touches.WrapValueToClass()) // aotsafe, wrap struct to class(Tuple1)
+                .Where(x => x.Item1.phase == TouchPhase.Began)
+                .Where(x => Physics.Raycast(Camera.main.ScreenPointToRay(x.Item1.position)))
                 .Subscribe(x =>
                 {
-                    Debug.Log(x.position);
+                    Debug.Log(x.Item1.position);
                 });
 
             // If you use ObservableMonoBehaviour, must call base method

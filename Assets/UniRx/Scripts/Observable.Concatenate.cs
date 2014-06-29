@@ -41,7 +41,7 @@ namespace UniRx
             return Observable.Create<T>(observer =>
             {
                 var isDisposed = false;
-                var e = sources.GetEnumerator();
+                var e = sources.ToSafeEnumerable().GetEnumerator();
                 var subscription = new SerialDisposable();
                 var gate = new object();
 
