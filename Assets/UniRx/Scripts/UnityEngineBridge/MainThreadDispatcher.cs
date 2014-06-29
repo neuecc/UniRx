@@ -8,7 +8,7 @@ namespace UniRx
     public class MainThreadDispatcher : MonoBehaviour
     {
         static object gate = new object();
-        Queue<Action> actionQueue = new Queue<Action>();
+        List<Action> actionList = new List<Action>();
 
         static MainThreadDispatcher instance;
         static bool initialized;
@@ -47,19 +47,21 @@ namespace UniRx
 
         public void Update()
         {
+            Action[] actions;
             lock (gate)
             {
-                while (actionQueue.Count != 0)
+                actions = actionList.ToArray();
+                actionList.Clear();
+            }
+            foreach (var action in actions)
+            {
+                try
                 {
-                    var action = actionQueue.Dequeue();
-                    try
-                    {
-                        action();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogException(ex); // Is log can't handle...?
-                    }
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogException(ex); // Is log can't handle...?
                 }
             }
         }
@@ -68,16 +70,13 @@ namespace UniRx
         {
             lock (gate)
             {
-                Instance.actionQueue.Enqueue(item);
+                Instance.actionList.Add(item);
             }
         }
 
         new public static Coroutine StartCoroutine(IEnumerator routine)
         {
-            lock (gate)
-            {
-                return Instance.StartCoroutine_Auto(routine);
-            }
+            return Instance.StartCoroutine_Auto(routine);
         }
     }
 }
