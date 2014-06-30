@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.UniRx.CSharp", "UnityVS.UniRx.CSharp.csproj", "{55DB241B-2717-422C-3093-18D20F58B73B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Tests", "Tests\UniRx.Tests\UniRx.Tests.csproj", "{BED8E326-96B5-4B12-8834-FBEB3FA11C04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Console", "Tests\UniRx.Console\UniRx.Console.csproj", "{EFD2ABC3-ED2B-4DC5-8253-F097F5A73D3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +23,10 @@ Global
 		{BED8E326-96B5-4B12-8834-FBEB3FA11C04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BED8E326-96B5-4B12-8834-FBEB3FA11C04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BED8E326-96B5-4B12-8834-FBEB3FA11C04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFD2ABC3-ED2B-4DC5-8253-F097F5A73D3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFD2ABC3-ED2B-4DC5-8253-F097F5A73D3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFD2ABC3-ED2B-4DC5-8253-F097F5A73D3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFD2ABC3-ED2B-4DC5-8253-F097F5A73D3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
