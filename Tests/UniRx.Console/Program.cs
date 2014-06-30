@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace UniRx
 {
     // Check AOT Compile for mono 2.6.7 compile with [mono --full-aot]
 
     public struct MyStruct
+    {
+        public int MyProperty { get; set; }
+        public string MyProperty2 { get; set; }
+    }
+
+    public class MyClass
     {
         public int MyProperty { get; set; }
         public string MyProperty2 { get; set; }
@@ -36,8 +43,8 @@ namespace UniRx
             Console.WriteLine(a.GetHashCode());
         }
 
-
         static void Main(string[] args)
+        // static void Main2(string[] args)
         {
             Test("ReturnEmpty", () => Observable.Return(1).Subscribe());
 
@@ -46,6 +53,12 @@ namespace UniRx
 
             Test("Range", () => Observable.Range(1, 3).Subscribe(x => Console.WriteLine(x)));
 
+            Test("IgnoreElements", () => Observable.Range(1, 3).IgnoreElements().Subscribe(x => Console.WriteLine(x)));
+
+            Test("DefaultIfEmpty", () => Observable.Empty<int>().DefaultIfEmpty(100).Subscribe(x => Console.WriteLine(x)));
+
+            Test("ToArray", () => Observable.Range(1, 3).ToArray().Subscribe(xs => Console.WriteLine(xs.Length)));
+
             Test("Complex", () => Observable.Return(1)
                 .SelectMany(_ => new[] { new MyStruct(), new MyStruct() })
                 .Where(x => true)
@@ -53,6 +66,20 @@ namespace UniRx
                 {
                     Console.WriteLine("done");
                 }));
+        }
+
+        // static void Main(string[] args)
+        static void Main2(string[] args) // Check AOT Exception Pattern
+        {
+            int x = 100;
+            Interlocked.CompareExchange(ref x, 10, 20); // safe
+
+            object x2 = new object();
+            Interlocked.CompareExchange(ref x2, new object(), new object()); // safe
+
+            MyClass mc = new MyClass();
+            var hoge = Interlocked.CompareExchange<MyClass>(ref mc, new MyClass(), new MyClass()); // death
+            Console.WriteLine(hoge.MyProperty);
         }
     }
 }

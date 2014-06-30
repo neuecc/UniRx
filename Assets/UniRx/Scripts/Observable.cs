@@ -556,7 +556,7 @@ namespace UniRx
         {
             return Observable.Create<T>(observer =>
             {
-                return source.Subscribe(_ => { }, observer.OnError, observer.OnCompleted);
+                return source.Subscribe(Stubs.Ignore<T>, observer.OnError, observer.OnCompleted);
             });
         }
     }
