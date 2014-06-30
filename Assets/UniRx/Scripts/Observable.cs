@@ -117,12 +117,123 @@ namespace UniRx
 
         public static IObservable<TResult> SelectMany<TSource, TResult>(this IObservable<TSource> source, Func<TSource, IEnumerable<TResult>> selector)
         {
-            return SelectMany<TSource, TResult, TResult>(source, selector, (_, x) => x);
+            return new AnonymousObservable<TResult>(observer =>
+                source.Subscribe(
+                    x =>
+                    {
+                        var xs = default(IEnumerable<TResult>);
+                        try
+                        {
+                            xs = selector(x);
+                        }
+                        catch (Exception exception)
+                        {
+                            observer.OnError(exception);
+                            return;
+                        }
+
+                        var e = xs.ToSafeEnumerable().GetEnumerator();
+
+                        try
+                        {
+                            var hasNext = true;
+                            while (hasNext)
+                            {
+                                hasNext = false;
+                                var current = default(TResult);
+
+                                try
+                                {
+                                    hasNext = e.MoveNext();
+                                    if (hasNext)
+                                    {
+                                        current = e.Current;
+                                    }
+                                }
+                                catch (Exception exception)
+                                {
+                                    observer.OnError(exception);
+                                    return;
+                                }
+
+                                if (hasNext)
+                                {
+                                    observer.OnNext(current);
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            if (e != null)
+                            {
+                                e.Dispose();
+                            }
+                        }
+                    },
+                    observer.OnError,
+                    observer.OnCompleted
+                )
+            );
         }
 
         public static IObservable<TResult> SelectMany<TSource, TResult>(this IObservable<TSource> source, Func<TSource, int, IEnumerable<TResult>> selector)
         {
-            return SelectMany<TSource, TResult, TResult>(source, selector, (_, __, x, ___) => x);
+            return Observable.Create<TResult>(observer =>
+            {
+                var index = 0;
+
+                return source.Subscribe(
+                    x =>
+                    {
+                        var xs = default(IEnumerable<TResult>);
+                        try
+                        {
+                            xs = selector(x, checked(index++));
+                        }
+                        catch (Exception exception)
+                        {
+                            observer.OnError(exception);
+                            return;
+                        }
+
+                        var e = xs.ToSafeEnumerable().GetEnumerator();
+
+                        try
+                        {
+                            var hasNext = true;
+                            while (hasNext)
+                            {
+                                hasNext = false;
+                                var current = default(TResult);
+
+                                try
+                                {
+                                    hasNext = e.MoveNext();
+                                    if (hasNext)
+                                    {
+                                        current = e.Current;
+                                    }
+                                }
+                                catch (Exception exception)
+                                {
+                                    observer.OnError(exception);
+                                    return;
+                                }
+
+                                if (hasNext)
+                                    observer.OnNext(current);
+                            }
+                        }
+                        finally
+                        {
+                            if (e != null)
+                                e.Dispose();
+                        }
+                    },
+                    observer.OnError,
+                    observer.OnCompleted
+                );
+            });
         }
 
         public static IObservable<TResult> SelectMany<TSource, TCollection, TResult>(this IObservable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
