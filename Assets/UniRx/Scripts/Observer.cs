@@ -138,5 +138,11 @@ namespace UniRx
         public static void Ignore<T>(T t)
         {
         }
+
+        // marker for CatchIgnore and Catch avoid iOS AOT problem.
+        public static IObservable<TSource> CatchIgnore<TSource>(Exception ex)
+        {
+            return Observable.Empty<TSource>();
+        }
     }
 }

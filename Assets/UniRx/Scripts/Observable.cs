@@ -20,6 +20,19 @@ namespace UniRx
     {
         static readonly TimeSpan InfiniteTimeSpan = new TimeSpan(0, 0, 0, 0, -1); // from .NET 4.5
 
+        public static IObservable<TResult> Cast<TSource, TResult>(this IObservable<TSource> source)
+        {
+            return source.Select(x => (TResult)(object)x);
+        }
+
+        /// <summary>
+        /// witness is for type inference.
+        /// </summary>
+        public static IObservable<TResult> Cast<TSource, TResult>(this IObservable<TSource> source, TResult witness)
+        {
+            return source.Select(x => (TResult)(object)x);
+        }
+
         public static IObservable<TR> Select<T, TR>(this IObservable<T> source, Func<T, TR> selector)
         {
             return Select(source, (x, i) => selector(x));
@@ -143,7 +156,9 @@ namespace UniRx
                                 {
                                     hasNext = e.MoveNext();
                                     if (hasNext)
+                                    {
                                         current = resultSelector(x, e.Current);
+                                    }
                                 }
                                 catch (Exception exception)
                                 {
@@ -152,13 +167,17 @@ namespace UniRx
                                 }
 
                                 if (hasNext)
+                                {
                                     observer.OnNext(current);
+                                }
                             }
                         }
                         finally
                         {
                             if (e != null)
+                            {
                                 e.Dispose();
+                            }
                         }
                     },
                     observer.OnError,
@@ -169,7 +188,7 @@ namespace UniRx
 
         public static IObservable<TResult> SelectMany<TSource, TCollection, TResult>(this IObservable<TSource> source, Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, int, TCollection, int, TResult> resultSelector)
         {
-            return Observable.Create<TResult>(observer => 
+            return Observable.Create<TResult>(observer =>
             {
                 var index = 0;
 
@@ -247,17 +266,17 @@ namespace UniRx
 
         public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext)
         {
-            return Do(source, onNext, _ => { }, () => { });
+            return Do(source, onNext, Stubs.Throw, Stubs.Nop);
         }
 
         public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError)
         {
-            return Do(source, onNext, onError, () => { });
+            return Do(source, onNext, onError, Stubs.Nop);
         }
 
         public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted)
         {
-            return Do(source, onNext, _ => { }, onCompleted);
+            return Do(source, onNext, Stubs.Throw, onCompleted);
         }
 
         public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted)

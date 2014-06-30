@@ -46,7 +46,14 @@ namespace UniRx
                             IObservable<T> next;
                             try
                             {
-                                next = errorHandler(e);
+                                if (errorHandler == Stubs.CatchIgnore<T>)
+                                {
+                                    next = Observable.Empty<T>(); // for avoid iOS AOT
+                                }
+                                else
+                                {
+                                    next = errorHandler(e);
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -145,8 +152,7 @@ namespace UniRx
         /// <summary>Catch exception and return Observable.Empty.</summary>
         public static IObservable<TSource> CatchIgnore<TSource>(this IObservable<TSource> source)
         {
-            var result = source.Catch<TSource, Exception>(ex => Observable.Empty<TSource>());
-            return result;
+            return source.Catch<TSource, Exception>(Stubs.CatchIgnore<TSource>);
         }
 
         /// <summary>Catch exception and return Observable.Empty.</summary>
