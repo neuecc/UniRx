@@ -52,7 +52,10 @@ namespace UniRx
                     var noError = false;
                     try
                     {
-                        onNext(value);
+                        if (onNext != Stubs.Ignore<T>) // need compare for avoid iOS AOT
+                        {
+                            onNext(value);
+                        }
                         noError = true;
                     }
                     finally
@@ -102,27 +105,38 @@ namespace UniRx
     {
         public static IDisposable Subscribe<T>(this IObservable<T> source)
         {
-            return source.Subscribe(Observer.Create<T>(_ => { }, e => { throw e; }, () => { }));
+            return source.Subscribe(Observer.Create<T>(Stubs.Ignore<T>, Stubs.Throw, Stubs.Nop));
         }
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext)
         {
-            return source.Subscribe(Observer.Create(onNext, e => { throw e; }, () => { }));
+            return source.Subscribe(Observer.Create(onNext, Stubs.Throw, Stubs.Nop));
         }
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError)
         {
-            return source.Subscribe(Observer.Create(onNext, onError, () => { }));
+            return source.Subscribe(Observer.Create(onNext, onError, Stubs.Nop));
         }
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted)
         {
-            return source.Subscribe(Observer.Create(onNext, e => { throw e; }, onCompleted));
+            return source.Subscribe(Observer.Create(onNext, Stubs.Throw, onCompleted));
         }
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted)
         {
             return source.Subscribe(Observer.Create(onNext, onError, onCompleted));
+        }
+    }
+
+    internal static class Stubs
+    {
+        public static readonly Action Nop = () => { };
+        public static readonly Action<Exception> Throw = ex => { throw ex; };
+
+        // Stubs<T>.Ignore can't avoid iOS AOT problem.
+        public static void Ignore<T>(T t)
+        {
         }
     }
 }
