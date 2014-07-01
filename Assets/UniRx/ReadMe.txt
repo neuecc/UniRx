@@ -149,7 +149,7 @@ public static IObservable<string> GetWWW(string url)
 }
 
 // IObserver is callback publisher
-// note: Prinviples of IObserver is "OnNext* (OnError | Oncompleted)?" 
+// note: Principles of IObserver is "OnNext* (OnError | Oncompleted)?" 
 static IEnumerator GetWWWCore(string url, IObserver<string> observer, CancellationToken cancellationToken)
 {
     var www = new UnityEngine.WWW(url);
