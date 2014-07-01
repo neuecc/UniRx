@@ -385,7 +385,10 @@ namespace UniRx
                 {
                     try
                     {
-                        onNext(x);
+                        if (onNext != Stubs.Ignore<T>)
+                        {
+                            onNext(x);
+                        }
                     }
                     catch (Exception ex)
                     {

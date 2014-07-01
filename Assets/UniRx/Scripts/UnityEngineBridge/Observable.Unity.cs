@@ -185,7 +185,7 @@ namespace UniRx
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
         public static IEnumerator ToCoroutine<T>(this IObservable<T> source)
         {
-            return ToCoroutine<T>(source, _ => { }, _ => { }, () => { });
+            return ToCoroutine<T>(source, Stubs.Ignore<T>, Stubs.Throw, Stubs.Nop);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
@@ -197,19 +197,19 @@ namespace UniRx
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
         public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext)
         {
-            return ToCoroutine<T>(source, onNext, _ => { }, () => { });
+            return ToCoroutine<T>(source, onNext, Stubs.Throw, Stubs.Nop);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
         public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError)
         {
-            return ToCoroutine<T>(source, onNext, onError, () => { });
+            return ToCoroutine<T>(source, onNext, onError, Stubs.Nop);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
         public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted)
         {
-            return ToCoroutine<T>(source, onNext, _ => { }, onCompleted);
+            return ToCoroutine<T>(source, onNext, Stubs.Throw, onCompleted);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
