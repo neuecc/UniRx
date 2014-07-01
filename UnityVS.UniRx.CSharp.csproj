@@ -55,6 +55,7 @@
     <Compile Include="Assets\UniRx\Examples\Sample4_ConvertFromUnityCallback.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample5_ConvertFromCoroutine.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample6_ConvertToCoroutine.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample7_OrchestratIEnumerator.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\BooleanDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\CompositeDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\Disposable.cs" />

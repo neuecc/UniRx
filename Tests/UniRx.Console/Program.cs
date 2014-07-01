@@ -66,6 +66,10 @@ namespace UniRx
                 {
                     Console.WriteLine("done");
                 }));
+
+            Test("Where", () => Observable.Range(1, 5).Where(x => x % 2 == 0).Subscribe());
+
+            Test("SkipWhile", () => Observable.Range(1, 5).SkipWhile(x => x <= 3).Subscribe(Console.WriteLine));
         }
 
         // static void Main(string[] args)
