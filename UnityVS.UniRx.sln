@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
-MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.UniRx.CSharp", "UnityVS.UniRx.CSharp.csproj", "{55DB241B-2717-422C-3093-18D20F58B73B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Tests", "Tests\UniRx.Tests\UniRx.Tests.csproj", "{BED8E326-96B5-4B12-8834-FBEB3FA11C04}"

@@ -74,14 +74,30 @@ namespace UniRx
             });
         }
 
-        public static IObservable<T> Cast<T>(this IObservable<object> source)
+        public static IObservable<TResult> Cast<TSource, TResult>(this IObservable<TSource> source)
         {
-            return source.Select(x => (T)source);
+            return source.Select(x => (TResult)(object)x);
         }
 
-        public static IObservable<T> OfType<T>(this IObservable<object> source)
+        /// <summary>
+        /// witness is for type inference.
+        /// </summary>
+        public static IObservable<TResult> Cast<TSource, TResult>(this IObservable<TSource> source, TResult witness)
         {
-            return source.Where(x => x is T).Cast<T>();
+            return source.Select(x => (TResult)(object)x);
+        }
+
+        public static IObservable<TResult> OfType<TSource, TResult>(this IObservable<TSource> source)
+        {
+            return source.Where(x => x is TResult).Select(x => (TResult)(object)x);
+        }
+
+        /// <summary>
+        /// witness is for type inference.
+        /// </summary>
+        public static IObservable<TResult> OfType<TSource, TResult>(this IObservable<TSource> source, TResult witness)
+        {
+            return source.Where(x => x is TResult).Select(x => (TResult)(object)x);
         }
     }
 }
