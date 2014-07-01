@@ -38,6 +38,52 @@ namespace UniRx.Tests
         }
 
         [TestMethod]
+        public void BufferSkip()
+        {
+            // count > skip
+            {
+                var xs = Observable.Range(1, 10).Buffer(count: 3, skip: 1)
+                    .ToArray()
+                    .Wait();
+
+                xs[0].Is(1, 2, 3);
+                xs[1].Is(2, 3, 4);
+                xs[2].Is(3, 4, 5);
+                xs[3].Is(4, 5, 6);
+                xs[4].Is(5, 6, 7);
+                xs[5].Is(6, 7, 8);
+                xs[6].Is(7, 8, 9);
+                xs[7].Is(8, 9, 10);
+                xs[8].Is(9, 10);
+                xs[9].Is(10);
+            }
+
+            // count == skip
+            {
+                var xs = Observable.Range(1, 10).Buffer(count: 3, skip: 3)
+                    .ToArray()
+                    .Wait();
+
+                xs[0].Is(1, 2, 3);
+                xs[1].Is(4, 5, 6);
+                xs[2].Is(7, 8, 9);
+                xs[3].Is(10);
+            }
+
+            // count < skip
+            {
+                var xs = Observable.Range(1, 20).Buffer(count: 3, skip: 5)
+                    .ToArray()
+                    .Wait();
+
+                xs[0].Is(1, 2, 3);
+                xs[1].Is(6, 7, 8);
+                xs[2].Is(11, 12, 13);
+                xs[3].Is(16, 17, 18);
+            }
+        }
+
+        [TestMethod]
         public void First()
         {
             var s = new Subject<int>();

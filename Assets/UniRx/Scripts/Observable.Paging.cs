@@ -210,6 +210,51 @@ namespace UniRx
             });
         }
 
+        public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, int count, int skip)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (count <= 0) throw new ArgumentOutOfRangeException("count <= 0");
+            if (skip <= 0) throw new ArgumentOutOfRangeException("skip <= 0");
+
+            return Observable.Create<IList<T>>(observer =>
+            {
+                var q = new Queue<List<T>>();
+
+                var index = -1;
+                return source.Subscribe(x =>
+                {
+                    index++;
+
+                    if (index % skip == 0)
+                    {
+                        q.Enqueue(new List<T>(count));
+                    }
+
+                    var len = q.Count;
+                    for (int i = 0; i < len; i++)
+			        {
+                        var list = q.Dequeue();
+                        list.Add(x);
+                        if(list.Count == count)
+                        {
+                            observer.OnNext(list);
+                        }
+                        else
+	                    {
+                            q.Enqueue(list);
+	                    }
+			        }
+                }, observer.OnError, () =>
+                {
+                    foreach (var list in q)
+                    {
+                        observer.OnNext(list);
+                    }
+                    observer.OnCompleted();
+                });
+            });
+        }
+
         public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, TimeSpan timeSpan)
         {
             return Buffer(source, timeSpan, Scheduler.ThreadPool);
