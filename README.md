@@ -328,6 +328,9 @@ Unity specified extra gems
 Scheduler.MainThreadScheduler 
 ObserveOnMainThread()/SubscribeOnMainThread()
 
+// Global StartCoroutine runner
+MainThreadDispatcher.StartCoroutine(enumerator)
+
 // push value on every update time
 Observable.EveryUpdate().Subscribe();
 
@@ -343,6 +346,21 @@ Observable.FromCoroutine((observer, token) => enumerator(observer, token));
 // convert IObservable to Coroutine
 Observable.Range(1, 10).ToCoroutine();
 ```
+
+vs iOS AOT
+---
+UniRx has AotSafe Utilities.
+
+```csharp
+// create safety iterator
+Enumerable.Range(1, 10).AsSafeEnumerable().ToArray();
+
+// elements wrap to class
+Enumerable.Range(1, 10).WrapValueToClass(); // IEnumerable<Tuple<int>>
+Observable.Range(1, 10).WrapValueToClass(); // IObservable<Tuple<int>>
+```
+
+Please see [AOT Exception Patterns and Hacks](https://github.com/neuecc/UniRx/wiki/AOT-Exception-Patterns-and-Hacks).
 
 Reference
 ---
