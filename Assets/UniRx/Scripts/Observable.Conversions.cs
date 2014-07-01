@@ -26,7 +26,7 @@ namespace UniRx
                 IEnumerator<T> e;
                 try
                 {
-                    e = source.ToSafeEnumerable().GetEnumerator();
+                    e = source.AsSafeEnumerable().GetEnumerator();
                 }
                 catch (Exception ex)
                 {

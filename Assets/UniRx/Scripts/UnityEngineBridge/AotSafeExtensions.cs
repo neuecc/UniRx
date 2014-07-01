@@ -6,7 +6,7 @@ namespace UniRx
 {
     public static class AotSafeExtensions
     {
-        public static IEnumerable<T> ToSafeEnumerable<T>(this IEnumerable<T> source)
+        public static IEnumerable<T> AsSafeEnumerable<T>(this IEnumerable<T> source)
         {
             var e = ((IEnumerable)source).GetEnumerator();
             using (e as IDisposable)

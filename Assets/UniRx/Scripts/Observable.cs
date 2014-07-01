@@ -119,7 +119,7 @@ namespace UniRx
                             return;
                         }
 
-                        var e = xs.ToSafeEnumerable().GetEnumerator();
+                        var e = xs.AsSafeEnumerable().GetEnumerator();
 
                         try
                         {
@@ -183,7 +183,7 @@ namespace UniRx
                             return;
                         }
 
-                        var e = xs.ToSafeEnumerable().GetEnumerator();
+                        var e = xs.AsSafeEnumerable().GetEnumerator();
 
                         try
                         {
@@ -240,7 +240,7 @@ namespace UniRx
                             return;
                         }
 
-                        var e = xs.ToSafeEnumerable().GetEnumerator();
+                        var e = xs.AsSafeEnumerable().GetEnumerator();
 
                         try
                         {
@@ -304,7 +304,7 @@ namespace UniRx
                             return;
                         }
 
-                        var e = xs.ToSafeEnumerable().GetEnumerator();
+                        var e = xs.AsSafeEnumerable().GetEnumerator();
 
                         try
                         {
