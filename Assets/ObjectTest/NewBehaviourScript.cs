@@ -14,6 +14,16 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         //_____cancel = Observable.EveryUpdate()
         //  .Subscribe(_ => Debug.Log(DateTime.Now.ToString()));
 
+        var a = DateTime.Now.Ticks;
+        Debug.Log(a);
+        Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(3200), () =>
+        {
+            var b = DateTime.Now.Ticks;
+            Debug.Log(b);
+
+            Debug.Log(new TimeSpan(b - a));
+        });
+
         base.Awake();
     }
 

@@ -29,9 +29,29 @@ namespace UniRx
 
             IEnumerator DelayAction(TimeSpan dueTime, Action action)
             {
-                // lack of accuracy, should be change impl?
-                yield return new WaitForSeconds((float)dueTime.TotalSeconds);
-                MainThreadDispatcher.Post(action);
+                if (dueTime == TimeSpan.Zero)
+                {
+                    MainThreadDispatcher.Post(action);
+                }
+                else if (dueTime.TotalMilliseconds % 1000 == 0)
+                {
+                    yield return new WaitForSeconds((float)dueTime.TotalSeconds);
+                    MainThreadDispatcher.Post(action);
+                }
+                else
+                {
+                    var startTime = DateTime.Now;
+                    while (true)
+                    {
+                        yield return null;
+                        var now = DateTime.Now;
+                        if ((now - startTime) >= dueTime)
+                        {
+                            MainThreadDispatcher.Post(action);
+                            break;
+                        }
+                    }
+                }
             }
 
             public DateTimeOffset Now
@@ -60,7 +80,9 @@ namespace UniRx
             public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
                 var d = new BooleanDisposable();
-                MainThreadDispatcher.StartCoroutine(DelayAction(dueTime, () =>
+                var time = Normalize(dueTime);
+
+                MainThreadDispatcher.StartCoroutine(DelayAction(time, () =>
                 {
                     if (!d.IsDisposed)
                     {
