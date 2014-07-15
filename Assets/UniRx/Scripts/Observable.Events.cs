@@ -27,5 +27,25 @@ namespace UniRx
                 return Disposable.Create(() => removeHandler(handler));
             });
         }
+
+        public static IObservable<Unit> FromEvent(Action<Action> addHandler, Action<Action> removeHandler)
+        {
+            return Observable.Create<Unit>(observer =>
+            {
+                Action handler = () => observer.OnNext(Unit.Default);
+                addHandler(handler);
+                return Disposable.Create(() => removeHandler(handler));
+            });
+        }
+
+        public static IObservable<T> FromEvent<T>(Action<Action<T>> addHandler, Action<Action<T>> removeHandler)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                Action<T> handler = x => observer.OnNext(x);
+                addHandler(handler);
+                return Disposable.Create(() => removeHandler(handler));
+            });
+        }
     }
 }

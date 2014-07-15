@@ -156,22 +156,22 @@ namespace UniRx.Tests
 
             {
                 var isRaised = false;
-                var d = Observable.FromEvent<MyEventHandler, MyEventArgs>(
-                    h => (sender, e) => h.Invoke(e),
-                    h => test.Event3 += h, h => test.Event3 -= h)
+                var d = Observable.FromEvent<Action, Unit>(
+                    h => () => h(Unit.Default),
+                    h => test.Event4 += h, h => test.Event4 -= h)
                     .Subscribe(x => isRaised = true);
-                test.Fire(3);
+                test.Fire(4);
                 isRaised.IsTrue();
                 isRaised = false;
                 d.Dispose();
-                test.Fire(3);
+                test.Fire(4);
                 isRaised.IsFalse();
             }
 
+            // shortcut
             {
                 var isRaised = false;
-                var d = Observable.FromEvent<Action, Unit>(
-                    h => () => h(Unit.Default),
+                var d = Observable.FromEvent(
                     h => test.Event4 += h, h => test.Event4 -= h)
                     .Subscribe(x => isRaised = true);
                 test.Fire(4);
@@ -186,6 +186,20 @@ namespace UniRx.Tests
                 var isRaised = false;
                 var d = Observable.FromEvent<Action<int>, int>(
                     h => h,
+                    h => test.Event5 += h, h => test.Event5 -= h)
+                    .Subscribe(x => isRaised = true);
+                test.Fire(5);
+                isRaised.IsTrue();
+                isRaised = false;
+                d.Dispose();
+                test.Fire(5);
+                isRaised.IsFalse();
+            }
+
+            // shortcut
+            {
+                var isRaised = false;
+                var d = Observable.FromEvent<int>(
                     h => test.Event5 += h, h => test.Event5 -= h)
                     .Subscribe(x => isRaised = true);
                 test.Fire(5);
