@@ -103,8 +103,15 @@ namespace UniRx
                 }));
             });
         }
+        public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources)
+        {
+            return Merge(sources.ToObservable(Scheduler.Immediate));
+        }
 
-
+        public static IObservable<TSource> Merge<TSource>(params IObservable<TSource>[] sources)
+        {
+            return Merge(sources.ToObservable(Scheduler.Immediate));
+        }
 
         public static IObservable<T> Merge<T>(this IObservable<IObservable<T>> sources)
         {
