@@ -652,18 +652,18 @@ namespace UniRx
             return onTriggerStay ?? (onTriggerStay = new Subject<Collider>());
         }
 
-        Subject<Unit> onTriggerStay2D;
+        Subject<Collider2D> onTriggerStay2D;
 
         /// <summary>Sent each frame where another object is within a trigger collider attached to this object (2D physics only).</summary>
         public override void OnTriggerStay2D(Collider2D other)
         {
-            if (onTriggerStay2D != null) onTriggerStay2D.OnNext(Unit.Default);
+            if (onTriggerStay2D != null) onTriggerStay2D.OnNext(other);
         }
 
         /// <summary>Sent each frame where another object is within a trigger collider attached to this object (2D physics only).</summary>
-        public IObservable<Unit> OnTriggerStay2DAsObservable()
+        public IObservable<Collider2D> OnTriggerStay2DAsObservable()
         {
-            return onTriggerStay2D ?? (onTriggerStay2D = new Subject<Unit>());
+            return onTriggerStay2D ?? (onTriggerStay2D = new Subject<Collider2D>());
         }
 
         Subject<Unit> onValidate;
