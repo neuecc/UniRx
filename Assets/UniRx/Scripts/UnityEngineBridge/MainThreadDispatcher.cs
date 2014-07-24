@@ -50,6 +50,8 @@ namespace UniRx
             Action[] actions;
             lock (gate)
             {
+                if (actionList.Count == 0) return;
+
                 actions = actionList.ToArray();
                 actionList.Clear();
             }
