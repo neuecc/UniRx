@@ -11,18 +11,14 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
     public override void Awake()
     {
-        //_____cancel = Observable.EveryUpdate()
-        //  .Subscribe(_ => Debug.Log(DateTime.Now.ToString()));
+        Observable.EveryApplicationFocus()
+            .Subscribe(x => Debug.Log("focus:" + x));
 
-        var a = DateTime.Now.Ticks;
-        Debug.Log(a);
-        Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(3200), () =>
-        {
-            var b = DateTime.Now.Ticks;
-            Debug.Log(b);
+        Observable.EveryApplicationPause()
+            .Subscribe(x => Debug.Log("pause:" + x));
 
-            Debug.Log(new TimeSpan(b - a));
-        });
+        Observable.OnceApplicationQuit()
+            .Subscribe(_ => Debug.Log("Quit!"));
 
         base.Awake();
     }

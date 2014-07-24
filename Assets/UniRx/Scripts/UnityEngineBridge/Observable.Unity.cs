@@ -255,5 +255,21 @@ namespace UniRx
         {
             return source.SubscribeOn(Scheduler.MainThread);
         }
+
+        public static IObservable<bool> EveryApplicationPause()
+        {
+            return MainThreadDispatcher.OnApplicationPauseAsObservable().AsObservable();
+        }
+
+        public static IObservable<bool> EveryApplicationFocus()
+        {
+            return MainThreadDispatcher.OnApplicationFocusAsObservable().AsObservable();
+        }
+
+        /// <summary>publish OnNext(Unit) and OnCompleted() on application quit.</summary>
+        public static IObservable<Unit> OnceApplicationQuit()
+        {
+            return MainThreadDispatcher.OnApplicationQuitAsObservable().Take(1);
+        }
     }
 }

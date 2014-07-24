@@ -7,6 +7,21 @@ namespace UniRx
 {
     public class MainThreadDispatcher : MonoBehaviour
     {
+        // Public Commands
+        public static void Post(Action item)
+        {
+            lock (gate)
+            {
+                Instance.actionList.Add(item);
+            }
+        }
+
+        new public static Coroutine StartCoroutine(IEnumerator routine)
+        {
+            return Instance.StartCoroutine_Auto(routine);
+        }
+
+
         static object gate = new object();
         List<Action> actionList = new List<Action>();
 
@@ -36,7 +51,6 @@ namespace UniRx
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
                 DontDestroyOnLoad(instance);
             }
-
         }
 
         void Awake()
@@ -45,7 +59,7 @@ namespace UniRx
             initialized = true;
         }
 
-        public void Update()
+        void Update()
         {
             Action[] actions;
             lock (gate)
@@ -68,17 +82,36 @@ namespace UniRx
             }
         }
 
-        public static void Post(Action item)
+        // for Lifecycle Management
+
+        Subject<bool> onApplicationFocus;
+        void OnApplicationFocus(bool focus)
         {
-            lock (gate)
-            {
-                Instance.actionList.Add(item);
-            }
+            if (onApplicationFocus != null) onApplicationFocus.OnNext(focus);
+        }
+        public static IObservable<bool> OnApplicationFocusAsObservable()
+        {
+            return Instance.onApplicationFocus ?? (Instance.onApplicationFocus = new Subject<bool>());
         }
 
-        new public static Coroutine StartCoroutine(IEnumerator routine)
+        Subject<bool> onApplicationPause;
+        void OnApplicationPause(bool pause)
         {
-            return Instance.StartCoroutine_Auto(routine);
+            if (onApplicationPause != null) onApplicationPause.OnNext(pause);
+        }
+        public static IObservable<bool> OnApplicationPauseAsObservable()
+        {
+            return Instance.onApplicationPause ?? (Instance.onApplicationPause = new Subject<bool>());
+        }
+
+        Subject<Unit> onApplicationQuit;
+        void OnApplicationQuit()
+        {
+            if (onApplicationQuit != null) onApplicationQuit.OnNext(Unit.Default);
+        }
+        public static IObservable<Unit> OnApplicationQuitAsObservable()
+        {
+            return Instance.onApplicationQuit ?? (Instance.onApplicationQuit = new Subject<Unit>());
         }
     }
 }
