@@ -146,6 +146,21 @@ namespace UniRx
             }
         }
 
+        public static IObservable<long> EveryEndOfFrame()
+        {
+            return FromCoroutine<long>((observer, cancellationToken) => EveryEndOfFrameCore(observer, cancellationToken));
+        }
+
+        static IEnumerator EveryEndOfFrameCore(IObserver<long> observer, CancellationToken cancellationToken)
+        {
+            var count = 0L;
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                yield return new UnityEngine.WaitForEndOfFrame();
+                observer.OnNext(count++);
+            }
+        }
+
         public static IObservable<T> DelayFrame<T>(this IObservable<T> source, int frameCount)
         {
             if (frameCount < 0) throw new ArgumentOutOfRangeException("frameCount");
