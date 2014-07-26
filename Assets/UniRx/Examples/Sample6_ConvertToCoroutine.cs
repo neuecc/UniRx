@@ -9,13 +9,10 @@ namespace UniRx.Examples
         // convert IObservable to Coroutine
         new public IEnumerator Start()
         {
-            var enumerator = Observable.Range(1, 10)
-              .ToAwaitableEnumerator(
-                  x => Debug.Log(x),
-                  ex => Debug.Log(ex),
-                  () => Debug.Log("completed"));
+            var v = default(int);
+            yield return Observable.Range(1, 10).StartAsCoroutine(x => v = x);
 
-            yield return StartCoroutine(enumerator);
+            Debug.Log(v); // 10(callback is last value)
         }
     }
 }

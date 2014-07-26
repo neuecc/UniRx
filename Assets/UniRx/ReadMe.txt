@@ -346,7 +346,7 @@ Observable.Return(42).DelayFrame(10);
 Observable.FromCoroutine((observer, token) => enumerator(observer, token)); 
 
 // convert IObservable to Coroutine
-Observable.Range(1, 10).ToCoroutine();
+yield return Observable.Range(1, 10).StartAsCoroutine();
 ```
 
 vs iOS AOT

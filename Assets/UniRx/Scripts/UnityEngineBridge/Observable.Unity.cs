@@ -200,45 +200,34 @@ namespace UniRx
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, CancellationToken cancel = default(CancellationToken))
         {
-            return ToAwaitableEnumerator<T>(source, Stubs.Ignore<T>, Stubs.Throw, Stubs.Nop, cancel);
+            return ToAwaitableEnumerator<T>(source, Stubs.Ignore<T>, Stubs.Throw, cancel);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, IObserver<T> observer, CancellationToken cancel = default(CancellationToken))
+        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onResult, CancellationToken cancel = default(CancellationToken))
         {
-            return ToAwaitableEnumerator<T>(source, observer.OnNext, observer.OnError, observer.OnCompleted, cancel);
+            return ToAwaitableEnumerator<T>(source, onResult, Stubs.Throw, cancel);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onNext, CancellationToken cancel = default(CancellationToken))
+        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
         {
-            return ToAwaitableEnumerator<T>(source, onNext, Stubs.Throw, Stubs.Nop, cancel);
+            return ToAwaitableEnumerator<T>(source, Stubs.Ignore<T>, onError, cancel);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
+        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onResult, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
         {
-            return ToAwaitableEnumerator<T>(source, onNext, onError, Stubs.Nop, cancel);
-        }
-
-        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted, CancellationToken cancel = default(CancellationToken))
-        {
-            return ToAwaitableEnumerator<T>(source, onNext, Stubs.Throw, onCompleted, cancel);
-        }
-
-        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted, CancellationToken cancel = default(CancellationToken))
-        {
+            if (cancel == null) cancel = CancellationToken.Empty;
             var running = true;
 
             var subscription = source
-                .Do(onNext, onError, onCompleted)
+                .LastOrDefault()
+                .Do(onResult, onError, Stubs.Nop)
                 .ObserveOnMainThread()
                 .SubscribeOnMainThread()
-                .Subscribe(
-                    ex => { running = false; },
-                    () => { running = false; });
+                .Finally(() => running = false)
+                .Subscribe();
 
             while (running && !cancel.IsCancellationRequested)
             {
@@ -249,6 +238,30 @@ namespace UniRx
             {
                 subscription.Dispose();
             }
+        }
+
+        /// <summary>AutoStart observable as coroutine.</summary>
+        public static Coroutine StartAsCoroutine<T>(this IObservable<T> source, CancellationToken cancel = default(CancellationToken))
+        {
+            return StartAsCoroutine<T>(source, Stubs.Ignore<T>, Stubs.Throw, cancel);
+        }
+
+        /// <summary>AutoStart observable as coroutine.</summary>
+        public static Coroutine StartAsCoroutine<T>(this IObservable<T> source, Action<T> onResult, CancellationToken cancel = default(CancellationToken))
+        {
+            return StartAsCoroutine<T>(source, onResult, Stubs.Throw, cancel);
+        }
+
+        /// <summary>AutoStart observable as coroutine.</summary>
+        public static Coroutine StartAsCoroutine<T>(this IObservable<T> source, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
+        {
+            return StartAsCoroutine<T>(source, Stubs.Ignore<T>, onError, cancel);
+        }
+
+        /// <summary>AutoStart observable as coroutine.</summary>
+        public static Coroutine StartAsCoroutine<T>(this IObservable<T> source, Action<T> onResult, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
+        {
+            return MainThreadDispatcher.StartCoroutine(source.ToAwaitableEnumerator(onResult, onError, cancel));
         }
 
         public static IObservable<T> ObserveOnMainThread<T>(this IObservable<T> source)

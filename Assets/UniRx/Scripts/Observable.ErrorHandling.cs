@@ -11,7 +11,17 @@ namespace UniRx
         {
             return Observable.Create<T>(observer =>
             {
-                var subscription = source.Subscribe(observer);
+                IDisposable subscription;
+                try
+                {
+                    subscription = source.Subscribe(observer);
+                }
+                catch
+                {
+                    // This behaviour is not same as .NET Official Rx
+                    finallyAction();
+                    throw;
+                }
 
                 return Disposable.Create(() =>
                 {
