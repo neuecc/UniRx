@@ -7,14 +7,16 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{55DB241B-2717-422C-3093-18D20F58B73B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,10 +58,6 @@
     <Compile Include="Assets\UniRx\Examples\Sample5_ConvertFromCoroutine.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample6_ConvertToCoroutine.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample7_OrchestratIEnumerator.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Diagnostics\ConsoleSink.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Diagnostics\LogEntry.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Diagnostics\Logger.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Diagnostics\ObservableLogger.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\BooleanDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\CompositeDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\Disposable.cs" />
@@ -70,6 +68,7 @@
     <Compile Include="Assets\UniRx\Scripts\Disposables\SerialDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\SingleAssignmentDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\EventPattern.cs" />
+    <Compile Include="Assets\UniRx\Scripts\InternalUtil\ListObserver.cs" />
     <Compile Include="Assets\UniRx\Scripts\Notification.cs" />
     <Compile Include="Assets\UniRx\Scripts\Notifiers\BooleanNotifier.cs" />
     <Compile Include="Assets\UniRx\Scripts\Notifiers\CountNotifier.cs" />
@@ -95,6 +94,7 @@
     <Compile Include="Assets\UniRx\Scripts\Subjects\AsyncSubject.cs" />
     <Compile Include="Assets\UniRx\Scripts\Subjects\BehaviorSubject.cs" />
     <Compile Include="Assets\UniRx\Scripts\Subjects\ConnectableObservable.cs" />
+    <Compile Include="Assets\UniRx\Scripts\InternalUtil\ImmutableList.cs" />
     <Compile Include="Assets\UniRx\Scripts\Subjects\ISubject.cs" />
     <Compile Include="Assets\UniRx\Scripts\Subjects\ReplaySubject.cs" />
     <Compile Include="Assets\UniRx\Scripts\Subjects\Subject.cs" />
@@ -105,6 +105,10 @@
     <Compile Include="Assets\UniRx\Scripts\Timestamped.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\AotSafeExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\CancellationToken.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\ConsoleSink.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\LogEntry.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\Logger.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\ObservableLogger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\UnityDebugSink.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\MainThreadDispatcher.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\MainThreadScheduler.cs" />

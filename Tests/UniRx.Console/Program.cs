@@ -74,6 +74,21 @@ namespace UniRx
             Test("FromEventPattern", () => EventAotCheck());
 
             Test("FromEvent", () => EventAotCheck2());
+
+            Test("Subject", () =>
+            {
+                var s = new Subject<int>();
+                s.Subscribe(x => Console.WriteLine(x), ex => { });
+                s.Subscribe(x => Console.WriteLine(x), ex => { });
+                var d = s.Subscribe(x => Console.WriteLine(x), ex => { });
+                s.OnNext(10);
+                s.OnNext(100);
+                d.Dispose();
+                s.OnNext(1000);
+                s.OnError(new Exception() );
+                s.OnCompleted();
+                s.Dispose();
+            });
         }
 
         static void EventAotCheck()

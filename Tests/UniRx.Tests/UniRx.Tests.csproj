@@ -87,14 +87,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\UnityVS.UniRx.CSharp.csproj">
-      <Project>{676ec39d-e9e4-59b7-4472-2c8969c426aa}</Project>
-      <Name>UnityVS.UniRx.CSharp</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="RxJS\HtmlPage1.html" />
     <Content Include="RxJS\rx.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\UnityVS.UniRx.CSharp.csproj">
+      <Project>{55db241b-2717-422c-3093-18d20f58b73b}</Project>
+      <Name>UnityVS.UniRx.CSharp</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

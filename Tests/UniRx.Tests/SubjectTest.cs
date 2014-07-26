@@ -88,6 +88,72 @@ namespace UniRx.Tests
         }
 
         [TestMethod]
+        public void SubjectSubscribeTest()
+        {
+            var subject = new Subject<int>();
+            var listA = new List<int>();
+            var listB = new List<int>();
+            var listC = new List<int>();
+            subject.HasObservers.IsFalse();
+
+            var listASubscription = subject.Subscribe(x => listA.Add(x));
+            subject.HasObservers.IsTrue();
+            subject.OnNext(1);
+            listA[0].Is(1);
+
+            var listBSubscription = subject.Subscribe(x => listB.Add(x));
+            subject.HasObservers.IsTrue();
+            subject.OnNext(2);
+            listA[1].Is(2);
+            listB[0].Is(2);
+
+            var listCSubscription = subject.Subscribe(x => listC.Add(x));
+            subject.HasObservers.IsTrue();
+            subject.OnNext(3);
+            listA[2].Is(3);
+            listB[1].Is(3);
+            listC[0].Is(3);
+
+            listASubscription.Dispose();
+            subject.HasObservers.IsTrue();
+            subject.OnNext(4);
+            listA.Count.Is(3);
+            listB[2].Is(4);
+            listC[1].Is(4);
+
+            listCSubscription.Dispose();
+            subject.HasObservers.IsTrue();
+            subject.OnNext(5);
+            listC.Count.Is(2);
+            listB[3].Is(5);
+
+            listBSubscription.Dispose();
+            subject.HasObservers.IsFalse();
+            subject.OnNext(6);
+            listB.Count.Is(4);
+
+            var listD = new List<int>();
+            var listE = new List<int>();
+
+            var listDSubscription = subject.Subscribe(x => listD.Add(x));
+            subject.HasObservers.IsTrue();
+            subject.OnNext(1);
+            listD[0].Is(1);
+
+            var listESubscription = subject.Subscribe(x => listE.Add(x));
+            subject.HasObservers.IsTrue();
+            subject.OnNext(2);
+            listD[1].Is(2);
+            listE[0].Is(2);
+
+            subject.Dispose();
+
+            AssertEx.Throws<ObjectDisposedException>(() => subject.OnNext(0));
+            AssertEx.Throws<ObjectDisposedException>(() => subject.OnError(new Exception()));
+            AssertEx.Throws<ObjectDisposedException>(() => subject.OnCompleted());
+        }
+
+        [TestMethod]
         public void AsyncSubjectTest()
         {
             // OnCompletedPattern

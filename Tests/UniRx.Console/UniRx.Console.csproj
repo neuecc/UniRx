@@ -69,6 +69,12 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\EventPattern.cs">
       <Link>Scripts\EventPattern.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\ImmutableList.cs">
+      <Link>Scripts\InternalUtil\ImmutableList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\ListObserver.cs">
+      <Link>Scripts\InternalUtil\ListObserver.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Notification.cs">
       <Link>Scripts\Notification.cs</Link>
     </Compile>
