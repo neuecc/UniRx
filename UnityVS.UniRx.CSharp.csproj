@@ -57,6 +57,7 @@
     <Compile Include="Assets\UniRx\Examples\Sample4_ConvertFromUnityCallback.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample5_ConvertFromCoroutine.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample6_ConvertToCoroutine.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample8_DetectDoubleClick.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample7_OrchestratIEnumerator.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\BooleanDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\CompositeDisposable.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Assets\UniRx\Scripts\Disposables\SingleAssignmentDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\EventPattern.cs" />
     <Compile Include="Assets\UniRx\Scripts\InternalUtil\ListObserver.cs" />
+    <Compile Include="Assets\UniRx\Scripts\InternalUtil\ThreadSafeQueueWorker.cs" />
     <Compile Include="Assets\UniRx\Scripts\Notification.cs" />
     <Compile Include="Assets\UniRx\Scripts\Notifiers\BooleanNotifier.cs" />
     <Compile Include="Assets\UniRx\Scripts\Notifiers\CountNotifier.cs" />

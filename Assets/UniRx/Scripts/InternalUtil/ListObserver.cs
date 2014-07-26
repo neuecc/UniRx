@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UniRx.InternalUtil
 {
-    internal class ListObserver<T> : IObserver<T>
+    public class ListObserver<T> : IObserver<T>
     {
         private readonly ImmutableList<IObserver<T>> _observers;
 
@@ -63,7 +63,7 @@ namespace UniRx.InternalUtil
         }
     }
 
-    internal class EmptyObserver<T> : IObserver<T>
+    public class EmptyObserver<T> : IObserver<T>
     {
         // .Instance cause iOS AOT error
         // public static readonly EmptyObserver<T> Instance = new EmptyObserver<T>();
@@ -86,7 +86,7 @@ namespace UniRx.InternalUtil
         }
     }
 
-    internal class DisposedObserver<T> : IObserver<T>
+    public class DisposedObserver<T> : IObserver<T>
     {
         // .Instance cause iOS AOT error
         // public static readonly DisposedObserver<T> Instance = new DisposedObserver<T>();

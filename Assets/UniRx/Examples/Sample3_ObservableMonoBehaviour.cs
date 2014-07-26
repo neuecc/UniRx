@@ -11,6 +11,7 @@ namespace UniRx.Examples
 
             // Object specified update
             // or Get Global Update Event => Observable.EveryUpdate()
+            // see:Sample8, it is more useful
             this.UpdateAsObservable()
                 .SelectMany(_ => Input.touches.WrapValueToClass()) // aotsafe, wrap struct to class(Tuple1)
                 .Where(x => x.Item1.phase == TouchPhase.Began)

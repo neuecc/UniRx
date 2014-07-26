@@ -2,7 +2,7 @@
 
 namespace UniRx.InternalUtil
 {
-    internal class ImmutableList<T>
+    public class ImmutableList<T>
     {
         T[] data;
 

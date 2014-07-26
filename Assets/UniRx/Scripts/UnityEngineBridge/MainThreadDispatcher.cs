@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using UniRx.InternalUtil;
 using UnityEngine;
 
 namespace UniRx
@@ -10,10 +12,7 @@ namespace UniRx
         // Public Commands
         public static void Post(Action item)
         {
-            lock (gate)
-            {
-                Instance.actionList.Add(item);
-            }
+            Instance.queueWorker.Enqueue(item);
         }
 
         new public static Coroutine StartCoroutine(IEnumerator routine)
@@ -35,8 +34,7 @@ namespace UniRx
         }
 
 
-        static object gate = new object();
-        List<Action> actionList = new List<Action>();
+        ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
         Action<Exception> unhandledExceptionCallback = ex => Debug.LogException(ex); // default
 
         static MainThreadDispatcher instance;
@@ -75,25 +73,7 @@ namespace UniRx
 
         void Update()
         {
-            Action[] actions;
-            lock (gate)
-            {
-                if (actionList.Count == 0) return;
-
-                actions = actionList.ToArray();
-                actionList.Clear();
-            }
-            foreach (var action in actions)
-            {
-                try
-                {
-                    action();
-                }
-                catch (Exception ex)
-                {
-                    unhandledExceptionCallback(ex);
-                }
-            }
+            queueWorker.ExecuteAll(unhandledExceptionCallback);
         }
 
         // for Lifecycle Management
