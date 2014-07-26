@@ -198,41 +198,41 @@ namespace UniRx
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToCoroutine<T>(this IObservable<T> source)
+        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, CancellationToken cancel = default(CancellationToken))
         {
-            return ToCoroutine<T>(source, Stubs.Ignore<T>, Stubs.Throw, Stubs.Nop);
+            return ToAwaitableEnumerator<T>(source, Stubs.Ignore<T>, Stubs.Throw, Stubs.Nop, cancel);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToCoroutine<T>(this IObservable<T> source, IObserver<T> observer)
+        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, IObserver<T> observer, CancellationToken cancel = default(CancellationToken))
         {
-            return ToCoroutine<T>(source, observer.OnNext, observer.OnError, observer.OnCompleted);
+            return ToAwaitableEnumerator<T>(source, observer.OnNext, observer.OnError, observer.OnCompleted, cancel);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext)
+        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onNext, CancellationToken cancel = default(CancellationToken))
         {
-            return ToCoroutine<T>(source, onNext, Stubs.Throw, Stubs.Nop);
+            return ToAwaitableEnumerator<T>(source, onNext, Stubs.Throw, Stubs.Nop, cancel);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError)
+        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
         {
-            return ToCoroutine<T>(source, onNext, onError, Stubs.Nop);
+            return ToAwaitableEnumerator<T>(source, onNext, onError, Stubs.Nop, cancel);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted)
+        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted, CancellationToken cancel = default(CancellationToken))
         {
-            return ToCoroutine<T>(source, onNext, Stubs.Throw, onCompleted);
+            return ToAwaitableEnumerator<T>(source, onNext, Stubs.Throw, onCompleted, cancel);
         }
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
-        public static IEnumerator ToCoroutine<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted)
+        public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted, CancellationToken cancel = default(CancellationToken))
         {
             var running = true;
 
-            source
+            var subscription = source
                 .Do(onNext, onError, onCompleted)
                 .ObserveOnMainThread()
                 .SubscribeOnMainThread()
@@ -240,9 +240,14 @@ namespace UniRx
                     ex => { running = false; },
                     () => { running = false; });
 
-            while (running)
+            while (running && !cancel.IsCancellationRequested)
             {
                 yield return null;
+            }
+
+            if (cancel.IsCancellationRequested)
+            {
+                subscription.Dispose();
             }
         }
 
