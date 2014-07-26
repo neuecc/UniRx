@@ -8,22 +8,22 @@ namespace UniRx.Diagnostics
 {
     public class LogEntry
     {
-        // must
-        public string Name { get; private set; }
+        // requires
+        public string LoggerName { get; private set; }
         public LogType LogType { get; private set; }
         public string Message { get; private set; }
-        public DateTime Time { get; private set; }
+        public DateTime Timestamp { get; private set; }
 
-        // option
+        // options
         public UnityEngine.Object Context { get; private set; }
         public Exception Exception { get; private set; }
         public string StackTrace { get; private set; }
 
-        public LogEntry(string name, LogType logType, DateTime time, string message, UnityEngine.Object context = null, Exception exception = null, string stackTrace = null)
+        public LogEntry(string loggerName, LogType logType, DateTime timestamp, string message, UnityEngine.Object context = null, Exception exception = null, string stackTrace = null)
         {
-            this.Name = name;
+            this.LoggerName = loggerName;
             this.LogType = LogType;
-            this.Time = time;
+            this.Timestamp = timestamp;
             this.Message = message;
             this.Context = context;
             this.Exception = exception;
@@ -32,8 +32,8 @@ namespace UniRx.Diagnostics
 
         public override string ToString()
         {
-            return "[" + Time.ToString() + "]"
-                + "[" + Name + "]"
+            return "[" + Timestamp.ToString() + "]"
+                + "[" + LoggerName + "]"
                 + "[" + LogType.ToString() + "]"
                 + Message;
         }

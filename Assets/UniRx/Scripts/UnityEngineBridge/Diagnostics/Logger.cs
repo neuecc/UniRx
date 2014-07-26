@@ -26,8 +26,8 @@ namespace UniRx.Diagnostics
                 logPublisher(new LogEntry(
                     message: message.ToString(),
                     logType: LogType.Log,
-                    time: DateTime.Now,
-                    name: Name,
+                    timestamp: DateTime.Now,
+                    loggerName: Name,
                     context: context));
             }
         }
@@ -37,8 +37,8 @@ namespace UniRx.Diagnostics
             logPublisher(new LogEntry(
                 message: message.ToString(),
                 logType: LogType.Log,
-                time: DateTime.Now,
-                name: Name,
+                timestamp: DateTime.Now,
+                loggerName: Name,
                 context: context));
         }
 
@@ -47,8 +47,8 @@ namespace UniRx.Diagnostics
             logPublisher(new LogEntry(
                 message: message.ToString(),
                 logType: LogType.Warning,
-                time: DateTime.Now,
-                name: Name,
+                timestamp: DateTime.Now,
+                loggerName: Name,
                 context: context));
         }
 
@@ -57,8 +57,8 @@ namespace UniRx.Diagnostics
             logPublisher(new LogEntry(
                 message: message.ToString(),
                 logType: LogType.Error,
-                time: DateTime.Now,
-                name: Name,
+                timestamp: DateTime.Now,
+                loggerName: Name,
                 context: context));
         }
 
@@ -68,8 +68,8 @@ namespace UniRx.Diagnostics
                 message: exception.ToString(),
                 exception: exception,
                 logType: LogType.Exception,
-                time: DateTime.Now,
-                name: Name,
+                timestamp: DateTime.Now,
+                loggerName: Name,
                 context: context));
         }
     }

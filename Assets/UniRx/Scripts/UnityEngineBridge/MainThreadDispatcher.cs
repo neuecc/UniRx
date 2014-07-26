@@ -21,9 +21,23 @@ namespace UniRx
             return Instance.StartCoroutine_Auto(routine);
         }
 
+        public static void RegisterUnhandledExceptionCallback(Action<Exception> exceptionCallback)
+        {
+            if (exceptionCallback == null)
+            {
+                // do nothing
+                Instance.unhandledExceptionCallback = Stubs.Ignore<Exception>;
+            }
+            else
+            {
+                Instance.unhandledExceptionCallback = exceptionCallback;
+            }
+        }
+
 
         static object gate = new object();
         List<Action> actionList = new List<Action>();
+        Action<Exception> unhandledExceptionCallback = ex => Debug.LogException(ex); // default
 
         static MainThreadDispatcher instance;
         static bool initialized;
@@ -77,7 +91,7 @@ namespace UniRx
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogException(ex); // Is log can't handle...?
+                    unhandledExceptionCallback(ex);
                 }
             }
         }
