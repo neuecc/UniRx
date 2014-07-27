@@ -11,7 +11,7 @@ namespace UniRx.Examples
             {
                 ObservableWWW.Get("http://google.co.jp/")
                     .Subscribe(
-                        x => Debug.Log(x), // onSuccess
+                        x => Debug.Log(x.Substring(0, 100)), // onSuccess
                         ex => Debug.LogException(ex)); // onError
             }
 
@@ -22,12 +22,11 @@ namespace UniRx.Examples
                             from bing in ObservableWWW.Get("http://bing.com/")
                             select new { google, bing };
 
-                var cancel = query.Subscribe(x => Debug.Log(x.google + ":" + x.bing));
+                var cancel = query.Subscribe(x => Debug.Log(x.google.Substring(0, 100) + ":" + x.bing.Substring(0, 100)));
 
                 // Call Dispose is cancel downloading.
                 cancel.Dispose();
             }
-
 
             // Observable.WhenAll is for parallel asynchronous operation
             // (It's like Observable.Zip but specialized for single async operations like Task.WhenAll of .NET 4)
@@ -35,13 +34,13 @@ namespace UniRx.Examples
                 var parallel = Observable.WhenAll(
                     ObservableWWW.Get("http://google.com/"),
                     ObservableWWW.Get("http://bing.com/"),
-                    ObservableWWW.Get("http://yahoo.com/"));
+                    ObservableWWW.Get("http://unity3d.com/"));
 
                 parallel.Subscribe(xs =>
                 {
-                    Debug.Log(xs[0]); // google
-                    Debug.Log(xs[1]); // bing
-                    Debug.Log(xs[2]); // yahoo
+                    Debug.Log(xs[0].Substring(0, 100)); // google
+                    Debug.Log(xs[1].Substring(0, 100)); // bing
+                    Debug.Log(xs[2].Substring(0, 100)); // unity
                 });
             }
 
