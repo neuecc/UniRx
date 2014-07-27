@@ -8,7 +8,8 @@ namespace UniRx.Diagnostics
 {
     public partial class Logger
     {
-        static readonly bool IsDebugBuild = UnityEngine.Debug.isDebugBuild;
+        static bool isInitialized = false;
+        static bool isDebugBuild = false;
 
         public string Name { get; private set; }
         protected readonly Action<LogEntry> logPublisher;
@@ -21,7 +22,13 @@ namespace UniRx.Diagnostics
 
         public virtual void Debug(object message, UnityEngine.Object context = null)
         {
-            if (IsDebugBuild)
+            if (!isInitialized)
+            {
+                isInitialized = true;
+                isDebugBuild = UnityEngine.Debug.isDebugBuild;
+            }
+
+            if (isDebugBuild)
             {
                 logPublisher(new LogEntry(
                     message: message.ToString(),

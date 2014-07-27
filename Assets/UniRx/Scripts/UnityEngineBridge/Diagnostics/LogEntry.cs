@@ -22,12 +22,12 @@ namespace UniRx.Diagnostics
         public LogEntry(string loggerName, LogType logType, DateTime timestamp, string message, UnityEngine.Object context = null, Exception exception = null, string stackTrace = null)
         {
             this.LoggerName = loggerName;
-            this.LogType = LogType;
+            this.LogType = logType;
             this.Timestamp = timestamp;
             this.Message = message;
             this.Context = context;
             this.Exception = exception;
-            this.StackTrace = StackTrace;
+            this.StackTrace = stackTrace;
         }
 
         public override string ToString()
