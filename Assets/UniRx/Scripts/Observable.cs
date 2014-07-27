@@ -449,17 +449,17 @@ namespace UniRx
             {
                 return source.Subscribe(x =>
                 {
-                    switch (x.Kind)
+                    if (x.Kind == NotificationKind.OnNext)
                     {
-                        case NotificationKind.OnNext:
-                            observer.OnNext(x.Value);
-                            break;
-                        case NotificationKind.OnError:
-                            observer.OnError(x.Exception);
-                            break;
-                        case NotificationKind.OnCompleted:
-                            observer.OnCompleted();
-                            break;
+                        observer.OnNext(x.Value);
+                    }
+                    else if (x.Kind == NotificationKind.OnError)
+                    {
+                        observer.OnError(x.Exception);
+                    }
+                    else if (x.Kind == NotificationKind.OnCompleted)
+                    {
+                        observer.OnCompleted();
                     }
                 }, observer.OnError, observer.OnCompleted);
             });
