@@ -23,7 +23,7 @@ namespace UniRx.Examples
             MainThreadDispatcher.Post(() => Debug.Log("test"));
 
             // Timebased operations is run on Threadpool(as default)
-            // ObserverOn return to mainthread
+            // ObserveOnMainThread return to mainthread
             Observable.Interval(TimeSpan.FromSeconds(1))
                 .ObserveOnMainThread()
                 .Subscribe(x => Debug.Log(x));
@@ -31,7 +31,6 @@ namespace UniRx.Examples
             // Run on MainThreadScheduler
             Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.MainThread)
                 .Subscribe(x => Debug.Log(x));
-            
         }
 
         IEnumerator TestAsync()

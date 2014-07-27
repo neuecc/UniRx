@@ -58,6 +58,7 @@
     <Compile Include="Assets\UniRx\Examples\Sample05_ConvertFromCoroutine.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample06_ConvertToCoroutine.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample08_DetectDoubleClick.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample11_Logger.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample10_MainThreadDispatcher.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample09_EventHandling.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample07_OrchestratIEnumerator.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\CancellationToken.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\ConsoleSink.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\LogEntry.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\LogEntryExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\Logger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\ObservableLogger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\UnityDebugSink.cs" />
