@@ -27,6 +27,7 @@ namespace UniRx.Examples
                     detected = true;
                     Scheduler.ThreadPool.Schedule(TimeSpan.FromSeconds(1), () => detected = false);
                 })
+                .ObserveOnMainThread()
                 .Subscribe(_ => Debug.Log("DoubleClick Detected"));
         }
     }

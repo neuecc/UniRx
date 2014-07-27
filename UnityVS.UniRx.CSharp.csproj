@@ -58,6 +58,7 @@
     <Compile Include="Assets\UniRx\Examples\Sample5_ConvertFromCoroutine.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample6_ConvertToCoroutine.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample8_DetectDoubleClick.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample9_EventHandling.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample7_OrchestratIEnumerator.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\BooleanDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\CompositeDisposable.cs" />
