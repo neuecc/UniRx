@@ -17,9 +17,17 @@ namespace UniRx.Examples
             // Observable.EveryApplicationFocus/EveryApplicationPause
             // Observable.OnceApplicationQuit
 
-            //Observable.EveryUpdate()
-            //    .Where(_ => Input.GetMouseButtonDown(0))
-            //    .Buffer(TimeSpan.FromSeconds(2)
+            var detected = false;
+            Observable.EveryUpdate()
+                .Where(_ => Input.GetMouseButtonDown(0))
+                .Buffer(TimeSpan.FromMilliseconds(300), TimeSpan.FromMilliseconds(100))
+                .Where(xs => xs.Count >= 2 && !detected)
+                .Do(_ =>
+                {
+                    detected = true;
+                    Scheduler.ThreadPool.Schedule(TimeSpan.FromSeconds(1), () => detected = false);
+                })
+                .Subscribe(_ => Debug.Log("DoubleClick Detected"));
         }
     }
 }
