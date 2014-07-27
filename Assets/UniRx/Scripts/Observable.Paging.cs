@@ -232,18 +232,18 @@ namespace UniRx
 
                     var len = q.Count;
                     for (int i = 0; i < len; i++)
-			        {
+                    {
                         var list = q.Dequeue();
                         list.Add(x);
-                        if(list.Count == count)
+                        if (list.Count == count)
                         {
                             observer.OnNext(list);
                         }
                         else
-	                    {
+                        {
                             q.Enqueue(list);
-	                    }
-			        }
+                        }
+                    }
                 }, observer.OnError, () =>
                 {
                     foreach (var list in q)
@@ -305,6 +305,103 @@ namespace UniRx
                 }));
 
                 return d;
+            });
+        }
+
+        public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, TimeSpan timeSpan, TimeSpan timeShift)
+        {
+            return Buffer(source, timeSpan, timeShift, Scheduler.ThreadPool);
+        }
+
+        public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, TimeSpan timeSpan, TimeSpan timeShift, IScheduler scheduler)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+
+            return Observable.Create<IList<T>>(observer =>
+            {
+                var totalTime = TimeSpan.Zero;
+                var nextShift = timeShift;
+                var nextSpan = timeSpan;
+
+                var gate = new object();
+                var q = new Queue<IList<T>>();
+
+                var timerD = new SerialDisposable();
+
+                var createTimer = default(Action);
+                createTimer = () =>
+                {
+                    var m = new SingleAssignmentDisposable();
+                    timerD.Disposable = m;
+
+                    var isSpan = false;
+                    var isShift = false;
+                    if (nextSpan == nextShift)
+                    {
+                        isSpan = true;
+                        isShift = true;
+                    }
+                    else if (nextSpan < nextShift)
+                        isSpan = true;
+                    else
+                        isShift = true;
+
+                    var newTotalTime = isSpan ? nextSpan : nextShift;
+                    var ts = newTotalTime - totalTime;
+                    totalTime = newTotalTime;
+
+                    if (isSpan)
+                        nextSpan += timeShift;
+                    if (isShift)
+                        nextShift += timeShift;
+
+                    m.Disposable = scheduler.Schedule(ts, () =>
+                    {
+                        lock (gate)
+                        {
+                            if (isShift)
+                            {
+                                var s = new List<T>();
+                                q.Enqueue(s);
+                            }
+                            if (isSpan)
+                            {
+                                var s = q.Dequeue();
+                                observer.OnNext(s);
+                            }
+                        }
+
+                        createTimer();
+                    });
+                };
+
+                q.Enqueue(new List<T>());
+
+                createTimer();
+
+                return source.Subscribe(
+                    x =>
+                    {
+                        lock (gate)
+                        {
+                            foreach (var s in q)
+                                s.Add(x);
+                        }
+                    },
+                    observer.OnError,
+                    () =>
+                    {
+                        lock (gate)
+                        {
+                            foreach (var list in q)
+                            {
+                                observer.OnNext(list);
+                            }
+
+                            observer.OnCompleted();
+                        }
+                    }
+                );
             });
         }
 
