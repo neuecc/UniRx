@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UniRx.Examples
 {
-    public class Sample5_ConvertFromCoroutine
+    public class Sample05_ConvertFromCoroutine
     {
         // public method
         public static IObservable<string> GetWWW(string url)

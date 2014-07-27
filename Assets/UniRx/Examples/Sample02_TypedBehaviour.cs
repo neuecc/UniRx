@@ -2,7 +2,7 @@
 
 namespace UniRx.Examples
 {
-    public class Sample2_TypedBehaviour : ObservableMonoBehaviour
+    public class Sample02_TypedBehaviour : ObservableMonoBehaviour
     {
         // all message is overridable, it's typesafe
         public override void Update()

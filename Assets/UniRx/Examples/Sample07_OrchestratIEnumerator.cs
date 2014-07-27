@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace UniRx.Examples
 {
-    public class Sample7_OrchestratIEnumerator : TypedMonoBehaviour
+    public class Sample07_OrchestratIEnumerator : TypedMonoBehaviour
     {
         // two coroutines
         IEnumerator AsyncA()

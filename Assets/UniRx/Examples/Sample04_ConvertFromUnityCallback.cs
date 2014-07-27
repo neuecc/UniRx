@@ -2,7 +2,7 @@
 
 namespace UniRx.Examples
 {
-    public class Sample4_ConvertFromUnityCallback : TypedMonoBehaviour
+    public class Sample04_ConvertFromUnityCallback : TypedMonoBehaviour
     {
         private class LogCallback
         {

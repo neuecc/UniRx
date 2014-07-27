@@ -2,7 +2,7 @@
 
 namespace UniRx.Examples
 {
-    public class Sample9_EventHandling : TypedMonoBehaviour
+    public class Sample09_EventHandling : TypedMonoBehaviour
     {
         public class MyEventArgs : EventArgs
         {

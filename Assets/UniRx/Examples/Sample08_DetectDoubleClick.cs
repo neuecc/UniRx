@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UniRx.Examples
 {
-    public class Sample8_DetectDoubleClick : TypedMonoBehaviour
+    public class Sample08_DetectDoubleClick : TypedMonoBehaviour
     {
         public override void Awake()
         {

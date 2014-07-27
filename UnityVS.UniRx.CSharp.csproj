@@ -51,15 +51,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\ObjectTest\NewBehaviourScript.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample1_ObservableWWW.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample2_TypedBehaviour.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample3_ObservableMonoBehaviour.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample4_ConvertFromUnityCallback.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample5_ConvertFromCoroutine.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample6_ConvertToCoroutine.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample8_DetectDoubleClick.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample9_EventHandling.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample7_OrchestratIEnumerator.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample01_ObservableWWW.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample02_TypedBehaviour.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample03_ObservableMonoBehaviour.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample04_ConvertFromUnityCallback.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample05_ConvertFromCoroutine.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample06_ConvertToCoroutine.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample08_DetectDoubleClick.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample10_MainThreadDispatcher.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample09_EventHandling.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample07_OrchestratIEnumerator.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\BooleanDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\CompositeDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\Disposable.cs" />

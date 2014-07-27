@@ -3,7 +3,7 @@
 namespace UniRx.Examples
 {
     // Sample:Detect Touch event
-    public class Sample3_ObservableMonoBehaviour : ObservableMonoBehaviour
+    public class Sample03_ObservableMonoBehaviour : ObservableMonoBehaviour
     {
         public override void Awake()
         {

@@ -3,7 +3,7 @@
 namespace UniRx.Examples
 {
     // sample script, attach your object.
-    public class Sample1_ObservableWWW : TypedMonoBehaviour
+    public class Sample01_ObservableWWW : TypedMonoBehaviour
     {
         public override void Awake()
         {
