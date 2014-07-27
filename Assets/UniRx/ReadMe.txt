@@ -1,4 +1,4 @@
-UniRx - Reactive Extensions for Unity
+UniRx - Reactive Extensions for Unity / ver.4.4
 ===
 Created by Yoshifumi Kawai(neuecc)
 
@@ -15,6 +15,8 @@ Other support, see and write GitHub issues
 https://github.com/neuecc/UniRx/issues
 
 Last, send me an email at: ils@neue.cc
+
+Release Notes, see [UniRx/releases](https://github.com/neuecc/UniRx/releases)
 
 Why Rx?
 ---
@@ -323,6 +325,39 @@ LogHelper.LogCallbackAsObservable()
     .Subscribe();
 ```
 
+Stream Logger
+---
+```csharp
+// using UniRx.Diagnostics;
+
+// logger is threadsafe, define per class with name.
+static readonly Logger logger = new Logger("Sample11");
+
+// call once at applicationinit
+public static void ApplicationInitialize()
+{
+    // Log as Stream, UniRx.Diagnostics.ObservableLogger.Listener is IObservable<LogEntry>
+    // You can subscribe and output to any place.
+    ObservableLogger.Listener.LogToUnityDebug();
+
+    // for example, filter only Exception and upload to web.
+    // (make custom sink(IObserver<EventEntry>) is better to use)
+    ObservableLogger.Listener
+        .Where(x => x.LogType == LogType.Exception)
+        .Subscribe(x =>
+        {
+            // ObservableWWW.Post("", null).Subscribe();
+        });
+}
+
+// Debug is write only DebugBuild.
+logger.Debug("Debug Message");
+
+// or other logging methods
+logger.Log("Message");
+logger.Exception(new Exception("test exception"));
+```
+
 Unity specified extra gems
 ---
 ```csharp
@@ -348,6 +383,11 @@ Observable.FromCoroutine((observer, token) => enumerator(observer, token));
 // convert IObservable to Coroutine
 yield return Observable.Range(1, 10).StartAsCoroutine();
 ```
+
+Samples
+---
+see [UniRx/Examples](https://github.com/neuecc/UniRx/tree/master/Assets/UniRx/Examples)  
+How to ResourceManagement(Sample09_EventHandling), What is MainThreadDispatcher? and other notes.
 
 vs iOS AOT
 ---

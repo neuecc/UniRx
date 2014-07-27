@@ -8,7 +8,7 @@ namespace UniRx.Examples
     public class Sample11_Logger
     {
         // UniRx.Diagnostics.Logger
-        // logger is threadsafe, 
+        // logger is threadsafe, define per class with name.
         static readonly Logger logger = new Logger("Sample11");
 
         // call once at applicationinit
@@ -19,6 +19,7 @@ namespace UniRx.Examples
             ObservableLogger.Listener.LogToUnityDebug();
 
             // for example, filter only Exception and upload to web.
+            // (make custom sink(IObserver<EventEntry>) is better to use)
             ObservableLogger.Listener
                 .Where(x => x.LogType == LogType.Exception)
                 .Subscribe(x =>
@@ -32,6 +33,7 @@ namespace UniRx.Examples
             // Debug is write only DebugBuild.
             logger.Debug("Debug Message");
 
+            // or other logging methods
             logger.Log("Message");
             logger.Exception(new Exception("test exception"));
         }
