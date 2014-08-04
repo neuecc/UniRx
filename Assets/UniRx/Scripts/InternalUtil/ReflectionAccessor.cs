@@ -43,6 +43,7 @@ namespace UniRx.InternalUtil
         class PropertyInfoAccessor : IReflectionAccessor
         {
             readonly MethodInfo methodInfo;
+
             public PropertyInfoAccessor(PropertyInfo propInfo)
             {
                 methodInfo = propInfo.GetGetMethod();
@@ -57,6 +58,7 @@ namespace UniRx.InternalUtil
         class FieldInfoAccessor : IReflectionAccessor
         {
             readonly FieldInfo fieldInfo;
+
             public FieldInfoAccessor(FieldInfo fieldInfo)
             {
                 this.fieldInfo = fieldInfo;
@@ -80,15 +82,15 @@ namespace UniRx.InternalUtil
 
             public RecursiveAccessor(Expression expression)
             {
-                var memberInfos = new List<IReflectionAccessor>();
+                var reflectionAccessors = new List<IReflectionAccessor>();
                 while (expression is MemberExpression)
                 {
                     var memberExpression = (MemberExpression)expression;
-                    memberInfos.Add(ReflectionAccessor.Create(memberExpression.Member));
+                    reflectionAccessors.Add(ReflectionAccessor.Create(memberExpression.Member));
                     expression = memberExpression.Expression;
                 }
 
-                this.accessors = memberInfos;
+                this.accessors = reflectionAccessors;
             }
 
             public object GetValue(object source)
@@ -96,8 +98,8 @@ namespace UniRx.InternalUtil
                 var result = source;
                 for (int i = accessors.Count - 1; i >= 0; i--)
                 {
-                    var info = accessors[i];
-                    result = info.GetValue(result);
+                    var accessor = accessors[i];
+                    result = accessor.GetValue(result);
                 }
                 return result;
             }

@@ -25,7 +25,7 @@ namespace UniRx
     public class MyClass2
     {
         public int MyProperty { get; set; }
-        public Depth2 Depth2 { get; set; }
+        public Depth2 Depth2;
     }
 
     public struct Depth2
