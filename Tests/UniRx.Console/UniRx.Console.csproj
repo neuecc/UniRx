@@ -186,6 +186,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\AotSafeExtensions.cs">
       <Link>Scripts\UnityEngineBridge\AotSafeExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\CancellationToken.cs">
+      <Link>Scripts\UnityEngineBridge\CancellationToken.cs</Link>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
