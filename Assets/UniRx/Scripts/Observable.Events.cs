@@ -18,6 +18,16 @@ namespace UniRx
             });
         }
 
+        public static IObservable<Unit> FromEvent<TDelegate>(Func<Action, TDelegate> conversion, Action<TDelegate> addHandler, Action<TDelegate> removeHandler)
+        {
+            return Observable.Create<Unit>(observer =>
+            {
+                var handler = conversion(() => observer.OnNext(Unit.Default));
+                addHandler(handler);
+                return Disposable.Create(() => removeHandler(handler));
+            });
+        }
+
         public static IObservable<TEventArgs> FromEvent<TDelegate, TEventArgs>(Func<Action<TEventArgs>, TDelegate> conversion, Action<TDelegate> addHandler, Action<TDelegate> removeHandler)
         {
             return Observable.Create<TEventArgs>(observer =>
