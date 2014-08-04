@@ -1,33 +1,29 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using UniRx.InternalUtil;
 
 namespace UniRx.UI
 {
     public static partial class ObserveExtensions
     {
-        public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Expression<Func<TSource, TProperty>> propertySelector)
+        public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Func<TSource, TProperty> propertySelector)
         {
-            var accessor = ReflectionAccessor.Create(propertySelector.Body as MemberExpression);
-            var currentValue = (TProperty)accessor.GetValue(source);
-
-            var everyValueChanged = Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishValueChanged(source, accessor, currentValue, observer, cancellationToken));
+            // same as : Observable.EveryUpdate().Select(_ => propertySelector(source)).DistinctUntilChanged();
+            var currentValue = propertySelector(source);
+            var everyValueChanged = Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishValueChanged(source, propertySelector, currentValue, observer, cancellationToken));
 
             // publish currentValue before run valuechanged
             return everyValueChanged.StartWith(currentValue);
         }
 
-        static IEnumerator PublishValueChanged<T>(object source, IReflectionAccessor accessor, T firstValue, IObserver<T> observer, CancellationToken cancellationToken)
+        static IEnumerator PublishValueChanged<TSource, TProperty>(TSource source, Func<TSource, TProperty> propertySelector, TProperty firstValue, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
-            T prevValue = firstValue;
-            T currentValue = default(T);
+            TProperty prevValue = firstValue;
+            TProperty currentValue = default(TProperty);
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
-                    currentValue = (T)accessor.GetValue(source);
+                    currentValue = propertySelector(source);
                 }
                 catch (Exception ex)
                 {
