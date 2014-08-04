@@ -5,7 +5,7 @@ using UniRx.InternalUtil;
 
 namespace UniRx.UI
 {
-    public static class ObserveExtensions
+    public static partial class ObserveExtensions
     {
         public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Expression<Func<TSource, TProperty>> propertySelector)
         {

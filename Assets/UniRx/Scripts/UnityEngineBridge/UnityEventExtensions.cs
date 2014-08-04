@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 namespace UniRx
 {
-    public static class UnityEventExtensions
+    public static partial class UnityEventExtensions
     {
         public static IObservable<Unit> AsObservable(this UnityEngine.Events.UnityEvent unityEvent)
         {

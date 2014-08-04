@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace UniRx
 {
-    public static class DisposableExtensions
+    public static partial class DisposableExtensions
     {
         /// <summary>Add disposable(self) to CompositeDisposable(or other ICollection). Return value is self disposable.</summary>
         public static IDisposable AddTo(this IDisposable disposable, ICollection<IDisposable> container)
