@@ -67,6 +67,8 @@ namespace UniRx
         {
             if (observer == null) throw new ArgumentNullException("observer");
 
+            var ex = default(Exception);
+
             lock (observerLock)
             {
                 ThrowIfDisposed();
@@ -92,17 +94,20 @@ namespace UniRx
 
                     return new Subscription(this, observer);
                 }
-                else if (lastError != null)
-                {
-                    observer.OnError(lastError);
-                    return Disposable.Empty;
-                }
-                else
-                {
-                    observer.OnCompleted();
-                    return Disposable.Empty;
-                }
+
+                ex = lastError;
             }
+
+            if (ex != null)
+            {
+                observer.OnError(ex);
+            }
+            else
+            {
+                observer.OnCompleted();
+            }
+
+            return Disposable.Empty;
         }
 
         public void Dispose()
