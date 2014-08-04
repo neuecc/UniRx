@@ -23,11 +23,11 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         var mc = new MyClassPropertyField { Field = 10, Property = 100 };
 
 
-        mc.ObserveEveryValueChanged(x => x.Property)
+        mc.ObserveEveryValueChanged(x => x.Field)
             .Subscribe(x => text.guiText.text = x.ToString());
 
         Observable.Interval(TimeSpan.FromSeconds(1))
-            .Subscribe(x => mc.Property = (int)x);
+            .Subscribe(x => mc.Field = (int)x);
 
 
         base.Awake();

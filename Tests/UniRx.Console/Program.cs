@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
+using UniRx.InternalUtil;
 
 namespace UniRx
 {
@@ -18,6 +20,23 @@ namespace UniRx
     {
         public int MyProperty { get; set; }
         public string MyProperty2 { get; set; }
+    }
+
+    public class MyClass2
+    {
+        public int MyProperty { get; set; }
+        public Depth2 Depth2 { get; set; }
+    }
+
+    public struct Depth2
+    {
+        public int MyProperty { get; set; }
+        public Depth3 Depth3 { get; set; }
+    }
+
+    public class Depth3
+    {
+        public int MyProperty { get; set; }
     }
 
     class Program
@@ -88,6 +107,40 @@ namespace UniRx
                 s.OnError(new Exception());
                 s.OnCompleted();
                 s.Dispose();
+            });
+
+            Test("ReflectionAccessor", () =>
+            {
+                var mc = new MyClass2
+                {
+                    MyProperty = 100,
+                    Depth2 = new Depth2
+                    {
+                        MyProperty = 1000,
+                        Depth3 = new Depth3
+                        {
+                            MyProperty = 10000
+                        }
+                    }
+                };
+
+                {
+                    Expression<Func<MyClass2, int>> selector = x => x.MyProperty;
+                    var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
+                    Console.WriteLine(accessor.GetValue(mc));
+                }
+
+                {
+                    Expression<Func<MyClass2, int>> selector = x => x.Depth2.MyProperty;
+                    var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
+                    Console.WriteLine(accessor.GetValue(mc));
+                }
+
+                {
+                    Expression<Func<MyClass2, int>> selector = x => x.Depth2.Depth3.MyProperty;
+                    var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
+                    Console.WriteLine(accessor.GetValue(mc));
+                }
             });
         }
 

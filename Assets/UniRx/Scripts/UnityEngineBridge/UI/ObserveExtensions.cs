@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq.Expressions;
-using System.Reflection;
-using UnityEngine;
+using UniRx.InternalUtil;
 
 namespace UniRx.UI
 {
@@ -10,59 +9,17 @@ namespace UniRx.UI
     {
         public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Expression<Func<TSource, TProperty>> propertySelector)
         {
-            var memberInfo = ((MemberExpression)propertySelector.Body).Member;
+            var accessor = ReflectionAccessor.Create(propertySelector.Body as MemberExpression);
+            var currentValue = (TProperty)accessor.GetValue(source);
 
-            TProperty currentValue;
-            IObservable<TProperty> everyValueChanged;
-
-            if (memberInfo is PropertyInfo)
-            {
-                currentValue = (TProperty)((PropertyInfo)memberInfo).GetGetMethod().Invoke(source, null);
-                everyValueChanged = Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishValueChangedProperty<TProperty>(source, (PropertyInfo)memberInfo, currentValue, observer, cancellationToken));
-            }
-            else if (memberInfo is FieldInfo)
-            {
-                currentValue = (TProperty)((FieldInfo)memberInfo).GetValue(source);
-                everyValueChanged = Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishValueChangedField<TProperty>(source, (FieldInfo)memberInfo, currentValue, observer, cancellationToken));
-            }
-            else
-            {
-                throw new ArgumentException("Invalid Expression");
-            }
+            var everyValueChanged = Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishValueChanged(source, accessor, currentValue, observer, cancellationToken));
 
             // publish currentValue before run valuechanged
             return Observable.Return(currentValue)
                 .Concat(everyValueChanged);
         }
 
-        static IEnumerator PublishValueChangedProperty<T>(object source, PropertyInfo propertyInfo, T firstValue, IObserver<T> observer, CancellationToken cancellationToken)
-        {
-            T prevValue = firstValue;
-            T currentValue = default(T);
-            var methodInfo = propertyInfo.GetGetMethod();
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                try
-                {
-                    currentValue = (T)methodInfo.Invoke(source, null);
-                }
-                catch (Exception ex)
-                {
-                    observer.OnError(ex);
-                    yield break;
-                }
-
-                if (!object.Equals(currentValue, prevValue))
-                {
-                    observer.OnNext(currentValue);
-                    prevValue = currentValue;
-                }
-
-                yield return null;
-            }
-        }
-
-        static IEnumerator PublishValueChangedField<T>(object source, FieldInfo fieldInfo, T firstValue, IObserver<T> observer, CancellationToken cancellationToken)
+        static IEnumerator PublishValueChanged<T>(object source, IReflectionAccessor accessor, T firstValue, IObserver<T> observer, CancellationToken cancellationToken)
         {
             T prevValue = firstValue;
             T currentValue = default(T);
@@ -70,7 +27,7 @@ namespace UniRx.UI
             {
                 try
                 {
-                    currentValue = (T)fieldInfo.GetValue(source);
+                    currentValue = (T)accessor.GetValue(source);
                 }
                 catch (Exception ex)
                 {

@@ -75,6 +75,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\ListObserver.cs">
       <Link>Scripts\InternalUtil\ListObserver.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\ReflectionAccessor.cs">
+      <Link>Scripts\InternalUtil\ReflectionAccessor.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Notification.cs">
       <Link>Scripts\Notification.cs</Link>
     </Compile>
