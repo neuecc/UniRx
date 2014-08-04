@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using UniRx.InternalUtil;
 
@@ -15,8 +16,7 @@ namespace UniRx.UI
             var everyValueChanged = Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishValueChanged(source, accessor, currentValue, observer, cancellationToken));
 
             // publish currentValue before run valuechanged
-            return Observable.Return(currentValue)
-                .Concat(everyValueChanged);
+            return everyValueChanged.StartWith(currentValue);
         }
 
         static IEnumerator PublishValueChanged<T>(object source, IReflectionAccessor accessor, T firstValue, IObserver<T> observer, CancellationToken cancellationToken)

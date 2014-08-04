@@ -359,5 +359,19 @@ namespace UniRx.Tests
             l.Count.Is(1);
             l[0].Kind.Is(NotificationKind.OnCompleted);
         }
+
+        [TestMethod]
+        public void StartWith()
+        {
+            var seq = Observable.Range(1, 5);
+
+            seq.StartWith(100).ToArray().Wait().Is(100, 1, 2, 3, 4, 5);
+            seq.StartWith(100, 1000, 10000).ToArray().Wait().Is(100, 1000, 10000, 1, 2, 3, 4, 5);
+            seq.StartWith(Enumerable.Range(100, 3)).ToArray().Wait().Is(100, 101, 102, 1, 2, 3, 4, 5);
+
+            seq.StartWith(Scheduler.ThreadPool, 100).ToArray().Wait().Is(100, 1, 2, 3, 4, 5);
+            seq.StartWith(Scheduler.ThreadPool, 100, 1000, 10000).ToArray().Wait().Is(100, 1000, 10000, 1, 2, 3, 4, 5);
+            seq.StartWith(Scheduler.ThreadPool, Enumerable.Range(100, 3)).ToArray().Wait().Is(100, 101, 102, 1, 2, 3, 4, 5);
+        }
     }
 }

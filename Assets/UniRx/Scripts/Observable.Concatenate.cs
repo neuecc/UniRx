@@ -667,5 +667,41 @@ namespace UniRx
                 return new CompositeDisposable(subscriptions);
             });
         }
+
+        public static IObservable<T> StartWith<T>(this IObservable<T> source, T value)
+        {
+            return StartWith(source, Scheduler.Immediate, value);
+        }
+
+        public static IObservable<T> StartWith<T>(this IObservable<T> source, params T[] values)
+        {
+            return StartWith(source, Scheduler.Immediate, values);
+        }
+
+        public static IObservable<T> StartWith<T>(this IObservable<T> source, IEnumerable<T> values)
+        {
+            return StartWith(source, Scheduler.Immediate, values);
+        }
+
+        public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, T value)
+        {
+            return Observable.Return(value, scheduler).Concat(source);
+        }
+
+        public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, params T[] values)
+        {
+            return values.ToObservable(scheduler).Concat(source);
+        }
+
+        public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, IEnumerable<T> values)
+        {
+            var array = values as T[];
+            if (array != null)
+            {
+                array = values.ToArray();
+            }
+
+            return values.ToObservable(scheduler).Concat(source);
+        }
     }
 }
