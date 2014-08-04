@@ -1,27 +1,67 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿// this code is borrowed from RxOfficial(rx.codeplex.com) and modified
+
+// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+
 using System.ComponentModel;
 using System.Threading;
+using UniRx.InternalUtil;
+using UniRx;
+using System;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace UniRx
 {
+
     public static partial class Scheduler
     {
         public static readonly IScheduler CurrentThread = new CurrentThreadScheduler();
 
-        public static bool IsCurrentThreadSchedulerScheduleRequired { get { return (CurrentThread as CurrentThreadScheduler).IsScheduleRequired; } }
+        public static bool IsCurrentThreadSchedulerScheduleRequired { get { return CurrentThreadScheduler.IsScheduleRequired; } }
 
+        /// <summary>
+        /// Represents an object that schedules units of work on the current thread.
+        /// </summary>
+        /// <seealso cref="Scheduler.CurrentThread">Singleton instance of this type exposed through this static property.</seealso>
         class CurrentThreadScheduler : IScheduler
         {
             [ThreadStatic]
-            static SchedulingPriorityQueue threadStaticQueue;
+            static SchedulerQueue s_threadLocalQueue;
 
-            public bool IsScheduleRequired { get { return threadStaticQueue == null; } }
+            [ThreadStatic]
+            static Stopwatch s_clock;
 
-            public DateTimeOffset Now
+            private static SchedulerQueue GetQueue()
             {
-                get { return Scheduler.Now; }
+                return s_threadLocalQueue;
+            }
+
+            private static void SetQueue(SchedulerQueue newQueue)
+            {
+                s_threadLocalQueue = newQueue;
+            }
+
+            private static TimeSpan Time
+            {
+                get
+                {
+                    if (s_clock == null)
+                        s_clock = Stopwatch.StartNew();
+
+                    return s_clock.Elapsed;
+                }
+            }
+
+            /// <summary>
+            /// Gets a value that indicates whether the caller must call a Schedule method.
+            /// </summary>
+            [EditorBrowsable(EditorBrowsableState.Advanced)]
+            public static bool IsScheduleRequired
+            {
+                get
+                {
+                    return GetQueue() == null;
+                }
             }
 
             public IDisposable Schedule(Action action)
@@ -31,99 +71,65 @@ namespace UniRx
 
             public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
-                var queue = threadStaticQueue;
+                if (action == null)
+                    throw new ArgumentNullException("action");
+
+                var dt = Time + Scheduler.Normalize(dueTime);
+
+                var si = new ScheduledItemImpl(this, action, dt);
+
+                var queue = GetQueue();
+
                 if (queue == null)
                 {
-                    queue = threadStaticQueue = new SchedulingPriorityQueue();
+                    queue = new SchedulerQueue(4);
+                    queue.Enqueue(si);
+
+                    CurrentThreadScheduler.SetQueue(queue);
+                    try
+                    {
+                        Trampoline.Run(queue);
+                    }
+                    finally
+                    {
+                        CurrentThreadScheduler.SetQueue(null);
+                    }
+                }
+                else
+                {
+                    queue.Enqueue(si);
                 }
 
-                if (queue.Count > 0)
-                {
-                    var d = new BooleanDisposable();
-                    queue.Enqueue(() =>
-                    {
-                        if (!d.IsDisposed)
-                        {
-                            action();
-                        }
-                    }, Now + dueTime, d);
-                    return d;
-                }
+                return Disposable.Create(si.Cancel);
+            }
 
-                var rootCancel = new BooleanDisposable();
-                queue.Enqueue(action, Now + dueTime, rootCancel);
-
-                while (queue.Count > 0)
+            static class Trampoline
+            {
+                public static void Run(SchedulerQueue queue)
                 {
-                    Action act;
-                    DateTimeOffset dt;
-                    ICancelable cancel;
-                    using (queue.Dequeue(out act, out dt, out cancel))
+                    while (queue.Count > 0)
                     {
-                        if (!cancel.IsDisposed)
+                        var item = queue.Dequeue();
+                        if (!item.IsCanceled)
                         {
-                            var wait = Scheduler.Normalize(dt - Now);
+                            var wait = item.DueTime - CurrentThreadScheduler.Time;
                             if (wait.Ticks > 0)
                             {
                                 Thread.Sleep(wait);
                             }
-                            act();
+
+                            if (!item.IsCanceled)
+                                item.Invoke();
                         }
                     }
                 }
-
-                threadStaticQueue = null;
-
-                return rootCancel;
-            }
-        }
-
-        // Pseudo PriorityQueue, Cheap implementation
-        class SchedulingPriorityQueue
-        {
-            // make ScheduleItem
-            List<Action> actions = new List<Action>();
-            List<DateTimeOffset> priorities = new List<DateTimeOffset>();
-            List<ICancelable> cancels = new List<ICancelable>();
-
-            int runninngCount;
-
-            public int Count { get { return runninngCount; } }
-
-            public void Enqueue(Action action, DateTimeOffset time, ICancelable cancel)
-            {
-                // should use reverse for?
-                for (int i = 0; i < actions.Count; i++)
-                {
-                    if (priorities[i] > time)
-                    {
-                        actions.Insert(i, action);
-                        priorities.Insert(i, time);
-                        cancels.Insert(i, cancel);
-                        runninngCount++;
-                        return;
-                    }
-                }
-
-                actions.Add(action);
-                priorities.Add(time);
-                cancels.Add(cancel);
-                runninngCount++;
             }
 
-            public IDisposable Dequeue(out Action action, out DateTimeOffset time, out ICancelable cancel)
+            public DateTimeOffset Now
             {
-                if (actions.Count == 0) throw new InvalidOperationException();
-
-                action = actions[0];
-                time = priorities[0];
-                cancel = cancels[0];
-                actions.RemoveAt(0);
-                priorities.RemoveAt(0);
-                cancels.RemoveAt(0);
-
-                return Disposable.Create(() => runninngCount--);
+                get { return DateTimeOffset.Now; }
             }
         }
     }
 }
+

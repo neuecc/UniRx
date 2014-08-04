@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable 0067
+
+using System;
 
 namespace UniRx.Examples
 {
@@ -52,3 +54,5 @@ namespace UniRx.Examples
         }
     }
 }
+
+#pragma warning restore 0067

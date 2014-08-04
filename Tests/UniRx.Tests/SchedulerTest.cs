@@ -60,6 +60,31 @@ namespace UniRx.Tests
         }
 
         [TestMethod]
+        public void CurrentThread3()
+        {
+            var scheduler = Scheduler.CurrentThread;
+
+            var list = new List<string>();
+            scheduler.Schedule(() =>
+            {
+                list.Add("one");
+
+                var cancel = scheduler.Schedule(TimeSpan.FromSeconds(3), () =>
+                {
+                    list.Add("after 3");
+                });
+
+                scheduler.Schedule(TimeSpan.FromSeconds(1), () =>
+                {
+                    list.Add("after 1");
+                    cancel.Dispose();
+                });
+            });
+
+            list.Is("one", "after 1");
+        }
+
+        [TestMethod]
         public void Immediate()
         {
             var hoge = ScheduleTasks(Scheduler.Immediate);
