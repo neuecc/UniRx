@@ -79,8 +79,12 @@ namespace UniRx
         /// <summary>This function is called when the object becomes enabled and active.</summary>
         public virtual void OnEnable() { }
 
+#if FALSE // OnGUI called multiple time per frame update and it cause performance issue, If you want to need OnGUI, copy & paste this code on your MonoBehaviour
+
         /// <summary>OnGUI is called for rendering and handling GUI events.</summary>
         public virtual void OnGUI() { }
+
+#endif
 
         /// <summary>Called when a joint attached to the same game object broke.</summary>
         public virtual void OnJointBreak(float breakForce) { }

@@ -340,6 +340,8 @@ namespace UniRx
             return onEnable ?? (onEnable = new Subject<Unit>());
         }
 
+#if FALSE // OnGUI called multiple time per frame update and it cause performance issue, If you want to need OnGUI, copy & paste this code on your MonoBehaviour
+
         Subject<Unit> onGUI;
 
         /// <summary>OnGUI is called for rendering and handling GUI events.</summary>
@@ -353,6 +355,8 @@ namespace UniRx
         {
             return onGUI ?? (onGUI = new Subject<Unit>());
         }
+
+#endif
 
         Subject<float> onJointBreak;
 
