@@ -85,7 +85,7 @@ namespace UniRx
                 s.OnNext(100);
                 d.Dispose();
                 s.OnNext(1000);
-                s.OnError(new Exception() );
+                s.OnError(new Exception());
                 s.OnCompleted();
                 s.Dispose();
             });

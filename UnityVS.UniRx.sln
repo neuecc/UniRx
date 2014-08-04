@@ -1,18 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30516.0
-MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.UniRx.CSharp", "UnityVS.UniRx.CSharp.csproj", "{55DB241B-2717-422C-3093-18D20F58B73B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Tests", "Tests\UniRx.Tests\UniRx.Tests.csproj", "{BED8E326-96B5-4B12-8834-FBEB3FA11C04}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Console", "Tests\UniRx.Console\UniRx.Console.csproj", "{EFD2ABC3-ED2B-4DC5-8253-F097F5A73D3F}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{F2DB54F5-690A-4B66-A80D-12BB3446750D}"
-	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

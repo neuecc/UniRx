@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UniRx.UI;
 using System.Collections;
 using UniRx;
 using System.Threading;
@@ -9,16 +10,25 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 {
     // IDisposable _____cancel;
 
+    public class MyClassPropertyField
+    {
+        public int Property { get; set; }
+        public int Field { get; set; }
+    }
+
     public override void Awake()
     {
-        Observable.EveryApplicationFocus()
-            .Subscribe(x => Debug.Log("focus:" + x));
+        var text = GameObject.Find("myGuiText");
 
-        Observable.EveryApplicationPause()
-            .Subscribe(x => Debug.Log("pause:" + x));
+        var mc = new MyClassPropertyField { Field = 10, Property = 100 };
 
-        Observable.OnceApplicationQuit()
-            .Subscribe(_ => Debug.Log("Quit!"));
+
+        mc.ObserveEveryValueChanged(x => x.Property)
+            .Subscribe(x => text.guiText.text = x.ToString());
+
+        Observable.Interval(TimeSpan.FromSeconds(1))
+            .Subscribe(x => mc.Property = (int)x);
+
 
         base.Awake();
     }
