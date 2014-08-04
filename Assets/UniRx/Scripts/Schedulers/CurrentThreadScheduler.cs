@@ -76,7 +76,7 @@ namespace UniRx
 
                 var dt = Time + Scheduler.Normalize(dueTime);
 
-                var si = new ScheduledItemImpl(this, action, dt);
+                var si = new ScheduledItem(action, dt);
 
                 var queue = GetQueue();
 
@@ -100,7 +100,7 @@ namespace UniRx
                     queue.Enqueue(si);
                 }
 
-                return Disposable.Create(si.Cancel);
+                return si.Cancellation;
             }
 
             static class Trampoline
@@ -127,7 +127,7 @@ namespace UniRx
 
             public DateTimeOffset Now
             {
-                get { return DateTimeOffset.Now; }
+                get { return Scheduler.Now; }
             }
         }
     }

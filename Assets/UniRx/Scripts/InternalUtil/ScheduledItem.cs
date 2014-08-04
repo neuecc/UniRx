@@ -8,39 +8,24 @@ using System.Collections.Generic;
 namespace UniRx.InternalUtil
 {
     /// <summary>
-    /// Represents a work item that has been scheduled.
-    /// </summary>
-    /// <typeparam name="TAbsolute">Absolute time representation type.</typeparam>
-    public interface IScheduledItem
-    {
-        /// <summary>
-        /// Gets the absolute time at which the item is due for invocation.
-        /// </summary>
-        TimeSpan DueTime { get; }
-
-        /// <summary>
-        /// Invokes the work item.
-        /// </summary>
-        void Invoke();
-    }
-
-    /// <summary>
     /// Abstract base class for scheduled work items.
     /// </summary>
     /// <typeparam name="TAbsolute">Absolute time representation type.</typeparam>
-    public abstract class ScheduledItem : IScheduledItem, IComparable<ScheduledItem>
+    public class ScheduledItem : IComparable<ScheduledItem>
     {
-        private readonly SingleAssignmentDisposable _disposable = new SingleAssignmentDisposable();
+        private readonly BooleanDisposable _disposable = new BooleanDisposable();
         private readonly TimeSpan _dueTime;
+        private readonly Action _action;
 
         /// <summary>
         /// Creates a new scheduled work item to run at the specified time.
         /// </summary>
         /// <param name="dueTime">Absolute time at which the work item has to be executed.</param>
         /// <exception cref="ArgumentNullException"><paramref name="comparer"/> is null.</exception>
-        protected ScheduledItem(TimeSpan dueTime)
+        public ScheduledItem(Action action, TimeSpan dueTime)
         {
             _dueTime = dueTime;
+            _action = action;
         }
 
         /// <summary>
@@ -57,14 +42,10 @@ namespace UniRx.InternalUtil
         public void Invoke()
         {
             if (!_disposable.IsDisposed)
-                _disposable.Disposable = InvokeCore();
+            {
+                _action();
+            }
         }
-
-        /// <summary>
-        /// Implement this method to perform the work item invocation, returning a disposable object for deep cancellation.
-        /// </summary>
-        /// <returns>Disposable object used to cancel the work item and/or derived work items.</returns>
-        protected abstract IDisposable InvokeCore();
 
         #region Inequality
 
@@ -180,12 +161,12 @@ namespace UniRx.InternalUtil
 
         #endregion
 
-        /// <summary>
-        /// Cancels the work item by disposing the resource returned by InvokeCore as soon as possible.
-        /// </summary>
-        public void Cancel()
+        public IDisposable Cancellation
         {
-            _disposable.Dispose();
+            get
+            {
+                return _disposable;
+            }
         }
 
         /// <summary>
@@ -194,46 +175,6 @@ namespace UniRx.InternalUtil
         public bool IsCanceled
         {
             get { return _disposable.IsDisposed; }
-        }
-    }
-
-    /// <summary>
-    /// Represents a scheduled work item based on the materialization of an IScheduler.Schedule method call.
-    /// </summary>
-    /// <typeparam name="TAbsolute">Absolute time representation type.</typeparam>
-    /// <typeparam name="TValue">Type of the state passed to the scheduled action.</typeparam>
-    public sealed class ScheduledItemImpl : ScheduledItem
-    {
-        private readonly IScheduler _scheduler;
-        private readonly Action _action;
-
-        /// <summary>
-        /// Creates a materialized work item.
-        /// </summary>
-        /// <param name="scheduler">Recursive scheduler to invoke the scheduled action with.</param>
-        /// <param name="action">Scheduled action.</param>
-        /// <param name="dueTime">Time at which to run the scheduled action.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="scheduler"/> or <paramref name="action"/> or <paramref name="comparer"/> is null.</exception>
-        public ScheduledItemImpl(IScheduler scheduler, Action action, TimeSpan dueTime)
-            : base(dueTime)
-        {
-            if (scheduler == null)
-                throw new ArgumentNullException("scheduler");
-            if (action == null)
-                throw new ArgumentNullException("action");
-
-            _scheduler = scheduler;
-            _action = action;
-        }
-
-        /// <summary>
-        /// Invokes the scheduled action with the supplied recursive scheduler and state.
-        /// </summary>
-        /// <returns>Cancellation resource returned by the scheduled action.</returns>
-        protected override IDisposable InvokeCore()
-        {
-            _action();
-            return Disposable.Empty;
         }
     }
 
