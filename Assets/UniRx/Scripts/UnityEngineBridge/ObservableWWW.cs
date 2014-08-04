@@ -31,6 +31,16 @@ namespace UniRx
             return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
         }
 
+        public static IObservable<string> Post(string url, byte[] postData, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, postData), observer, progress, cancellation));
+        }
+
+        public static IObservable<string> Post(string url, byte[] postData, Hash headers, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, postData, headers), observer, progress, cancellation));
+        }
+
         public static IObservable<string> Post(string url, WWWForm content, IProgress<float> progress = null)
         {
             return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content), observer, progress, cancellation));
@@ -41,6 +51,16 @@ namespace UniRx
             return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content.data, MergeHash(content.headers, headers)), observer, progress, cancellation));
         }
 
+        public static IObservable<byte[]> PostAndGetBytes(string url, byte[] postData, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, postData), observer, progress, cancellation));
+        }
+
+        public static IObservable<byte[]> PostAndGetBytes(string url, byte[] postData, Hash headers, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, postData, headers), observer, progress, cancellation));
+        }
+
         public static IObservable<byte[]> PostAndGetBytes(string url, WWWForm content, IProgress<float> progress = null)
         {
             return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content), observer, progress, cancellation));
@@ -49,6 +69,16 @@ namespace UniRx
         public static IObservable<byte[]> PostAndGetBytes(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
         {
             return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content.data, MergeHash(content.headers, headers)), observer, progress, cancellation));
+        }
+
+        public static IObservable<WWW> PostWWW(string url, byte[] postData, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, postData), observer, progress, cancellation));
+        }
+
+        public static IObservable<WWW> PostWWW(string url, byte[] postData, Hash headers, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, postData, headers), observer, progress, cancellation));
         }
 
         public static IObservable<WWW> PostWWW(string url, WWWForm content, IProgress<float> progress = null)
