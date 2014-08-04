@@ -38,24 +38,25 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
     MultipleAssignmentDisposable disp = new MultipleAssignmentDisposable();
 
-    
+
 
     public void OnGUI()
     {
-        if (GUI.Button(new Rect(0, 0, 100, 100), "TestA"))
+        if (GUI.Button(new Rect(0, 0, 100, 100), "LazyTask"))
         {
-            var form = new WWWForm();
-            //form.AddField("player", "hogehoge");
-            //form.AddField("score", 10000);
-            form.AddBinaryData("test", Encoding.UTF8.GetBytes("hogehoge"));
-
-            var header = new Hashtable();
-            header["Content-Type"] = "application/json";
-
-
-            disp.Disposable = ObservableWWW.Post("http://localhost/", Encoding.UTF8.GetBytes("hogehoge"), header)
-                .Select(x => x.Substring(0, 1000))
-                .Subscribe(x => text.guiText.text = x);
+            StartCoroutine(Work());
         }
+    }
+
+    IEnumerator Work()
+    {
+        var t1 = Observable.Interval(TimeSpan.FromSeconds(1)).Take(4).ToLazyTask();
+        var t2 = Observable.Interval(TimeSpan.FromSeconds(1)).Select(x => x * x).Take(4).ToLazyTask();
+        var t3 = Observable.Throw<Unit>(new Exception()).ToLazyTask();
+
+        yield return LazyTask.WhenAll(t1, t2, t3);
+
+        Debug.Log(t1.Result + ":" + t2.Result);
+        Debug.Log(t3.Exception);
     }
 }

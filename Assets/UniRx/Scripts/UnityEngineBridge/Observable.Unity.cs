@@ -223,11 +223,10 @@ namespace UniRx
 
             var subscription = source
                 .LastOrDefault()
-                .Do(onResult, onError, Stubs.Nop)
                 .ObserveOnMainThread()
                 .SubscribeOnMainThread()
                 .Finally(() => running = false)
-                .Subscribe();
+                .Subscribe(onResult, onError, Stubs.Nop);
 
             while (running && !cancel.IsCancellationRequested)
             {
