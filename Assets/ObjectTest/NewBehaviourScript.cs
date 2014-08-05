@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0414
+
+using UnityEngine;
 using UniRx.UI;
 using System.Collections;
 using UniRx;
@@ -142,3 +144,5 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         Debug.Log("second");
     }
 }
+
+#pragma warning restore 0414

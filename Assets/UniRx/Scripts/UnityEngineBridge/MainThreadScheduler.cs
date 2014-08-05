@@ -60,7 +60,7 @@ namespace UniRx
 
             public DateTimeOffset Now
             {
-                get { return DateTimeOffset.Now; }
+                get { return Scheduler.Now; }
             }
 
             public IDisposable Schedule(Action action)

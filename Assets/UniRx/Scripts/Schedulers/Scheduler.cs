@@ -111,7 +111,7 @@ namespace UniRx
 
         public static DateTimeOffset Now
         {
-            get { return DateTimeOffset.Now; }
+            get { return DateTimeOffset.UtcNow; }
         }
 
         public static TimeSpan Normalize(TimeSpan timeSpan)
