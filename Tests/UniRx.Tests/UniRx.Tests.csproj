@@ -66,6 +66,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ChainingAssertion.MSTest.cs" />
+    <Compile Include="Init.cs" />
     <Compile Include="ReflectionAccessorTest.cs" />
     <Compile Include="QueueWorkerTest.cs" />
     <Compile Include="DisposableTest.cs" />

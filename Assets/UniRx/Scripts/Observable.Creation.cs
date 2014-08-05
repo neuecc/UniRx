@@ -46,11 +46,11 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Empty Observable. Returns only OnCompleted on ImmediateScheduler.
+        /// Empty Observable. Returns only OnCompleted on DefaultSchedulers.ConstantTimeOperations.
         /// </summary>
         public static IObservable<T> Empty<T>()
         {
-            return Empty<T>(Scheduler.Immediate);
+            return Empty<T>(Scheduler.DefaultSchedulers.ConstantTimeOperations);
         }
 
         /// <summary>
@@ -65,11 +65,11 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Empty Observable. Returns only OnCompleted on ImmediateScheduler. witness is for type inference.
+        /// Empty Observable. Returns only OnCompleted on DefaultSchedulers.ConstantTimeOperations. witness is for type inference.
         /// </summary>
         public static IObservable<T> Empty<T>(T witness)
         {
-            return Empty<T>(Scheduler.Immediate);
+            return Empty<T>(Scheduler.DefaultSchedulers.ConstantTimeOperations);
         }
 
         /// <summary>
@@ -97,11 +97,11 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Return single sequence on ImmediateScheduler.
+        /// Return single sequence on DefaultSchedulers.ConstantTimeOperations.
         /// </summary>
         public static IObservable<T> Return<T>(T value)
         {
-            return Return<T>(value, Scheduler.Immediate);
+            return Return<T>(value, Scheduler.DefaultSchedulers.ConstantTimeOperations);
         }
 
         /// <summary>
@@ -120,19 +120,19 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Empty Observable. Returns only onError on ImmediateScheduler.
+        /// Empty Observable. Returns only onError on DefaultSchedulers.ConstantTimeOperations.
         /// </summary>
         public static IObservable<T> Throw<T>(Exception error)
         {
-            return Throw<T>(error, Scheduler.Immediate);
+            return Throw<T>(error, Scheduler.DefaultSchedulers.ConstantTimeOperations);
         }
 
         /// <summary>
-        /// Empty Observable. Returns only onError on ImmediateScheduler. witness if for Type inference.
+        /// Empty Observable. Returns only onError on DefaultSchedulers.ConstantTimeOperations. witness if for Type inference.
         /// </summary>
         public static IObservable<T> Throw<T>(Exception error, T witness)
         {
-            return Throw<T>(error, Scheduler.Immediate);
+            return Throw<T>(error, Scheduler.DefaultSchedulers.ConstantTimeOperations);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace UniRx
 
         public static IObservable<int> Range(int start, int count)
         {
-            return Range(start, count, Scheduler.CurrentThread);
+            return Range(start, count, Scheduler.DefaultSchedulers.Iteration);
         }
 
         public static IObservable<int> Range(int start, int count, IScheduler scheduler)
@@ -183,7 +183,7 @@ namespace UniRx
 
         public static IObservable<T> Repeat<T>(T value)
         {
-            return Repeat(value, Scheduler.CurrentThread);
+            return Repeat(value, Scheduler.DefaultSchedulers.Iteration);
         }
 
         public static IObservable<T> Repeat<T>(T value, IScheduler scheduler)
@@ -202,7 +202,7 @@ namespace UniRx
 
         public static IObservable<T> Repeat<T>(T value, int repeatCount)
         {
-            return Repeat(value, repeatCount, Scheduler.CurrentThread);
+            return Repeat(value, repeatCount, Scheduler.DefaultSchedulers.Iteration);
         }
 
         public static IObservable<T> Repeat<T>(T value, int repeatCount, IScheduler scheduler)
@@ -265,7 +265,7 @@ namespace UniRx
 
         public static IObservable<T> Start<T>(Func<T> function)
         {
-            return Start(function, Scheduler.ThreadPool);
+            return Start(function, Scheduler.DefaultSchedulers.AsyncConversions);
         }
 
         public static IObservable<T> Start<T>(Func<T> function, IScheduler scheduler)
@@ -275,7 +275,7 @@ namespace UniRx
 
         public static IObservable<Unit> Start(Action action)
         {
-            return Start(action, Scheduler.ThreadPool);
+            return Start(action, Scheduler.DefaultSchedulers.AsyncConversions);
         }
 
         public static IObservable<Unit> Start(Action action, IScheduler scheduler)
@@ -285,7 +285,7 @@ namespace UniRx
 
         public static Func<IObservable<T>> ToAsync<T>(Func<T> function)
         {
-            return ToAsync(function, Scheduler.ThreadPool);
+            return ToAsync(function, Scheduler.DefaultSchedulers.AsyncConversions);
         }
 
         public static Func<IObservable<T>> ToAsync<T>(Func<T> function, IScheduler scheduler)
@@ -316,7 +316,7 @@ namespace UniRx
 
         public static Func<IObservable<Unit>> ToAsync(Action action)
         {
-            return ToAsync(action, Scheduler.ThreadPool);
+            return ToAsync(action, Scheduler.DefaultSchedulers.AsyncConversions);
         }
 
         public static Func<IObservable<Unit>> ToAsync(Action action, IScheduler scheduler)

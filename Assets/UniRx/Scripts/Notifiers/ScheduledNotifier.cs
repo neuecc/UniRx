@@ -11,11 +11,11 @@ namespace UniRx
         readonly Subject<T> trigger = new Subject<T>();
 
         /// <summary>
-        /// Use scheduler is Scheduler.Immediate.
+        /// Use scheduler is Scheduler.DefaultSchedulers.ConstantTimeOperations.
         /// </summary>
         public ScheduledNotifier()
         {
-            this.scheduler = Scheduler.Immediate;
+            this.scheduler = Scheduler.DefaultSchedulers.ConstantTimeOperations;
         }
         /// <summary>
         /// Use scheduler is argument's scheduler.

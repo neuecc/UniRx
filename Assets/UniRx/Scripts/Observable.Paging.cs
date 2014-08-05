@@ -257,7 +257,7 @@ namespace UniRx
 
         public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, TimeSpan timeSpan)
         {
-            return Buffer(source, timeSpan, Scheduler.ThreadPool);
+            return Buffer(source, timeSpan, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, TimeSpan timeSpan, IScheduler scheduler)
@@ -310,7 +310,7 @@ namespace UniRx
 
         public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, TimeSpan timeSpan, TimeSpan timeShift)
         {
-            return Buffer(source, timeSpan, timeShift, Scheduler.ThreadPool);
+            return Buffer(source, timeSpan, timeShift, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, TimeSpan timeSpan, TimeSpan timeShift, IScheduler scheduler)

@@ -20,7 +20,7 @@ namespace UniRx
         readonly object gate = new object();
 
         public ReplaySubject()
-            : this(int.MaxValue, TimeSpan.MaxValue, Scheduler.CurrentThread)
+            : this(int.MaxValue, TimeSpan.MaxValue, Scheduler.DefaultSchedulers.Iteration)
         {
         }
 
@@ -30,7 +30,7 @@ namespace UniRx
         }
 
         public ReplaySubject(int bufferSize)
-            : this(bufferSize, TimeSpan.MaxValue, Scheduler.CurrentThread)
+            : this(bufferSize, TimeSpan.MaxValue, Scheduler.DefaultSchedulers.Iteration)
         {
         }
 
@@ -40,7 +40,7 @@ namespace UniRx
         }
 
         public ReplaySubject(TimeSpan window)
-            : this(int.MaxValue, window, Scheduler.CurrentThread)
+            : this(int.MaxValue, window, Scheduler.DefaultSchedulers.Iteration)
         {
         }
 

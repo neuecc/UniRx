@@ -45,7 +45,7 @@ namespace UniRx
                 var subscription = new SerialDisposable();
                 var gate = new object();
 
-                var schedule = Scheduler.Immediate.Schedule(self =>
+                var schedule = Scheduler.DefaultSchedulers.TailRecursion.Schedule(self =>
                 {
                     lock (gate)
                     {
@@ -105,12 +105,12 @@ namespace UniRx
         }
         public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources)
         {
-            return Merge(sources.ToObservable(Scheduler.Immediate));
+            return Merge(sources.ToObservable(Scheduler.DefaultSchedulers.ConstantTimeOperations));
         }
 
         public static IObservable<TSource> Merge<TSource>(params IObservable<TSource>[] sources)
         {
-            return Merge(sources.ToObservable(Scheduler.Immediate));
+            return Merge(sources.ToObservable(Scheduler.DefaultSchedulers.ConstantTimeOperations));
         }
 
         public static IObservable<T> Merge<T>(this IObservable<IObservable<T>> sources)
@@ -670,17 +670,17 @@ namespace UniRx
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, T value)
         {
-            return StartWith(source, Scheduler.Immediate, value);
+            return StartWith(source, Scheduler.DefaultSchedulers.ConstantTimeOperations, value);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, params T[] values)
         {
-            return StartWith(source, Scheduler.Immediate, values);
+            return StartWith(source, Scheduler.DefaultSchedulers.ConstantTimeOperations, values);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, IEnumerable<T> values)
         {
-            return StartWith(source, Scheduler.Immediate, values);
+            return StartWith(source, Scheduler.DefaultSchedulers.ConstantTimeOperations, values);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, T value)

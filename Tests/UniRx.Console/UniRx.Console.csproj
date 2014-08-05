@@ -189,6 +189,7 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\CancellationToken.cs">
       <Link>Scripts\UnityEngineBridge\CancellationToken.cs</Link>
     </Compile>
+    <Compile Include="DummyMainThread.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -96,7 +96,7 @@ namespace UniRx
                 var subscription = new SerialDisposable();
                 var lastException = default(Exception);
 
-                var cancelable = Scheduler.CurrentThread.Schedule(self =>
+                var cancelable = Scheduler.DefaultSchedulers.TailRecursion.Schedule(self =>
                 {
                     lock (gate)
                     {
@@ -235,7 +235,7 @@ namespace UniRx
             this IObservable<TSource> source, Action<TException> onError, int retryCount, TimeSpan delay)
             where TException : Exception
         {
-            return source.OnErrorRetry(onError, retryCount, delay, Scheduler.ThreadPool);
+            return source.OnErrorRetry(onError, retryCount, delay, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         /// <summary>

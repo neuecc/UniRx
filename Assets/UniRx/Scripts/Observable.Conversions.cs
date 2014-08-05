@@ -16,7 +16,7 @@ namespace UniRx
 
         public static IObservable<T> ToObservable<T>(this IEnumerable<T> source)
         {
-            return source.ToObservable(Scheduler.CurrentThread);
+            return source.ToObservable(Scheduler.DefaultSchedulers.Iteration);
         }
 
         public static IObservable<T> ToObservable<T>(this IEnumerable<T> source, IScheduler scheduler)
