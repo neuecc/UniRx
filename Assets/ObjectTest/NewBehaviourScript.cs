@@ -72,7 +72,7 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         }
 
         ypos += 100;
-        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler"))
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler0"))
         {
             Debug.Log("run");
             Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5000), () =>
@@ -83,14 +83,21 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
         xpos += 100;
         ypos = 0;
-        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Coroutine"))
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler1"))
         {
             Debug.Log("Before Start");
-            //StartCoroutine(t);
             Scheduler.MainThread.Schedule(() => Debug.Log("immediate"));
             Scheduler.MainThread.Schedule(TimeSpan.Zero, () => Debug.Log("zero span"));
             Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(1), () => Debug.Log("0.1 span"));
             Debug.Log("After Start");
+        }
+
+        ypos += 100;
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler2"))
+        {
+            Debug.Log("Before Start");
+            Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(5), () => Debug.Log("after 5 minutes"));
+            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5500), () => Debug.Log("after 5.5 minutes"));
         }
 
         // Time
