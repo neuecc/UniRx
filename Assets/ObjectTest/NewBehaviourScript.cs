@@ -13,10 +13,14 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 {
     GameObject text;
 
+    [ThreadStatic]
+    static object threadstaticobj;
+
     public override void Awake()
     {
         text = GameObject.Find("myGuiText");
         MainThreadDispatcher.Initialize();
+        threadstaticobj = new object();
         base.Awake();
     }
 
@@ -100,6 +104,26 @@ public class NewBehaviourScript : ObservableMonoBehaviour
             Debug.Log("Before Start");
             Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(5), () => Debug.Log("after 5 minutes"));
             Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5500), () => Debug.Log("after 5.5 minutes"));
+        }
+
+        ypos += 100;
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ManagedThreadId"))
+        {
+            Debug.Log("Current:" + Thread.CurrentThread.ManagedThreadId);
+            new Thread(_ => Debug.Log("NewThread:" + Thread.CurrentThread.ManagedThreadId)).Start();
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                Debug.Log("ThraedPool:" + Thread.CurrentThread.ManagedThreadId);
+                this.transform.position = new Vector3(0, 0, 0); // exception
+            });
+        }
+
+        ypos += 100;
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ThreadStatic"))
+        {
+            Debug.Log(threadstaticobj != null);
+            new Thread(_ => Debug.Log(threadstaticobj != null)).Start();
+            ThreadPool.QueueUserWorkItem(_ => Debug.Log(threadstaticobj != null));
         }
 
         // Time

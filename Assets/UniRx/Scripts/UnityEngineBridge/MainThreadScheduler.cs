@@ -28,30 +28,32 @@ namespace UniRx
             }
 
             // delay action is run in StartCoroutine
-            // Okay to action run synchronous
+            // Okay to action run synchronous and guaranteed run on MainThread
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
             {
                 if (dueTime == TimeSpan.Zero)
                 {
                     yield return null; // not immediately, run next frame
-                    MainThreadDispatcher.Send(action);
+                    MainThreadDispatcher.UnsafeSend(action);
                 }
                 else if (dueTime.TotalMilliseconds % 1000 == 0)
                 {
                     yield return new WaitForSeconds((float)dueTime.TotalSeconds);
-                    MainThreadDispatcher.Send(action);
+                    MainThreadDispatcher.UnsafeSend(action);
                 }
                 else
                 {
                     var startTime = Time.time;
                     var dt = (float)dueTime.TotalSeconds;
-                    while (!cancellation.IsDisposed)
+                    while (true)
                     {
                         yield return null;
+                        if (cancellation.IsDisposed) break;
+
                         var elapsed = Time.time - startTime;
                         if (elapsed >= dt)
                         {
-                            MainThreadDispatcher.Send(action);
+                            MainThreadDispatcher.UnsafeSend(action);
                             break;
                         }
                     }

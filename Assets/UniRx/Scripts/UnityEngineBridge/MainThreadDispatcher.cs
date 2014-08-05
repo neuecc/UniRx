@@ -18,7 +18,7 @@ namespace UniRx
         /// <summary>Dispatch Synchronous action if possible.</summary>
         public static void Send(Action action)
         {
-            if (initializedThreadToken != null)
+            if (mainThreadToken != null)
             {
                 try
                 {
@@ -35,10 +35,23 @@ namespace UniRx
             }
         }
 
+        /// <summary>Run Synchronous action.</summary>
+        public static void UnsafeSend(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                MainThreadDispatcher.Instance.unhandledExceptionCallback(ex);
+            }
+        }
+
         /// <summary>ThreadSafe StartCoroutine.</summary>
         public static void SendStartCoroutine(IEnumerator routine)
         {
-            if (initializedThreadToken != null)
+            if (mainThreadToken != null)
             {
                 StartCoroutine(routine);
             }
@@ -73,13 +86,13 @@ namespace UniRx
         static MainThreadDispatcher instance;
         static bool initialized;
 
+        [ThreadStatic]
+        static object mainThreadToken;
+
         private MainThreadDispatcher()
         {
 
         }
-
-        [ThreadStatic]
-        static object initializedThreadToken;
 
         static MainThreadDispatcher Instance
         {
@@ -98,7 +111,7 @@ namespace UniRx
                 initialized = true;
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
                 DontDestroyOnLoad(instance);
-                initializedThreadToken = new object();
+                mainThreadToken = new object();
             }
         }
 
