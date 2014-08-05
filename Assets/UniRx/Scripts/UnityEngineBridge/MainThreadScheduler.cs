@@ -27,27 +27,30 @@ namespace UniRx
                 MainThreadDispatcher.Initialize();
             }
 
-            IEnumerator DelayAction(TimeSpan dueTime, Action action)
+            // delay action is run in StartCoroutine
+            // Okay to action run synchronous
+            IEnumerator DelayAction(TimeSpan dueTime, Action action, CancellationToken cancellation)
             {
                 if (dueTime == TimeSpan.Zero)
                 {
-                    MainThreadDispatcher.Post(action);
+                    yield return null; // not immediately, run next frame
+                    MainThreadDispatcher.Send(action);
                 }
                 else if (dueTime.TotalMilliseconds % 1000 == 0)
                 {
                     yield return new WaitForSeconds((float)dueTime.TotalSeconds);
-                    MainThreadDispatcher.Post(action);
+                    MainThreadDispatcher.Send(action);
                 }
                 else
                 {
                     var startTime = DateTime.Now;
-                    while (true)
+                    while (!cancellation.IsCancellationRequested)
                     {
                         yield return null;
                         var now = DateTime.Now;
                         if ((now - startTime) >= dueTime)
                         {
-                            MainThreadDispatcher.Post(action);
+                            MainThreadDispatcher.Send(action);
                             break;
                         }
                     }
@@ -82,13 +85,13 @@ namespace UniRx
                 var d = new BooleanDisposable();
                 var time = Normalize(dueTime);
 
-                MainThreadDispatcher.StartCoroutine(DelayAction(time, () =>
+                MainThreadDispatcher.SendStartCoroutine(DelayAction(time, () =>
                 {
                     if (!d.IsDisposed)
                     {
                         action();
                     }
-                }));
+                }, new CancellationToken(d)));
 
                 return d;
             }

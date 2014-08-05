@@ -9,10 +9,43 @@ namespace UniRx
 {
     public class MainThreadDispatcher : MonoBehaviour
     {
-        // Public Commands
+        /// <summary>Dispatch Asyncrhonous action.</summary>
         public static void Post(Action item)
         {
             Instance.queueWorker.Enqueue(item);
+        }
+
+        /// <summary>Dispatch Synchronous action if possible.</summary>
+        public static void Send(Action action)
+        {
+            if (initializedThreadToken != null)
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    MainThreadDispatcher.Instance.unhandledExceptionCallback(ex);
+                }
+            }
+            else
+            {
+                Post(action);
+            }
+        }
+
+        /// <summary>ThreadSafe StartCoroutine.</summary>
+        public static void SendStartCoroutine(IEnumerator routine)
+        {
+            if (initializedThreadToken != null)
+            {
+                StartCoroutine(routine);
+            }
+            else
+            {
+                Instance.queueWorker.Enqueue(() => Instance.StartCoroutine_Auto(routine));
+            }
         }
 
         new public static Coroutine StartCoroutine(IEnumerator routine)
@@ -45,6 +78,9 @@ namespace UniRx
 
         }
 
+        [ThreadStatic]
+        static object initializedThreadToken;
+
         static MainThreadDispatcher Instance
         {
             get
@@ -62,6 +98,7 @@ namespace UniRx
                 initialized = true;
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
                 DontDestroyOnLoad(instance);
+                initializedThreadToken = new object();
             }
         }
 
