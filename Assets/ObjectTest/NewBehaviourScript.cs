@@ -86,10 +86,10 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Coroutine"))
         {
             Debug.Log("Before Start");
-                //StartCoroutine(t);
+            //StartCoroutine(t);
             Scheduler.MainThread.Schedule(() => Debug.Log("immediate"));
             Scheduler.MainThread.Schedule(TimeSpan.Zero, () => Debug.Log("zero span"));
-            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(1), () => Debug.Log("zero span"));
+            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(1), () => Debug.Log("0.1 span"));
             Debug.Log("After Start");
         }
 

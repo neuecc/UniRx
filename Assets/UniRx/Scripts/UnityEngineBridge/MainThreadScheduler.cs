@@ -29,7 +29,7 @@ namespace UniRx
 
             // delay action is run in StartCoroutine
             // Okay to action run synchronous
-            IEnumerator DelayAction(TimeSpan dueTime, Action action, CancellationToken cancellation)
+            IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
             {
                 if (dueTime == TimeSpan.Zero)
                 {
@@ -43,12 +43,13 @@ namespace UniRx
                 }
                 else
                 {
-                    var startTime = DateTime.Now;
-                    while (!cancellation.IsCancellationRequested)
+                    var startTime = Time.time;
+                    var dt = (float)dueTime.TotalSeconds;
+                    while (!cancellation.IsDisposed)
                     {
                         yield return null;
-                        var now = DateTime.Now;
-                        if ((now - startTime) >= dueTime)
+                        var elapsed = Time.time - startTime;
+                        if (elapsed >= dt)
                         {
                             MainThreadDispatcher.Send(action);
                             break;
@@ -91,7 +92,7 @@ namespace UniRx
                     {
                         action();
                     }
-                }, new CancellationToken(d)));
+                }, d));
 
                 return d;
             }
