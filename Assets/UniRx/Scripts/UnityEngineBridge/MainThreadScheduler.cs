@@ -12,11 +12,27 @@ namespace UniRx
     {
         static IScheduler mainThread;
 
+        /// <summary>
+        /// Unity native MainThread Queue Scheduler. Run on mainthread and delayed on coroutine update loop, elapsed time is calculated based on Time.time.
+        /// </summary>
         public static IScheduler MainThread
         {
             get
             {
                 return mainThread ?? (mainThread = new MainThreadScheduler());
+            }
+        }
+
+        static IScheduler mainThreadRealTime;
+
+        /// <summary>
+        /// Another MainThread scheduler, delay elapsed time is calculated based on Time.realtimeSinceStartup.
+        /// </summary>
+        public static IScheduler MainThreadRealTime
+        {
+            get
+            {
+                return mainThreadRealTime ?? (mainThreadRealTime = new RealTimeMainThreadScheduler());
             }
         }
 
@@ -51,6 +67,79 @@ namespace UniRx
                         if (cancellation.IsDisposed) break;
 
                         var elapsed = Time.time - startTime;
+                        if (elapsed >= dt)
+                        {
+                            MainThreadDispatcher.UnsafeSend(action);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            public DateTimeOffset Now
+            {
+                get { return Scheduler.Now; }
+            }
+
+            public IDisposable Schedule(Action action)
+            {
+                var d = new BooleanDisposable();
+                MainThreadDispatcher.Post(() =>
+                {
+                    if (!d.IsDisposed)
+                    {
+                        action();
+                    }
+                });
+                return d;
+            }
+
+            public IDisposable Schedule(DateTimeOffset dueTime, Action action)
+            {
+                return Schedule(dueTime - Now, action);
+            }
+
+            public IDisposable Schedule(TimeSpan dueTime, Action action)
+            {
+                var d = new BooleanDisposable();
+                var time = Normalize(dueTime);
+
+                MainThreadDispatcher.SendStartCoroutine(DelayAction(time, () =>
+                {
+                    if (!d.IsDisposed)
+                    {
+                        action();
+                    }
+                }, d));
+
+                return d;
+            }
+        }
+
+        class RealTimeMainThreadScheduler : IScheduler
+        {
+            public RealTimeMainThreadScheduler()
+            {
+                MainThreadDispatcher.Initialize();
+            }
+
+            IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
+            {
+                if (dueTime == TimeSpan.Zero)
+                {
+                    yield return null;
+                    MainThreadDispatcher.UnsafeSend(action);
+                }
+                else
+                {
+                    var startTime = Time.realtimeSinceStartup; // this is difference
+                    var dt = (float)dueTime.TotalSeconds;
+                    while (true)
+                    {
+                        yield return null;
+                        if (cancellation.IsDisposed) break;
+
+                        var elapsed = Time.realtimeSinceStartup - startTime;
                         if (elapsed >= dt)
                         {
                             MainThreadDispatcher.UnsafeSend(action);

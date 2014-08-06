@@ -101,9 +101,17 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         ypos += 100;
         if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler2"))
         {
-            Debug.Log("Before Start");
-            Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(5), () => Debug.Log("after 5 minutes"));
-            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5500), () => Debug.Log("after 5.5 minutes"));
+            Debug.Log("M:Before Start");
+            Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(5), () => Debug.Log("M:after 5 minutes"));
+            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5500), () => Debug.Log("M:after 5.5 minutes"));
+        }
+
+        ypos += 100;
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Realtime"))
+        {
+            Debug.Log("R:Before Start");
+            Scheduler.MainThreadRealTime.Schedule(TimeSpan.FromSeconds(5), () => Debug.Log("R:after 5 minutes"));
+            Scheduler.MainThreadRealTime.Schedule(TimeSpan.FromMilliseconds(5500), () => Debug.Log("R:after 5.5 minutes"));
         }
 
         ypos += 100;
