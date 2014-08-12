@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace UniRx
 {
-    public interface IObserver<in T>
+    public interface IObserver<T>
     {
         void OnCompleted();
         void OnError(Exception error);

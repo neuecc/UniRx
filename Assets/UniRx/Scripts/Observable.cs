@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace UniRx
 {
-    public interface IObservable<out T>
+    public interface IObservable<T>
     {
         IDisposable Subscribe(IObserver<T> observer);
     }
