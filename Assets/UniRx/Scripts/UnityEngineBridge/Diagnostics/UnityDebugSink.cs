@@ -20,10 +20,15 @@ namespace UniRx.Diagnostics
 
         public void OnNext(LogEntry value)
         {
+            if (value == null) return;
+            // avoid multithread exception.
+            // (value.Context == null) can only be called from the main thread.
+            var ctx = (System.Object)value.Context;
+
             switch (value.LogType)
             {
                 case LogType.Error:
-                    if (value.Context == null)
+                    if (ctx == null)
                     {
                         Debug.LogError(value.Message);
                     }
@@ -33,7 +38,7 @@ namespace UniRx.Diagnostics
                     }
                     break;
                 case LogType.Exception:
-                    if (value.Context == null)
+                    if (ctx == null)
                     {
                         Debug.LogException(value.Exception);
                     }
@@ -43,7 +48,7 @@ namespace UniRx.Diagnostics
                     }
                     break;
                 case LogType.Log:
-                    if (value.Context == null)
+                    if (ctx == null)
                     {
                         Debug.Log(value.Message);
                     }
@@ -53,7 +58,7 @@ namespace UniRx.Diagnostics
                     }
                     break;
                 case LogType.Warning:
-                    if (value.Context == null)
+                    if (ctx == null)
                     {
                         Debug.LogWarning(value.Message);
                     }

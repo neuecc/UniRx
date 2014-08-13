@@ -7,10 +7,13 @@ using UniRx;
 using System.Threading;
 using System;
 using System.Text;
+using UniRx.Diagnostics;
 
 // test sandbox
 public class NewBehaviourScript : ObservableMonoBehaviour
 {
+    readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
+
     GameObject text;
 
     [ThreadStatic]
@@ -18,6 +21,8 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
     public override void Awake()
     {
+        ObservableLogger.Listener.LogToUnityDebug();
+
         text = GameObject.Find("myGuiText");
         MainThreadDispatcher.Initialize();
         threadstaticobj = new object();
@@ -132,6 +137,13 @@ public class NewBehaviourScript : ObservableMonoBehaviour
             Debug.Log(threadstaticobj != null);
             new Thread(_ => Debug.Log(threadstaticobj != null)).Start();
             ThreadPool.QueueUserWorkItem(_ => Debug.Log(threadstaticobj != null));
+        }
+
+        ypos += 100;
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Log"))
+        {
+            logger.Debug("test", this);
+            ThreadPool.QueueUserWorkItem(_ => logger.Debug("test2", this));
         }
 
         // Time
