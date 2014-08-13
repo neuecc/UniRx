@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UniRx
 {
-    public interface ISubject<in TSource, out TResult> : IObserver<TSource>, IObservable<TResult>
+    public interface ISubject<TSource, TResult> : IObserver<TSource>, IObservable<TResult>
     {
     }
 
