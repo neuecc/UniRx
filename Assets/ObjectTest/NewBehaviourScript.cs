@@ -145,8 +145,8 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Realtime"))
         {
             logger.Debug("R:Before Start");
-            Scheduler.MainThreadRealTime.Schedule(TimeSpan.FromSeconds(5), () => logger.Debug("R:after 5 minutes"));
-            Scheduler.MainThreadRealTime.Schedule(TimeSpan.FromMilliseconds(5500), () => logger.Debug("R:after 5.5 minutes"));
+            Scheduler.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromSeconds(5), () => logger.Debug("R:after 5 minutes"));
+            Scheduler.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromMilliseconds(5500), () => logger.Debug("R:after 5.5 minutes"));
         }
 
 #if !UNITY_METRO

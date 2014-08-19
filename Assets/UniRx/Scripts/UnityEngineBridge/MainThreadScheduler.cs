@@ -23,16 +23,16 @@ namespace UniRx
             }
         }
 
-        static IScheduler mainThreadRealTime;
+        static IScheduler mainThreadIgnoreTimeScale;
 
         /// <summary>
         /// Another MainThread scheduler, delay elapsed time is calculated based on Time.realtimeSinceStartup.
         /// </summary>
-        public static IScheduler MainThreadRealTime
+        public static IScheduler MainThreadIgnoreTimeScale
         {
             get
             {
-                return mainThreadRealTime ?? (mainThreadRealTime = new RealTimeMainThreadScheduler());
+                return mainThreadIgnoreTimeScale ?? (mainThreadIgnoreTimeScale = new IgnoreTimeScaleMainThreadScheduler());
             }
         }
 
@@ -116,9 +116,9 @@ namespace UniRx
             }
         }
 
-        class RealTimeMainThreadScheduler : IScheduler
+        class IgnoreTimeScaleMainThreadScheduler : IScheduler
         {
-            public RealTimeMainThreadScheduler()
+            public IgnoreTimeScaleMainThreadScheduler()
             {
                 MainThreadDispatcher.Initialize();
             }
