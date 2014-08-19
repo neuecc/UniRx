@@ -10,8 +10,8 @@ using System.Text;
 using UniRx.Diagnostics;
 
 #if !(UNITY_METRO || UNITY_WP8)
-    using Hash = System.Collections.Hashtable;
-    using HashEntry = System.Collections.DictionaryEntry;
+using Hash = System.Collections.Hashtable;
+using HashEntry = System.Collections.DictionaryEntry;
 #else
 using Hash = System.Collections.Generic.Dictionary<string, string>;
 using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
@@ -41,6 +41,22 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         });
 
         base.Awake();
+    }
+
+    public override void Start()
+    {
+        // DoubleCLick Sample of
+        // The introduction to Reactive Programming you've been missing
+        // https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
+        //OnMouseDownAsObservable().Buffer(OnMouseDownAsObservable().Throttle(TimeSpan.FromMilliseconds(250)))
+        //    .Where(xs =>
+        //    {
+        //        logger.Debug(xs.Count);
+        //        return xs.Count >= 2;
+        //    })
+        //    .Subscribe(_ => logger.Debug("Double Click Detected"));
+
+        base.Start();
     }
 
     public override void Update()

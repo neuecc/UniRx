@@ -405,6 +405,81 @@ namespace UniRx
             });
         }
 
+        public static IObservable<IList<TSource>> Buffer<TSource, TWindowBoundary>(this IObservable<TSource> source, IObservable<TWindowBoundary> windowBoundaries)
+        {
+            return Observable.Create<IList<TSource>>(observer =>
+            {
+                var list = new List<TSource>();
+                var gate = new object();
+
+                var d = new CompositeDisposable(2);
+
+                d.Add(source.Subscribe(Observer.Create<TSource>(
+                    x =>
+                    {
+                        lock (gate)
+                        {
+                            list.Add(x);
+                        }
+                    },
+                    ex =>
+                    {
+                        lock (gate)
+                        {
+                            observer.OnError(ex);
+                        }
+                    },
+                    () =>
+                    {
+                        lock (gate)
+                        {
+                            var currentList = list;
+                            list = new List<TSource>(); // safe
+                            observer.OnNext(currentList);
+                            observer.OnCompleted();
+                        }
+                    }
+                )));
+
+                d.Add(windowBoundaries.Subscribe(Observer.Create<TWindowBoundary>(
+                    w =>
+                    {
+                        List<TSource> currentList;
+                        lock (gate)
+                        {
+                            currentList = list;
+                            if (currentList.Count != 0)
+                            {
+                                list = new List<TSource>();
+                            }
+                        }
+                        if (currentList.Count != 0)
+                        {
+                            observer.OnNext(currentList);
+                        }
+                    },
+                    ex =>
+                    {
+                        lock (gate)
+                        {
+                            observer.OnError(ex);
+                        }
+                    },
+                    () =>
+                    {
+                        lock (gate)
+                        {
+                            var currentList = list;
+                            list = new List<TSource>(); // safe
+                            observer.OnNext(currentList);
+                            observer.OnCompleted();
+                        }
+                    }
+                )));
+
+                return d;
+            });
+        }
         // TimeSpan + count
 
 
