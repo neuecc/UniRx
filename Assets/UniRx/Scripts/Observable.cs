@@ -568,28 +568,25 @@ namespace UniRx
             });
         }
 
-        // needs comparer overload
-
         public static IObservable<T> DistinctUntilChanged<T>(this IObservable<T> source)
         {
-            return source.DistinctUntilChanged(x => x);
+            return source.DistinctUntilChanged((IEqualityComparer<T>)null);
         }
 
-        public static IObservable<T> DistinctUntilChanged<T, TKey>(this IObservable<T> source, Func<T, TKey> selector)
+        public static IObservable<T> DistinctUntilChanged<T>(this IObservable<T> source, IEqualityComparer<T> comparer)
         {
             if (source == null) throw new ArgumentNullException("source");
-            if (selector == null) throw new ArgumentNullException("selector");
 
             return Observable.Create<T>(observer =>
             {
                 var isFirst = true;
-                var prevKey = default(TKey);
+                var prevKey = default(T);
                 return source.Subscribe(x =>
                 {
-                    TKey currentKey;
+                    T currentKey;
                     try
                     {
-                        currentKey = selector(x);
+                        currentKey = x;
                     }
                     catch (Exception ex)
                     {
@@ -606,7 +603,63 @@ namespace UniRx
                     {
                         try
                         {
-                            sameKey = currentKey.Equals(prevKey);
+                            sameKey = (comparer == null)
+                                ? currentKey.Equals(prevKey)
+                                : comparer.Equals(currentKey, prevKey);
+                        }
+                        catch (Exception ex)
+                        {
+                            observer.OnError(ex);
+                            return;
+                        }
+                    }
+                    if (!sameKey)
+                    {
+                        prevKey = currentKey;
+                        observer.OnNext(x);
+                    }
+                }, observer.OnError, observer.OnCompleted);
+            });
+        }
+
+        public static IObservable<T> DistinctUntilChanged<T, TKey>(this IObservable<T> source, Func<T, TKey> keySelector)
+        {
+            return DistinctUntilChanged<T, TKey>(source, keySelector, null);
+        }
+
+        public static IObservable<T> DistinctUntilChanged<T, TKey>(this IObservable<T> source, Func<T, TKey> keySelector, IEqualityComparer<TKey> comparer)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+
+            return Observable.Create<T>(observer =>
+            {
+                var isFirst = true;
+                var prevKey = default(TKey);
+                return source.Subscribe(x =>
+                {
+                    TKey currentKey;
+                    try
+                    {
+                        currentKey = keySelector(x);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
+
+                    var sameKey = false;
+                    if (isFirst)
+                    {
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            sameKey = (comparer == null)
+                                ? currentKey.Equals(prevKey)
+                                : comparer.Equals(currentKey, prevKey);
                         }
                         catch (Exception ex)
                         {

@@ -65,15 +65,28 @@ namespace UniRx.Tests
         [TestMethod]
         public void DistinctUntilChanged()
         {
-            var subject = new Subject<int>();
+            {
+                var subject = new Subject<int>();
 
-            int[] array = null;
-            var disp = subject.DistinctUntilChanged().ToArray().Subscribe(xs => array = xs);
+                int[] array = null;
+                var disp = subject.DistinctUntilChanged().ToArray().Subscribe(xs => array = xs);
 
-            Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5 }, subject.OnNext);
-            subject.OnCompleted();
+                Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5 }, subject.OnNext);
+                subject.OnCompleted();
 
-            array.Is(1, 10, 1, 100, 5);
+                array.Is(1, 10, 1, 100, 5);
+            }
+            {
+                var subject = new Subject<int>();
+
+                int[] array = null;
+                var disp = subject.DistinctUntilChanged(x => x, EqualityComparer<int>.Default).ToArray().Subscribe(xs => array = xs);
+
+                Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5 }, subject.OnNext);
+                subject.OnCompleted();
+
+                array.Is(1, 10, 1, 100, 5);
+            }
         }
 
         [TestMethod]
