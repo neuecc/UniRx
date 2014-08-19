@@ -18,8 +18,9 @@ namespace UniRx.Diagnostics
         public UnityEngine.Object Context { get; private set; }
         public Exception Exception { get; private set; }
         public string StackTrace { get; private set; }
+        public object State { get; set; }
 
-        public LogEntry(string loggerName, LogType logType, DateTime timestamp, string message, UnityEngine.Object context = null, Exception exception = null, string stackTrace = null)
+        public LogEntry(string loggerName, LogType logType, DateTime timestamp, string message, UnityEngine.Object context = null, Exception exception = null, string stackTrace = null, object state = null)
         {
             this.LoggerName = loggerName;
             this.LogType = logType;
@@ -28,6 +29,7 @@ namespace UniRx.Diagnostics
             this.Context = context;
             this.Exception = exception;
             this.StackTrace = stackTrace;
+            this.State = state;
         }
 
         public override string ToString()
