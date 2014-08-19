@@ -1,5 +1,7 @@
 ﻿// no use
 
+#if false
+
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -108,3 +110,5 @@ namespace UniRx.InternalUtil
         }
     }
 }
+
+#endif

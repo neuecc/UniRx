@@ -110,39 +110,39 @@ namespace UniRx
                 s.Dispose();
             });
 
-            Test("ReflectionAccessor", () =>
-            {
-                var mc = new MyClass2
-                {
-                    MyProperty = 100,
-                    Depth2 = new Depth2
-                    {
-                        MyProperty = 1000,
-                        Depth3 = new Depth3
-                        {
-                            MyProperty = 10000
-                        }
-                    }
-                };
+            //Test("ReflectionAccessor", () =>
+            //{
+            //    var mc = new MyClass2
+            //    {
+            //        MyProperty = 100,
+            //        Depth2 = new Depth2
+            //        {
+            //            MyProperty = 1000,
+            //            Depth3 = new Depth3
+            //            {
+            //                MyProperty = 10000
+            //            }
+            //        }
+            //    };
 
-                {
-                    Expression<Func<MyClass2, int>> selector = x => x.MyProperty;
-                    var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
-                    Console.WriteLine(accessor.GetValue(mc));
-                }
+            //    {
+            //        Expression<Func<MyClass2, int>> selector = x => x.MyProperty;
+            //        var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
+            //        Console.WriteLine(accessor.GetValue(mc));
+            //    }
 
-                {
-                    Expression<Func<MyClass2, int>> selector = x => x.Depth2.MyProperty;
-                    var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
-                    Console.WriteLine(accessor.GetValue(mc));
-                }
+            //    {
+            //        Expression<Func<MyClass2, int>> selector = x => x.Depth2.MyProperty;
+            //        var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
+            //        Console.WriteLine(accessor.GetValue(mc));
+            //    }
 
-                {
-                    Expression<Func<MyClass2, int>> selector = x => x.Depth2.Depth3.MyProperty;
-                    var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
-                    Console.WriteLine(accessor.GetValue(mc));
-                }
-            });
+            //    {
+            //        Expression<Func<MyClass2, int>> selector = x => x.Depth2.Depth3.MyProperty;
+            //        var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
+            //        Console.WriteLine(accessor.GetValue(mc));
+            //    }
+            //});
         }
 
         static void EventAotCheck()

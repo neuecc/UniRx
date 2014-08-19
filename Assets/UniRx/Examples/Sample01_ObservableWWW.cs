@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if !(UNITY_METRO || UNITY_WP8)
+
+using UnityEngine;
 
 namespace UniRx.Examples
 {
@@ -76,3 +78,5 @@ namespace UniRx.Examples
         }
     }
 }
+
+#endif

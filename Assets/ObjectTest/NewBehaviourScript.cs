@@ -9,6 +9,14 @@ using System;
 using System.Text;
 using UniRx.Diagnostics;
 
+#if !(UNITY_METRO || UNITY_WP8)
+    using Hash = System.Collections.Hashtable;
+    using HashEntry = System.Collections.DictionaryEntry;
+#else
+using Hash = System.Collections.Generic.Dictionary<string, string>;
+using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
+#endif
+
 // test sandbox
 public class NewBehaviourScript : ObservableMonoBehaviour
 {
@@ -26,6 +34,12 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         text = GameObject.Find("myGuiText");
         MainThreadDispatcher.Initialize();
         threadstaticobj = new object();
+
+        ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
+        {
+            text.guiText.text = x.ToString();
+        });
+
         base.Awake();
     }
 
@@ -52,7 +66,7 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         ypos += 100;
         if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Observe"))
         {
-            Debug.Log(DateTime.Now.ToString());
+            logger.Debug(DateTime.Now.ToString());
             Observable.Timer(TimeSpan.FromSeconds(3))
                 .ObserveOnMainThread() // comment out this line, get_guiText can only be called from the main thread.
                 .Subscribe(x => text.guiText.text = DateTime.Now.ToString());
@@ -85,10 +99,10 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         ypos += 100;
         if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler0"))
         {
-            Debug.Log("run");
+            logger.Debug("run");
             Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5000), () =>
             {
-                Debug.Log(DateTime.Now);
+                logger.Debug(DateTime.Now);
             });
         }
 
@@ -96,37 +110,39 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         ypos = 0;
         if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler1"))
         {
-            Debug.Log("Before Start");
-            Scheduler.MainThread.Schedule(() => Debug.Log("immediate"));
-            Scheduler.MainThread.Schedule(TimeSpan.Zero, () => Debug.Log("zero span"));
-            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(1), () => Debug.Log("0.1 span"));
-            Debug.Log("After Start");
+            logger.Debug("Before Start");
+            Scheduler.MainThread.Schedule(() => logger.Debug("immediate"));
+            Scheduler.MainThread.Schedule(TimeSpan.Zero, () => logger.Debug("zero span"));
+            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(1), () => logger.Debug("0.1 span"));
+            logger.Debug("After Start");
         }
 
         ypos += 100;
         if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler2"))
         {
-            Debug.Log("M:Before Start");
-            Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(5), () => Debug.Log("M:after 5 minutes"));
-            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5500), () => Debug.Log("M:after 5.5 minutes"));
+            logger.Debug("M:Before Start");
+            Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(5), () => logger.Debug("M:after 5 minutes"));
+            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5500), () => logger.Debug("M:after 5.5 minutes"));
         }
 
         ypos += 100;
         if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Realtime"))
         {
-            Debug.Log("R:Before Start");
-            Scheduler.MainThreadRealTime.Schedule(TimeSpan.FromSeconds(5), () => Debug.Log("R:after 5 minutes"));
-            Scheduler.MainThreadRealTime.Schedule(TimeSpan.FromMilliseconds(5500), () => Debug.Log("R:after 5.5 minutes"));
+            logger.Debug("R:Before Start");
+            Scheduler.MainThreadRealTime.Schedule(TimeSpan.FromSeconds(5), () => logger.Debug("R:after 5 minutes"));
+            Scheduler.MainThreadRealTime.Schedule(TimeSpan.FromMilliseconds(5500), () => logger.Debug("R:after 5.5 minutes"));
         }
+
+#if !UNITY_METRO
 
         ypos += 100;
         if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ManagedThreadId"))
         {
-            Debug.Log("Current:" + Thread.CurrentThread.ManagedThreadId);
-            new Thread(_ => Debug.Log("NewThread:" + Thread.CurrentThread.ManagedThreadId)).Start();
+            logger.Debug("Current:" + Thread.CurrentThread.ManagedThreadId);
+            new Thread(_ => logger.Debug("NewThread:" + Thread.CurrentThread.ManagedThreadId)).Start();
             ThreadPool.QueueUserWorkItem(_ =>
             {
-                Debug.Log("ThraedPool:" + Thread.CurrentThread.ManagedThreadId);
+                logger.Debug("ThraedPool:" + Thread.CurrentThread.ManagedThreadId);
                 this.transform.position = new Vector3(0, 0, 0); // exception
             });
         }
@@ -134,9 +150,9 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         ypos += 100;
         if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ThreadStatic"))
         {
-            Debug.Log(threadstaticobj != null);
-            new Thread(_ => Debug.Log(threadstaticobj != null)).Start();
-            ThreadPool.QueueUserWorkItem(_ => Debug.Log(threadstaticobj != null));
+            logger.Debug(threadstaticobj != null);
+            new Thread(_ => logger.Debug(threadstaticobj != null)).Start();
+            ThreadPool.QueueUserWorkItem(_ => logger.Debug(threadstaticobj != null));
         }
 
         ypos += 100;
@@ -144,6 +160,21 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         {
             logger.Debug("test", this);
             ThreadPool.QueueUserWorkItem(_ => logger.Debug("test2", this));
+        }
+
+#endif
+
+        ypos += 100;
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "POST"))
+        {
+            var form = new WWWForm();
+            form.AddField("test", "abcdefg");
+            ObservableWWW.PostWWW("http://localhost:53395/Handler1.ashx", form, new Hash
+            {
+                {"aaaa", "bbb"},
+                {"User-Agent", "HugaHuga"}
+            })
+            .Subscribe(x => logger.Debug(x.text));
         }
 
         // Time
@@ -177,15 +208,15 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
         yield return LazyTask.WhenAll(t1, t2, t3);
 
-        Debug.Log(t1.Result + ":" + t2.Result);
-        Debug.Log(t3.Exception);
+        logger.Debug(t1.Result + ":" + t2.Result);
+        logger.Debug(t3.Exception);
     }
 
     IEnumerator Test()
     {
-        Debug.Log("first");
+        logger.Debug("first");
         yield return 1000;
-        Debug.Log("second");
+        logger.Debug("second");
     }
 }
 

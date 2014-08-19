@@ -48,7 +48,8 @@ namespace UniRx
 
         public static IObservable<string> Post(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
         {
-            return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content.data, MergeHash(content.headers, headers)), observer, progress, cancellation));
+            var contentHeaders = (Hash)(object)content.headers;
+            return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
         public static IObservable<byte[]> PostAndGetBytes(string url, byte[] postData, IProgress<float> progress = null)
@@ -68,7 +69,8 @@ namespace UniRx
 
         public static IObservable<byte[]> PostAndGetBytes(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
         {
-            return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content.data, MergeHash(content.headers, headers)), observer, progress, cancellation));
+            var contentHeaders = (Hash)(object)content.headers;
+            return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
         public static IObservable<WWW> PostWWW(string url, byte[] postData, IProgress<float> progress = null)
@@ -88,7 +90,8 @@ namespace UniRx
 
         public static IObservable<WWW> PostWWW(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
         {
-            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content.data, MergeHash(content.headers, headers)), observer, progress, cancellation));
+            var contentHeaders = (Hash)(object)content.headers;
+            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
         static Hash MergeHash(Hash source1, Hash source2)

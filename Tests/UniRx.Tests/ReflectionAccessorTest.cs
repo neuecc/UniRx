@@ -45,23 +45,23 @@ namespace UniRx.Tests
                 }
             };
 
-            {
-                Expression<Func<MyClass, int>> selector = x => x.MyProperty;
-                var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
-                accessor.GetValue(mc).Is(100);
-            }
+            //{
+            //    Expression<Func<MyClass, int>> selector = x => x.MyProperty;
+            //    var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
+            //    accessor.GetValue(mc).Is(100);
+            //}
 
-            {
-                Expression<Func<MyClass, int>> selector = x => x.Depth2.MyProperty;
-                var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
-                accessor.GetValue(mc).Is(1000);
-            }
+            //{
+            //    Expression<Func<MyClass, int>> selector = x => x.Depth2.MyProperty;
+            //    var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
+            //    accessor.GetValue(mc).Is(1000);
+            //}
 
-            {
-                Expression<Func<MyClass, int>> selector = x => x.Depth2.Depth3.MyProperty;
-                var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
-                accessor.GetValue(mc).Is(10000);
-            }
+            //{
+            //    Expression<Func<MyClass, int>> selector = x => x.Depth2.Depth3.MyProperty;
+            //    var accessor = ReflectionAccessor.Create(selector.Body as MemberExpression);
+            //    accessor.GetValue(mc).Is(10000);
+            //}
         }
     }
 }

@@ -11,10 +11,5 @@ namespace UniRx.Diagnostics
         {
             return source.Subscribe(new UnityDebugSink());
         }
-
-        public static IDisposable LogToConsole(this IObservable<LogEntry> source)
-        {
-            return source.Subscribe(new ConsoleSink());
-        }
     }
 }
