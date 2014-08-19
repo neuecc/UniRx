@@ -487,6 +487,87 @@ namespace UniRx
             });
         }
 
+        public static IObservable<TSource> Distinct<TSource>(this IObservable<TSource> source)
+        {
+            return Distinct<TSource>(source, (IEqualityComparer<TSource>)null);
+        }
+
+        public static IObservable<TSource> Distinct<TSource>(this IObservable<TSource> source, IEqualityComparer<TSource> comparer)
+        {
+            // don't use x => x for avoid iOS AOT issue.
+            return Observable.Create<TSource>(observer =>
+            {
+                var hashSet = (comparer == null)
+                    ? new HashSet<TSource>()
+                    : new HashSet<TSource>(comparer);
+                return source.Subscribe(
+                    x =>
+                    {
+                        var key = default(TSource);
+                        var hasAdded = false;
+
+                        try
+                        {
+                            key = x;
+                            hasAdded = hashSet.Add(key);
+                        }
+                        catch (Exception exception)
+                        {
+                            observer.OnError(exception);
+                            return;
+                        }
+
+                        if (hasAdded)
+                        {
+                            observer.OnNext(x);
+                        }
+                    },
+                    observer.OnError,
+                    observer.OnCompleted
+                );
+            });
+        }
+
+        public static IObservable<TSource> Distinct<TSource, TKey>(this IObservable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            return Distinct(source, keySelector, null);
+        }
+
+        public static IObservable<TSource> Distinct<TSource, TKey>(this IObservable<TSource> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
+        {
+            return Observable.Create<TSource>(observer =>
+            {
+                var hashSet = (comparer == null)
+                    ? new HashSet<TKey>()
+                    : new HashSet<TKey>(comparer);
+                return source.Subscribe(
+                    x =>
+                    {
+                        var key = default(TKey);
+                        var hasAdded = false;
+
+                        try
+                        {
+                            key = keySelector(x);
+                            hasAdded = hashSet.Add(key);
+                        }
+                        catch (Exception exception)
+                        {
+                            observer.OnError(exception);
+                            return;
+                        }
+
+                        if (hasAdded)
+                        {
+                            observer.OnNext(x);
+                        }
+                    },
+                    observer.OnError,
+                    observer.OnCompleted
+                );
+            });
+        }
+
         // needs comparer overload
 
         public static IObservable<T> DistinctUntilChanged<T>(this IObservable<T> source)

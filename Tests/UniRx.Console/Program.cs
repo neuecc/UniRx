@@ -110,6 +110,32 @@ namespace UniRx
                 s.Dispose();
             });
 
+            Test("Distinct", () =>
+            {
+                var s = new Subject<int>();
+                s.Distinct().Subscribe(x => Console.WriteLine(x));
+                s.OnNext(10);
+                s.OnNext(10);
+                s.OnNext(100);
+                s.OnNext(10);
+                s.OnNext(100);
+                s.OnNext(100);
+                s.OnNext(200);
+            });
+
+            Test("DistinctUntilChanged", () =>
+            {
+                var s = new Subject<int>();
+                s.DistinctUntilChanged().Subscribe(x => Console.WriteLine(x));
+                s.OnNext(10);
+                s.OnNext(10);
+                s.OnNext(100);
+                s.OnNext(10);
+                s.OnNext(100);
+                s.OnNext(100);
+                s.OnNext(200);
+            });
+
             //Test("ReflectionAccessor", () =>
             //{
             //    var mc = new MyClass2

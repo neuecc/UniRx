@@ -18,7 +18,7 @@ namespace UniRx.Tests
 
             int[] array = null;
             var disp = subject.ToArray().Subscribe(xs => array = xs);
-            
+
             subject.OnNext(1);
             subject.OnNext(10);
             subject.OnNext(100);
@@ -74,6 +74,33 @@ namespace UniRx.Tests
             subject.OnCompleted();
 
             array.Is(1, 10, 1, 100, 5);
+        }
+
+        [TestMethod]
+        public void Distinct()
+        {
+            {
+                var subject = new Subject<int>();
+
+                int[] array = null;
+                var disp = subject.Distinct().ToArray().Subscribe(xs => array = xs);
+
+                Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5, 70, 7 }, subject.OnNext);
+                subject.OnCompleted();
+
+                array.Is(1, 10, 100, 5, 70, 7);
+            }
+            {
+                var subject = new Subject<int>();
+
+                int[] array = null;
+                var disp = subject.Distinct(x => x, EqualityComparer<int>.Default).ToArray().Subscribe(xs => array = xs);
+
+                Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5, 70, 7 }, subject.OnNext);
+                subject.OnCompleted();
+
+                array.Is(1, 10, 100, 5, 70, 7);
+            }
         }
 
         [TestMethod]
