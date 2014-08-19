@@ -4,6 +4,8 @@ namespace UniRx.Examples
 {
     public class Sample04_ConvertFromUnityCallback : TypedMonoBehaviour
     {
+        // This is about log but more reliable log sample => Sample11_Logger
+
         private class LogCallback
         {
             public string Condition;
@@ -11,7 +13,7 @@ namespace UniRx.Examples
             public UnityEngine.LogType LogType;
         }
 
-        private static class LogHelper
+        static class LogHelper
         {
             static Subject<LogCallback> subject;
 

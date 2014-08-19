@@ -15,5 +15,16 @@ namespace UniRx.Examples
 
             Debug.Log(v); // 10(callback is last value)
         }
+
+        // like WWW.text/error, LazyTask is awaitable value container
+        IEnumerator LazyTaskTest()
+        {
+            // IObservable<T>
+            var task = Observable.Start(() => 100).ToLazyTask();
+
+            yield return task.Start(); // wait for OnCompleted
+
+            Debug.Log(task.Result); // or task.Exception
+        }
     }
 }

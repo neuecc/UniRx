@@ -22,14 +22,15 @@ namespace UniRx.Examples
             // Add Action to MainThreadDispatcher. Action is saved queue, run on next update.
             MainThreadDispatcher.Post(() => Debug.Log("test"));
 
-            // Timebased operations is run on Threadpool(as default)
-            // ObserveOnMainThread return to mainthread
+            // Timebased operations is run on MainThread(as default)
+            // All timebased operation(Interval, Timer, Delay, Buffer, etc...)is single thread, thread safe!
             Observable.Interval(TimeSpan.FromSeconds(1))
-                .ObserveOnMainThread()
                 .Subscribe(x => Debug.Log(x));
 
-            // Run on MainThreadScheduler
-            Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.MainThread)
+            // Observable.Start use ThreadPool Scheduler as default.
+            // ObserveOnMainThread return to mainthread
+            Observable.Start(() => Unit.Default) // asynchronous work
+                .ObserveOnMainThread()
                 .Subscribe(x => Debug.Log(x));
         }
 

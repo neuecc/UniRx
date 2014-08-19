@@ -48,13 +48,13 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         // DoubleCLick Sample of
         // The introduction to Reactive Programming you've been missing
         // https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
-        //OnMouseDownAsObservable().Buffer(OnMouseDownAsObservable().Throttle(TimeSpan.FromMilliseconds(250)))
-        //    .Where(xs =>
-        //    {
-        //        logger.Debug(xs.Count);
-        //        return xs.Count >= 2;
-        //    })
-        //    .Subscribe(_ => logger.Debug("Double Click Detected"));
+
+        //var clickStream = Observable.EveryUpdate()
+        //    .Where(_ => Input.GetMouseButtonDown(0));
+
+        //clickStream.Buffer(clickStream.Throttle(TimeSpan.FromMilliseconds(250)))
+        //    .Where(xs => xs.Count >= 2)
+        //    .Subscribe(xs => Debug.Log("DoubleClick Detected! Count:" + xs.Count));
 
         base.Start();
     }

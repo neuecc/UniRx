@@ -1,11 +1,12 @@
-UniRx - Reactive Extensions for Unity / ver.4.4
+UniRx - Reactive Extensions for Unity / ver.4.5
 ===
 Created by Yoshifumi Kawai(neuecc)
 
 What is UniRx?
 ---
 UniRx(Reactive Extensions for Unity) is re-implementation of .NET Reactive Extensions.    
-It's free and open source on GitHub.
+It's free and open source on GitHub.  
+Supported platforms are PC/Android/iOS/WP8/WindowsStore.  
 You can check latest info, source code and issues on https://github.com/neuecc/UniRx
 We welcome to your contribute such as bug report, request, and pull request.
 
@@ -31,6 +32,26 @@ GameLoop(every Update, OnCollisionEnter, etc), Sensor(like Kinect, Leap Motion, 
 Rx considere event as reactive sequence which is possible to compose and perform time-based operations easily by using many LINQ query operators.
 
 Unity is single thread but UniRx helps multithreading for join, cancel, access GameObject etc.        
+
+The Introduction
+---
+Great introduction article of Rx - [The introduction to Reactive Programming you've been missing](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754). Following code is same sample of detect double click.
+
+```
+var clickStream = Observable.EveryUpdate()
+    .Where(_ => Input.GetMouseButtonDown(0));
+
+clickStream.Buffer(clickStream.Throttle(TimeSpan.FromMilliseconds(250)))
+    .Where(xs => xs.Count >= 2)
+    .Subscribe(xs => Debug.Log("DoubleClick Detected! Count:" + xs.Count));
+```
+
+This example includes the following contents(In only five lines!).
+
+* Game loop(Update) as event stream
+* Event stream is composable
+* Merging self stream
+* Easily handle time based operation   
 
 How to Use for WWW
 ---
@@ -236,6 +257,16 @@ Observable.WhenAll(heavyMethod, heavyMethod2)
         (GameObject.Find("myGuiText")).guiText.text = xs[0] + ":" + xs[1];
     }); 
 ```
+
+DefaultScheduler
+---
+UniRx's default time based operation(Interval, Timer, Buffer(timeSpan), etc...)'s Scheduler is Scheduler.MainThread.  
+It means most operator(excpet Observable.Start) is work on single-thread,  
+you don't need ObserverOn and you don't mind thread safety.  
+It's differece with RxNet but better fit to Unity environment.  
+
+Scheduler.MainThread under Time.timeScale's influence.  
+If you want to ignore, use Scheduler.MainThreadIgnoreTimeScale.
 
 How to Use for MonoBehaviour
 ---
