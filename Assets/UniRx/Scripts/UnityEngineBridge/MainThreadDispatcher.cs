@@ -1,23 +1,152 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using UniRx.InternalUtil;
 using UnityEngine;
 
 namespace UniRx
 {
-    public class MainThreadDispatcher : MonoBehaviour
+    public sealed class MainThreadDispatcher : MonoBehaviour
     {
-        /// <summary>Dispatch Asyncrhonous action.</summary>
-        public static void Post(Action item)
+        // In UnityEditor's EditorMode can't instantiate and work MonoBehaviour.Update.
+        // EditorThreadDispatcher use EditorApplication.update instead of MonoBehaviour.Update.
+        class EditorThreadDispatcher : IDisposable
         {
-            Instance.queueWorker.Enqueue(item);
+            static object gate = new object();
+            static EditorThreadDispatcher instance;
+            public static EditorThreadDispatcher Instance
+            {
+                get
+                {
+                    // Activate EditorThreadDispatcher is dangerous, completely Lazy.
+                    lock (gate)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new EditorThreadDispatcher();
+                        }
+
+                        return instance;
+                    }
+                }
+            }
+
+            bool isDisposed;
+            ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
+
+            EditorThreadDispatcher()
+            {
+                UnityEditor.EditorApplication.update += Update;
+            }
+
+            public void Enqueue(Action action)
+            {
+                queueWorker.Enqueue(action);
+            }
+
+            public void UnsafeInvoke(Action action)
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogException(ex);
+                }
+            }
+
+            public void PseudoStartCoroutine(IEnumerator routine)
+            {
+                queueWorker.Enqueue(() => ConsumeEnumerator(routine));
+            }
+
+            void Update()
+            {
+                queueWorker.ExecuteAll(x => Debug.LogException(x));
+            }
+
+            void ConsumeEnumerator(IEnumerator routine)
+            {
+                if (routine.MoveNext())
+                {
+                    var current = routine.Current;
+                    if (current == null)
+                    {
+                        goto ENQUEUE;
+                    }
+
+                    var type = current.GetType();
+                    if (type == typeof(WWW))
+                    {
+                        var www = (WWW)current;
+                        queueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitWWW(www)));
+                        return;
+                    }
+                    else if (type == typeof(WaitForSeconds))
+                    {
+                        var waitForSeconds = (WaitForSeconds)current;
+                        var accessor = typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic);
+                        var second = (float)accessor.GetValue(waitForSeconds);
+                        // m_Seconds
+                    }
+                    else if (type == typeof(Coroutine) || type == typeof(ImitationCoroutine))
+                    {
+                        Debug.Log("Can't wait coroutine on UnityEditor");
+                        goto ENQUEUE;
+                    }
+
+                ENQUEUE:
+                    queueWorker.Enqueue(() => ConsumeEnumerator(routine)); // next update
+                }
+            }
+
+            IEnumerator UnwrapWaitWWW(WWW www)
+            {
+                while (!www.isDone)
+                {
+                    yield return null;
+                }
+            }
+
+            public void Dispose()
+            {
+                lock (gate)
+                {
+                    if (!isDisposed)
+                    {
+                        isDisposed = true;
+                        UnityEditor.EditorApplication.update -= Update;
+                    }
+                    instance = null;
+                }
+            }
+        }
+
+        class ImitationCoroutine
+        {
+
+        }
+
+        /// <summary>Dispatch Asyncrhonous action.</summary>
+        public static void Post(Action action)
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+#endif
+
+            Instance.queueWorker.Enqueue(action);
         }
 
         /// <summary>Dispatch Synchronous action if possible.</summary>
         public static void Send(Action action)
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+#endif
+
             if (mainThreadToken != null)
             {
                 try
@@ -38,6 +167,10 @@ namespace UniRx
         /// <summary>Run Synchronous action.</summary>
         public static void UnsafeSend(Action action)
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action); return; }
+#endif
+
             try
             {
                 action();
@@ -51,6 +184,10 @@ namespace UniRx
         /// <summary>ThreadSafe StartCoroutine.</summary>
         public static void SendStartCoroutine(IEnumerator routine)
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
+#endif
+
             if (mainThreadToken != null)
             {
                 StartCoroutine(routine);
@@ -63,6 +200,10 @@ namespace UniRx
 
         new public static Coroutine StartCoroutine(IEnumerator routine)
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return null; }
+#endif
+
             return Instance.StartCoroutine_Auto(routine);
         }
 
@@ -78,7 +219,6 @@ namespace UniRx
                 Instance.unhandledExceptionCallback = exceptionCallback;
             }
         }
-
 
         ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
         Action<Exception> unhandledExceptionCallback = ex => Debug.LogException(ex); // default
@@ -107,7 +247,9 @@ namespace UniRx
         {
             if (!initialized)
             {
+                // in Editor, EditorView
                 if (!Application.isPlaying) return;
+
                 initialized = true;
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
                 DontDestroyOnLoad(instance);
