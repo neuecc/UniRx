@@ -82,7 +82,7 @@ namespace UniRx
                     if (type == typeof(WWW))
                     {
                         var www = (WWW)current;
-                        queueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitWWW(www)));
+                        queueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitWWW(www, routine)));
                         return;
                     }
                     else if (type == typeof(WaitForSeconds))
@@ -90,9 +90,9 @@ namespace UniRx
                         var waitForSeconds = (WaitForSeconds)current;
                         var accessor = typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic);
                         var second = (float)accessor.GetValue(waitForSeconds);
-                        // m_Seconds
+                        queueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitForSeconds(second, routine)));
                     }
-                    else if (type == typeof(Coroutine) || type == typeof(ImitationCoroutine))
+                    else if (type == typeof(Coroutine))
                     {
                         Debug.Log("Can't wait coroutine on UnityEditor");
                         goto ENQUEUE;
@@ -103,12 +103,29 @@ namespace UniRx
                 }
             }
 
-            IEnumerator UnwrapWaitWWW(WWW www)
+            IEnumerator UnwrapWaitWWW(WWW www, IEnumerator continuation)
             {
                 while (!www.isDone)
                 {
                     yield return null;
                 }
+                ConsumeEnumerator(continuation);
+            }
+
+            IEnumerator UnwrapWaitForSeconds(float second, IEnumerator continuation)
+            {
+                var startTime = DateTime.Now;
+                while (true)
+                {
+                    yield return null;
+
+                    var elapsed = (DateTime.Now - startTime).TotalSeconds;
+                    if (elapsed >= second)
+                    {
+                        break;
+                    }
+                };
+                ConsumeEnumerator(continuation);
             }
 
             public void Dispose()
@@ -123,11 +140,6 @@ namespace UniRx
                     instance = null;
                 }
             }
-        }
-
-        class ImitationCoroutine
-        {
-
         }
 
         /// <summary>Dispatch Asyncrhonous action.</summary>

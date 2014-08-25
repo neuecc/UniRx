@@ -47,6 +47,26 @@ namespace UniRx
             // Okay to action run synchronous and guaranteed run on MainThread
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
             {
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    var startTime = DateTime.Now;
+                    while (true)
+                    {
+                        yield return null;
+                        if (cancellation.IsDisposed) break;
+
+                        var elapsed = DateTime.Now - startTime;
+                        if (elapsed >= dueTime)
+                        {
+                            MainThreadDispatcher.UnsafeSend(action);
+                            break;
+                        }
+                    };
+                    yield break;
+                }
+#endif
+
                 if (dueTime == TimeSpan.Zero)
                 {
                     yield return null; // not immediately, run next frame
@@ -125,6 +145,26 @@ namespace UniRx
 
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
             {
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    var startTime = DateTime.Now;
+                    while (true)
+                    {
+                        yield return null;
+                        if (cancellation.IsDisposed) break;
+
+                        var elapsed = DateTime.Now - startTime;
+                        if (elapsed >= dueTime)
+                        {
+                            MainThreadDispatcher.UnsafeSend(action);
+                            break;
+                        }
+                    };
+                    yield break;
+                }
+#endif
+
                 if (dueTime == TimeSpan.Zero)
                 {
                     yield return null;
