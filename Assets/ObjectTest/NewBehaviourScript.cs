@@ -12,6 +12,7 @@ using UniRx.Diagnostics;
 #if !(UNITY_METRO || UNITY_WP8)
 using Hash = System.Collections.Hashtable;
 using HashEntry = System.Collections.DictionaryEntry;
+using System.Collections.Generic;
 #else
 using Hash = System.Collections.Generic.Dictionary<string, string>;
 using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
@@ -69,6 +70,8 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
     }
 
+    IDisposable yieldCancel = null;
+
     public void OnGUI()
     {
         var xpos = 0;
@@ -84,7 +87,6 @@ public class NewBehaviourScript : ObservableMonoBehaviour
         {
             logger.Debug(DateTime.Now.ToString());
             Observable.Timer(TimeSpan.FromSeconds(3))
-                .ObserveOnMainThread() // comment out this line, get_guiText can only be called from the main thread.
                 .Subscribe(x => text.guiText.text = DateTime.Now.ToString());
         }
 
@@ -193,6 +195,20 @@ public class NewBehaviourScript : ObservableMonoBehaviour
             .Subscribe(x => logger.Debug(x.text));
         }
 
+        xpos += 100;
+        ypos = 0;
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Yield"))
+        {
+            yieldCancel = Observable.FromCoroutineValue<string>(StringYield, false)
+                .Subscribe(x => Debug.Log(x), ex => Debug.Log("E-x:" + ex));
+        }
+
+        ypos += 100;
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "YieldCancel"))
+        {
+            yieldCancel.Dispose();
+        }
+
         // Time
 
         var sb = new StringBuilder();
@@ -213,7 +229,23 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
         GUI.Box(new Rect(Screen.width - 300, Screen.height - 300, 300, 300), "Time");
         GUI.Label(new Rect(Screen.width - 290, Screen.height - 290, 290, 290), sb.ToString());
+    }
 
+    IEnumerator StringYield()
+    {
+        try
+        {
+            yield return "aaa";
+            yield return "bbb";
+            yield return new WaitForSeconds(5);
+            yield return "ccc";
+            yield return null;
+            throw new Exception("ex!!!");
+        }
+        finally
+        {
+            Debug.Log("finally!");
+        }
     }
 
     IEnumerator Work()

@@ -9,6 +9,15 @@ namespace UniRx
 {
     public static partial class Observable
     {
+        readonly static HashSet<Type> YieldInstructionTypes = new HashSet<Type>
+        {
+            typeof(WWW),
+            typeof(WaitForEndOfFrame),
+            typeof(WaitForFixedUpdate),
+            typeof(WaitForSeconds),
+            typeof(Coroutine)
+        };
+
         /// <summary>From has no callback coroutine to IObservable. If publishEveryYield = true then publish OnNext every yield return else return once on enumeration completed.</summary>
         public static IObservable<Unit> FromCoroutine(Func<IEnumerator> coroutine, bool publishEveryYield = false)
         {
@@ -69,6 +78,88 @@ namespace UniRx
                 if (!raisedError && !cancellationToken.IsCancellationRequested)
                 {
                     observer.OnNext(Unit.Default); // last one
+                    observer.OnCompleted();
+                }
+            }
+            finally
+            {
+                var d = enumerator as IDisposable;
+                if (d != null)
+                {
+                    d.Dispose();
+                }
+            }
+        }
+
+        /// <summary>Convert coroutine to typed IObservable. If nullAsNextUpdate = true then yield return null when Enumerator.Current and no null publish observer.OnNext.</summary>
+        public static IObservable<T> FromCoroutineValue<T>(Func<IEnumerator> coroutine, bool nullAsNextUpdate = true)
+        {
+            return Observable.FromCoroutine<T>((observer, cancellationToken) => WrapEnumeratorYieldValue<T>(coroutine(), observer, cancellationToken, nullAsNextUpdate));
+        }
+
+        static IEnumerator WrapEnumeratorYieldValue<T>(IEnumerator enumerator, IObserver<T> observer, CancellationToken cancellationToken, bool nullAsNextUpdate)
+        {
+            var hasNext = default(bool);
+            var current = default(object);
+            var raisedError = false;
+            do
+            {
+                try
+                {
+                    hasNext = enumerator.MoveNext();
+                    if (hasNext) current = enumerator.Current;
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        raisedError = true;
+                        observer.OnError(ex);
+                    }
+                    finally
+                    {
+                        var d = enumerator as IDisposable;
+                        if (d != null)
+                        {
+                            d.Dispose();
+                        }
+                    }
+                    yield break;
+                }
+
+                if (hasNext)
+                {
+                    if (current != null && YieldInstructionTypes.Contains(current.GetType()))
+                    {
+                        yield return current;
+                    }
+                    else if (current == null && nullAsNextUpdate)
+                    {
+                        yield return null;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            observer.OnNext((T)current);
+                        }
+                        catch
+                        {
+                            var d = enumerator as IDisposable;
+                            if (d != null)
+                            {
+                                d.Dispose();
+                            }
+                            throw;
+                        }
+                    }
+                }
+            } while (hasNext && !cancellationToken.IsCancellationRequested);
+
+            try
+            {
+                if (!raisedError && !cancellationToken.IsCancellationRequested)
+                {
                     observer.OnCompleted();
                 }
             }

@@ -115,12 +115,12 @@ namespace UniRx
 
             IEnumerator UnwrapWaitForSeconds(float second, IEnumerator continuation)
             {
-                var startTime = DateTime.Now;
+                var startTime = DateTimeOffset.UtcNow;
                 while (true)
                 {
                     yield return null;
 
-                    var elapsed = (DateTime.Now - startTime).TotalSeconds;
+                    var elapsed = (DateTimeOffset.UtcNow - startTime).TotalSeconds;
                     if (elapsed >= second)
                     {
                         break;

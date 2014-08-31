@@ -50,13 +50,13 @@ namespace UniRx
 #if UNITY_EDITOR
                 if (!Application.isPlaying)
                 {
-                    var startTime = DateTime.Now;
+                    var startTime = DateTimeOffset.UtcNow;
                     while (true)
                     {
                         yield return null;
                         if (cancellation.IsDisposed) break;
 
-                        var elapsed = DateTime.Now - startTime;
+                        var elapsed = DateTimeOffset.UtcNow - startTime;
                         if (elapsed >= dueTime)
                         {
                             MainThreadDispatcher.UnsafeSend(action);
@@ -148,13 +148,13 @@ namespace UniRx
 #if UNITY_EDITOR
                 if (!Application.isPlaying)
                 {
-                    var startTime = DateTime.Now;
+                    var startTime = DateTimeOffset.UtcNow;
                     while (true)
                     {
                         yield return null;
                         if (cancellation.IsDisposed) break;
 
-                        var elapsed = DateTime.Now - startTime;
+                        var elapsed = DateTimeOffset.UtcNow - startTime;
                         if (elapsed >= dueTime)
                         {
                             MainThreadDispatcher.UnsafeSend(action);
