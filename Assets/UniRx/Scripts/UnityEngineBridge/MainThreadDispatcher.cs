@@ -38,7 +38,9 @@ namespace UniRx
 
             EditorThreadDispatcher()
             {
+#if UNITY_EDITOR
                 UnityEditor.EditorApplication.update += Update;
+#endif
             }
 
             public void Enqueue(Action action)
@@ -136,7 +138,9 @@ namespace UniRx
                     if (!isDisposed)
                     {
                         isDisposed = true;
-                        UnityEditor.EditorApplication.update -= Update;
+#if UNITY_EDITOR
+                        UnityEditor.EditorApplication.update += Update;
+#endif
                     }
                     instance = null;
                 }
