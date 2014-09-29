@@ -14,11 +14,10 @@ namespace UniRx
 
         // In UnityEditor's EditorMode can't instantiate and work MonoBehaviour.Update.
         // EditorThreadDispatcher use EditorApplication.update instead of MonoBehaviour.Update.
-        private class EditorThreadDispatcher : IDisposable
+        class EditorThreadDispatcher : IDisposable
         {
-            private static object gate = new object();
-            private static EditorThreadDispatcher instance;
-
+            static object gate = new object();
+            static EditorThreadDispatcher instance;
             public static EditorThreadDispatcher Instance
             {
                 get
@@ -36,10 +35,10 @@ namespace UniRx
                 }
             }
 
-            private bool isDisposed;
-            private ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
+            bool isDisposed;
+            ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
 
-            private EditorThreadDispatcher()
+            EditorThreadDispatcher()
             {
                 UnityEditor.EditorApplication.update += Update;
             }
@@ -66,12 +65,12 @@ namespace UniRx
                 queueWorker.Enqueue(() => ConsumeEnumerator(routine));
             }
 
-            private void Update()
+            void Update()
             {
                 queueWorker.ExecuteAll(x => Debug.LogException(x));
             }
 
-            private void ConsumeEnumerator(IEnumerator routine)
+            void ConsumeEnumerator(IEnumerator routine)
             {
                 if (routine.MoveNext())
                 {
@@ -107,7 +106,7 @@ namespace UniRx
                 }
             }
 
-            private IEnumerator UnwrapWaitWWW(WWW www, IEnumerator continuation)
+            IEnumerator UnwrapWaitWWW(WWW www, IEnumerator continuation)
             {
                 while (!www.isDone)
                 {
@@ -116,7 +115,7 @@ namespace UniRx
                 ConsumeEnumerator(continuation);
             }
 
-            private IEnumerator UnwrapWaitForSeconds(float second, IEnumerator continuation)
+            IEnumerator UnwrapWaitForSeconds(float second, IEnumerator continuation)
             {
                 var startTime = DateTimeOffset.UtcNow;
                 while (true)
@@ -139,7 +138,6 @@ namespace UniRx
                     if (!isDisposed)
                     {
                         isDisposed = true;
-
                         UnityEditor.EditorApplication.update += Update;
                     }
                     instance = null;
@@ -239,20 +237,21 @@ namespace UniRx
             }
         }
 
-        private ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
-        private Action<Exception> unhandledExceptionCallback = ex => Debug.LogException(ex); // default
+        ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
+        Action<Exception> unhandledExceptionCallback = ex => Debug.LogException(ex); // default
 
-        private static MainThreadDispatcher instance;
-        private static bool initialized;
+        static MainThreadDispatcher instance;
+        static bool initialized;
 
         [ThreadStatic]
-        private static object mainThreadToken;
+        static object mainThreadToken;
 
         private MainThreadDispatcher()
         {
+
         }
 
-        private static MainThreadDispatcher Instance
+        static MainThreadDispatcher Instance
         {
             get
             {
@@ -269,6 +268,7 @@ namespace UniRx
                 // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
                 if (!ScenePlaybackDetector.IsPlaying) return;
 #endif
+
                 initialized = true;
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
                 DontDestroyOnLoad(instance);
@@ -276,50 +276,44 @@ namespace UniRx
             }
         }
 
-        private void Awake()
+        void Awake()
         {
             instance = this;
             initialized = true;
         }
 
-        private void Update()
+        void Update()
         {
             queueWorker.ExecuteAll(unhandledExceptionCallback);
         }
 
         // for Lifecycle Management
 
-        private Subject<bool> onApplicationFocus;
-
-        private void OnApplicationFocus(bool focus)
+        Subject<bool> onApplicationFocus;
+        void OnApplicationFocus(bool focus)
         {
             if (onApplicationFocus != null) onApplicationFocus.OnNext(focus);
         }
-
         public static IObservable<bool> OnApplicationFocusAsObservable()
         {
             return Instance.onApplicationFocus ?? (Instance.onApplicationFocus = new Subject<bool>());
         }
 
-        private Subject<bool> onApplicationPause;
-
-        private void OnApplicationPause(bool pause)
+        Subject<bool> onApplicationPause;
+        void OnApplicationPause(bool pause)
         {
             if (onApplicationPause != null) onApplicationPause.OnNext(pause);
         }
-
         public static IObservable<bool> OnApplicationPauseAsObservable()
         {
             return Instance.onApplicationPause ?? (Instance.onApplicationPause = new Subject<bool>());
         }
 
-        private Subject<Unit> onApplicationQuit;
-
-        private void OnApplicationQuit()
+        Subject<Unit> onApplicationQuit;
+        void OnApplicationQuit()
         {
             if (onApplicationQuit != null) onApplicationQuit.OnNext(Unit.Default);
         }
-
         public static IObservable<Unit> OnApplicationQuitAsObservable()
         {
             return Instance.onApplicationQuit ?? (Instance.onApplicationQuit = new Subject<Unit>());
