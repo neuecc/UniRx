@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,12 +10,15 @@ namespace UniRx
 {
     public sealed class MainThreadDispatcher : MonoBehaviour
     {
+#if UNITY_EDITOR
+
         // In UnityEditor's EditorMode can't instantiate and work MonoBehaviour.Update.
         // EditorThreadDispatcher use EditorApplication.update instead of MonoBehaviour.Update.
-        class EditorThreadDispatcher : IDisposable
+        private class EditorThreadDispatcher : IDisposable
         {
-            static object gate = new object();
-            static EditorThreadDispatcher instance;
+            private static object gate = new object();
+            private static EditorThreadDispatcher instance;
+
             public static EditorThreadDispatcher Instance
             {
                 get
@@ -33,14 +36,12 @@ namespace UniRx
                 }
             }
 
-            bool isDisposed;
-            ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
+            private bool isDisposed;
+            private ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
 
-            EditorThreadDispatcher()
+            private EditorThreadDispatcher()
             {
-#if UNITY_EDITOR
                 UnityEditor.EditorApplication.update += Update;
-#endif
             }
 
             public void Enqueue(Action action)
@@ -65,12 +66,12 @@ namespace UniRx
                 queueWorker.Enqueue(() => ConsumeEnumerator(routine));
             }
 
-            void Update()
+            private void Update()
             {
                 queueWorker.ExecuteAll(x => Debug.LogException(x));
             }
 
-            void ConsumeEnumerator(IEnumerator routine)
+            private void ConsumeEnumerator(IEnumerator routine)
             {
                 if (routine.MoveNext())
                 {
@@ -106,7 +107,7 @@ namespace UniRx
                 }
             }
 
-            IEnumerator UnwrapWaitWWW(WWW www, IEnumerator continuation)
+            private IEnumerator UnwrapWaitWWW(WWW www, IEnumerator continuation)
             {
                 while (!www.isDone)
                 {
@@ -115,7 +116,7 @@ namespace UniRx
                 ConsumeEnumerator(continuation);
             }
 
-            IEnumerator UnwrapWaitForSeconds(float second, IEnumerator continuation)
+            private IEnumerator UnwrapWaitForSeconds(float second, IEnumerator continuation)
             {
                 var startTime = DateTimeOffset.UtcNow;
                 while (true)
@@ -138,20 +139,21 @@ namespace UniRx
                     if (!isDisposed)
                     {
                         isDisposed = true;
-#if UNITY_EDITOR
+
                         UnityEditor.EditorApplication.update += Update;
-#endif
                     }
                     instance = null;
                 }
             }
         }
 
+#endif
+
         /// <summary>Dispatch Asyncrhonous action.</summary>
         public static void Post(Action action)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
 #endif
 
             Instance.queueWorker.Enqueue(action);
@@ -161,7 +163,7 @@ namespace UniRx
         public static void Send(Action action)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
 #endif
 
             if (mainThreadToken != null)
@@ -185,7 +187,7 @@ namespace UniRx
         public static void UnsafeSend(Action action)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action); return; }
 #endif
 
             try
@@ -202,7 +204,7 @@ namespace UniRx
         public static void SendStartCoroutine(IEnumerator routine)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
 #endif
 
             if (mainThreadToken != null)
@@ -218,7 +220,7 @@ namespace UniRx
         new public static Coroutine StartCoroutine(IEnumerator routine)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return null; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return null; }
 #endif
 
             return Instance.StartCoroutine_Auto(routine);
@@ -237,21 +239,20 @@ namespace UniRx
             }
         }
 
-        ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
-        Action<Exception> unhandledExceptionCallback = ex => Debug.LogException(ex); // default
+        private ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
+        private Action<Exception> unhandledExceptionCallback = ex => Debug.LogException(ex); // default
 
-        static MainThreadDispatcher instance;
-        static bool initialized;
+        private static MainThreadDispatcher instance;
+        private static bool initialized;
 
         [ThreadStatic]
-        static object mainThreadToken;
+        private static object mainThreadToken;
 
         private MainThreadDispatcher()
         {
-
         }
 
-        static MainThreadDispatcher Instance
+        private static MainThreadDispatcher Instance
         {
             get
             {
@@ -264,9 +265,10 @@ namespace UniRx
         {
             if (!initialized)
             {
-                // in Editor, EditorView
-                if (!Application.isPlaying) return;
-
+#if UNITY_EDITOR
+                // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
+                if (!ScenePlaybackDetector.IsPlaying) return;
+#endif
                 initialized = true;
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
                 DontDestroyOnLoad(instance);
@@ -274,44 +276,50 @@ namespace UniRx
             }
         }
 
-        void Awake()
+        private void Awake()
         {
             instance = this;
             initialized = true;
         }
 
-        void Update()
+        private void Update()
         {
             queueWorker.ExecuteAll(unhandledExceptionCallback);
         }
 
         // for Lifecycle Management
 
-        Subject<bool> onApplicationFocus;
-        void OnApplicationFocus(bool focus)
+        private Subject<bool> onApplicationFocus;
+
+        private void OnApplicationFocus(bool focus)
         {
             if (onApplicationFocus != null) onApplicationFocus.OnNext(focus);
         }
+
         public static IObservable<bool> OnApplicationFocusAsObservable()
         {
             return Instance.onApplicationFocus ?? (Instance.onApplicationFocus = new Subject<bool>());
         }
 
-        Subject<bool> onApplicationPause;
-        void OnApplicationPause(bool pause)
+        private Subject<bool> onApplicationPause;
+
+        private void OnApplicationPause(bool pause)
         {
             if (onApplicationPause != null) onApplicationPause.OnNext(pause);
         }
+
         public static IObservable<bool> OnApplicationPauseAsObservable()
         {
             return Instance.onApplicationPause ?? (Instance.onApplicationPause = new Subject<bool>());
         }
 
-        Subject<Unit> onApplicationQuit;
-        void OnApplicationQuit()
+        private Subject<Unit> onApplicationQuit;
+
+        private void OnApplicationQuit()
         {
             if (onApplicationQuit != null) onApplicationQuit.OnNext(Unit.Default);
         }
+
         public static IObservable<Unit> OnApplicationQuitAsObservable()
         {
             return Instance.onApplicationQuit ?? (Instance.onApplicationQuit = new Subject<Unit>());

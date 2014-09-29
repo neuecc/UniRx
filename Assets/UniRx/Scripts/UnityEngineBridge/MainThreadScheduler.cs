@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +48,7 @@ namespace UniRx
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
             {
 #if UNITY_EDITOR
-                if (!Application.isPlaying)
+                if (!ScenePlaybackDetector.IsPlaying)
                 {
                     var startTime = DateTimeOffset.UtcNow;
                     while (true)
@@ -146,7 +146,7 @@ namespace UniRx
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
             {
 #if UNITY_EDITOR
-                if (!Application.isPlaying)
+                if (!ScenePlaybackDetector.IsPlaying)
                 {
                     var startTime = DateTimeOffset.UtcNow;
                     while (true)
