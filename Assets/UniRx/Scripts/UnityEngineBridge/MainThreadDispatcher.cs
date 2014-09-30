@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,6 +10,8 @@ namespace UniRx
 {
     public sealed class MainThreadDispatcher : MonoBehaviour
     {
+#if UNITY_EDITOR
+
         // In UnityEditor's EditorMode can't instantiate and work MonoBehaviour.Update.
         // EditorThreadDispatcher use EditorApplication.update instead of MonoBehaviour.Update.
         class EditorThreadDispatcher : IDisposable
@@ -38,9 +40,7 @@ namespace UniRx
 
             EditorThreadDispatcher()
             {
-#if UNITY_EDITOR
                 UnityEditor.EditorApplication.update += Update;
-#endif
             }
 
             public void Enqueue(Action action)
@@ -138,20 +138,20 @@ namespace UniRx
                     if (!isDisposed)
                     {
                         isDisposed = true;
-#if UNITY_EDITOR
                         UnityEditor.EditorApplication.update += Update;
-#endif
                     }
                     instance = null;
                 }
             }
         }
 
+#endif
+
         /// <summary>Dispatch Asyncrhonous action.</summary>
         public static void Post(Action action)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
 #endif
 
             Instance.queueWorker.Enqueue(action);
@@ -161,7 +161,7 @@ namespace UniRx
         public static void Send(Action action)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
 #endif
 
             if (mainThreadToken != null)
@@ -185,7 +185,7 @@ namespace UniRx
         public static void UnsafeSend(Action action)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action); return; }
 #endif
 
             try
@@ -202,7 +202,7 @@ namespace UniRx
         public static void SendStartCoroutine(IEnumerator routine)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
 #endif
 
             if (mainThreadToken != null)
@@ -218,7 +218,7 @@ namespace UniRx
         new public static Coroutine StartCoroutine(IEnumerator routine)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return null; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return null; }
 #endif
 
             return Instance.StartCoroutine_Auto(routine);
@@ -264,8 +264,10 @@ namespace UniRx
         {
             if (!initialized)
             {
-                // in Editor, EditorView
-                if (!Application.isPlaying) return;
+#if UNITY_EDITOR
+                // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
+                if (!ScenePlaybackDetector.IsPlaying) return;
+#endif
 
                 initialized = true;
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
