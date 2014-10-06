@@ -31,6 +31,8 @@ namespace UniRx
         public static void OnPostprocessScene()
         {
             IsPlaying = true;
+            // ensures the dispatcher GameObject is created by the main thread
+            MainThreadDispatcher.Initialize();
         }
 
         // InitializeOnLoad ensures that this constructor is called when the Unity Editor is started.
