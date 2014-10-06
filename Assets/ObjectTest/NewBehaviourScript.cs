@@ -209,6 +209,14 @@ public class NewBehaviourScript : ObservableMonoBehaviour
             yieldCancel.Dispose();
         }
 
+        ypos += 100;
+        if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ThreadPool"))
+        {
+            Observable.Timer(TimeSpan.FromMilliseconds(400), Scheduler.ThreadPool)
+                .ObserveOnMainThread()
+                .Subscribe(x => logger.Debug(x));
+        }
+
         // Time
 
         var sb = new StringBuilder();

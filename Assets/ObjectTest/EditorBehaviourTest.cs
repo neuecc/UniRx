@@ -37,4 +37,29 @@ namespace Assets.ObjectTest
         {
         }
     }
+
+    public static class MyEditor
+    {
+        [UnityEditor.MenuItem("UniRxTest/Fire", false)]
+        public static void Fire()
+        {
+            MainThreadDispatcher.StartCoroutine(Hoge());
+        }
+
+        [UnityEditor.MenuItem("UniRxTest/Thread", false)]
+        public static void Thread()
+        {
+            Observable.Timer(TimeSpan.FromMilliseconds(500), Scheduler.ThreadPool)
+                .ObserveOnMainThread()
+                .Subscribe(x => Debug.Log(x));
+        }
+
+        static IEnumerator Hoge()
+        {
+            var www = new WWW("http://google.co.jp/");
+            Debug.Log("W");
+            yield return www;
+            Debug.Log(www.text);
+        }
+    }
 }
