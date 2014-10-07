@@ -14,7 +14,7 @@ namespace UniRx
 
         // In UnityEditor's EditorMode can't instantiate and work MonoBehaviour.Update.
         // EditorThreadDispatcher use EditorApplication.update instead of MonoBehaviour.Update.
-        class EditorThreadDispatcher : IDisposable
+        class EditorThreadDispatcher
         {
             static object gate = new object();
             static EditorThreadDispatcher instance;
@@ -129,19 +129,6 @@ namespace UniRx
                     }
                 };
                 ConsumeEnumerator(continuation);
-            }
-
-            public void Dispose()
-            {
-                lock (gate)
-                {
-                    if (!isDisposed)
-                    {
-                        isDisposed = true;
-                        UnityEditor.EditorApplication.update += Update;
-                    }
-                    instance = null;
-                }
             }
         }
 
@@ -266,7 +253,7 @@ namespace UniRx
             {
 #if UNITY_EDITOR
                 // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
-                if (!ScenePlaybackDetector.IsPlaying) return;
+                if (!Application.isPlaying) return; // Initialize must call from MainThread
 #endif
 
                 initialized = true;
