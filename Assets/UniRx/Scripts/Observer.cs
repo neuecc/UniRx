@@ -25,7 +25,15 @@ namespace UniRx
             if (onCompleted == null) throw new ArgumentNullException("onCompleted");
             if (disposable == null) throw new ArgumentNullException("disposable");
 
-            return new AnonymousObserver<T>(onNext, onError, onCompleted, disposable);
+            // need compare for avoid iOS AOT
+            if (onNext == Stubs.Ignore<T>)
+            {
+                return new EmptyOnNextAnonymousObserver<T>(onError, onCompleted, disposable);
+            }
+            else
+            {
+                return new AnonymousObserver<T>(onNext, onError, onCompleted, disposable);
+            }
         }
 
         class AnonymousObserver<T> : IObserver<T>
@@ -49,23 +57,67 @@ namespace UniRx
             {
                 if (isStopped == 0)
                 {
-                    var noError = false;
                     try
                     {
-                        if (onNext != Stubs.Ignore<T>) // need compare for avoid iOS AOT
-                        {
-                            onNext(value);
-                        }
-                        noError = true;
+                        onNext(value);
+                    }
+                    catch
+                    {
+                        disposable.Dispose();
+                        throw;
+                    }
+                }
+            }
+
+            public void OnError(Exception error)
+            {
+                if (Interlocked.Increment(ref isStopped) == 1)
+                {
+                    try
+                    {
+                        onError(error);
                     }
                     finally
                     {
-                        if (!noError)
-                        {
-                            disposable.Dispose();
-                        }
+                        disposable.Dispose();
                     }
                 }
+            }
+
+
+            public void OnCompleted()
+            {
+                if (Interlocked.Increment(ref isStopped) == 1)
+                {
+                    try
+                    {
+                        onCompleted();
+                    }
+                    finally
+                    {
+                        disposable.Dispose();
+                    }
+                }
+            }
+        }
+
+        class EmptyOnNextAnonymousObserver<T> : IObserver<T>
+        {
+            readonly Action<Exception> onError;
+            readonly Action onCompleted;
+            readonly IDisposable disposable;
+
+            int isStopped = 0;
+
+            public EmptyOnNextAnonymousObserver(Action<Exception> onError, Action onCompleted, IDisposable disposable)
+            {
+                this.onError = onError;
+                this.onCompleted = onCompleted;
+                this.disposable = disposable;
+            }
+
+            public void OnNext(T value)
+            {
             }
 
             public void OnError(Exception error)
