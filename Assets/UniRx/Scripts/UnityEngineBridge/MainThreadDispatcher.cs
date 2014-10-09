@@ -138,7 +138,11 @@ namespace UniRx
         public static void Post(Action action)
         {
 #if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+            if (!initialized)
+            {
+                // can detect if after Start
+                if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+            }
 #endif
 
             Instance.queueWorker.Enqueue(action);
@@ -148,7 +152,11 @@ namespace UniRx
         public static void Send(Action action)
         {
 #if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+            if (!initialized)
+            {
+                // can detect if after Start
+                if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+            }
 #endif
 
             if (mainThreadToken != null)
@@ -172,7 +180,10 @@ namespace UniRx
         public static void UnsafeSend(Action action)
         {
 #if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action); return; }
+            if (!initialized)
+            {
+                if (!Application.isPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action); return; }
+            }
 #endif
 
             try
@@ -188,16 +199,20 @@ namespace UniRx
         /// <summary>ThreadSafe StartCoroutine.</summary>
         public static void SendStartCoroutine(IEnumerator routine)
         {
-#if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
-#endif
-
             if (mainThreadToken != null)
             {
                 StartCoroutine(routine);
             }
             else
             {
+#if UNITY_EDITOR
+                if (!initialized)
+                {
+                    // call from other thread, can detect if after Start
+                    if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
+                }
+#endif
+
                 Instance.queueWorker.Enqueue(() => Instance.StartCoroutine_Auto(routine));
             }
         }
@@ -205,7 +220,10 @@ namespace UniRx
         new public static Coroutine StartCoroutine(IEnumerator routine)
         {
 #if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return null; }
+            if (!initialized)
+            {
+                if (!Application.isPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return null; }
+            }
 #endif
 
             return Instance.StartCoroutine_Auto(routine);
@@ -251,11 +269,24 @@ namespace UniRx
         {
             if (!initialized)
             {
-#if UNITY_EDITOR
                 // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
-                if (!Application.isPlaying) return; // Initialize must call from MainThread
-#endif
+                if (!Application.isPlaying) return;
 
+                initialized = true;
+                instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
+                DontDestroyOnLoad(instance);
+                mainThreadToken = new object();
+            }
+        }
+
+        /// <summary>
+        /// <para>Unsafe(don't valid playing or not) initialization.</para>
+        /// <para>You should call from application entry point once.</para>
+        /// </summary>
+        public static void UnsafeInitialize()
+        {
+            if (!initialized)
+            {
                 initialized = true;
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
                 DontDestroyOnLoad(instance);
