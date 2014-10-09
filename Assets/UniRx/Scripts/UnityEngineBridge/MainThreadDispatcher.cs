@@ -269,8 +269,10 @@ namespace UniRx
         {
             if (!initialized)
             {
+#if UNITY_EDITOR
                 // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
                 if (!Application.isPlaying) return;
+#endif
 
                 initialized = true;
                 instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
