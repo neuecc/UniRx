@@ -279,21 +279,6 @@ namespace UniRx
             }
         }
 
-        /// <summary>
-        /// <para>Unsafe(don't valid playing or not) initialization.</para>
-        /// <para>You should call from application entry point once.</para>
-        /// </summary>
-        public static void UnsafeInitialize()
-        {
-            if (!initialized)
-            {
-                initialized = true;
-                instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
-                DontDestroyOnLoad(instance);
-                mainThreadToken = new object();
-            }
-        }
-
         void Awake()
         {
             instance = this;
