@@ -30,6 +30,8 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
     public override void Awake()
     {
+        Debug.Log("Awake");
+
         ObservableLogger.Listener.LogToUnityDebug();
 
         text = GameObject.Find("myGuiText");
@@ -46,6 +48,8 @@ public class NewBehaviourScript : ObservableMonoBehaviour
 
     public override void Start()
     {
+        Debug.Log("Start");
+
         // DoubleCLick Sample of
         // The introduction to Reactive Programming you've been missing
         // https://gist.github.com/staltz/868e7e9bc2a7b8c1f754

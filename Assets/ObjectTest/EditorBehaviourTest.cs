@@ -11,13 +11,20 @@ namespace Assets.ObjectTest
     [ExecuteInEditMode]
     public class EditorBehaviourTest : MonoBehaviour
     {
+        void Awake()
+        {
+            Debug.Log("Editor Awake");
+        }
+
         void Start()
         {
+            Debug.Log("Editor Start");
+
             //ObservableWWW.Get("http://google.co.jp/")
             //    .Delay(TimeSpan.FromSeconds(3))
             //    .Subscribe(x => Debug.Log(x));
 
-            Debug.Log("GO");
+            
             //Observable.Interval(TimeSpan.FromSeconds(1))
             //    .Take(10)
             //    .Subscribe(x => Debug.Log(x));
@@ -52,6 +59,13 @@ namespace Assets.ObjectTest
             Observable.Timer(TimeSpan.FromMilliseconds(500), Scheduler.ThreadPool)
                 .ObserveOnMainThread()
                 .Subscribe(x => Debug.Log(x));
+        }
+
+        [UnityEditor.MenuItem("UniRxTest/ScenePlaybackDectector.IsPlaying", false)]
+        public static void IsPlaying()
+        {
+            // huga huga hug 2 
+            Debug.Log(UniRx.ScenePlaybackDetector.IsPlaying);
         }
 
         static IEnumerator Hoge()
