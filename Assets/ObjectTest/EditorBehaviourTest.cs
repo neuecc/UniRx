@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,6 @@ namespace Assets.ObjectTest
             //    .Delay(TimeSpan.FromSeconds(3))
             //    .Subscribe(x => Debug.Log(x));
 
-            
             //Observable.Interval(TimeSpan.FromSeconds(1))
             //    .Take(10)
             //    .Subscribe(x => Debug.Log(x));
@@ -45,6 +44,8 @@ namespace Assets.ObjectTest
         }
     }
 
+#if UNITY_EDITOR
+
     public static class MyEditor
     {
         [UnityEditor.MenuItem("UniRxTest/Fire", false)]
@@ -64,7 +65,7 @@ namespace Assets.ObjectTest
         [UnityEditor.MenuItem("UniRxTest/ScenePlaybackDectector.IsPlaying", false)]
         public static void IsPlaying()
         {
-            // huga huga hug 2 
+            // huga huga hug 2
             Debug.Log(UniRx.ScenePlaybackDetector.IsPlaying);
         }
 
@@ -76,4 +77,6 @@ namespace Assets.ObjectTest
             Debug.Log(www.text);
         }
     }
+
+#endif
 }

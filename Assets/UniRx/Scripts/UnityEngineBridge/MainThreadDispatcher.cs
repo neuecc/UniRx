@@ -18,6 +18,7 @@ namespace UniRx
         {
             static object gate = new object();
             static EditorThreadDispatcher instance;
+
             public static EditorThreadDispatcher Instance
             {
                 get
@@ -253,7 +254,6 @@ namespace UniRx
 
         private MainThreadDispatcher()
         {
-
         }
 
         static MainThreadDispatcher Instance
@@ -265,19 +265,41 @@ namespace UniRx
             }
         }
 
+        static void CheckForMainThread()
+        {
+            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.MTA || Thread.CurrentThread.ManagedThreadId > 1 ||
+                Thread.CurrentThread.IsBackground || Thread.CurrentThread.IsThreadPoolThread)
+            {
+                // throw exception because the current thread is not the main thread...
+                var ex = new Exception("UniRx requires a MainThreadDispatcher component created on the main thread. Make sure it is added to the scene before calling UniRx from a worker thread.");
+                UnityEngine.Debug.LogException(ex);
+                throw ex;
+            }
+        }
+
         public static void Initialize()
         {
             if (!initialized)
             {
+                // Throw exception when calling from a worker thread.
+                CheckForMainThread();
 #if UNITY_EDITOR
                 // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
                 if (!Application.isPlaying) return;
 #endif
 
-                initialized = true;
-                instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
+                var g = GameObject.FindObjectOfType<MainThreadDispatcher>();
+                if (g == null)
+                {
+                    instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
+                }
+                else
+                {
+                    instance = g;
+                }
                 DontDestroyOnLoad(instance);
                 mainThreadToken = new object();
+                initialized = true;
             }
         }
 
@@ -295,30 +317,36 @@ namespace UniRx
         // for Lifecycle Management
 
         Subject<bool> onApplicationFocus;
+
         void OnApplicationFocus(bool focus)
         {
             if (onApplicationFocus != null) onApplicationFocus.OnNext(focus);
         }
+
         public static IObservable<bool> OnApplicationFocusAsObservable()
         {
             return Instance.onApplicationFocus ?? (Instance.onApplicationFocus = new Subject<bool>());
         }
 
         Subject<bool> onApplicationPause;
+
         void OnApplicationPause(bool pause)
         {
             if (onApplicationPause != null) onApplicationPause.OnNext(pause);
         }
+
         public static IObservable<bool> OnApplicationPauseAsObservable()
         {
             return Instance.onApplicationPause ?? (Instance.onApplicationPause = new Subject<bool>());
         }
 
         Subject<Unit> onApplicationQuit;
+
         void OnApplicationQuit()
         {
             if (onApplicationQuit != null) onApplicationQuit.OnNext(Unit.Default);
         }
+
         public static IObservable<Unit> OnApplicationQuitAsObservable()
         {
             return Instance.onApplicationQuit ?? (Instance.onApplicationQuit = new Subject<Unit>());

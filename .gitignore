@@ -10,10 +10,11 @@
 */publish
 $tf
 TestResults
+*.meta
+!MainThreadScheduler.cs.meta
 !*.sln
 !*.csproj
 !*/*.csproj
-*.meta
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -42,7 +43,7 @@ x64/
 *_i.c
 *_p.c
 *.ilk
-*.meta
+# *.meta # already ignored in Unity section
 *.obj
 *.pch
 *.pdb
