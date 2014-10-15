@@ -11,7 +11,7 @@
 $tf
 TestResults
 *.meta
-!MainThreadScheduler.cs.meta
+!MainThreadDispatcher.cs.meta
 !*.sln
 !*.csproj
 !*/*.csproj
