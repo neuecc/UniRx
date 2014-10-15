@@ -10,11 +10,12 @@
 */publish
 $tf
 TestResults
-*.meta
-!MainThreadDispatcher.cs.meta
 !*.sln
 !*.csproj
 !*/*.csproj
+*.meta
+!MainThreadDispatcher.cs.meta
+!/Assets/ObjectTest/*.meta
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
