@@ -139,11 +139,8 @@ namespace UniRx
         public static void Post(Action action)
         {
 #if UNITY_EDITOR
-            if (!initialized)
-            {
-                // can detect if after Start
-                if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
-            }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+
 #endif
 
             Instance.queueWorker.Enqueue(action);
@@ -153,11 +150,7 @@ namespace UniRx
         public static void Send(Action action)
         {
 #if UNITY_EDITOR
-            if (!initialized)
-            {
-                // can detect if after Start
-                if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
-            }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
 #endif
 
             if (mainThreadToken != null)
@@ -181,10 +174,7 @@ namespace UniRx
         public static void UnsafeSend(Action action)
         {
 #if UNITY_EDITOR
-            if (!initialized)
-            {
-                if (!Application.isPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action); return; }
-            }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action); return; }
 #endif
 
             try
@@ -207,11 +197,8 @@ namespace UniRx
             else
             {
 #if UNITY_EDITOR
-                if (!initialized)
-                {
-                    // call from other thread, can detect if after Start
-                    if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
-                }
+                // call from other thread, can detect if after Start
+                if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
 #endif
 
                 Instance.queueWorker.Enqueue(() => Instance.StartCoroutine_Auto(routine));
@@ -221,10 +208,7 @@ namespace UniRx
         new public static Coroutine StartCoroutine(IEnumerator routine)
         {
 #if UNITY_EDITOR
-            if (!initialized)
-            {
-                if (!Application.isPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return null; }
-            }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return null; }
 #endif
 
             return Instance.StartCoroutine_Auto(routine);
@@ -285,7 +269,7 @@ namespace UniRx
                 CheckForMainThread();
 #if UNITY_EDITOR
                 // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
-                if (!Application.isPlaying) return;
+                if (!ScenePlaybackDetector.IsPlaying) return;
 #endif
 
                 var g = GameObject.FindObjectOfType<MainThreadDispatcher>();
@@ -344,6 +328,10 @@ namespace UniRx
 
         void OnApplicationQuit()
         {
+            // TODO iOS usually suspends instead of quitting
+            instance = null;
+            initialized = false;
+
             if (onApplicationQuit != null) onApplicationQuit.OnNext(Unit.Default);
         }
 

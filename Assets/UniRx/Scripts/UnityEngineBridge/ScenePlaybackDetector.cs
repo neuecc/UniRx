@@ -54,8 +54,6 @@ namespace UniRx
         {
             EditorApplication.playmodeStateChanged += () =>
             {
-                IsPlaying = EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isPlaying;
-
                 // Before scene start:          isPlayingOrWillChangePlaymode = false;  isPlaying = false
                 // Pressed Playback button:     isPlayingOrWillChangePlaymode = true;   isPlaying = false
                 // Playing:                     isPlayingOrWillChangePlaymode = false;  isPlaying = true
