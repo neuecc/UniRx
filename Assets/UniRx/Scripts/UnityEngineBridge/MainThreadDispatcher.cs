@@ -36,8 +36,7 @@ namespace UniRx
                 }
             }
 
-            bool isDisposed;
-            ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
+            ThreadSafeQueueWorker editorQueueWorker = new ThreadSafeQueueWorker();
 
             EditorThreadDispatcher()
             {
@@ -46,7 +45,7 @@ namespace UniRx
 
             public void Enqueue(Action action)
             {
-                queueWorker.Enqueue(action);
+                editorQueueWorker.Enqueue(action);
             }
 
             public void UnsafeInvoke(Action action)
@@ -63,12 +62,12 @@ namespace UniRx
 
             public void PseudoStartCoroutine(IEnumerator routine)
             {
-                queueWorker.Enqueue(() => ConsumeEnumerator(routine));
+                editorQueueWorker.Enqueue(() => ConsumeEnumerator(routine));
             }
 
             void Update()
             {
-                queueWorker.ExecuteAll(x => Debug.LogException(x));
+                editorQueueWorker.ExecuteAll(x => Debug.LogException(x));
             }
 
             void ConsumeEnumerator(IEnumerator routine)
@@ -85,7 +84,7 @@ namespace UniRx
                     if (type == typeof(WWW))
                     {
                         var www = (WWW)current;
-                        queueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitWWW(www, routine)));
+                        editorQueueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitWWW(www, routine)));
                         return;
                     }
                     else if (type == typeof(WaitForSeconds))
@@ -93,7 +92,7 @@ namespace UniRx
                         var waitForSeconds = (WaitForSeconds)current;
                         var accessor = typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic);
                         var second = (float)accessor.GetValue(waitForSeconds);
-                        queueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitForSeconds(second, routine)));
+                        editorQueueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitForSeconds(second, routine)));
                         return;
                     }
                     else if (type == typeof(Coroutine))
@@ -103,7 +102,7 @@ namespace UniRx
                     }
 
                 ENQUEUE:
-                    queueWorker.Enqueue(() => ConsumeEnumerator(routine)); // next update
+                    editorQueueWorker.Enqueue(() => ConsumeEnumerator(routine)); // next update
                 }
             }
 
@@ -233,12 +232,16 @@ namespace UniRx
         static MainThreadDispatcher instance;
         static bool initialized;
 
+        public static string InstanceName
+        {
+            get
+            {
+                return Instance.name;
+            }
+        }
+
         [ThreadStatic]
         static object mainThreadToken;
-
-        private MainThreadDispatcher()
-        {
-        }
 
         static MainThreadDispatcher Instance
         {
@@ -289,8 +292,37 @@ namespace UniRx
 
         void Awake()
         {
-            instance = this;
-            initialized = true;
+            if (instance == null)
+            {
+                instance = this;
+                initialized = true;
+            }
+            else
+            {
+                Debug.LogWarning("There is already a MainThreadDispatcher in the scene.");
+            }
+        }
+
+        void OnDestroy()
+        {
+            if (instance == this)
+            {
+                initialized = false;
+                instance = null;
+
+                /*
+                // Although `this` still refers to a gameObject, it won't be found.
+                var foundDispatcher = GameObject.FindObjectOfType<MainThreadDispatcher>();
+
+                if (foundDispatcher != null)
+                {
+                    // select another game object
+                    Debug.Log("new instance: " + foundDispatcher.name);
+                    instance = foundDispatcher;
+                    initialized = true;
+                }
+                */
+            }
         }
 
         void Update()
@@ -328,10 +360,6 @@ namespace UniRx
 
         void OnApplicationQuit()
         {
-            // TODO iOS usually suspends instead of quitting
-            instance = null;
-            initialized = false;
-
             if (onApplicationQuit != null) onApplicationQuit.OnNext(Unit.Default);
         }
 
