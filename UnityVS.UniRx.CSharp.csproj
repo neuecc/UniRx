@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\ObjectTest\EditorBehaviourTest.cs" />
+    <Compile Include="Assets\ObjectTest\IntervalTest.cs" />
     <Compile Include="Assets\ObjectTest\NewBehaviourScript.cs" />
     <Compile Include="Assets\ObjectTest\WorkerThreadTest.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample01_ObservableWWW.cs" />
