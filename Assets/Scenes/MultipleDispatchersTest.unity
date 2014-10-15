@@ -624,7 +624,7 @@ GUIText:
     Instance, both running Intervals will stop.\n\n    However, when a new MainThreadDispatcher
     is requested, it will reuse one of the \n    remaining dispatcher GameObjects
     in the scene.  \n\n    Try it by starting the scene. Remove the MTD GameObject
-    that the Intervals are running \n    on (check console). Then click the sphere.\n\n\n"
+    that the Intervals are running \n    on (check the console). Then click the sphere.\n\n\n"
   m_Anchor: 0
   m_Alignment: 0
   m_PixelOffset: {x: 0, y: 0}

@@ -8,6 +8,8 @@ namespace UniRx.ObjectTest
     {
         void Awake()
         {
+            Debug.Log(string.Format("Awake(). Current MainThreadDispatcher: {0}", MainThreadDispatcher.InstanceName));
+
             Observable
                 .Interval(TimeSpan.FromSeconds(1))
                 .Subscribe((s) =>
@@ -37,7 +39,7 @@ namespace UniRx.ObjectTest
 
             clicker.OnClicked += () =>
             {
-                Debug.Log(string.Format("Sphere running on: {0}", MainThreadDispatcher.InstanceName));
+                Debug.Log("Is MainThreadDispatcher initialized? " + MainThreadDispatcher.IsInitialized);
 
                 Observable
                     .Interval(TimeSpan.FromMilliseconds(1))
@@ -57,6 +59,8 @@ namespace UniRx.ObjectTest
                             buttonGo.transform.localScale = Vector3.one;
                         }
                     });
+
+                Debug.Log(string.Format("Sphere running on: {0}", MainThreadDispatcher.InstanceName));
             };
         }
     }

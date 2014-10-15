@@ -236,8 +236,17 @@ namespace UniRx
         {
             get
             {
-                return Instance.name;
+                if (instance == null)
+                {
+                    throw new NullReferenceException("MainThreadDispatcher is not initialized.");
+                }
+                return instance.name;
             }
+        }
+
+        public static bool IsInitialized
+        {
+            get { return initialized && instance != null; }
         }
 
         [ThreadStatic]
