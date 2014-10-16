@@ -10,6 +10,8 @@ namespace UniRx
 {
     public sealed class MainThreadDispatcher : MonoBehaviour
     {
+        public static bool IsCullingEnabled = false;
+
 #if UNITY_EDITOR
 
         // In UnityEditor's EditorMode can't instantiate and work MonoBehaviour.Update.
@@ -196,7 +198,7 @@ namespace UniRx
             else
             {
 #if UNITY_EDITOR
-                // call from other thread, can detect if after Start
+                // call from other thread
                 if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
 #endif
 
@@ -304,11 +306,47 @@ namespace UniRx
             if (instance == null)
             {
                 instance = this;
+                mainThreadToken = new object();
+                //DontDestroyOnLoad(gameObject);
                 initialized = true;
             }
             else
             {
-                Debug.LogWarning("There is already a MainThreadDispatcher in the scene.");
+                if (!IsCullingEnabled)
+                {
+                    Debug.LogWarning("There is already a MainThreadDispatcher in the scene.");
+                }
+                else
+                {
+                    Debug.LogWarning("There is already a MainThreadDispatcher in the scene. Cleaning up...");
+                    CullExcessDispatchers();
+                }
+            }
+        }
+
+        public static void CullExcessDispatchers()
+        {
+            var dispatchers = GameObject.FindObjectsOfType<MainThreadDispatcher>();
+            for (int i = 0; i < dispatchers.Length; i++)
+            {
+                var aDispatcher = dispatchers[i];
+                if (aDispatcher != instance)
+                {
+                    // Try to remove game object if it's empty
+                    var components = aDispatcher.gameObject.GetComponents<Component>();
+                    if (aDispatcher.gameObject.transform.childCount == 0 && components.Length == 2)
+                    {
+                        if (components[0] is Transform && components[1] is MainThreadDispatcher)
+                        {
+                            Destroy(aDispatcher.gameObject);
+                        }
+                    }
+                    else
+                    {
+                        // Remove component
+                        MonoBehaviour.Destroy(aDispatcher);
+                    }
+                }
             }
         }
 
@@ -316,8 +354,8 @@ namespace UniRx
         {
             if (instance == this)
             {
-                initialized = false;
-                instance = null;
+                instance = GameObject.FindObjectOfType<MainThreadDispatcher>();
+                initialized = instance != null;
 
                 /*
                 // Although `this` still refers to a gameObject, it won't be found.
@@ -337,6 +375,12 @@ namespace UniRx
         void Update()
         {
             queueWorker.ExecuteAll(unhandledExceptionCallback);
+        }
+
+        void OnLevelWasLoaded(int level)
+        {
+            // TODO clear queueWorker?
+            //queueWorker = new ThreadSafeQueueWorker();
         }
 
         // for Lifecycle Management

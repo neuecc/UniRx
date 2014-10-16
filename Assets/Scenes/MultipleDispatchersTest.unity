@@ -151,7 +151,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1269967785}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!1 &262304206
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,7 +274,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1269967785}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!1 &588420048
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,7 +343,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1269967785}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!1 &636853992
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,7 +406,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1269967785}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!1 &830780888
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,10 +453,13 @@ GameObject:
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 836784834}
+  - 224: {fileID: 836784834}
+  - 111: {fileID: 836784837}
+  - 222: {fileID: 836784836}
+  - 114: {fileID: 836784835}
   - 114: {fileID: 836784833}
   m_Layer: 0
-  m_Name: 'MTD #1'
+  m_Name: 'MTD #1+stuff'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -473,8 +476,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3cd207057515c4438a31a6a7b548fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &836784834
-Transform:
+--- !u!224 &836784834
+RectTransform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -485,6 +488,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1377134311}
   m_RootOrder: 1
+  m_AnchorMin: {x: .5, y: .5}
+  m_AnchorMax: {x: .5, y: .5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: .5, y: .5}
+--- !u!114 &836784835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 836784832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &836784836
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 836784832}
+  m_HideIfInvisible: 0
+--- !u!111 &836784837
+Animation:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 836784832}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &869444107
 GameObject:
   m_ObjectHideFlags: 0
@@ -549,6 +599,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1305879600}
   - {fileID: 1559564232}
   - {fileID: 588420052}
   - {fileID: 636853994}
@@ -556,6 +607,57 @@ Transform:
   - {fileID: 185662508}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!1 &1305879599
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1305879600}
+  - 132: {fileID: 1305879601}
+  m_Layer: 0
+  m_Name: CullLabel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1305879600
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1305879599}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .100000001, y: .100000001, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1269967785}
+  m_RootOrder: 0
+--- !u!132 &1305879601
+GUIText:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1305879599}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Text: Culling excess dispatchers?
+  m_Anchor: 0
+  m_Alignment: 0
+  m_PixelOffset: {x: 0, y: 0}
+  m_LineSpacing: 1
+  m_TabSize: 4
+  m_Font: {fileID: 0}
+  m_Material: {fileID: 0}
+  m_FontSize: 0
+  m_FontStyle: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_PixelCorrect: 1
+  m_RichText: 1
 --- !u!1 &1377134310
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,15 +717,16 @@ GUIText:
   m_Text: "Q: What happens when there are (accidentally) multiple MainThreadDispatchers
     in the scene?\n\nA: The first dispatcher to Awake will register itself as the
     MainThreadDispatcher Instance. \n    Any dispatcher added after the first will
-    cause a console warning.\n\n\nQ: But what happens when you remove the current
-    Instance?\n\nA: I considered another dispatcher taking over, but eventually I
-    decided that it would be\n    over-engineered. There should be one MainThreadDispatcher
-    that stays alive for the \n    rest of the game.\n\n\nQ: ... OK, but what happens
-    when you do it anyway?\n\nA: In this scene there is an Interval (outer) that creates
+    trigger a console warning and is removed.\n\n\nQ: But what happens when you remove
+    the current Instance?\n\nA: There should be only one MainThreadDispatcher that
+    stays alive for the rest of the game.\n\n\nQ: Er... OK. But what happens when
+    you do it anyway?\n\nA: In this scene there is an Interval (outer) that creates
     another Interval (inner) every second. \n    If you remove the current dispatcher
-    Instance, both running Intervals will stop.\n\n    However, when a new MainThreadDispatcher
-    is requested, it will reuse one of the \n    remaining dispatcher GameObjects
-    in the scene.  \n\n    Try it by starting the scene. Remove the MTD GameObject
+    Instance, both running Intervals will stop. That's\n    because an Interval depends
+    on coroutines, which are local to the GameObject.\n\n    When a new MainThreadDispatcher
+    is requested, the scene will be searched for another \n    dispatcher and reuse
+    it. Note that the MainThreadDispatcher may have been configured \n    to cull
+    any excess dispatchers. \n\n    Try it by starting the scene. Remove the MTD GameObject
     that the Intervals are running \n    on (check the console). Then click the sphere.\n\n\n"
   m_Anchor: 0
   m_Alignment: 0
@@ -650,4 +753,4 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1269967785}
-  m_RootOrder: 0
+  m_RootOrder: 1
