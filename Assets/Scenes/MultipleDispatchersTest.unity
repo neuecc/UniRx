@@ -113,6 +113,46 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1377134311}
   m_RootOrder: 0
+--- !u!1 &107894979
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 107894980}
+  - 114: {fileID: 107894981}
+  m_Layer: 0
+  m_Name: CullingTest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &107894980
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 107894979}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 467676659}
+  m_RootOrder: 1
+--- !u!114 &107894981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 107894979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5390ee4ca9f48645b5af618e5b4947a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cullLabel: {fileID: 1305879601}
 --- !u!1 &185662506
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,8 +190,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1269967785}
-  m_RootOrder: 5
+  m_Father: {fileID: 467676659}
+  m_RootOrder: 0
 --- !u!1 &262304206
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,7 +280,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: .161764681, g: .0487590954, b: .0154627962, a: .0196078438}
+  m_BackGroundColor: {r: .245242223, g: .346802354, b: .397058845, a: .0196078438}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -275,6 +315,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1269967785}
   m_RootOrder: 4
+--- !u!1 &467676658
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 467676659}
+  m_Layer: 0
+  m_Name: Scripts
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &467676659
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 467676658}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 185662508}
+  - {fileID: 107894980}
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
 --- !u!1 &588420048
 GameObject:
   m_ObjectHideFlags: 0
@@ -604,7 +673,6 @@ Transform:
   - {fileID: 588420052}
   - {fileID: 636853994}
   - {fileID: 396415766}
-  - {fileID: 185662508}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!1 &1305879599
@@ -617,7 +685,7 @@ GameObject:
   - 4: {fileID: 1305879600}
   - 132: {fileID: 1305879601}
   m_Layer: 0
-  m_Name: CullLabel
+  m_Name: CullingLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -643,7 +711,7 @@ GUIText:
   m_GameObject: {fileID: 1305879599}
   m_Enabled: 1
   serializedVersion: 3
-  m_Text: Culling excess dispatchers?
+  m_Text: Click to toggle Dispatcher Culling Mode
   m_Anchor: 0
   m_Alignment: 0
   m_PixelOffset: {x: 0, y: 0}
@@ -689,7 +757,7 @@ Transform:
   - {fileID: 830780890}
   - {fileID: 869444109}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!1 &1559564230
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,8 +794,9 @@ GUIText:
     on coroutines, which are local to the GameObject.\n\n    When a new MainThreadDispatcher
     is requested, the scene will be searched for another \n    dispatcher and reuse
     it. Note that the MainThreadDispatcher may have been configured \n    to cull
-    any excess dispatchers. \n\n    Try it by starting the scene. Remove the MTD GameObject
-    that the Intervals are running \n    on (check the console). Then click the sphere.\n\n\n"
+    excess dispatchers whenever a new dispatcher is added. \n\n    Try it by starting
+    the scene. Remove the MTD GameObject that the Intervals are running \n    on (check
+    the console). Then click the sphere.\n\n\n"
   m_Anchor: 0
   m_Alignment: 0
   m_PixelOffset: {x: 0, y: 0}

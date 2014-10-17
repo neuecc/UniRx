@@ -10,31 +10,36 @@ namespace UniRx.ObjectTest
 
         void Start()
         {
-            MainThreadDispatcher.IsCullingEnabled = true;
-            Debug.Log("MainThreadDispatcher.IsCullingEnabled = " + MainThreadDispatcher.IsCullingEnabled.ToString());
-
             var g = GameObject.Find("Cylinder");
 
             var interval = Observable
-                .Interval(System.TimeSpan.FromMilliseconds(20));
+                .Interval(System.TimeSpan.FromMilliseconds(20))
+                .Do((l) => g.transform.Rotate(angle));
 
-            interval.CatchIgnore();
-
-            interval.Subscribe((s) =>
+            interval
+                .CatchIgnore((Exception ex) => Debug.LogWarning(ex))
+                .Subscribe();
+            /*
+                .Subscribe((s) =>
             {
                 if (g != null)
                     g.transform.Rotate(angle);
                 else
                     throw new Exception("Can't find GameObject `Cylinder`!");
             });
+             */
 
-            var ll = GameObject.Find("LoadLevelButton");
+            var ll = GameObject.Find("LoadLevel");
             var cll = ll.AddComponent<Clicker>();
             cll.OnClicked += () => Application.LoadLevel("LoadLevelTestNew");
+            cll.OnEntered += () => cll.guiText.color = Color.blue;
+            cll.OnExited += () => cll.guiText.color = Color.white;
 
-            var lla = GameObject.Find("LoadLevelAdditiveButton");
+            var lla = GameObject.Find("LoadLevelAdditive");
             var clla = lla.AddComponent<Clicker>();
             clla.OnClicked += () => Application.LoadLevelAdditive("LoadLevelTestAdditive");
+            clla.OnEntered += () => clla.guiText.color = Color.blue;
+            clla.OnExited += () => clla.guiText.color = Color.white;
         }
     }
 }

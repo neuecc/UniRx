@@ -6,9 +6,6 @@ namespace UniRx.ObjectTest
 {
     public class IntervalTest : MonoBehaviour
     {
-        private GUIText cullLabel;
-        private int counter = 0;
-
         void Awake()
         {
             Debug.Log(string.Format("Awake(). Current MainThreadDispatcher: {0}", MainThreadDispatcher.InstanceName));
@@ -36,13 +33,6 @@ namespace UniRx.ObjectTest
 
         void Start()
         {
-            cullLabel = GameObject.Find("CullLabel").GetComponent<GUIText>();
-            cullLabel.gameObject.AddComponent<Clicker>().OnClicked += () =>
-            {
-                MainThreadDispatcher.IsCullingEnabled = !MainThreadDispatcher.IsCullingEnabled;
-                new GameObject("New MTD #" + counter++).AddComponent<MainThreadDispatcher>();
-            };
-
             var buttonGo = GameObject.Find("ButtonSphere");
             var clicker = buttonGo.AddComponent<Clicker>();
             var max = 30;
@@ -73,23 +63,6 @@ namespace UniRx.ObjectTest
 
                 Debug.Log(string.Format("Sphere running on: {0}", MainThreadDispatcher.InstanceName));
             };
-        }
-
-        void Update()
-        {
-            cullLabel.text = string.Format("Culling excess dispatchers: <b>{0}</b>.\nClick to toggle and create a new dispatcher."
-                , MainThreadDispatcher.IsCullingEnabled.ToString());
-        }
-    }
-
-    public class Clicker : MonoBehaviour
-    {
-        public event Action OnClicked = delegate { };
-
-        void OnMouseDown()
-        {
-            //Debug.Log("Clicked");
-            OnClicked();
         }
     }
 }
