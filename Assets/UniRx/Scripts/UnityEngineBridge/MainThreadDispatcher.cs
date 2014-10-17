@@ -10,7 +10,25 @@ namespace UniRx
 {
     public sealed class MainThreadDispatcher : MonoBehaviour
     {
-        public static bool IsCullingEnabled = false;
+        public enum CullingMode
+        {
+            /// <summary>
+            /// Won't remove any MainThreadDispatchers.
+            /// </summary>
+            Disabled,
+
+            /// <summary>
+            /// Checks if there is an existing MainThreadDispatcher on Awake(). If so, the new dispatcher removes itself.
+            /// </summary>
+            Self,
+
+            /// <summary>
+            /// Search for excess MainThreadDispatchers and removes them all on Awake().
+            /// </summary>
+            All
+        }
+
+        public static CullingMode cullingMode = CullingMode.Self;
 
 #if UNITY_EDITOR
 
@@ -307,46 +325,58 @@ namespace UniRx
             {
                 instance = this;
                 mainThreadToken = new object();
-                //DontDestroyOnLoad(gameObject);
                 initialized = true;
+
+                // Added for consistency with Initialize()
+                DontDestroyOnLoad(gameObject);
             }
             else
             {
-                if (!IsCullingEnabled)
+                if (cullingMode == CullingMode.Self)
                 {
-                    Debug.LogWarning("There is already a MainThreadDispatcher in the scene.");
+                    Debug.LogWarning("There is already a MainThreadDispatcher in the scene. Removing myself...");
+                    // Destroy this dispatcher if there's already one in the scene.
+                    DestroyDispatcher(this);
+                }
+                else if (cullingMode == CullingMode.All)
+                {
+                    Debug.LogWarning("There is already a MainThreadDispatcher in the scene. Cleaning up all excess dispatchers...");
+                    CullAllExcessDispatchers();
                 }
                 else
                 {
-                    Debug.LogWarning("There is already a MainThreadDispatcher in the scene. Cleaning up...");
-                    CullExcessDispatchers();
+                    Debug.LogWarning("There is already a MainThreadDispatcher in the scene.");
                 }
             }
         }
 
-        public static void CullExcessDispatchers()
+        static void DestroyDispatcher(MainThreadDispatcher aDispatcher)
+        {
+            if (aDispatcher != instance)
+            {
+                // Try to remove game object if it's empty
+                var components = aDispatcher.gameObject.GetComponents<Component>();
+                if (aDispatcher.gameObject.transform.childCount == 0 && components.Length == 2)
+                {
+                    if (components[0] is Transform && components[1] is MainThreadDispatcher)
+                    {
+                        Destroy(aDispatcher.gameObject);
+                    }
+                }
+                else
+                {
+                    // Remove component
+                    MonoBehaviour.Destroy(aDispatcher);
+                }
+            }
+        }
+
+        public static void CullAllExcessDispatchers()
         {
             var dispatchers = GameObject.FindObjectsOfType<MainThreadDispatcher>();
             for (int i = 0; i < dispatchers.Length; i++)
             {
-                var aDispatcher = dispatchers[i];
-                if (aDispatcher != instance)
-                {
-                    // Try to remove game object if it's empty
-                    var components = aDispatcher.gameObject.GetComponents<Component>();
-                    if (aDispatcher.gameObject.transform.childCount == 0 && components.Length == 2)
-                    {
-                        if (components[0] is Transform && components[1] is MainThreadDispatcher)
-                        {
-                            Destroy(aDispatcher.gameObject);
-                        }
-                    }
-                    else
-                    {
-                        // Remove component
-                        MonoBehaviour.Destroy(aDispatcher);
-                    }
-                }
+                DestroyDispatcher(dispatchers[i]);
             }
         }
 
