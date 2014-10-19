@@ -14,7 +14,7 @@ namespace UniRx.ObjectTest
 
         void Awake()
         {
-            var detector = originalObject.AddComponent<AwakeDetector>();
+            originalObject.AddComponent<AwakeDetector>();
 
             if (_instance == null)
             {

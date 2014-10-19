@@ -6,7 +6,7 @@ using System.Text;
 using UniRx;
 using UnityEngine;
 
-namespace Assets.ObjectTest
+namespace UniRx.ObjectTest
 {
     [ExecuteInEditMode]
     public class EditorBehaviourTest : MonoBehaviour

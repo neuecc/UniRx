@@ -57,8 +57,8 @@
     <Compile Include="Assets\ObjectTest\GameObjectDisplacer.cs" />
     <Compile Include="Assets\ObjectTest\IntervalTest.cs" />
     <Compile Include="Assets\ObjectTest\LoadLevelTest.cs" />
-    <Compile Include="Assets\ObjectTest\NewBehaviourScript.cs" />
     <Compile Include="Assets\ObjectTest\RotateGameObject.cs" />
+    <Compile Include="Assets\ObjectTest\UniRxTestSandbox.cs" />
     <Compile Include="Assets\ObjectTest\WorkerThreadTest.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample01_ObservableWWW.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample02_TypedBehaviour.cs" />
