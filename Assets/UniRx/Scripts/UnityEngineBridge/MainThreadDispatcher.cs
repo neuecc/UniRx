@@ -281,37 +281,35 @@ namespace UniRx
             }
         }
 
-        static void CheckForMainThread()
-        {
-            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.MTA || Thread.CurrentThread.ManagedThreadId > 1 ||
-                Thread.CurrentThread.IsBackground || Thread.CurrentThread.IsThreadPoolThread)
-            {
-                // throw exception because the current thread is not the main thread...
-                var ex = new Exception("UniRx requires a MainThreadDispatcher component created on the main thread. Make sure it is added to the scene before calling UniRx from a worker thread.");
-                UnityEngine.Debug.LogException(ex);
-                throw ex;
-            }
-        }
-
         public static void Initialize()
         {
             if (!initialized)
             {
-                // Throw exception when calling from a worker thread.
-                CheckForMainThread();
 #if UNITY_EDITOR
                 // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
                 if (!ScenePlaybackDetector.IsPlaying) return;
 #endif
+                MainThreadDispatcher dispatcher = null;
 
-                var g = GameObject.FindObjectOfType<MainThreadDispatcher>();
-                if (g == null)
+                try
+                {
+                    dispatcher = GameObject.FindObjectOfType<MainThreadDispatcher>();
+                }
+                catch
+                {
+                    // Throw exception when calling from a worker thread.
+                    var ex = new Exception("UniRx requires a MainThreadDispatcher component created on the main thread. Make sure it is added to the scene before calling UniRx from a worker thread.");
+                    UnityEngine.Debug.LogException(ex);
+                    throw ex;
+                }
+
+                if (dispatcher == null)
                 {
                     instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
                 }
                 else
                 {
-                    instance = g;
+                    instance = dispatcher;
                 }
                 DontDestroyOnLoad(instance);
                 mainThreadToken = new object();
