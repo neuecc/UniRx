@@ -9,7 +9,7 @@ namespace UniRx.ObjectTest
     {
         void Awake()
         {
-            Thread worker = new Thread(() =>
+            ThreadPool.QueueUserWorkItem((workItem) =>
             {
                 // Bind to application quit event.
                 MainThreadDispatcher.OnApplicationQuitAsObservable().Subscribe(_ => Debug.Log("OnApplicationQuitAsObservable"));
@@ -24,7 +24,6 @@ namespace UniRx.ObjectTest
                         g.transform.position += new Vector3(s, 0, 0);
                     });
             });
-            worker.Start();
         }
     }
 }
