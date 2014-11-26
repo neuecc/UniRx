@@ -98,7 +98,7 @@ namespace UniRx
         {
             foreach (HashEntry item in source2)
             {
-                source1.Add(item.Key, item.Value);
+                source1[item.Key] = item.Value;
             }
             return source1;
         }
