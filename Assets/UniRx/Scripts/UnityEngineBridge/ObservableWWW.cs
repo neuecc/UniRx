@@ -1,4 +1,4 @@
-﻿// warning disable for Unity4.5's WWW(dictionary)
+// warning disable for Unity4.5's WWW(dictionary)
 #pragma warning disable 612, 618
 
 using System;
@@ -7,12 +7,16 @@ using UnityEngine;
 
 namespace UniRx
 {
-#if !(UNITY_METRO || UNITY_WP8)
-    using Hash = System.Collections.Hashtable;
-    using HashEntry = System.Collections.DictionaryEntry;
-#else
+#if UNITY_METRO || UNITY_WP8 || (!UNITY_4_3 && !UNITY_4_2 && !UNITY_4_1 && !UNITY_4_0_1 && !UNITY_4_0 && !UNITY_3_5 && !UNITY_3_4 && !UNITY_3_3 && !UNITY_3_2 && !UNITY_3_1 && !UNITY_3_0_0 && !UNITY_3_0 && !UNITY_2_6_1 && !UNITY_2_6)  
+    // Unity 4.5 release notes: 
+    // WWW: deprecated 'WWW(string url, byte[] postData, Hashtable headers)', 
+    // use 'public WWW(string url, byte[] postData, Dictionary<string, string> headers)' instead.
     using Hash = System.Collections.Generic.Dictionary<string, string>;
     using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
+#else
+    // Fallback for Unity versions below 4.5
+    using Hash = System.Collections.Hashtable;
+    using HashEntry = System.Collections.DictionaryEntry;
 #endif
 
     public static partial class ObservableWWW
