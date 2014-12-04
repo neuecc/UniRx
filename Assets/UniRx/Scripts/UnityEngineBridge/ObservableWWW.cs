@@ -94,6 +94,16 @@ namespace UniRx
             return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
+        public static IObservable<WWW> LoadFromCacheOrDownload(string url, int version, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(WWW.LoadFromCacheOrDownload(url, version), observer, progress, cancellation));
+        }
+
+        public static IObservable<WWW> LoadFromCacheOrDownload(string url, int version, uint crc, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(WWW.LoadFromCacheOrDownload(url, version, crc), observer, progress, cancellation));
+        }
+
         static Hash MergeHash(Hash source1, Hash source2)
         {
             foreach (HashEntry item in source2)
