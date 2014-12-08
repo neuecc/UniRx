@@ -159,6 +159,8 @@ namespace UniRx
             {
                 isDisposed = true;
                 outObserver = new DisposedObserver<T>();
+                lastError = null;
+                lastValue = default(T);
             }
         }
 
