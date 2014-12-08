@@ -15,6 +15,7 @@ namespace UniRx.Examples
 
         static class LogHelper
         {
+#if (UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6)                    
             static Subject<LogCallback> subject;
 
             public static IObservable<LogCallback> LogCallbackAsObservable()
@@ -24,6 +25,8 @@ namespace UniRx.Examples
                     subject = new Subject<LogCallback>();
 
                     // Publish to Subject in callback
+
+
                     UnityEngine.Application.RegisterLogCallback((condition, stackTrace, type) =>
                     {
                         subject.OnNext(new LogCallback { Condition = condition, StackTrace = stackTrace, LogType = type });
@@ -32,6 +35,21 @@ namespace UniRx.Examples
 
                 return subject.AsObservable();
             }
+
+#else
+            static IObservable<LogCallback> subject;
+
+            public static IObservable<LogCallback> LogCallbackAsObservable()
+            {
+                if (subject == null)
+                {
+                    subject = Observable.FromEvent<Application.LogCallback, LogCallback>(
+                        h => (condition, stackTrace, type) => h(new LogCallback { Condition = condition, StackTrace = stackTrace, LogType = type }),
+                        h => Application.logMessageReceived += h, h => Application.logMessageReceived -= h);
+                }
+                return subject;
+            }
+#endif
         }
 
         public override void Awake()
