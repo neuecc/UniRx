@@ -44,7 +44,7 @@ namespace UniRx.ObjectTest
 
             ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
             {
-                text.guiText.text = x.ToString();
+                text.GetComponent<GUIText>().text = x.ToString();
             });
 
             base.Awake();
@@ -93,7 +93,7 @@ namespace UniRx.ObjectTest
             {
                 logger.Debug(DateTime.Now.ToString());
                 Observable.Timer(TimeSpan.FromSeconds(3))
-                    .Subscribe(x => text.guiText.text = DateTime.Now.ToString());
+                    .Subscribe(x => text.GetComponent<GUIText>().text = DateTime.Now.ToString());
             }
 
             ypos += 100;

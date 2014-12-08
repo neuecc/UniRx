@@ -9,18 +9,18 @@ namespace UniRx.ObjectTest
         void Start()
         {
             var ll = GameObject.Find("LoadLevel");
-            var llcolor = ll.guiText.color;
+            var llcolor = ll.GetComponent<GUIText>().color;
             var cll = ll.AddComponent<Clicker>();
             cll.OnClicked += () => Application.LoadLevel("LoadLevelTestNew");
-            cll.OnEntered += () => cll.guiText.color = Color.blue;
-            cll.OnExited += () => cll.guiText.color = llcolor;
+            cll.OnEntered += () => cll.GetComponent<GUIText>().color = Color.blue;
+            cll.OnExited += () => cll.GetComponent<GUIText>().color = llcolor;
 
             var lla = GameObject.Find("LoadLevelAdditive");
-            var llacolor = lla.guiText.color;
+            var llacolor = lla.GetComponent<GUIText>().color;
             var clla = lla.AddComponent<Clicker>();
             clla.OnClicked += () => Application.LoadLevelAdditive("LoadLevelTestAdditive");
-            clla.OnEntered += () => clla.guiText.color = Color.blue;
-            clla.OnExited += () => clla.guiText.color = llacolor;
+            clla.OnEntered += () => clla.GetComponent<GUIText>().color = Color.blue;
+            clla.OnExited += () => clla.GetComponent<GUIText>().color = llacolor;
         }
     }
 }

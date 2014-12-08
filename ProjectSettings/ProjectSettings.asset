@@ -3,11 +3,12 @@
 --- !u!129 &1
 PlayerSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 3
+  serializedVersion: 6
   AndroidProfiler: 0
   defaultScreenOrientation: 0
   targetDevice: 2
   targetGlesGraphics: 1
+  targetIOSGraphics: -1
   targetResolution: 0
   accelerometerFrequency: 60
   companyName: neuecc
@@ -27,6 +28,7 @@ PlayerSettings:
   m_Stereoscopic3D: 0
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
+  iosAppInBackgroundBehavior: 0
   displayResolutionDialog: 1
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 1
@@ -34,16 +36,16 @@ PlayerSettings:
   allowedAutorotateToLandscapeLeft: 1
   useOSAutorotation: 1
   use32BitDisplayBuffer: 1
-  use24BitDepthBuffer: 1
+  disableDepthAndStencilBuffers: 0
   defaultIsFullScreen: 1
   defaultIsNativeResolution: 1
   runInBackground: 1
   captureSingleScreen: 0
   Override IPod Music: 0
   Prepare IOS For Recording: 0
-  enableHWStatistics: 1
+  enableCloudIntegration: 1
   usePlayerLog: 1
-  stripPhysics: 0
+  bakeCollisionMeshes: 0
   forceSingleInstance: 0
   resizableWindow: 0
   useMacAppStoreValidation: 0
@@ -53,12 +55,16 @@ PlayerSettings:
   xboxEnableKinect: 0
   xboxEnableKinectAutoTracking: 0
   xboxEnableFitness: 0
+  visibleInBackground: 0
   macFullscreenMode: 2
-  d3d9FullscreenMode: 1
   xboxSpeechDB: 0
   xboxEnableHeadOrientation: 0
   xboxEnableGuest: 0
+  xboxOneResolution: 0
+  ps3SplashScreen: {fileID: 0}
   videoMemoryForVertexBuffers: 0
+  psp2PowerMode: 0
+  psp2AcquireBGM: 1
   m_SupportedAspectRatios:
     4:3: 1
     5:4: 1
@@ -66,8 +72,10 @@ PlayerSettings:
     16:9: 1
     Others: 1
   iPhoneBundleIdentifier: com.Company.ProductName
+  preloadedAssets: []
   metroEnableIndependentInputSource: 0
   metroEnableLowLatencyPresentationAPI: 0
+  xboxOneDisableKinectGpuReservation: 0
   productGUID: b286933f5059e50428b251ea31eb0f32
   iPhoneBundleVersion: 1.0
   AndroidBundleVersionCode: 1
@@ -81,9 +89,10 @@ PlayerSettings:
   ForceSDCardPermission: 0
   CreateWallpaper: 0
   APKExpansionFiles: 0
+  preloadShaders: 0
   StripUnusedMeshComponents: 0
   iPhoneSdkVersion: 988
-  iPhoneTargetOSVersion: 16
+  iPhoneTargetOSVersion: 22
   uIPrerenderedIcon: 0
   uIRequiresPersistentWiFi: 0
   uIStatusBarHidden: 1
@@ -92,6 +101,9 @@ PlayerSettings:
   iPhoneSplashScreen: {fileID: 0}
   iPhoneHighResSplashScreen: {fileID: 0}
   iPhoneTallHighResSplashScreen: {fileID: 0}
+  iPhone47inSplashScreen: {fileID: 0}
+  iPhone55inPortraitSplashScreen: {fileID: 0}
+  iPhone55inLandscapeSplashScreen: {fileID: 0}
   iPadPortraitSplashScreen: {fileID: 0}
   iPadHighResPortraitSplashScreen: {fileID: 0}
   iPadLandscapeSplashScreen: {fileID: 0}
@@ -100,6 +112,8 @@ PlayerSettings:
   AndroidSplashScreenScale: 0
   AndroidKeystoreName: 
   AndroidKeyaliasName: 
+  AndroidTVCompatibility: 1
+  AndroidIsGame: 1
   resolutionDialogBanner: {fileID: 0}
   m_BuildTargetIcons:
   - m_BuildTarget: 
@@ -109,6 +123,11 @@ PlayerSettings:
   m_BuildTargetBatching: []
   webPlayerTemplate: APPLICATION:Default
   m_TemplateCustomTags: {}
+  actionOnDotNetUnhandledException: 1
+  enableInternalProfiler: 0
+  logObjCUncaughtExceptions: 1
+  enableCrashReportAPI: 0
+  locationUsageDescription: 
   XboxTitleId: 
   XboxImageXexPath: 
   XboxSpaPath: 
@@ -124,6 +143,7 @@ PlayerSettings:
   ps3ThumbnailPath: 
   ps3BackgroundPath: 
   ps3SoundPath: 
+  ps3NPAgeRating: 12
   ps3TrophyCommId: 
   ps3NpCommunicationPassphrase: 
   ps3TrophyPackagePath: 
@@ -131,15 +151,60 @@ PlayerSettings:
   ps3TrophyCommSig: 
   ps3SaveGameSlots: 1
   ps3TrialMode: 0
+  ps3VideoMemoryForAudio: 0
+  ps3EnableVerboseMemoryStats: 0
+  ps3UseSPUForUmbra: 0
+  ps3EnableMoveSupport: 1
+  ps3DisableDolbyEncoding: 0
+  ps4NPAgeRating: 12
+  ps4NPTitleSecret: 
+  ps4NPTrophyPackPath: 
+  ps4ParentalLevel: 1
+  ps4ContentID: ED1633-NPXX51362_00-0000000000000000
+  ps4Category: 0
+  ps4MasterVersion: 01.00
+  ps4AppVersion: 01.00
+  ps4ParamSfxPath: 
+  ps4VideoOutPixelFormat: 0
+  ps4VideoOutResolution: 4
+  ps4PronunciationXMLPath: 
+  ps4PronunciationSIGPath: 
+  ps4BackgroundImagePath: 
+  ps4StartupImagePath: 
+  ps4BGMPath: 
+  ps4NPtitleDatPath: 
+  ps4EnterButtonAssignment: 1
+  ps4ApplicationParam1: 0
+  ps4ApplicationParam2: 0
+  ps4ApplicationParam3: 0
+  ps4ApplicationParam4: 0
+  ps4Passcode: zIs6DqGKIsTc98DIN3vbK6NLG4rqMoAo
+  ps4pnSessions: 1
+  ps4pnPresence: 1
+  ps4pnFriends: 1
+  ps4pnGameCustomData: 1
+  monoEnv: 
   psp2Splashimage: {fileID: 0}
-  psp2LiveAreaGate: {fileID: 0}
-  psp2LiveAreaBackround: {fileID: 0}
   psp2NPTrophyPackPath: 
+  psp2NPSupportGBMorGJP: 0
+  psp2NPAgeRating: 12
   psp2NPCommsID: 
+  psp2NPCommunicationsID: 
   psp2NPCommsPassphrase: 
   psp2NPCommsSig: 
   psp2ParamSfxPath: 
+  psp2ManualPath: 
+  psp2LiveAreaGatePath: 
+  psp2LiveAreaBackroundPath: 
+  psp2LiveAreaPath: 
+  psp2LiveAreaTrialPath: 
+  psp2PatchChangeInfoPath: 
+  psp2PatchOriginalPackage: 
   psp2PackagePassword: 
+  psp2KeystoneFile: 
+  psp2DRMType: 0
+  psp2StorageType: 0
+  psp2MediaCapacity: 0
   psp2DLCConfigPath: 
   psp2ThumbnailPath: 
   psp2BackgroundPath: 
@@ -147,7 +212,23 @@ PlayerSettings:
   psp2TrophyCommId: 
   psp2TrophyPackagePath: 
   psp2PackagedResourcesPath: 
-  flashStrippingLevel: 2
+  psp2SaveDataQuota: 10240
+  psp2ParentalLevel: 1
+  psp2ShortTitle: Not Set
+  psp2ContentID: IV0000-ABCD12345_00-0123456789ABCDEF
+  psp2Category: 0
+  psp2MasterVersion: 01.00
+  psp2AppVersion: 01.00
+  psp2TVBootMode: 0
+  psp2EnterButtonAssignment: 2
+  psp2TVDisableEmu: 0
+  psp2AllowTwitterDialog: 1
+  psp2Upgradable: 0
+  psp2HealthWarning: 0
+  psp2UseLibLocation: 0
+  psp2InfoBarOnStartup: 0
+  psp2InfoBarColor: 0
+  psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
   scriptingDefineSymbols: {}
   metroPackageName: UnityRx
@@ -211,21 +292,12 @@ PlayerSettings:
   metroTileBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   metroSplashScreenBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   metroSplashScreenUseBackgroundColor: 0
-  metroCapabilities:
-    EnterpriseAuthentication: 0
-    InternetClient: 1
-    InternetClientServer: 0
-    Location: 0
-    Microphone: 0
-    MusicLibrary: 0
-    PicturesLibrary: 0
-    PrivateNetworkClientServer: 0
-    Proximity: 0
-    RemovableStorage: 0
-    SharedUserCertificates: 0
-    VideosLibrary: 0
-    WebCam: 0
-  metroUnprocessedPlugins: []
+  platformCapabilities:
+    XboxOne:
+      enus: true
+  metroFTAName: 
+  metroFTAFileTypes: []
+  metroProtocolName: 
   metroCompilationOverrides: 1
   blackberryDeviceAddress: 
   blackberryDevicePassword: 
@@ -233,10 +305,8 @@ PlayerSettings:
   blackberryTokenExires: 
   blackberryTokenAuthor: 
   blackberryTokenAuthorId: 
-  blackberryAuthorId: 
   blackberryCskPassword: 
   blackberrySaveLogPath: 
-  blackberryAuthorIdOveride: 0
   blackberrySharedPermissions: 0
   blackberryCameraPermissions: 0
   blackberryGPSPermissions: 0
@@ -254,7 +324,57 @@ PlayerSettings:
   tizenGPSPermissions: 0
   tizenMicrophonePermissions: 0
   stvDeviceAddress: 
+  stvProductDescription: 
+  stvProductAuthor: 
+  stvProductAuthorEmail: 
+  stvProductLink: 
+  stvProductCategory: 0
+  XboxOneProductId: 
+  XboxOneUpdateKey: 
+  XboxOneSandboxId: 
+  XboxOneContentId: 
+  XboxOneTitleId: 
+  XboxOneSCId: 
+  XboxOneGameOsOverridePath: 
+  XboxOnePackagingOverridePath: 
+  XboxOneAppManifestOverridePath: 
+  XboxOnePackageEncryption: 0
+  XboxOneDescription: 
+  XboxOneIsContentPackage: 0
+  XboxOneEnableGPUVariability: 0
+  XboxOneSockets:
+    Unity Internal - Mono async-IO:
+      m_Name: Unity Internal - Mono async-IO
+      m_Port: 0
+      m_Protocol: 0
+      m_Usages: 0000000001000000
+      m_TemplateName: 
+      m_SessionRequirment: 0
+      m_DeviceUsages: 
+  XboxOneSplashScreen: {fileID: 0}
+  XboxOneAllowedProductIds: []
+  XboxOnePersistentLocalStorageSize: 0
+  intPropertyNames:
+  - Metro::ScriptingBackend
+  - WP8::ScriptingBackend
+  - WebGL::ScriptingBackend
+  - WebGL::audioCompressionFormat
+  - WebGL::exceptionSupport
+  - WebGL::memorySize
+  - iOS::Architecture
+  - iOS::ScriptingBackend
+  Metro::ScriptingBackend: 2
+  WP8::ScriptingBackend: 2
+  WebGL::ScriptingBackend: 1
+  WebGL::audioCompressionFormat: 4
+  WebGL::exceptionSupport: 0
+  WebGL::memorySize: 256
+  iOS::Architecture: 2
+  iOS::ScriptingBackend: 0
+  boolPropertyNames:
+  - WebGL::dataCaching
+  WebGL::dataCaching: 0
+  stringPropertyNames:
+  - WebGL::emscriptenArgs
+  WebGL::emscriptenArgs: 
   firstStreamedLevelWithResources: 0
-  unityRebuildLibraryVersion: 9
-  unityForwardCompatibleVersion: 39
-  unityStandardAssetsVersion: 0

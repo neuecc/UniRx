@@ -14,9 +14,9 @@ namespace UniRx.ObjectTest
         void Start()
         {
             var cullClicker = cullLabel.gameObject.AddComponent<Clicker>();
-            var cullClickerColor = cullClicker.guiText.color;
-            cullClicker.OnEntered += () => cullLabel.guiText.color = Color.blue;
-            cullClicker.OnExited += () => cullLabel.guiText.color = cullClickerColor;
+            var cullClickerColor = cullClicker.GetComponent<GUIText>().color;
+            cullClicker.OnEntered += () => cullLabel.GetComponent<GUIText>().color = Color.blue;
+            cullClicker.OnExited += () => cullLabel.GetComponent<GUIText>().color = cullClickerColor;
             cullClicker.OnClicked += () =>
             {
                 var values = Enum.GetValues(typeof(MainThreadDispatcher.CullingMode));
