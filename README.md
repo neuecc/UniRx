@@ -463,7 +463,7 @@ Observable.Range(1, 10).WrapValueToClass(); // IObservable<Tuple<int>>
 
 Please see [AOT Exception Patterns and Hacks](https://github.com/neuecc/UniRx/wiki/AOT-Exception-Patterns-and-Hacks).
 
-If you encount [Ran out of trampolines of type 2](http://developer.xamarin.com/guides/ios/troubleshooting/troubleshooting/) error, set AOT Compilation Options `nimt-trampolines=2048`.
+If you encount [Ran out of trampolines of type 2](http://developer.xamarin.com/guides/ios/troubleshooting/troubleshooting/) error, set AOT Compilation Options `nimt-trampolines=2048`. If you encount Ran out of trampolines of type 0, you should set AOT Compilation Options `ntrampolines=2048` too. I recommend set both for use UniRx.
 
 Reference
 ---
