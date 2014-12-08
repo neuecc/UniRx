@@ -5,6 +5,7 @@ using UniRx.UI;
 using System.Collections;
 using UniRx;
 using System.Threading;
+using System.Collections.Generic;
 using System;
 using System.Text;
 using UniRx.Diagnostics;
@@ -74,6 +75,9 @@ namespace UniRx.ObjectTest
         }
 
         IDisposable yieldCancel = null;
+
+        Subscriber subscriber = new Subscriber();
+
 
         public void OnGUI()
         {
@@ -220,6 +224,26 @@ namespace UniRx.ObjectTest
                     .Subscribe(x => logger.Debug(x));
             }
 
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Subscribe"))
+            {
+                subscriber.InitSubscriptions();
+                Debug.Log("Subscribe++ : " + subscriber.SubscriptionCount);
+            }
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Push"))
+            {
+                Publisher.foo();
+            }
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Unsubscriber"))
+            {
+                subscriber.RemoveSubscriptions();
+                Debug.Log("UnsubscribeAll : " + subscriber.SubscriptionCount);
+            }
+
             // Time
 
             var sb = new StringBuilder();
@@ -276,6 +300,54 @@ namespace UniRx.ObjectTest
             logger.Debug("first");
             yield return 1000;
             logger.Debug("second");
+        }
+
+        // Question from UnityForum  #45
+
+        public static class Publisher
+        {
+            private static readonly object _Lock = new object();
+            private static UniRx.Subject<bool> item = new UniRx.Subject<bool>();
+
+            public static UniRx.IObservable<bool> Item
+            {
+                get
+                {
+                    return item; // no needs lock
+                }
+            }
+
+            public static void foo()
+            {
+                item.OnNext(true);
+            }
+        }
+
+        public class Subscriber
+        {
+            private CompositeDisposable m_Subscriptions = new CompositeDisposable();
+
+            public int SubscriptionCount { get { return m_Subscriptions.Count; } }
+
+            public void InitSubscriptions()
+            {
+                m_Subscriptions.Add(Publisher.Item.Subscribe(UniRx.Observer.Create<bool>(result => this.HandleItem(result), ex => this.HandleError(ex), () => { })));
+            }
+
+            void HandleItem(bool args)
+            {
+                UnityEngine.Debug.Log("Received Item: " + args);
+            }
+
+            void HandleError(Exception ex)
+            {
+                UnityEngine.Debug.Log("Exception: " + ex.Message);
+            }
+
+            public void RemoveSubscriptions()
+            {
+                m_Subscriptions.Clear();
+            }
         }
     }
 }
