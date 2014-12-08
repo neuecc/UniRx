@@ -21,7 +21,6 @@ namespace UniRx.Tests
             xs[3].Is(10);
         }
 
-
         [TestMethod]
         public void BufferTime()
         {
@@ -35,6 +34,82 @@ namespace UniRx.Tests
 
             xs[0].Is(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
             xs[1].Is(1000);
+        }
+
+        [TestMethod]
+        public void BufferTimeEmptyBuffer()
+        {
+            var xs = Observable.Return(10).Delay(TimeSpan.FromMilliseconds(3500))
+                .Buffer(TimeSpan.FromSeconds(1))
+                .ToArray()
+                .Wait();
+
+            xs.Length.Is(4);
+            xs[0].Count.Is(0); // 1sec
+            xs[1].Count.Is(0); // 2sec
+            xs[2].Count.Is(0); // 3sec
+            xs[3].Count.Is(1); // 4sec
+        }
+
+        [TestMethod]
+        public void BufferTimeComplete()
+        {
+            // when complete, return empty array.
+            var xs = Observable.Return(1).Delay(TimeSpan.FromSeconds(2))
+                .Concat(Observable.Return(1).Delay(TimeSpan.FromSeconds(2)).Skip(1))
+                .Buffer(TimeSpan.FromSeconds(3))
+                .ToArray()
+                .Wait();
+
+            xs.Length.Is(2);
+            xs[0].Count.Is(1);
+            xs[1].Count.Is(0);
+        }
+
+        [TestMethod]
+        public void BufferTimeEmptyComplete()
+        {
+            var xs = Observable.Empty<int>()
+                .Buffer(TimeSpan.FromSeconds(1000))
+                .ToArray()
+                .Wait();
+
+            xs.Length.Is(1);
+        }
+
+        [TestMethod]
+        public void BufferEmpty()
+        {
+            var xs = Observable.Empty<int>()
+                .Buffer(10)
+                .ToArray()
+                .Wait();
+
+            xs.Length.Is(0);
+        }
+
+
+        [TestMethod]
+        public void BufferComplete2()
+        {
+            var xs = Observable.Range(1, 2)
+                .Buffer(2)
+                .ToArray()
+                .Wait();
+
+            xs.Length.Is(1);
+            xs[0].Is(1, 2);
+        }
+
+        [TestMethod]
+        public void Buffer3()
+        {
+            var xs = Observable.Empty<int>()
+                .Buffer(1, 2)
+                .ToArray()
+                .Wait();
+
+            xs.Length.Is(0);
         }
 
         [TestMethod]
@@ -80,6 +155,66 @@ namespace UniRx.Tests
                 xs[1].Is(6, 7, 8);
                 xs[2].Is(11, 12, 13);
                 xs[3].Is(16, 17, 18);
+            }
+        }
+
+        [TestMethod]
+        public void BufferTimeAndCount()
+        {
+            // time...count...complete
+            {
+                var xs = Observable.Return(1000)
+                    .Concat(Observable.Return(99).Delay(TimeSpan.FromMilliseconds(1500)))
+                    .Concat(Observable.Range(1, 7))
+                    .Buffer(TimeSpan.FromSeconds(1), 5)
+                    .ToArray()
+                    .Wait();
+
+                xs.Length.Is(3);
+                xs[0].Is(1000); // 1sec
+                xs[1].Is(99, 1, 2, 3, 4); // 1.5sec -> buffer
+                xs[2].Is(5, 6, 7); // next 1sec
+            }
+            // time...count...time
+            {
+                var xs = Observable.Return(1000)
+                    .Concat(Observable.Return(99).Delay(TimeSpan.FromMilliseconds(1500)))
+                    .Concat(Observable.Range(1, 7))
+                    .Concat(Observable.Never<int>())
+                    .Buffer(TimeSpan.FromSeconds(1), 5)
+                    .Take(3)
+                    .ToArray()
+                    .Wait();
+
+                xs.Length.Is(3);
+                xs[0].Is(1000); // 1sec
+                xs[1].Is(99, 1, 2, 3, 4); // 1.5sec -> buffer
+                xs[2].Is(5, 6, 7); // next 1sec
+            }
+            // time(before is canceled)
+            {
+                var start = DateTime.Now;
+                var result = Observable.Return(10).Delay(TimeSpan.FromSeconds(2))
+                    .Concat(Observable.Range(1, 2))
+                    .Concat(Observable.Return(1000).Delay(TimeSpan.FromSeconds(2)))
+                    .Concat(Observable.Never<int>())
+                    .Buffer(TimeSpan.FromSeconds(3), 3)
+                    .Take(2)
+                    .Select(xs =>
+                    {
+                        var currentSpan = DateTime.Now - start;
+                        return new { currentSpan, xs };
+                    })
+                    .ToArray()
+                    .Wait();
+
+                // after 2 seconds, buffer is flush by count
+                result[0].xs.Is(10, 1, 2);
+                result[0].currentSpan.Is(x => TimeSpan.FromMilliseconds(1800) <= x && x <= TimeSpan.FromMilliseconds(2200));
+
+                // after 3 seconds, buffer is flush by time
+                result[1].xs.Is(1000);
+                result[1].currentSpan.Is(x => TimeSpan.FromMilliseconds(4800) <= x && x <= TimeSpan.FromMilliseconds(5200));
             }
         }
 
@@ -385,7 +520,7 @@ namespace UniRx.Tests
                 a.OnNext(10);
                 b.OnCompleted();
                 l.Count.Is(2);
-                
+
                 b.OnNext(1000);
                 l.Count.Is(2);
 
