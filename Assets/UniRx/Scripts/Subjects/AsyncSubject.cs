@@ -15,6 +15,17 @@ namespace UniRx
         Exception lastError;
         IObserver<T> outObserver = new EmptyObserver<T>();
 
+        public T Value
+        {
+            get
+            {
+                ThrowIfDisposed();
+                if (!isStopped) throw new InvalidOperationException("AsyncSubject is not completed yet");
+                if (lastError != null) throw lastError;
+                return lastValue;
+            }
+        }
+
         public bool HasObservers
         {
             get

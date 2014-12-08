@@ -1,81 +1,196 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using UniRx.InternalUtil;
 
 namespace UniRx
 {
-    // MEMO:should be threadsafe?
-
-    public sealed class BehaviorSubject<T> : ISubject<T>
+    public sealed class BehaviorSubject<T> : ISubject<T>, IDisposable
     {
+        object observerLock = new object();
+
         bool isStopped;
+        bool isDisposed;
         T lastValue;
         Exception lastError;
-        List<IObserver<T>> observers = new List<IObserver<T>>();
-
-        public T Value { get { return lastValue; } }
+        IObserver<T> outObserver = new EmptyObserver<T>();
 
         public BehaviorSubject(T defaultValue)
         {
             lastValue = defaultValue;
         }
 
+        public T Value
+        {
+            get
+            {
+                ThrowIfDisposed();
+                if (lastError != null) throw lastError;
+                return lastValue;
+            }
+        }
+
+        public bool HasObservers
+        {
+            get
+            {
+                return !(outObserver is EmptyObserver<T>) && !isStopped && !isDisposed;
+            }
+        }
 
         public void OnCompleted()
         {
-            if (isStopped) return;
-
-            isStopped = true;
-            foreach (var item in observers.ToArray())
+            IObserver<T> old;
+            lock (observerLock)
             {
-                item.OnCompleted();
+                ThrowIfDisposed();
+                if (isStopped) return;
+
+                old = outObserver;
+                outObserver = new EmptyObserver<T>();
+                isStopped = true;
             }
-            observers.Clear();
+
+            old.OnCompleted();
         }
 
         public void OnError(Exception error)
         {
-            if (isStopped) return;
+            if (error == null) throw new ArgumentNullException("error");
 
-            isStopped = true;
-            lastError = error;
-            foreach (var item in observers.ToArray())
+            IObserver<T> old;
+            lock (observerLock)
             {
-                item.OnError(error);
+                ThrowIfDisposed();
+                if (isStopped) return;
+
+                old = outObserver;
+                outObserver = new EmptyObserver<T>();
+                isStopped = true;
+                lastError = error;
             }
-            observers.Clear();
+
+            old.OnError(error);
         }
 
         public void OnNext(T value)
         {
-            if (isStopped) return;
-
-            lastValue = value;
-            foreach (var item in observers.ToArray())
+            IObserver<T> current;
+            lock (observerLock)
             {
-                item.OnNext(value);
+                if (isStopped) return;
+
+                lastValue = value;
+                current = outObserver;
             }
+
+            current.OnNext(value);
         }
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
-            if (!isStopped)
-            {
-                observer.OnNext(lastValue);
-                observers.Add(observer);
+            if (observer == null) throw new ArgumentNullException("observer");
 
-                return Disposable.Create(() => observers.Remove(observer));
-            }
-            else if(lastError != null)
+            var ex = default(Exception);
+            var v = default(T);
+            var subscription = default(Subscription);
+
+            lock (observerLock)
             {
-                observer.OnError(lastError);
-                return Disposable.Empty;
+                ThrowIfDisposed();
+                if (!isStopped)
+                {
+                    var listObserver = outObserver as ListObserver<T>;
+                    if (listObserver != null)
+                    {
+                        outObserver = listObserver.Add(observer);
+                    }
+                    else
+                    {
+                        var current = outObserver;
+                        if (current is EmptyObserver<T>)
+                        {
+                            outObserver = observer;
+                        }
+                        else
+                        {
+                            outObserver = new ListObserver<T>(new ImmutableList<IObserver<T>>(new[] { current, observer }));
+                        }
+                    }
+
+                    v = lastValue;
+                    subscription = new Subscription(this, observer);
+                }
+                else
+                {
+                    ex = lastError;
+                }
+            }
+
+            if (subscription != null)
+            {
+                observer.OnNext(v);
+                return subscription;
+            }
+            else if (ex != null)
+            {
+                observer.OnError(ex);
             }
             else
             {
                 observer.OnCompleted();
-                return Disposable.Empty;
+            }
+
+            return Disposable.Empty;
+        }
+
+        public void Dispose()
+        {
+            lock (observerLock)
+            {
+                isDisposed = true;
+                outObserver = new DisposedObserver<T>();
+            }
+        }
+
+        void ThrowIfDisposed()
+        {
+            if (isDisposed) throw new ObjectDisposedException("");
+        }
+
+        class Subscription : IDisposable
+        {
+            readonly object gate = new object();
+            BehaviorSubject<T> parent;
+            IObserver<T> unsubscribeTarget;
+
+            public Subscription(BehaviorSubject<T> parent, IObserver<T> unsubscribeTarget)
+            {
+                this.parent = parent;
+                this.unsubscribeTarget = unsubscribeTarget;
+            }
+
+            public void Dispose()
+            {
+                lock (gate)
+                {
+                    if (parent != null)
+                    {
+                        lock (parent.observerLock)
+                        {
+                            var listObserver = parent.outObserver as ListObserver<T>;
+                            if (listObserver != null)
+                            {
+                                parent.outObserver = listObserver.Remove(unsubscribeTarget);
+                            }
+                            else
+                            {
+                                parent.outObserver = new EmptyObserver<T>();
+                            }
+
+                            unsubscribeTarget = null;
+                            parent = null;
+                        }
+                    }
+                }
             }
         }
     }
