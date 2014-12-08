@@ -297,7 +297,7 @@ ObservableMonoBehaviour is extended TypedMonoBehaviour. All message is Observabl
 ```csharp
 public class Test : ObservableMonoBehaviour
 {
-    public override void Awake()
+    public override void Start()
     {
         // All events can subscribe by ***AsObservable
         this.OnMouseDownAsObservable()
@@ -308,7 +308,32 @@ public class Test : ObservableMonoBehaviour
             .Subscribe(x => Debug.Log(x));
 
         // If you use ObservableMonoBehaviour, must call base method
-        base.Awake();
+        base.Start();
+    }
+}
+```
+
+> Note:
+> TypedMonoBehaviour and ObservableMonoBehaviour cause some performance down.
+> I don't recommend instantiate many Type/ObservableMonoBehaviour.
+> If you want to observe MonoBehaviour's event, copy from ObservableMonoBehaviour and paste to your simple MonoBehaviour.
+> for example
+
+```
+public class ObservableDestoryMonoBehaviour : MonoBehaviour
+{
+    Subject<Unit> onDestroy;
+
+    /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
+    public virtual void OnDestroy()
+    {
+        if (onDestroy != null) onDestroy.OnNext(Unit.Default);
+    }
+
+    /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
+    public IObservable<Unit> OnDestroyAsObservable()
+    {
+        return onDestroy ?? (onDestroy = new Subject<Unit>());
     }
 }
 ```
@@ -354,6 +379,17 @@ LogHelper.LogCallbackAsObservable()
 LogHelper.LogCallbackAsObservable()
     .Where(x => x.LogType == LogType.Error)
     .Subscribe();
+```
+
+In Unity5, `Application.RegisterLogCallback` is removed to `Application.logMessageReceived`. We can simply replace by `Observable.FromEvent`.
+
+```csharp
+public static IObservable<LogCallback> LogCallbackAsObservable()
+{
+    return Observable.FromEvent<Application.LogCallback, LogCallback>(
+        h => (condition, stackTrace, type) => h(new LogCallback { Condition = condition, StackTrace = stackTrace, LogType = type }),
+        h => Application.logMessageReceived += h, h => Application.logMessageReceived -= h);
+}
 ```
 
 Stream Logger

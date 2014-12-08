@@ -5,7 +5,7 @@ namespace UniRx.Examples
     // Sample:Detect Touch event
     public class Sample03_ObservableMonoBehaviour : ObservableMonoBehaviour
     {
-        public override void Awake()
+        public override void Start()
         {
             // All events can subscribe by ***AsObservable
 
@@ -22,7 +22,7 @@ namespace UniRx.Examples
                 });
 
             // If you use ObservableMonoBehaviour, must call base method
-            base.Awake();
+            base.Start();
         }
     }
 }

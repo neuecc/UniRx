@@ -26,7 +26,7 @@ namespace UniRx.Examples
             Debug.Log("b end");
         }
 
-        public override void Awake()
+        public override void Start()
         {
             // after completed AsyncA, run AsyncB as continuous routine.
             // UniRx expands SelectMany(IEnumerator) as SelectMany(IEnumerator.ToObservable())

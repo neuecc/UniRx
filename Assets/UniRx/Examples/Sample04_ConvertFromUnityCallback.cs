@@ -37,17 +37,11 @@ namespace UniRx.Examples
             }
 
 #else
-            static IObservable<LogCallback> subject;
-
             public static IObservable<LogCallback> LogCallbackAsObservable()
             {
-                if (subject == null)
-                {
-                    subject = Observable.FromEvent<Application.LogCallback, LogCallback>(
-                        h => (condition, stackTrace, type) => h(new LogCallback { Condition = condition, StackTrace = stackTrace, LogType = type }),
-                        h => Application.logMessageReceived += h, h => Application.logMessageReceived -= h);
-                }
-                return subject;
+                return Observable.FromEvent<Application.LogCallback, LogCallback>(
+                    h => (condition, stackTrace, type) => h(new LogCallback { Condition = condition, StackTrace = stackTrace, LogType = type }),
+                    h => Application.logMessageReceived += h, h => Application.logMessageReceived -= h);
             }
 #endif
         }
