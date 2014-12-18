@@ -184,7 +184,7 @@ namespace UniRx
             {
                 var cancel = new BooleanDisposable();
 
-                MainThreadDispatcher.StartCoroutine(coroutine(observer, new CancellationToken(cancel)));
+                MainThreadDispatcher.SendStartCoroutine(coroutine(observer, new CancellationToken(cancel)));
 
                 return cancel;
             });
