@@ -54,6 +54,24 @@ namespace UniRx.ObjectTest
             MainThreadDispatcher.StartCoroutine(Hoge());
         }
 
+        static IDisposable runEnumerator;
+
+        [UnityEditor.MenuItem("UniRxTest/RunEnumerator", false)]
+        public static void RunEnumerator()
+        {
+            runEnumerator = Observable.FromCoroutine(Inf).Subscribe();
+        }
+
+        [UnityEditor.MenuItem("UniRxTest/StopEnumerator", false)]
+        public static void StopEnumerator()
+        {
+            if (runEnumerator != null)
+            {
+                runEnumerator.Dispose();
+                runEnumerator = null;
+            }
+        }
+
         [UnityEditor.MenuItem("UniRxTest/Thread", false)]
         public static void Thread()
         {
@@ -75,6 +93,16 @@ namespace UniRx.ObjectTest
             Debug.Log("W");
             yield return www;
             Debug.Log(www.text);
+        }
+
+        static IEnumerator Inf()
+        {
+            var i = 0;
+            while (true)
+            {
+                Debug.Log("Editor:" + i++);
+                yield return new WaitForSeconds(1);
+            }
         }
     }
 

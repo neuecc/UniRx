@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UniRx
 {
-#if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
+#if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_4 || UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
     // Fallback for Unity versions below 4.5
     using Hash = System.Collections.Hashtable;
     using HashEntry = System.Collections.DictionaryEntry;    
@@ -70,7 +70,7 @@ namespace UniRx
 
         public static IObservable<byte[]> PostAndGetBytes(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
         {
-            var contentHeaders = (Hash)(object)content.headers;
+            var contentHeaders = content.headers;
             return Observable.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
@@ -91,7 +91,7 @@ namespace UniRx
 
         public static IObservable<WWW> PostWWW(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
         {
-            var contentHeaders = (Hash)(object)content.headers;
+            var contentHeaders = content.headers;
             return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
@@ -105,14 +105,34 @@ namespace UniRx
             return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(WWW.LoadFromCacheOrDownload(url, version, crc), observer, progress, cancellation));
         }
 
-        static Hash MergeHash(Hash source1, Hash source2)
+        // over 4.5, Hash define is Dictionary.
+        // below Unity 4.5, WWW only supports Hashtable.
+        // Unity 4.5, 4.6 WWW supports Dictionary and [Obsolete]Hashtable but WWWForm.content is Hashtable.
+        // Unity 5.0 WWW only supports Dictionary and WWWForm.content is also Dictionary.
+#if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_5 || UNITY_4_6)
+        static System.Collections.Generic.Dictionary<string, string> MergeHash2<TK, TV>(Hashtable wwwFormHeaders, Hash externalHeaders)
         {
-            foreach (HashEntry item in source2)
+            var newHeaders = new Hash();
+            foreach (DictionaryEntry item in wwwFormHeaders)
             {
-                source1[item.Key] = item.Value;
+                newHeaders.Add(item.Key.ToString(), item.Value.ToString());
             }
-            return source1;
+            foreach (HashEntry item in externalHeaders)
+            {
+                newHeaders.Add(item.Key, item.Value);
+            }
+            return newHeaders;
         }
+#else
+        static Hash MergeHash(Hash wwwFormHeaders, Hash externalHeaders)
+        {
+            foreach (HashEntry item in externalHeaders)
+            {
+                wwwFormHeaders[item.Key] = item.Value;
+            }
+            return wwwFormHeaders;
+        }
+#endif
 
         static IEnumerator Fetch(WWW www, IObserver<WWW> observer, IProgress<float> reportProgress, CancellationToken cancel)
         {
