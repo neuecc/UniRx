@@ -107,6 +107,12 @@ namespace UniRx
                         editorQueueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitWWW(www, routine)));
                         return;
                     }
+                    else if (type == typeof(AsyncOperation))
+                    {
+                        var asyncOperation = (AsyncOperation)current;
+                        editorQueueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitAsyncOperation(asyncOperation, routine)));
+                        return;
+                    }
                     else if (type == typeof(WaitForSeconds))
                     {
                         var waitForSeconds = (WaitForSeconds)current;
@@ -129,6 +135,15 @@ namespace UniRx
             IEnumerator UnwrapWaitWWW(WWW www, IEnumerator continuation)
             {
                 while (!www.isDone)
+                {
+                    yield return null;
+                }
+                ConsumeEnumerator(continuation);
+            }
+
+            IEnumerator UnwrapWaitAsyncOperation(AsyncOperation asyncOperation, IEnumerator continuation)
+            {
+                while (!asyncOperation.isDone)
                 {
                     yield return null;
                 }
