@@ -110,7 +110,7 @@ namespace UniRx
         // Unity 4.5, 4.6 WWW supports Dictionary and [Obsolete]Hashtable but WWWForm.content is Hashtable.
         // Unity 5.0 WWW only supports Dictionary and WWWForm.content is also Dictionary.
 #if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_5 || UNITY_4_6)
-        static System.Collections.Generic.Dictionary<string, string> MergeHash2<TK, TV>(Hashtable wwwFormHeaders, Hash externalHeaders)
+        static Hash MergeHash(Hashtable wwwFormHeaders, Hash externalHeaders)
         {
             var newHeaders = new Hash();
             foreach (DictionaryEntry item in wwwFormHeaders)
