@@ -49,7 +49,7 @@ namespace UniRx
 
         public static IObservable<string> Post(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
         {
-            var contentHeaders = (Hash)(object)content.headers;
+            var contentHeaders = content.headers;
             return Observable.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
