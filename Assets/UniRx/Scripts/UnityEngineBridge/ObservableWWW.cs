@@ -253,5 +253,3 @@ namespace UniRx
         }
     }
 }
-
-#pragma warning restore 612, 618

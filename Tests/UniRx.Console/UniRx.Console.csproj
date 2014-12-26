@@ -168,6 +168,12 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Subjects\Subject.cs">
       <Link>Scripts\Subjects\Subject.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\System\IObservable.cs">
+      <Link>Scripts\System\IObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\System\IObserver.cs">
+      <Link>Scripts\System\IObserver.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\System\IProgress.cs">
       <Link>Scripts\System\IProgress.cs</Link>
     </Compile>
