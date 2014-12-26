@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// defined from .NET Framework 4.5 and NETFX_CORE
 
 namespace UniRx
 {

@@ -9,12 +9,11 @@ namespace UniRx.ObjectTest
     {
         void Awake()
         {
-            ThreadPool.QueueUserWorkItem(RegisterApplicationQuitEvent);
-
 #if UNITY_METRO
             // Windows Store doesn't support System.Threading.Thread.
             // Other platforms can use both ThreadPool and System.Threading.Thread.
-            ThreadPool.QueueUserWorkItem(SpawnCapsules);
+            // ThreadPool.QueueUserWorkItem(RegisterApplicationQuitEvent);
+            // ThreadPool.QueueUserWorkItem(SpawnCapsules);
 #else
             Thread thread = new Thread(SpawnCapsules);
             thread.Start();

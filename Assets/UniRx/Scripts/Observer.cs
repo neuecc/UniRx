@@ -4,13 +4,6 @@ using System.Threading;
 
 namespace UniRx
 {
-    public interface IObserver<T>
-    {
-        void OnCompleted();
-        void OnError(Exception error);
-        void OnNext(T value);
-    }
-
     public static class Observer
     {
         public static IObserver<T> Create<T>(Action<T> onNext, Action<Exception> onError, Action onCompleted)

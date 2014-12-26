@@ -5,11 +5,6 @@ using System.Linq;
 
 namespace UniRx
 {
-    public interface IObservable<T>
-    {
-        IDisposable Subscribe(IObserver<T> observer);
-    }
-
     // Standard Query Operators
 
     // onNext implementation guide. enclose otherFunc but onNext is not catch.
