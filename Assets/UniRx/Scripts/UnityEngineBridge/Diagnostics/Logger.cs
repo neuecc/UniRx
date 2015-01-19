@@ -30,7 +30,7 @@ namespace UniRx.Diagnostics
             if (isDebugBuild)
             {
                 logPublisher(new LogEntry(
-                    message: message.ToString(),
+                    message: (message != null) ? message.ToString() : "",
                     logType: LogType.Log,
                     timestamp: DateTime.Now,
                     loggerName: Name,
@@ -41,7 +41,7 @@ namespace UniRx.Diagnostics
         public virtual void Log(object message, UnityEngine.Object context = null)
         {
             logPublisher(new LogEntry(
-                message: message.ToString(),
+                message: (message != null) ? message.ToString() : "",
                 logType: LogType.Log,
                 timestamp: DateTime.Now,
                 loggerName: Name,
@@ -51,7 +51,7 @@ namespace UniRx.Diagnostics
         public virtual void Warning(object message, UnityEngine.Object context = null)
         {
             logPublisher(new LogEntry(
-                message: message.ToString(),
+                message: (message != null) ? message.ToString() : "",
                 logType: LogType.Warning,
                 timestamp: DateTime.Now,
                 loggerName: Name,
@@ -61,7 +61,7 @@ namespace UniRx.Diagnostics
         public virtual void Error(object message, UnityEngine.Object context = null)
         {
             logPublisher(new LogEntry(
-                message: message.ToString(),
+                message: (message != null) ? message.ToString() : "",
                 logType: LogType.Error,
                 timestamp: DateTime.Now,
                 loggerName: Name,
@@ -71,7 +71,7 @@ namespace UniRx.Diagnostics
         public virtual void Exception(Exception exception, UnityEngine.Object context = null)
         {
             logPublisher(new LogEntry(
-                message: exception.ToString(),
+                message: (exception != null) ? exception.ToString() : "",
                 exception: exception,
                 logType: LogType.Exception,
                 timestamp: DateTime.Now,
