@@ -21,7 +21,14 @@ namespace UniRx
         public static IObservable<Tuple<T>> WrapValueToClass<T>(this IObservable<T> source)
             where T : struct
         {
-            return source.Select(x => new Tuple<T>(x));
+            return Observable.Create<Tuple<T>>(observer =>
+            {
+                return source.Subscribe(Observer.Create<T>(x =>
+                {
+                    var v = new Tuple<T>(x);
+                    observer.OnNext(v);
+                }, observer.OnError, observer.OnCompleted));
+            });
         }
 
         public static IEnumerable<Tuple<T>> WrapValueToClass<T>(this IEnumerable<T> source)
