@@ -13,6 +13,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: neuecc
   productName: UniRx
+  cloudProjectId: 
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   defaultScreenWidth: 1024
@@ -43,7 +44,7 @@ PlayerSettings:
   captureSingleScreen: 0
   Override IPod Music: 0
   Prepare IOS For Recording: 0
-  enableCloudIntegration: 1
+  submitAnalytics: 1
   usePlayerLog: 1
   bakeCollisionMeshes: 0
   forceSingleInstance: 0
@@ -57,6 +58,8 @@ PlayerSettings:
   xboxEnableFitness: 0
   visibleInBackground: 0
   macFullscreenMode: 2
+  d3d9FullscreenMode: 1
+  d3d11FullscreenMode: 1
   xboxSpeechDB: 0
   xboxEnableHeadOrientation: 0
   xboxEnableGuest: 0
@@ -71,13 +74,13 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  iPhoneBundleIdentifier: com.Company.ProductName
+  bundleIdentifier: com.Company.ProductName
+  bundleVersion: 1.0
   preloadedAssets: []
   metroEnableIndependentInputSource: 0
   metroEnableLowLatencyPresentationAPI: 0
   xboxOneDisableKinectGpuReservation: 0
   productGUID: b286933f5059e50428b251ea31eb0f32
-  iPhoneBundleVersion: 1.0
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 9
   AndroidPreferredInstallLocation: 1
@@ -108,12 +111,25 @@ PlayerSettings:
   iPadHighResPortraitSplashScreen: {fileID: 0}
   iPadLandscapeSplashScreen: {fileID: 0}
   iPadHighResLandscapeSplashScreen: {fileID: 0}
+  iOSCustomLaunchScreenType: 0
+  iOSLaunchScreenPortrait: {fileID: 0}
+  iOSLaunchScreenLandscape: {fileID: 0}
+  iOSLaunchScreenBackgroundColor:
+    serializedVersion: 2
+    rgba: 0
+  iOSLaunchScreenFillPct: 1
+  iOSLaunchScreenCustomXibPath: 
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
   AndroidKeystoreName: 
   AndroidKeyaliasName: 
   AndroidTVCompatibility: 1
   AndroidIsGame: 1
+  androidEnableBanner: 1
+  m_AndroidBanners:
+  - width: 320
+    height: 180
+    banner: {fileID: 0}
   resolutionDialogBanner: {fileID: 0}
   m_BuildTargetIcons:
   - m_BuildTarget: 
@@ -164,6 +180,7 @@ PlayerSettings:
   ps4Category: 0
   ps4MasterVersion: 01.00
   ps4AppVersion: 01.00
+  ps4AppType: 0
   ps4ParamSfxPath: 
   ps4VideoOutPixelFormat: 0
   ps4VideoOutResolution: 4
@@ -172,17 +189,20 @@ PlayerSettings:
   ps4BackgroundImagePath: 
   ps4StartupImagePath: 
   ps4BGMPath: 
+  ps4ShareFilePath: 
   ps4NPtitleDatPath: 
+  ps4RemotePlayKeyAssignment: -1
   ps4EnterButtonAssignment: 1
   ps4ApplicationParam1: 0
   ps4ApplicationParam2: 0
   ps4ApplicationParam3: 0
   ps4ApplicationParam4: 0
-  ps4Passcode: zIs6DqGKIsTc98DIN3vbK6NLG4rqMoAo
+  ps4Passcode: frAQBc8Wsa1xVPfvJcrgRYwTiizs2trQ
   ps4pnSessions: 1
   ps4pnPresence: 1
   ps4pnFriends: 1
   ps4pnGameCustomData: 1
+  playerPrefsSupport: 0
   monoEnv: 
   psp2Splashimage: {fileID: 0}
   psp2NPTrophyPackPath: 
@@ -231,6 +251,7 @@ PlayerSettings:
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
   scriptingDefineSymbols: {}
+  useIl2CppPrecompiledHeader: 0
   metroPackageName: UnityRx
   metroPackageLogo: 
   metroPackageLogo140: 
@@ -292,9 +313,7 @@ PlayerSettings:
   metroTileBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   metroSplashScreenBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   metroSplashScreenUseBackgroundColor: 0
-  platformCapabilities:
-    XboxOne:
-      enus: true
+  platformCapabilities: {}
   metroFTAName: 
   metroFTAFileTypes: []
   metroProtocolName: 
@@ -342,15 +361,7 @@ PlayerSettings:
   XboxOneDescription: 
   XboxOneIsContentPackage: 0
   XboxOneEnableGPUVariability: 0
-  XboxOneSockets:
-    Unity Internal - Mono async-IO:
-      m_Name: Unity Internal - Mono async-IO
-      m_Port: 0
-      m_Protocol: 0
-      m_Usages: 0000000001000000
-      m_TemplateName: 
-      m_SessionRequirment: 0
-      m_DeviceUsages: 
+  XboxOneSockets: {}
   XboxOneSplashScreen: {fileID: 0}
   XboxOneAllowedProductIds: []
   XboxOnePersistentLocalStorageSize: 0
@@ -376,5 +387,7 @@ PlayerSettings:
   WebGL::dataCaching: 0
   stringPropertyNames:
   - WebGL::emscriptenArgs
+  - WebGL::template
   WebGL::emscriptenArgs: 
+  WebGL::template: APPLICATION:Default
   firstStreamedLevelWithResources: 0

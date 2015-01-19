@@ -328,7 +328,11 @@ namespace UniRx
             {
                 var gate = new object();
                 var length = sources.Length;
-                var queues = Enumerable.Range(0, length).Select(_ => new Queue<T>()).ToArray();
+                var queues = new Queue<T>[length];
+                for (int i = 0; i < length; i++)
+                {
+                    queues[i] = new Queue<T>();
+                }
                 var isDone = new bool[length];
 
                 Action<int> dequeue = index =>
