@@ -77,6 +77,17 @@ namespace UniRx.Tests
                 array.Is(1, 10, 1, 100, 5);
             }
             {
+                
+                string[] array = null;
+                new[] { "hoge", "huga", null, null, "huga", "huga", "hoge" }
+                    .ToObservable()
+                    .DistinctUntilChanged()
+                    .ToArray()
+                    .Subscribe(xs => array = xs);
+
+                array.Is("hoge", "huga", null, "huga", "hoge");
+            }
+            {
                 var subject = new Subject<int>();
 
                 int[] array = null;
