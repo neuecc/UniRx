@@ -1,5 +1,7 @@
 ﻿// defined from .NET Framework 4.5 and NETFX_CORE
 
+#if !NETFX_CORE
+
 namespace UniRx
 {
     public interface IProgress<T>
@@ -7,3 +9,5 @@ namespace UniRx
         void Report(T value);
     }
 }
+
+#endif

@@ -258,11 +258,11 @@ PlayerSettings:
   metroPackageLogo180: 
   metroPackageLogo240: 
   metroPackageVersion: 1.0.0.0
-  metroCertificatePath: 
+  metroCertificatePath: C:/Users/y.kawai/Documents/Git/UniRx/Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
-  metroCertificateSubject: 
-  metroCertificateIssuer: 
-  metroCertificateNotAfter: 0000000000000000
+  metroCertificateSubject: neuecc
+  metroCertificateIssuer: neuecc
+  metroCertificateNotAfter: 00cc326be352d101
   metroApplicationDescription: UnityRx
   metroStoreTileLogo80: 
   metroStoreTileLogo: 

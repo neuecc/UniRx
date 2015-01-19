@@ -1,5 +1,7 @@
 ﻿// defined from .NET Framework 4.0 and NETFX_CORE
 
+#if !NETFX_CORE
+
 using System;
 
 namespace UniRx
@@ -11,3 +13,5 @@ namespace UniRx
         void OnNext(T value);
     }
 }
+
+#endif

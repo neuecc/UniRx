@@ -307,9 +307,9 @@ namespace UniRx.ObjectTest
         public static class Publisher
         {
             private static readonly object _Lock = new object();
-            private static UniRx.Subject<bool> item = new UniRx.Subject<bool>();
+            private static Subject<bool> item = new UniRx.Subject<bool>();
 
-            public static UniRx.IObservable<bool> Item
+            public static IObservable<bool> Item
             {
                 get
                 {

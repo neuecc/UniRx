@@ -1,5 +1,7 @@
 ﻿// defined from .NET Framework 4.0 and NETFX_CORE
 
+#if !NETFX_CORE
+
 using System;
 
 namespace UniRx
@@ -9,3 +11,5 @@ namespace UniRx
         IDisposable Subscribe(IObserver<T> observer);
     }
 }
+
+#endif
