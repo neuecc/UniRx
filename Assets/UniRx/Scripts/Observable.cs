@@ -597,9 +597,21 @@ namespace UniRx
                     {
                         try
                         {
-                            sameKey = (comparer == null)
-                                ? currentKey.Equals(prevKey)
-                                : comparer.Equals(currentKey, prevKey);
+                            if (comparer == null)
+                            {
+                                if (currentKey == null)
+                                {
+                                    sameKey = (prevKey == null);
+                                }
+                                else
+                                {
+                                    sameKey = currentKey.Equals(prevKey);
+                                }
+                            }
+                            else
+                            {
+                                sameKey = comparer.Equals(currentKey, prevKey);
+                            }
                         }
                         catch (Exception ex)
                         {

@@ -244,6 +244,15 @@ namespace UniRx.ObjectTest
                 Debug.Log("UnsubscribeAll : " + subscriber.SubscriptionCount);
             }
 
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "DistinctUntilChanged"))
+            {
+                new[] { "hoge", null, null, "huga", "huga", "hoge" }
+                    .ToObservable()
+                    .DistinctUntilChanged()
+                    .Subscribe(x => logger.Debug(x));
+            }
+
             // Time
 
             var sb = new StringBuilder();
