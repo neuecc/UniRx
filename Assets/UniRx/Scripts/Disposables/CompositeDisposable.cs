@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+// using System.Linq; do not use LINQ
 using System.Text;
 
 namespace UniRx
@@ -226,7 +226,13 @@ namespace UniRx
 
             lock (_gate)
             {
-                Array.Copy(_disposables.Where(d => d != null).ToArray(), 0, array, arrayIndex, array.Length - arrayIndex);
+                var disArray = new List<IDisposable>();
+                foreach (var item in disArray)
+                {
+                    if (item != null) disArray.Add(item);
+                }
+
+                Array.Copy(disArray.ToArray(), 0, array, arrayIndex, array.Length - arrayIndex);
             }
         }
 
@@ -244,11 +250,14 @@ namespace UniRx
         /// <returns>An enumerator to iterate over the disposables.</returns>
         public IEnumerator<IDisposable> GetEnumerator()
         {
-            var res = default(IEnumerable<IDisposable>);
+            var res = new List<IDisposable>();
 
             lock (_gate)
             {
-                res = _disposables.Where(d => d != null).ToList();
+                foreach (var d in _disposables)
+                {
+                    if (d != null) res.Add(d);
+                }
             }
 
             return res.GetEnumerator();

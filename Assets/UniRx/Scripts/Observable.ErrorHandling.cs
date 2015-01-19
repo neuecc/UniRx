@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace UniRx
 {
@@ -184,7 +183,7 @@ namespace UniRx
 
         public static IObservable<TSource> Retry<TSource>(this IObservable<TSource> source, int retryCount)
         {
-            return Enumerable.Repeat(source, retryCount).Catch();
+            return System.Linq.Enumerable.Repeat(source, retryCount).Catch();
         }
 
         /// <summary>

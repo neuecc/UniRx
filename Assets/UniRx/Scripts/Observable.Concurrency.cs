@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace UniRx
@@ -109,7 +108,7 @@ namespace UniRx
 
         public static IObservable<T> Amb<T>(params IObservable<T>[] sources)
         {
-            return Amb(sources.AsEnumerable());
+            return Amb((IEnumerable<IObservable<T>>)sources);
         }
 
         public static IObservable<T> Amb<T>(IEnumerable<IObservable<T>> sources)

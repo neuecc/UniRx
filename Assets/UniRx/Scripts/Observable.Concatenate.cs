@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Linq; // memo, remove LINQ(for avoid AOT)
 using System.Text;
 
 namespace UniRx
@@ -699,6 +699,7 @@ namespace UniRx
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, IEnumerable<T> values)
         {
+            // TODO:bug!should use array!
             var array = values as T[];
             if (array != null)
             {
