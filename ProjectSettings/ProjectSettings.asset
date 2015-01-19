@@ -258,7 +258,7 @@ PlayerSettings:
   metroPackageLogo180: 
   metroPackageLogo240: 
   metroPackageVersion: 1.0.0.0
-  metroCertificatePath: C:/Users/y.kawai/Documents/Git/UniRx/Assets/WSATestCertificate.pfx
+  metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: neuecc
   metroCertificateIssuer: neuecc

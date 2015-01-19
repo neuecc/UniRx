@@ -6,7 +6,7 @@ What is UniRx?
 ---
 UniRx(Reactive Extensions for Unity) is re-implementation of .NET Reactive Extensions.    
 It's free and open source on GitHub.  
-Supported platforms are PC/Android/iOS/WP8/WindowsStore.  
+Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc.  
 You can check latest info, source code and issues on https://github.com/neuecc/UniRx
 We welcome to your contribute such as bug report, request, and pull request.
 
@@ -473,6 +473,13 @@ Please see [AOT Exception Patterns and Hacks](https://github.com/neuecc/UniRx/wi
 
 If you encount [Ran out of trampolines of type 2](http://developer.xamarin.com/guides/ios/troubleshooting/troubleshooting/) error, set AOT Compilation Options `nimt-trampolines=2048`. If you encount Ran out of trampolines of type 0, you should set AOT Compilation Options `ntrampolines=2048` too. I recommend set both for use UniRx.
 
+Windows Store/Phone App(NETFX_CORE) notice
+---
+Some interface conflicts in Windows Store App for example `UniRx.IObservable<T>` and `System.IObservable<T>`.  
+Therefore we've decided in NETFX_CORE, remove `UniRx.IObservable<T>`.  
+There is no problem if you are using the short name.  
+If you are using the full name(`UniRx.IObservable<T>`), please replace to use the short name(`IObservable<T>`).
+
 Reference
 ---
 RxJava Wiki | https://github.com/Netflix/RxJava/wiki
@@ -490,6 +497,9 @@ Original project home.
 
 Beginner's Guide to the Reactive Extensions | http://msdn.microsoft.com/en-us/data/gg577611
 Many Videos and slides and documents.
+
+ReactiveX | http://reactivex.io/languages.html
+UniRx is official ReacitveX language family.
 
 Author Info
 ---
