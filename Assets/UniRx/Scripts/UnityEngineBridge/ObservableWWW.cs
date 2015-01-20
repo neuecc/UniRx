@@ -95,15 +95,28 @@ namespace UniRx
             return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
-        public static IObservable<WWW> LoadFromCacheOrDownload(string url, int version, IProgress<float> progress = null)
+        public static IObservable<AssetBundle> LoadFromCacheOrDownload(string url, int version, IProgress<float> progress = null)
         {
-            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(WWW.LoadFromCacheOrDownload(url, version), observer, progress, cancellation));
+            return Observable.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, version), observer, progress, cancellation));
         }
 
-        public static IObservable<WWW> LoadFromCacheOrDownload(string url, int version, uint crc, IProgress<float> progress = null)
+        public static IObservable<AssetBundle> LoadFromCacheOrDownload(string url, int version, uint crc, IProgress<float> progress = null)
         {
-            return Observable.FromCoroutine<WWW>((observer, cancellation) => Fetch(WWW.LoadFromCacheOrDownload(url, version, crc), observer, progress, cancellation));
+            return Observable.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, version, crc), observer, progress, cancellation));
         }
+
+        // over Unity5 supports Hash128
+#if !(UNITY_4_6 || UNITY_4_5 || UNITY_4_4 || UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
+        public static IObservable<AssetBundle> LoadFromCacheOrDownload(string url, Hash128 hash128, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, hash128), observer, progress, cancellation));
+        }
+
+        public static IObservable<AssetBundle> LoadFromCacheOrDownload(string url, Hash128 hash128, uint crc, IProgress<float> progress = null)
+        {
+            return Observable.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, hash128, crc), observer, progress, cancellation));
+        }
+#endif
 
         // over 4.5, Hash define is Dictionary.
         // below Unity 4.5, WWW only supports Hashtable.
@@ -234,6 +247,41 @@ namespace UniRx
                 else
                 {
                     observer.OnNext(www.bytes);
+                    observer.OnCompleted();
+                }
+            }
+        }
+
+        static IEnumerator FetchAssetBundle(WWW www, IObserver<AssetBundle> observer, IProgress<float> reportProgress, CancellationToken cancel)
+        {
+            using (www)
+            {
+                while (!www.isDone && !cancel.IsCancellationRequested)
+                {
+                    if (reportProgress != null)
+                    {
+                        try
+                        {
+                            reportProgress.Report(www.progress);
+                        }
+                        catch (Exception ex)
+                        {
+                            observer.OnError(ex);
+                            yield break;
+                        }
+                    }
+                    yield return null;
+                }
+
+                if (cancel.IsCancellationRequested) yield break;
+
+                if (!string.IsNullOrEmpty(www.error))
+                {
+                    observer.OnError(new WWWErrorException(www));
+                }
+                else
+                {
+                    observer.OnNext(www.assetBundle);
                     observer.OnCompleted();
                 }
             }
