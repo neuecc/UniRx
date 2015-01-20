@@ -103,14 +103,45 @@ namespace UniRx
                 }));
             });
         }
+
         public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources)
         {
-            return Merge(sources.ToObservable(Scheduler.DefaultSchedulers.ConstantTimeOperations));
+            return Merge(sources, Scheduler.DefaultSchedulers.ConstantTimeOperations);
+        }
+
+        public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources, IScheduler scheduler)
+        {
+            return Merge(sources.ToObservable(scheduler));
+        }
+
+        public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources, int maxConcurrent)
+        {
+            return Merge(sources, maxConcurrent, Scheduler.DefaultSchedulers.ConstantTimeOperations);
+        }
+
+        public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources, int maxConcurrent, IScheduler scheduler)
+        {
+            return Merge(sources.ToObservable(scheduler), maxConcurrent);
         }
 
         public static IObservable<TSource> Merge<TSource>(params IObservable<TSource>[] sources)
         {
-            return Merge(sources.ToObservable(Scheduler.DefaultSchedulers.ConstantTimeOperations));
+            return Merge(Scheduler.DefaultSchedulers.ConstantTimeOperations, sources);
+        }
+
+        public static IObservable<TSource> Merge<TSource>(IScheduler scheduler, params IObservable<TSource>[] sources)
+        {
+            return Merge(sources.ToObservable(scheduler));
+        }
+
+        public static IObservable<T> Merge<T>(this IObservable<T> first, IObservable<T> second)
+        {
+            return Merge(new[] { first, second });
+        }
+
+        public static IObservable<T> Merge<T>(this IObservable<T> first, IObservable<T> second, IScheduler scheduler)
+        {
+            return Merge(scheduler, new[] { first, second });
         }
 
         public static IObservable<T> Merge<T>(this IObservable<IObservable<T>> sources)
@@ -692,20 +723,19 @@ namespace UniRx
             return Observable.Return(value, scheduler).Concat(source);
         }
 
-        public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, params T[] values)
-        {
-            return values.ToObservable(scheduler).Concat(source);
-        }
-
         public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, IEnumerable<T> values)
         {
-            // TODO:bug!should use array!
             var array = values as T[];
             if (array != null)
             {
                 array = values.ToArray();
             }
 
+            return StartWith(source, scheduler, array);
+        }
+
+        public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, params T[] values)
+        {
             return values.ToObservable(scheduler).Concat(source);
         }
     }
