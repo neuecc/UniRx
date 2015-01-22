@@ -25,7 +25,6 @@ namespace UniRx.ObjectTest
     {
         readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
 
-        GameObject text;
         StringBuilder logtext = new StringBuilder();
 
         [ThreadStatic]
@@ -37,14 +36,12 @@ namespace UniRx.ObjectTest
 
             ObservableLogger.Listener.LogToUnityDebug();
 
-            text = GameObject.Find("myGuiText");
             MainThreadDispatcher.Initialize();
             threadstaticobj = new object();
 
             ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
             {
                 logtext.AppendLine(x.Message);
-                text.GetComponent<GUIText>().text = x.ToString();
             });
 
             base.Awake();
@@ -92,11 +89,9 @@ namespace UniRx.ObjectTest
             }
 
             ypos += 100;
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Observe"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Now"))
             {
                 logger.Debug(DateTime.Now.ToString());
-                Observable.Timer(TimeSpan.FromSeconds(3))
-                    .Subscribe(x => text.GetComponent<GUIText>().text = DateTime.Now.ToString());
             }
 
             ypos += 100;
