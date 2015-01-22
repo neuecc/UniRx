@@ -268,12 +268,16 @@ namespace UniRx.ObjectTest
             sb.AppendLine("unscaledDeltaTime:" + Time.unscaledDeltaTime);
             sb.AppendLine("unscaledTime:" + Time.unscaledTime);
 
-            GUI.Box(new Rect(Screen.width - 300, Screen.height - 300, 300, 300), "Time");
-            GUI.Label(new Rect(Screen.width - 290, Screen.height - 290, 290, 290), sb.ToString());
+            //GUI.Box(new Rect(Screen.width - 300, Screen.height - 300, 300, 300), "Time");
+            //GUI.Label(new Rect(Screen.width - 290, Screen.height - 290, 290, 290), sb.ToString());
+
+            // logtext only
+            GUI.Box(new Rect(Screen.width - 300, Screen.height - 300, 300, 300), "logtext");
+            GUI.Label(new Rect(Screen.width - 290, Screen.height - 290, 290, 290), logtext.ToString());
 
             // Log
-            GUI.Box(new Rect(Screen.width - 300, 0, 300, 300), "Log");
-            GUI.Label(new Rect(Screen.width - 290, 10, 290, 290), logtext.ToString());
+            //GUI.Box(new Rect(Screen.width - 300, 0, 300, 300), "Log");
+            //GUI.Label(new Rect(Screen.width - 290, 10, 290, 290), logtext.ToString());
         }
 
         IEnumerator StringYield()
