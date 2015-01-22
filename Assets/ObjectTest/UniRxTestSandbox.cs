@@ -26,6 +26,7 @@ namespace UniRx.ObjectTest
         readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
 
         GameObject text;
+        StringBuilder logtext = new StringBuilder();
 
         [ThreadStatic]
         static object threadstaticobj;
@@ -42,6 +43,7 @@ namespace UniRx.ObjectTest
 
             ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
             {
+                logtext.AppendLine(x.Message);
                 text.GetComponent<GUIText>().text = x.ToString();
             });
 
@@ -84,9 +86,9 @@ namespace UniRx.ObjectTest
             var xpos = 0;
             var ypos = 0;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "LazyTask"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Clear"))
             {
-                StartCoroutine(Work());
+                logtext.Length = 0;
             }
 
             ypos += 100;
@@ -207,7 +209,7 @@ namespace UniRx.ObjectTest
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Yield"))
             {
                 yieldCancel = Observable.FromCoroutineValue<string>(StringYield, false)
-                    .Subscribe(x => Debug.Log(x), ex => Debug.Log("E-x:" + ex));
+                    .Subscribe(x => logger.Debug(x), ex => logger.Debug("E-x:" + ex));
             }
 
             ypos += 100;
@@ -228,7 +230,7 @@ namespace UniRx.ObjectTest
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Subscribe"))
             {
                 subscriber.InitSubscriptions();
-                Debug.Log("Subscribe++ : " + subscriber.SubscriptionCount);
+                logger.Debug("Subscribe++ : " + subscriber.SubscriptionCount);
             }
 
             ypos += 100;
@@ -241,7 +243,7 @@ namespace UniRx.ObjectTest
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Unsubscriber"))
             {
                 subscriber.RemoveSubscriptions();
-                Debug.Log("UnsubscribeAll : " + subscriber.SubscriptionCount);
+                logger.Debug("UnsubscribeAll : " + subscriber.SubscriptionCount);
             }
 
             ypos += 100;
@@ -273,6 +275,10 @@ namespace UniRx.ObjectTest
 
             GUI.Box(new Rect(Screen.width - 300, Screen.height - 300, 300, 300), "Time");
             GUI.Label(new Rect(Screen.width - 290, Screen.height - 290, 290, 290), sb.ToString());
+
+            // Log
+            GUI.Box(new Rect(Screen.width - 300, 0, 300, 300), "Log");
+            GUI.Label(new Rect(Screen.width - 290, 10, 290, 290), logtext.ToString());
         }
 
         IEnumerator StringYield()
@@ -288,7 +294,7 @@ namespace UniRx.ObjectTest
             }
             finally
             {
-                Debug.Log("finally!");
+                logger.Debug("finally!");
             }
         }
 
@@ -345,12 +351,12 @@ namespace UniRx.ObjectTest
 
             void HandleItem(bool args)
             {
-                UnityEngine.Debug.Log("Received Item: " + args);
+                logger.Debug("Received Item: " + args);
             }
 
             void HandleError(Exception ex)
             {
-                UnityEngine.Debug.Log("Exception: " + ex.Message);
+                logger.Debug("Exception: " + ex.Message);
             }
 
             public void RemoveSubscriptions()
