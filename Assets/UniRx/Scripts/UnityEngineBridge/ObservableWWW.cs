@@ -167,6 +167,18 @@ namespace UniRx
                     }
                     yield return null;
                 }
+                if (reportProgress != null)
+                {
+                    try
+                    {
+                        reportProgress.Report(www.progress);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        yield break;
+                    }
+                }
 
                 if (cancel.IsCancellationRequested) yield break;
 
@@ -201,6 +213,18 @@ namespace UniRx
                         }
                     }
                     yield return null;
+                }
+                if (reportProgress != null)
+                {
+                    try
+                    {
+                        reportProgress.Report(www.progress);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        yield break;
+                    }
                 }
 
                 if (cancel.IsCancellationRequested) yield break;
@@ -237,6 +261,18 @@ namespace UniRx
                     }
                     yield return null;
                 }
+                if (reportProgress != null)
+                {
+                    try
+                    {
+                        reportProgress.Report(www.progress);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        yield break;
+                    }
+                }
 
                 if (cancel.IsCancellationRequested) yield break;
 
@@ -271,6 +307,18 @@ namespace UniRx
                         }
                     }
                     yield return null;
+                }
+                if (reportProgress != null)
+                {
+                    try
+                    {
+                        reportProgress.Report(www.progress);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        yield break;
+                    }
                 }
 
                 if (cancel.IsCancellationRequested) yield break;
