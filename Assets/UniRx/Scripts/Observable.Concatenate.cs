@@ -665,42 +665,102 @@ namespace UniRx
                 var completedCount = 0;
                 var values = new T[length];
 
-                var subscriptions = sources
-                    .Select((source, index) =>
+                var subscriptions = new IDisposable[length];
+                for (int index = 0; index < length; index++)
+                {
+                    var source = sources[index];
+                    var d = new SingleAssignmentDisposable();
+                    d.Disposable = source.Subscribe(x =>
                     {
-                        var d = new SingleAssignmentDisposable();
-
-                        d.Disposable = source.Subscribe(x =>
+                        lock (gate)
                         {
-                            lock (gate)
-                            {
-                                values[index] = x;
-                            }
-                        }, ex =>
+                            values[index] = x;
+                        }
+                    }, ex =>
+                    {
+                        lock (gate)
                         {
-                            lock (gate)
-                            {
-                                observer.OnError(ex);
-                            }
-                        }, () =>
+                            observer.OnError(ex);
+                        }
+                    }, () =>
+                    {
+                        lock (gate)
                         {
-                            lock (gate)
+                            completedCount++;
+                            if (completedCount == length)
                             {
-                                completedCount++;
-                                if (completedCount == length)
-                                {
-                                    observer.OnNext(values);
-                                    observer.OnCompleted();
-                                }
+                                observer.OnNext(values);
+                                observer.OnCompleted();
                             }
-                        });
-
-                        return d;
-                    })
-                    .ToArray();
+                        }
+                    });
+                    subscriptions[index] = d;
+                }
 
                 return new CompositeDisposable(subscriptions);
             });
+        }
+
+        /// <summary>
+        /// Specialized for single async operations like Task.WhenAll, Zip.Take(1)
+        /// </summary>
+        public static IObservable<T[]> WhenAll<T>(this IEnumerable<IObservable<T>> sources)
+        {
+            var array = sources as IObservable<T>[];
+            if (array != null) return WhenAll(array);
+
+            return Observable.Create<T[]>(observer =>
+            {
+                var _sources = sources as IList<IObservable<T>>;
+                if (_sources == null)
+                {
+                    _sources = new List<IObservable<T>>();
+                    foreach (var item in sources)
+                    {
+                        _sources.Add(item);
+                    }
+                }
+
+                var gate = new object();
+                var length = _sources.Count;
+                var completedCount = 0;
+                var values = new T[length];
+
+                var subscriptions = new IDisposable[length];
+                for (int index = 0; index < length; index++)
+                {
+                    var source = _sources[index];
+                    var d = new SingleAssignmentDisposable();
+                    d.Disposable = source.Subscribe(x =>
+                    {
+                        lock (gate)
+                        {
+                            values[index] = x;
+                        }
+                    }, ex =>
+                    {
+                        lock (gate)
+                        {
+                            observer.OnError(ex);
+                        }
+                    }, () =>
+                    {
+                        lock (gate)
+                        {
+                            completedCount++;
+                            if (completedCount == length)
+                            {
+                                observer.OnNext(values);
+                                observer.OnCompleted();
+                            }
+                        }
+                    });
+                    subscriptions[index] = d;
+                }
+
+                return new CompositeDisposable(subscriptions);
+            });
+
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, T value)
