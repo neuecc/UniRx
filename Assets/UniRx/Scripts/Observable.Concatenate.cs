@@ -669,12 +669,13 @@ namespace UniRx
                 for (int index = 0; index < length; index++)
                 {
                     var source = sources[index];
+                    var capturedIndex = index;
                     var d = new SingleAssignmentDisposable();
                     d.Disposable = source.Subscribe(x =>
                     {
                         lock (gate)
                         {
-                            values[index] = x;
+                            values[capturedIndex] = x;
                         }
                     }, ex =>
                     {
@@ -730,12 +731,13 @@ namespace UniRx
                 for (int index = 0; index < length; index++)
                 {
                     var source = _sources[index];
+                    var capturedIndex = index;
                     var d = new SingleAssignmentDisposable();
                     d.Disposable = source.Subscribe(x =>
                     {
                         lock (gate)
                         {
-                            values[index] = x;
+                            values[capturedIndex] = x;
                         }
                     }, ex =>
                     {
