@@ -652,11 +652,12 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Specialized for single async operations like Task.WhenAll, Zip.Take(1)
+        /// <para>Specialized for single async operations like Task.WhenAll, Zip.Take(1).</para>
+        /// <para>If sequence is empty, return T[0] array.</para>
         /// </summary>
         public static IObservable<T[]> WhenAll<T>(params IObservable<T>[] sources)
         {
-            if (sources.Length == 0) return Observable.Empty<T[]>();
+            if (sources.Length == 0) return Observable.Return(new T[0]);
 
             return Observable.Create<T[]>(observer =>
             {
@@ -703,7 +704,8 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Specialized for single async operations like Task.WhenAll, Zip.Take(1)
+        /// <para>Specialized for single async operations like Task.WhenAll, Zip.Take(1).</para>
+        /// <para>If sequence is empty, return T[0] array.</para>
         /// </summary>
         public static IObservable<T[]> WhenAll<T>(this IEnumerable<IObservable<T>> sources)
         {
@@ -726,6 +728,13 @@ namespace UniRx
                 var length = _sources.Count;
                 var completedCount = 0;
                 var values = new T[length];
+
+                if (length == 0)
+                {
+                    observer.OnNext(values);
+                    observer.OnCompleted();
+                    return Disposable.Empty;
+                }
 
                 var subscriptions = new IDisposable[length];
                 for (int index = 0; index < length; index++)
