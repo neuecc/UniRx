@@ -6,6 +6,7 @@ namespace UniRx.UI
     public static partial class ObserveExtensions
     {
         public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Func<TSource, TProperty> propertySelector)
+            where TSource : class
         {
             // same as : Observable.EveryUpdate().Select(_ => propertySelector(source)).DistinctUntilChanged();
             var currentValue = propertySelector(source);
