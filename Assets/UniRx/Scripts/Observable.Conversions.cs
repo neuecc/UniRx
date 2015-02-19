@@ -99,5 +99,20 @@ namespace UniRx
         {
             return source.Where(x => x is TResult).Select(x => (TResult)(object)x);
         }
+
+        /// <summary>
+        /// Converting .Select(_ => Unit.Default) sequence.
+        /// </summary>
+        public static IObservable<Unit> AsUnitObservable<T>(this IObservable<T> source)
+        {
+            // .Select(_ => Unit.Default), avoid AOT.
+            return Observable.Create<Unit>(observer =>
+            {
+                return source.Subscribe(Observer.Create<T>(_ =>
+                {
+                    observer.OnNext(Unit.Default);
+                }, observer.OnError, observer.OnCompleted));
+            });
+        }
     }
 }
