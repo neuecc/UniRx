@@ -171,7 +171,7 @@ namespace UniRx
         /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>
         public virtual void Update() { }
 
-#if !(UNITY_METRO || UNITY_WP8 || UNITY_NACL_CHROME)
+#if !(UNITY_METRO || UNITY_WP8 || UNITY_NACL_CHROME || UNITY_WEBGL)
         /// <summary>Called on the client when the connection was lost or you disconnected from the server.</summary>
         public virtual void OnDisconnectedFromServer(NetworkDisconnection info) { }
 

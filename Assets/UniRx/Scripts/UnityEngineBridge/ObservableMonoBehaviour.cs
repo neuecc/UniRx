@@ -741,7 +741,7 @@ namespace UniRx
             return update ?? (update = new Subject<Unit>());
         }
 
-#if !(UNITY_METRO || UNITY_WP8 || UNITY_NACL_CHROME)
+#if !(UNITY_METRO || UNITY_WP8 || UNITY_NACL_CHROME || UNITY_WEBGL)
 
         Subject<NetworkDisconnection> onDisconnectedFromServer;
 

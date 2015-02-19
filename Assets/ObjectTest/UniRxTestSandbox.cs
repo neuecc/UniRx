@@ -16,38 +16,38 @@ using UniRx.Diagnostics;
 #else
 using Hash = System.Collections.Generic.Dictionary<string, string>;
 using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
+using UniRx.InternalUtil;
 #endif
 
 namespace UniRx.ObjectTest
 {
     // test sandbox
-    public class UniRxTestSandbox : ObservableMonoBehaviour
+    public class UniRxTestSandbox : MonoBehaviour
     {
-        readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
+        //readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
 
         StringBuilder logtext = new StringBuilder();
 
-        [ThreadStatic]
+        //[ThreadStatic]
         static object threadstaticobj;
 
-        public override void Awake()
+        public void Awake()
         {
             Debug.Log("Awake");
 
-            ObservableLogger.Listener.LogToUnityDebug();
+            //ObservableLogger.Listener.LogToUnityDebug();
 
-            MainThreadDispatcher.Initialize();
+            //MainThreadDispatcher.Initialize();
             threadstaticobj = new object();
-
+            /*
             ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
             {
                 logtext.AppendLine(x.Message);
             });
-
-            base.Awake();
+            */
         }
 
-        public override void Start()
+        public void Start()
         {
             Debug.Log("Start");
 
@@ -55,28 +55,38 @@ namespace UniRx.ObjectTest
             // The introduction to Reactive Programming you've been missing
             // https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
 
-            //var clickStream = Observable.EveryUpdate()
-            //    .Where(_ => Input.GetMouseButtonDown(0));
+            /*
+            var clickStream = Observable.EveryUpdate()
+                .Where(_ => Input.GetMouseButtonDown(0));
 
-            //clickStream.Buffer(clickStream.Throttle(TimeSpan.FromMilliseconds(250)))
-            //    .Where(xs => xs.Count >= 2)
-            //    .Subscribe(xs => Debug.Log("DoubleClick Detected! Count:" + xs.Count));
-
-            base.Start();
+            clickStream.Buffer(clickStream.Throttle(TimeSpan.FromMilliseconds(250)))
+                .Where(xs => xs.Count >= 2)
+                .Subscribe(xs => Debug.Log("DoubleClick Detected! Count:" + xs.Count));
+             */
         }
 
-        public override void Update()
+        public void Update()
         {
+
         }
 
-        public override void FixedUpdate()
-        {
-        }
+
 
         IDisposable yieldCancel = null;
 
-        Subscriber subscriber = new Subscriber();
+        // Subscriber subscriber = new Subscriber();
 
+        CompositeDisposable disposables = new CompositeDisposable();
+
+
+        IEnumerator Hoge(IObserver<Unit> observer)
+        {
+            logtext.AppendLine("start");
+            observer.OnNext(Unit.Default);
+            observer.OnCompleted();
+            yield return null;
+            logtext.AppendLine("end");
+        }
 
         public void OnGUI()
         {
@@ -86,13 +96,59 @@ namespace UniRx.ObjectTest
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Clear"))
             {
                 logtext.Length = 0;
+                disposables.Clear();
+            }
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "CurrentThreadScheduler"))
+            {
+                try
+                {
+                    Scheduler.CurrentThread.Schedule(() =>
+                    {
+                        try
+                        {
+                            logtext.AppendLine("test threadscheduler");
+                        }
+                        catch (Exception ex)
+                        {
+                            logtext.AppendLine("innner ex" + ex.ToString());
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    logtext.AppendLine("outer ex" + ex.ToString());
+                }
+            }
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "EveryUpdate"))
+            {
+                Observable.EveryUpdate()
+                    .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()))
+                    .AddTo(disposables);
+            }
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "FromCoroutinePure"))
+            {
+                Observable.Create<Unit>(observer =>
+                {
+                    var cancel = new BooleanDisposable();
+
+                    MainThreadDispatcher.StartCoroutine(Hoge(observer));
+
+                    return cancel;
+                })
+                .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()));
+            }
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "FromCoroutine"))
+            {
+                Observable.FromCoroutine<Unit>(Hoge)
+                .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()));
             }
 
-            ypos += 100;
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Now"))
-            {
-                logger.Debug(DateTime.Now.ToString());
-            }
+
+            /*
 
             ypos += 100;
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale-1"))
@@ -249,6 +305,7 @@ namespace UniRx.ObjectTest
                     .DistinctUntilChanged()
                     .Subscribe(x => logger.Debug(x));
             }
+             * */
 
             // Time
 
@@ -279,7 +336,7 @@ namespace UniRx.ObjectTest
             //GUI.Box(new Rect(Screen.width - 300, 0, 300, 300), "Log");
             //GUI.Label(new Rect(Screen.width - 290, 10, 290, 290), logtext.ToString());
         }
-
+        /*
         IEnumerator StringYield()
         {
             try
@@ -363,6 +420,7 @@ namespace UniRx.ObjectTest
                 m_Subscriptions.Clear();
             }
         }
+         * */
     }
 }
 
