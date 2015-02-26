@@ -11,6 +11,10 @@ namespace UniRx.ObjectTest
 
         public event Action OnExited = delegate { };
 
+#if !UNITY_ANDROID
+
+        // Disable OnMouse_ event handlers to make it easy to confirm warning.
+
         void OnMouseDown()
         {
             OnClicked();
@@ -25,5 +29,8 @@ namespace UniRx.ObjectTest
         {
             OnExited();
         }
+
+#endif
+
     }
 }

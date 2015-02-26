@@ -387,7 +387,7 @@ namespace UniRx
             return onLevelWasLoaded ?? (onLevelWasLoaded = new Subject<int>());
         }
 
-#if !UNITY_IPHONE
+#if !(UNITY_IPHONE || UNITY_ANDROID)
 
         Subject<Unit> onMouseDown;
 
