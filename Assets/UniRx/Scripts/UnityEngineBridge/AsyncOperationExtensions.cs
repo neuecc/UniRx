@@ -43,6 +43,19 @@ namespace UniRx
 
             if (cancel.IsCancellationRequested) yield break;
 
+            if (reportProgress != null)
+            {
+                try
+                {
+                    reportProgress.Report(asyncOperation.progress);
+                }
+                catch (Exception ex)
+                {
+                    observer.OnError(ex);
+                    yield break;
+                }
+            }
+
             observer.OnNext(asyncOperation);
             observer.OnCompleted();
         }

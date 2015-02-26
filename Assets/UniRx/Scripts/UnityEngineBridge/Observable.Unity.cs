@@ -228,12 +228,13 @@ namespace UniRx
 
         static IEnumerator EveryFixedUpdateCore(IObserver<long> observer, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
-            while (!cancellationToken.IsCancellationRequested)
+            do
             {
                 yield return new UnityEngine.WaitForFixedUpdate();
                 observer.OnNext(count++);
-            }
+            } while (!cancellationToken.IsCancellationRequested);
         }
 
         public static IObservable<long> EveryEndOfFrame()
@@ -243,12 +244,13 @@ namespace UniRx
 
         static IEnumerator EveryEndOfFrameCore(IObserver<long> observer, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
-            while (!cancellationToken.IsCancellationRequested)
+            do
             {
-                yield return new UnityEngine.WaitForEndOfFrame();
+                yield return new UnityEngine.WaitForFixedUpdate();
                 observer.OnNext(count++);
-            }
+            } while (!cancellationToken.IsCancellationRequested);
         }
 
         public static IObservable<T> DelayFrame<T>(this IObservable<T> source, int frameCount)

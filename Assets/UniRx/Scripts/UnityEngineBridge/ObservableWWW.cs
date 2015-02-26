@@ -167,6 +167,9 @@ namespace UniRx
                     }
                     yield return null;
                 }
+
+                if (cancel.IsCancellationRequested) yield break;
+
                 if (reportProgress != null)
                 {
                     try
@@ -179,8 +182,6 @@ namespace UniRx
                         yield break;
                     }
                 }
-
-                if (cancel.IsCancellationRequested) yield break;
 
                 if (!string.IsNullOrEmpty(www.error))
                 {
@@ -214,6 +215,9 @@ namespace UniRx
                     }
                     yield return null;
                 }
+
+                if (cancel.IsCancellationRequested) yield break;
+
                 if (reportProgress != null)
                 {
                     try
@@ -226,8 +230,6 @@ namespace UniRx
                         yield break;
                     }
                 }
-
-                if (cancel.IsCancellationRequested) yield break;
 
                 if (!string.IsNullOrEmpty(www.error))
                 {
@@ -261,6 +263,9 @@ namespace UniRx
                     }
                     yield return null;
                 }
+
+                if (cancel.IsCancellationRequested) yield break;
+
                 if (reportProgress != null)
                 {
                     try
@@ -273,8 +278,6 @@ namespace UniRx
                         yield break;
                     }
                 }
-
-                if (cancel.IsCancellationRequested) yield break;
 
                 if (!string.IsNullOrEmpty(www.error))
                 {
@@ -308,6 +311,9 @@ namespace UniRx
                     }
                     yield return null;
                 }
+
+                if (cancel.IsCancellationRequested) yield break;
+
                 if (reportProgress != null)
                 {
                     try
@@ -320,8 +326,6 @@ namespace UniRx
                         yield break;
                     }
                 }
-
-                if (cancel.IsCancellationRequested) yield break;
 
                 if (!string.IsNullOrEmpty(www.error))
                 {
