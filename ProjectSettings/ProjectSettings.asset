@@ -111,7 +111,7 @@ PlayerSettings:
   iPadHighResPortraitSplashScreen: {fileID: 0}
   iPadLandscapeSplashScreen: {fileID: 0}
   iPadHighResLandscapeSplashScreen: {fileID: 0}
-  iOSCustomLaunchScreenType: 0
+  iOSLaunchScreenType: 0
   iOSLaunchScreenPortrait: {fileID: 0}
   iOSLaunchScreenLandscape: {fileID: 0}
   iOSLaunchScreenBackgroundColor:
@@ -188,6 +188,7 @@ PlayerSettings:
   ps4PronunciationSIGPath: 
   ps4BackgroundImagePath: 
   ps4StartupImagePath: 
+  ps4SaveDataImagePath: 
   ps4BGMPath: 
   ps4ShareFilePath: 
   ps4NPtitleDatPath: 
@@ -251,7 +252,6 @@ PlayerSettings:
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
   scriptingDefineSymbols: {}
-  useIl2CppPrecompiledHeader: 0
   metroPackageName: UnityRx
   metroPackageLogo: 
   metroPackageLogo140: 

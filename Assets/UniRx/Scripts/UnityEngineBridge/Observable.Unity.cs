@@ -253,6 +253,91 @@ namespace UniRx
             } while (!cancellationToken.IsCancellationRequested);
         }
 
+        #region Observable.Time Frame Extensions
+
+        // Interval, Timer, Delay, Sample, Throttle, Timeout
+
+        public static IObservable<Unit> NextFrame()
+        {
+            return Observable.FromCoroutine<Unit>((observer, cancellation) => NextFrameCore(observer, cancellation));
+        }
+
+        static IEnumerator NextFrameCore(IObserver<Unit> observer, CancellationToken cancellation)
+        {
+            yield return null;
+            if (!cancellation.IsCancellationRequested)
+            {
+                observer.OnNext(Unit.Default);
+            }
+        }
+
+        public static IObservable<long> IntervalFrame(int intervalFrameCount)
+        {
+            return TimerFrame(intervalFrameCount, intervalFrameCount);
+        }
+
+        public static IObservable<long> TimerFrame(int dueTimeFrameCount)
+        {
+            return Observable.FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, cancellation));
+        }
+
+        public static IObservable<long> TimerFrame(int dueTimeFrameCount, int periodFrameCount)
+        {
+            return Observable.FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, periodFrameCount, cancellation));
+        }
+
+        static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, CancellationToken cancel)
+        {
+            // normalize
+            if (dueTimeFrameCount <= 0) dueTimeFrameCount = 0;
+
+            var currentFrame = 0;
+
+            // initial phase
+            while (!cancel.IsCancellationRequested)
+            {
+                if (currentFrame++ == dueTimeFrameCount)
+                {
+                    observer.OnNext(0);
+                    break;
+                }
+                yield return null;
+            }
+        }
+
+        static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, int periodFrameCount, CancellationToken cancel)
+        {
+            // normalize
+            if (dueTimeFrameCount <= 0) dueTimeFrameCount = 0;
+            if (periodFrameCount <= 0) periodFrameCount = 1;
+
+            var sendCount = 0L;
+            var currentFrame = 0;
+
+            // initial phase
+            while (!cancel.IsCancellationRequested)
+            {
+                if (currentFrame++ == dueTimeFrameCount)
+                {
+                    observer.OnNext(sendCount++);
+                    currentFrame = -1;
+                    break;
+                }
+                yield return null;
+            }
+
+            // period phase
+            while (!cancel.IsCancellationRequested)
+            {
+                if (++currentFrame == periodFrameCount)
+                {
+                    observer.OnNext(sendCount++);
+                    currentFrame = 0;
+                }
+                yield return null;
+            }
+        }
+
         public static IObservable<T> DelayFrame<T>(this IObservable<T> source, int frameCount)
         {
             if (frameCount < 0) throw new ArgumentOutOfRangeException("frameCount");
@@ -288,6 +373,152 @@ namespace UniRx
                 onNext();
             }
         }
+
+        public static IObservable<T> SampleFrame<T>(this IObservable<T> source, int frameCount)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var latestValue = default(T);
+                var isUpdated = false;
+                var isCompleted = false;
+                var gate = new object();
+
+                var scheduling = Observable.IntervalFrame(frameCount)
+                    .Subscribe(_ =>
+                    {
+                        lock (gate)
+                        {
+                            if (isUpdated)
+                            {
+                                var value = latestValue;
+                                isUpdated = false;
+                                observer.OnNext(value);
+                            }
+                            if (isCompleted)
+                            {
+                                observer.OnCompleted();
+                            }
+                        }
+                    });
+
+                var sourceSubscription = new SingleAssignmentDisposable();
+                sourceSubscription.Disposable = source.Subscribe(x =>
+                {
+                    lock (gate)
+                    {
+                        latestValue = x;
+                        isUpdated = true;
+                    }
+                }, e =>
+                {
+                    lock (gate)
+                    {
+                        observer.OnError(e);
+                        scheduling.Dispose();
+                    }
+                }
+                , () =>
+                {
+                    lock (gate)
+                    {
+                        isCompleted = true;
+                        sourceSubscription.Dispose();
+                        scheduling.Dispose();
+                    }
+                });
+
+                return new CompositeDisposable { scheduling, sourceSubscription };
+            });
+        }
+
+        public static IObservable<TSource> ThrottleFrame<TSource>(this IObservable<TSource> source, int frameCount)
+        {
+            return new AnonymousObservable<TSource>(observer =>
+            {
+                var gate = new object();
+                var value = default(TSource);
+                var hasValue = false;
+                var cancelable = new SerialDisposable();
+                var id = 0UL;
+
+                var subscription = source.Subscribe(x =>
+                    {
+                        ulong currentid;
+                        lock (gate)
+                        {
+                            hasValue = true;
+                            value = x;
+                            id = unchecked(id + 1);
+                            currentid = id;
+                        }
+                        var d = new SingleAssignmentDisposable();
+                        cancelable.Disposable = d;
+                        d.Disposable = Observable.IntervalFrame(frameCount)
+                            .Subscribe(_ =>
+                            {
+                                lock (gate)
+                                {
+                                    if (hasValue && id == currentid)
+                                        observer.OnNext(value);
+                                    hasValue = false;
+                                }
+                            });
+                    },
+                    exception =>
+                    {
+                        cancelable.Dispose();
+
+                        lock (gate)
+                        {
+                            observer.OnError(exception);
+                            hasValue = false;
+                            id = unchecked(id + 1);
+                        }
+                    },
+                    () =>
+                    {
+                        cancelable.Dispose();
+
+                        lock (gate)
+                        {
+                            if (hasValue)
+                                observer.OnNext(value);
+                            observer.OnCompleted();
+                            hasValue = false;
+                            id = unchecked(id + 1);
+                        }
+                    });
+
+                return new CompositeDisposable(subscription, cancelable);
+            });
+        }
+
+        public static IObservable<T> TimeoutFrame<T>(this IObservable<T> source, int frameCount)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                Func<IDisposable> runTimer = () => Observable.TimerFrame(frameCount)
+                    .Subscribe(_ =>
+                    {
+                        observer.OnError(new TimeoutException());
+                    });
+
+                var timerDisposable = new SerialDisposable();
+                timerDisposable.Disposable = runTimer();
+
+                var sourceSubscription = new SingleAssignmentDisposable();
+                sourceSubscription.Disposable = source.Subscribe(x =>
+                {
+                    timerDisposable.Disposable = Disposable.Empty; // Cancel Old Timer
+                    observer.OnNext(x);
+                    timerDisposable.Disposable = runTimer();
+                }, observer.OnError, observer.OnCompleted);
+
+                return new CompositeDisposable { timerDisposable, sourceSubscription };
+            });
+        }
+
+        #endregion
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, CancellationToken cancel = default(CancellationToken))

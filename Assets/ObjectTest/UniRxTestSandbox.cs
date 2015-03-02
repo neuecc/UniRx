@@ -67,7 +67,7 @@ namespace UniRx.ObjectTest
 
         public void Update()
         {
-
+            // logtext.AppendLine(Time.frameCount.ToString());
         }
 
 
@@ -79,73 +79,196 @@ namespace UniRx.ObjectTest
         CompositeDisposable disposables = new CompositeDisposable();
 
 
-        IEnumerator Hoge(IObserver<Unit> observer)
+        IEnumerator Hoge()
         {
-            logtext.AppendLine("start");
-            observer.OnNext(Unit.Default);
-            observer.OnCompleted();
-            yield return null;
-            logtext.AppendLine("end");
+            while (true)
+            {
+                // logtext.AppendLine(Time.frameCount.ToString());
+                yield return null;
+            }
         }
+
+        Subject<Unit> throttleSubject = new Subject<Unit>();
 
         public void OnGUI()
         {
-            var xpos = 0;
-            var ypos = 0;
+            //var xpos = 0;
+            //var ypos = 0;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Clear"))
+            if (GUILayout.Button("Clear"))
             {
                 logtext.Length = 0;
                 disposables.Clear();
             }
-            ypos += 100;
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "CurrentThreadScheduler"))
+
+            if (GUILayout.Button("DelayFrame"))
             {
-                try
-                {
-                    Scheduler.CurrentThread.Schedule(() =>
-                    {
-                        try
-                        {
-                            logtext.AppendLine("test threadscheduler");
-                        }
-                        catch (Exception ex)
-                        {
-                            logtext.AppendLine("innner ex" + ex.ToString());
-                        }
-                    });
-                }
-                catch (Exception ex)
-                {
-                    logtext.AppendLine("outer ex" + ex.ToString());
-                }
+                logtext.AppendLine("StartFrame:" + Time.frameCount);
+                Observable.Return(100)
+                    .DelayFrame(3)
+                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + ":" + Time.frameCount));
             }
-            ypos += 100;
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "EveryUpdate"))
+
+            if (GUILayout.Button("DelayFrameEmpty"))
             {
-                Observable.EveryUpdate()
-                    .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()))
+                logtext.AppendLine("StartFrame:" + Time.frameCount);
+                Observable.Empty<int>()
+                    .DelayFrame(3)
+                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + ":" + Time.frameCount));
+            }
+
+            if (GUILayout.Button("NextFrame"))
+            {
+                logtext.AppendLine("StartFrame:" + Time.frameCount);
+                Observable.NextFrame()
+                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
                     .AddTo(disposables);
             }
-            ypos += 100;
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "FromCoroutinePure"))
+
+            if (GUILayout.Button("IntervalFrame"))
             {
-                Observable.Create<Unit>(observer =>
+                logtext.AppendLine("StartFrame:" + Time.frameCount);
+                Observable.IntervalFrame(3)
+                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
+                    .AddTo(disposables);
+            }
+
+            if (GUILayout.Button("TimerFrame1"))
+            {
+                logtext.AppendLine("StartFrame:" + Time.frameCount);
+                Observable.TimerFrame(3)
+                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
+                    .AddTo(disposables);
+            }
+
+            if (GUILayout.Button("TimerFrame2"))
+            {
+                logtext.AppendLine("StartFrame:" + Time.frameCount);
+                Observable.TimerFrame(5, 3)
+                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
+                    .AddTo(disposables);
+            }
+
+            if (GUILayout.Button("TimeScaleZero"))
+            {
+                logtext.AppendLine("StartFrame:" + Time.frameCount);
+                Time.timeScale = 0f;
+                Scheduler.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromSeconds(3), () =>
                 {
-                    var cancel = new BooleanDisposable();
-
-                    MainThreadDispatcher.StartCoroutine(Hoge(observer));
-
-                    return cancel;
-                })
-                .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()));
+                    logtext.AppendLine(Time.frameCount.ToString());
+                });
             }
-            ypos += 100;
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "FromCoroutine"))
+
+            if (GUILayout.Button("SampleFrame"))
             {
-                Observable.FromCoroutine<Unit>(Hoge)
-                .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()));
+                logtext.AppendLine("SampleFrame:" + Time.frameCount);
+                Observable.IntervalFrame(10)
+                    .SampleFrame(25)
+                    .Take(6)
+                    .Subscribe(x =>
+                    {
+                        logtext.AppendLine("Sample:" + Time.frameCount.ToString());
+                    }, () =>
+                    {
+                        logtext.AppendLine("Complete:" + Time.frameCount.ToString());
+                    })
+                    .AddTo(disposables);
             }
+
+            if (GUILayout.Button("ThrottleClick"))
+            {
+                logtext.AppendLine("ClickFrame:" + Time.frameCount);
+                throttleSubject.OnNext(Unit.Default);
+            }
+
+            if (GUILayout.Button("ThrottleFrame"))
+            {
+                logtext.AppendLine("ThrottleFrame:" + Time.frameCount);
+                throttleSubject
+                    .ThrottleFrame(60)
+                    .Subscribe(x =>
+                    {
+                        logtext.AppendLine("Throttle:" + Time.frameCount.ToString());
+                    }, () =>
+                    {
+                        logtext.AppendLine("Complete:" + Time.frameCount.ToString());
+                    })
+                    .AddTo(disposables);
+            }
+
+            if (GUILayout.Button("TimeoutFrame"))
+            {
+                logtext.AppendLine("TimeoutFrame:" + Time.frameCount);
+                throttleSubject
+                    .TimeoutFrame(60)
+                    .Subscribe(x =>
+                    {
+                        logtext.AppendLine("Throttle:" + Time.frameCount.ToString());
+                    }, ex =>
+                        {
+                            logtext.AppendLine("Timeout:" + ex.ToString());
+                        }, () =>
+                    {
+                        logtext.AppendLine("Complete:" + Time.frameCount.ToString());
+                    })
+                    .AddTo(disposables);
+            }
+
+
+
+            //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Clear"))
+            //{
+            //    logtext.Length = 0;
+            //    disposables.Clear();
+            //}
+            //ypos += 100;
+            //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "CurrentThreadScheduler"))
+            //{
+            //    try
+            //    {
+            //        Scheduler.CurrentThread.Schedule(() =>
+            //        {
+            //            try
+            //            {
+            //                logtext.AppendLine("test threadscheduler");
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                logtext.AppendLine("innner ex" + ex.ToString());
+            //            }
+            //        });
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        logtext.AppendLine("outer ex" + ex.ToString());
+            //    }
+            //}
+            //ypos += 100;
+            //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "EveryUpdate"))
+            //{
+            //    Observable.EveryUpdate()
+            //        .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()))
+            //        .AddTo(disposables);
+            //}
+            //ypos += 100;
+            //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "FromCoroutinePure"))
+            //{
+            //    Observable.Create<Unit>(observer =>
+            //    {
+            //        var cancel = new BooleanDisposable();
+
+            //        MainThreadDispatcher.StartCoroutine(Hoge(observer));
+
+            //        return cancel;
+            //    })
+            //    .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()));
+            //}
+            //ypos += 100;
+            //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "FromCoroutine"))
+            //{
+            //    Observable.FromCoroutine<Unit>(Hoge)
+            //    .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()));
+            //}
 
 
             /*
