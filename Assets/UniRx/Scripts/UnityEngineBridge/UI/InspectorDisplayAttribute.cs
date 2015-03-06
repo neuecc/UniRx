@@ -14,17 +14,15 @@ namespace UniRx.UI
     }
 
 #if UNITY_EDITOR
-    namespace UniRx.UI.Editor
+
+    [UnityEditor.CustomPropertyDrawer(typeof(InspectorDisplayAttribute))]
+    public class InspectorDisplayDrawer : UnityEditor.PropertyDrawer
     {
-        [UnityEditor.CustomPropertyDrawer(typeof(InspectorDisplayAttribute))]
-        public class InspectorDisplayDrawer : UnityEditor.PropertyDrawer
+        public override void OnGUI(Rect position, UnityEditor.SerializedProperty property, GUIContent label)
         {
-            public override void OnGUI(Rect position, UnityEditor.SerializedProperty property, GUIContent label)
-            {
-                var attr = this.attribute as InspectorDisplayAttribute;
-                var latestValue = property.FindPropertyRelative(attr.FieldName);
-                UnityEditor.EditorGUI.PropertyField(position, latestValue, label);
-            }
+            var attr = this.attribute as InspectorDisplayAttribute;
+            var latestValue = property.FindPropertyRelative(attr.FieldName);
+            UnityEditor.EditorGUI.PropertyField(position, latestValue, label);
         }
     }
 #endif
