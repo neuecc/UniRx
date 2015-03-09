@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 namespace UniRx.UI
 {
-    [AddComponentMenu("ObservableUI/Button", 30)]
-    public class ObservableButton : Button
+    [AddComponentMenu("ObservableUI/Input Field", 31)]
+    public class ObservableInputField : InputField
     {
         #region UIBehaviour
 
@@ -320,6 +320,74 @@ namespace UniRx.UI
         public IObservable<BaseEventData> OnSubmitAsObservable()
         {
             return onSubmit ?? (onSubmit = new Subject<BaseEventData>());
+        }
+
+        #endregion
+
+        #region IDragHandler
+
+        Subject<PointerEventData> onDrag;
+
+        public override void OnDrag(PointerEventData eventData)
+        {
+            base.OnDrag(eventData);
+            if (onDrag != null) onDrag.OnNext(eventData);
+        }
+
+        public IObservable<PointerEventData> OnDragAsObservable()
+        {
+            return onDrag ?? (onDrag = new Subject<PointerEventData>());
+        }
+
+        #endregion
+
+        #region IBeginDragHandler
+
+        Subject<PointerEventData> onBeginDrag;
+
+        public override void OnBeginDrag(PointerEventData eventData)
+        {
+            base.OnBeginDrag(eventData);
+            if (onBeginDrag != null) onBeginDrag.OnNext(eventData);
+        }
+
+        public IObservable<PointerEventData> OnBeginDragAsObservable()
+        {
+            return onBeginDrag ?? (onBeginDrag = new Subject<PointerEventData>());
+        }
+
+        #endregion
+
+        #region IEndDragHandler
+
+        Subject<PointerEventData> onEndDrag;
+
+        public override void OnEndDrag(PointerEventData eventData)
+        {
+            base.OnEndDrag(eventData);
+            if (onEndDrag != null) onEndDrag.OnNext(eventData);
+        }
+
+        public IObservable<PointerEventData> OnEndDragAsObservable()
+        {
+            return onEndDrag ?? (onEndDrag = new Subject<PointerEventData>());
+        }
+
+        #endregion
+
+        #region IUpdateSelectedHandler
+
+        Subject<BaseEventData> onUpdateSelected;
+
+        public override void OnUpdateSelected(BaseEventData eventData)
+        {
+            base.OnUpdateSelected(eventData);
+            if (onUpdateSelected != null) onUpdateSelected.OnNext(eventData);
+        }
+
+        public IObservable<BaseEventData> OnUpdateSelectedAsObservable()
+        {
+            return onUpdateSelected ?? (onUpdateSelected = new Subject<BaseEventData>());
         }
 
         #endregion

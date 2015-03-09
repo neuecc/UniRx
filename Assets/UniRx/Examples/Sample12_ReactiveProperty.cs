@@ -1,11 +1,9 @@
 ﻿// for uGUI(from 4.6)
 #if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
 
-using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
 using System;
-using UniRx.UI;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace UniRx.Examples
 {
@@ -45,7 +43,11 @@ namespace UniRx.Examples
 
             // from RxProp, CurrentHp changing(Button Click) is observable
             enemy.CurrentHp.SubscribeToText(MyText);
-            enemy.IsDead.Subscribe(isDead => MyButton.interactable = !isDead);
+            enemy.IsDead.Where(isDead => isDead == true)
+                .Subscribe(_ =>
+                {
+                    MyToggle.interactable = MyButton.interactable = false;
+                });
 
             // Initial Text:)
             IntRxProp.SubscribeToText(MyText);

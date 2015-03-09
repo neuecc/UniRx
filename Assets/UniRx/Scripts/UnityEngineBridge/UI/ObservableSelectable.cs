@@ -129,6 +129,8 @@ namespace UniRx.UI
             return onTransformParentChanged ?? (onTransformParentChanged = new Subject<Unit>());
         }
 
+#if UNITY_EDITOR
+
         Subject<Unit> onValidate;
 
         protected override void OnValidate()
@@ -154,6 +156,8 @@ namespace UniRx.UI
         {
             return reset ?? (reset = new Subject<Unit>());
         }
+
+#endif
 
         Subject<Unit> start;
 

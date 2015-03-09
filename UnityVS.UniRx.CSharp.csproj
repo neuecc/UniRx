@@ -145,7 +145,12 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ObservableWWW.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\TypedMonoBehaviour.cs" />
-    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableAspectRatioFitter.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableDragAndDropBehaviour.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableInputField.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableToggle.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableSlider.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableImage.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableText.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableButton.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableSelectable.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableUIBehaviour.cs" />

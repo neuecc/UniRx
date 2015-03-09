@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 namespace UniRx.UI
 {
-    [AddComponentMenu("ObservableUI/Button", 30)]
-    public class ObservableButton : Button
+    [AddComponentMenu("ObservableUI/Slider", 34)]
+    public class ObservableSlider : Slider
     {
         #region UIBehaviour
 
@@ -290,36 +290,36 @@ namespace UniRx.UI
 
         #endregion
 
-        #region IPointerClickHandler
+        #region IInitializePotentialDragHandler
 
-        Subject<PointerEventData> onPointerClick;
+        Subject<PointerEventData> onInitializePotentialDrag;
 
-        public override void OnPointerClick(PointerEventData eventData)
+        public override void OnInitializePotentialDrag(PointerEventData eventData)
         {
-            base.OnPointerClick(eventData);
-            if (onPointerClick != null) onPointerClick.OnNext(eventData);
+            base.OnInitializePotentialDrag(eventData);
+            if (onInitializePotentialDrag != null) onInitializePotentialDrag.OnNext(eventData);
         }
 
-        public IObservable<PointerEventData> OnPointerClickAsObservable()
+        public IObservable<PointerEventData> OnInitializePotentialDragAsObservable()
         {
-            return onPointerClick ?? (onPointerClick = new Subject<PointerEventData>());
+            return onInitializePotentialDrag ?? (onInitializePotentialDrag = new Subject<PointerEventData>());
         }
 
         #endregion
 
-        #region ISubmitHandler
+        #region IDragHandler
 
-        Subject<BaseEventData> onSubmit;
+        Subject<PointerEventData> onDrag;
 
-        public override void OnSubmit(BaseEventData eventData)
+        public override void OnDrag(PointerEventData eventData)
         {
-            base.OnSubmit(eventData);
-            if (onSubmit != null) onSubmit.OnNext(eventData);
+            base.OnDrag(eventData);
+            if (onDrag != null) onDrag.OnNext(eventData);
         }
 
-        public IObservable<BaseEventData> OnSubmitAsObservable()
+        public IObservable<PointerEventData> OnDragAsObservable()
         {
-            return onSubmit ?? (onSubmit = new Subject<BaseEventData>());
+            return onDrag ?? (onDrag = new Subject<PointerEventData>());
         }
 
         #endregion
