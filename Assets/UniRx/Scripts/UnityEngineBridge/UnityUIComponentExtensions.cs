@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UniRx.UI
+namespace UniRx
 {
     public static partial class UnityUIComponentExtensions
     {
@@ -22,6 +22,11 @@ namespace UniRx.UI
         public static IDisposable SubscribeToText<T>(this IObservable<T> source, Text text, Func<T, string> selector)
         {
             return source.Subscribe(x => text.text = selector(x));
+        }
+
+        public static IDisposable SubscribeToInteractable(this IObservable<bool> source, Selectable selectable)
+        {
+            return source.Subscribe(x => selectable.interactable = x);
         }
 
         /// <summary>Observe onClick event.</summary>
@@ -78,7 +83,7 @@ namespace UniRx.UI
         }
 
         /// <summary>Observe onValueChange with current `text` value on subscribe.</summary>
-        public static IObservable<string> OnChangeEventAsObservable(this InputField inputField)
+        public static IObservable<string> OnValueChangeAsObservable(this InputField inputField)
         {
             return Observable.Create<string>(observer =>
             {

@@ -776,7 +776,12 @@ namespace UniRx
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, T value)
         {
-            return StartWith(source, Scheduler.DefaultSchedulers.ConstantTimeOperations, value);
+            // optimized path
+            return Observable.Create<T>(observer =>
+            {
+                observer.OnNext(value);
+                return source.Subscribe(observer);
+            });
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, params T[] values)

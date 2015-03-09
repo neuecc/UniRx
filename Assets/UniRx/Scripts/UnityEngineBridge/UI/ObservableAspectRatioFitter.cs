@@ -2,10 +2,12 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace UniRx.UI.Behaviours
+namespace UniRx.UI
 {
-    [AddComponentMenu("ObservableUI/Button", 30)]
-    public class ObservableButton : Button
+    [AddComponentMenu("Layout/Aspect Ratio Fitter", 142)]
+    [ExecuteInEditMode]
+    [RequireComponent(typeof(RectTransform))]
+    public class ObservableAspectRatioFitter : UnityEngine.UI.AspectRatioFitter
     {
         #region UIBehaviour
 
@@ -163,159 +165,6 @@ namespace UniRx.UI.Behaviours
         public IObservable<Unit> StartAsObservable()
         {
             return start ?? (start = new Subject<Unit>());
-        }
-
-        #endregion
-
-        #region IDSelect
-
-        Subject<BaseEventData> onDeselect;
-
-        public override void OnDeselect(BaseEventData eventData)
-        {
-            base.OnDeselect(eventData);
-            if (onDeselect != null) onDeselect.OnNext(eventData);
-        }
-
-        public IObservable<BaseEventData> OnDeselectAsObservable()
-        {
-            return onDeselect ?? (onDeselect = new Subject<BaseEventData>());
-        }
-
-        #endregion
-
-        #region IMoveHandler
-
-        Subject<AxisEventData> onMove;
-
-        public override void OnMove(AxisEventData eventData)
-        {
-            base.OnMove(eventData);
-            if (onMove != null) onMove.OnNext(eventData);
-        }
-
-        public IObservable<AxisEventData> OnMoveAsObservable()
-        {
-            return onMove ?? (onMove = new Subject<AxisEventData>());
-        }
-
-        #endregion
-
-        #region IPointerDownHandler
-
-        Subject<PointerEventData> onPointerDown;
-
-        public override void OnPointerDown(PointerEventData eventData)
-        {
-            base.OnPointerDown(eventData);
-            if (onPointerDown != null) onPointerDown.OnNext(eventData);
-        }
-
-        public IObservable<PointerEventData> OnPointerDownAsObservable()
-        {
-            return onPointerDown ?? (onPointerDown = new Subject<PointerEventData>());
-        }
-
-        #endregion
-
-        #region IPointerEnterHandler
-
-        Subject<PointerEventData> onPointerEnter;
-
-        public override void OnPointerEnter(PointerEventData eventData)
-        {
-            base.OnPointerEnter(eventData);
-            if (onPointerEnter != null) onPointerEnter.OnNext(eventData);
-        }
-
-        public IObservable<PointerEventData> OnPointerEnterAsObservable()
-        {
-            return onPointerEnter ?? (onPointerEnter = new Subject<PointerEventData>());
-        }
-
-        #endregion
-
-        #region IPointerExitHandler
-
-        Subject<PointerEventData> onPointerExit;
-
-        public override void OnPointerExit(PointerEventData eventData)
-        {
-            base.OnPointerExit(eventData);
-            if (onPointerExit != null) onPointerExit.OnNext(eventData);
-        }
-
-        public IObservable<PointerEventData> OnPointerExitAsObservable()
-        {
-            return onPointerExit ?? (onPointerExit = new Subject<PointerEventData>());
-        }
-
-        #endregion
-
-        #region IPointerUpHandler
-
-        Subject<PointerEventData> onPointerUp;
-
-        public override void OnPointerUp(PointerEventData eventData)
-        {
-            base.OnPointerUp(eventData);
-            if (onPointerUp != null) onPointerUp.OnNext(eventData);
-        }
-
-        public IObservable<PointerEventData> OnPointerUpAsObservable()
-        {
-            return onPointerUp ?? (onPointerUp = new Subject<PointerEventData>());
-        }
-
-        #endregion
-
-        #region ISelect
-
-        Subject<BaseEventData> onSelect;
-
-        public override void OnSelect(BaseEventData eventData)
-        {
-            base.OnSelect(eventData);
-            if (onSelect != null) onSelect.OnNext(eventData);
-        }
-
-        public IObservable<BaseEventData> OnSelectAsObservable()
-        {
-            return onSelect ?? (onSelect = new Subject<BaseEventData>());
-        }
-
-        #endregion
-
-        #region IPointerClickHandler
-
-        Subject<PointerEventData> onPointerClick;
-
-        public override void OnPointerClick(PointerEventData eventData)
-        {
-            base.OnPointerClick(eventData);
-            if (onPointerClick != null) onPointerClick.OnNext(eventData);
-        }
-
-        public IObservable<PointerEventData> OnPointerClickAsObservable()
-        {
-            return onPointerClick ?? (onPointerClick = new Subject<PointerEventData>());
-        }
-
-        #endregion
-
-        #region ISubmitHandler
-
-        Subject<BaseEventData> onSubmit;
-
-        public override void OnSubmit(BaseEventData eventData)
-        {
-            base.OnSubmit(eventData);
-            if (onSubmit != null) onSubmit.OnNext(eventData);
-        }
-
-        public IObservable<BaseEventData> OnSubmitAsObservable()
-        {
-            return onSubmit ?? (onSubmit = new Subject<BaseEventData>());
         }
 
         #endregion

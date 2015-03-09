@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UniRx.UI
+namespace UniRx
 {
     /// <summary>
     /// Lightweight property broker.

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniRx.UI
+namespace UniRx
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
     public class InspectorDisplayAttribute : PropertyAttribute
