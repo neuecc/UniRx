@@ -27,26 +27,27 @@ namespace UniRx.Examples
         void Start()
         {
             // UnityEvent as Observable
-            MyButton.onClick.AsObservable().Subscribe(_ => enemy.CurrentHp.Value -= 99);
+            MyButton.onClick.AsObservable()
+                .Subscribe(_ => enemy.CurrentHp.Value -= 99);
 
-            // Toggle, Input etc as Observable
-            MyToggle.isOn = false;
-            MyToggle.onValueChanged.AsObservable()
-                .StartWith(MyToggle.isOn) // Initial Value with StartWith
+            // Toggle, Input etc as Observable(OnValueChangedAsObservable is helper for provide isOn value on subscribe)
+            MyToggle.OnValueChangedAsObservable()
                 .Subscribe(x => MyButton.interactable = x);
 
             // input shows delay after 1 second
             MyInput.onValueChange.AsObservable()
                 .Delay(TimeSpan.FromSeconds(1))
-                .Subscribe(x => MyText.text = x);
+                .SubscribeToText(MyText); // SubscribeToText is UniRx.UI Extension Method
 
             // converting for human visibility
             MySlider.onValueChanged.AsObservable()
-                .Select(x => Math.Round(x, 2).ToString())
-                .Subscribe(x => MyText.text = x);
+                .SubscribeToText(MyText, x => Math.Round(x, 2).ToString());
 
             // from RxProp, CurrentHp changing(Button Click) is observable
-            enemy.CurrentHp.Subscribe(x => MyText.text = x.ToString());
+            enemy.CurrentHp.SubscribeToText(MyText);
+
+            // Initial Text
+            IntRxProp.SubscribeToText(MyText);
         }
     }
 

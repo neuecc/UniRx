@@ -145,7 +145,7 @@ MonoBehaviour:
   MyText: {fileID: 579875961}
   MySlider: {fileID: 1891604358}
   IntRxProp:
-    value: 0
+    value: 55
 --- !u!114 &33721922
 MonoBehaviour:
   m_ObjectHideFlags: 0
