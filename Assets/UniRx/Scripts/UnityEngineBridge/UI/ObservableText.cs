@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿// for uGUI(from 4.6)
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
+
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -7,7 +10,7 @@ namespace UniRx.UI
     [AddComponentMenu("ObservableUI/Text", 11)]
     public class ObservableText : UnityEngine.UI.Text
     {
-        #region UIBehaviour
+#region UIBehaviour
 
         Subject<Unit> awake;
 
@@ -169,6 +172,8 @@ namespace UniRx.UI
             return start ?? (start = new Subject<Unit>());
         }
 
-        #endregion
+#endregion
     }
 }
+
+#endif

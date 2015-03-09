@@ -1,4 +1,4 @@
-UniRx - Reactive Extensions for Unity / ver.4.6
+UniRx - Reactive Extensions for Unity / ver.4.7
 ===
 Created by Yoshifumi Kawai(neuecc)
 
@@ -6,7 +6,7 @@ What is UniRx?
 ---
 UniRx(Reactive Extensions for Unity) is re-implementation of .NET Reactive Extensions.    
 It's free and open source on GitHub.  
-Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc.  
+Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc and fully supported Unity 5(and 4.6).    
 You can check latest info, source code and issues on https://github.com/neuecc/UniRx
 We welcome to your contribute such as bug report, request, and pull request.
 
@@ -32,6 +32,8 @@ GameLoop(every Update, OnCollisionEnter, etc), Sensor(like Kinect, Leap Motion, 
 Rx considere event as reactive sequence which is possible to compose and perform time-based operations easily by using many LINQ query operators.
 
 Unity is single thread but UniRx helps multithreading for join, cancel, access GameObject etc.        
+
+UniRx helps UI programming for uGUI. All UI events(clicked, valuechanged, etc) can convert event streams by UniRx. 
 
 The Introduction
 ---
@@ -315,7 +317,7 @@ public class Test : ObservableMonoBehaviour
 
 > Note:
 > TypedMonoBehaviour and ObservableMonoBehaviour cause some performance down.
-> I don't recommend instantiate many Type/ObservableMonoBehaviour.
+> I don't recommend instantiate many Typed/ObservableMonoBehaviour.
 > If you want to observe MonoBehaviour's event, copy from ObservableMonoBehaviour and paste to your simple MonoBehaviour.
 > for example
 
@@ -435,20 +437,126 @@ ObserveOnMainThread()/SubscribeOnMainThread()
 // Global StartCoroutine runner
 MainThreadDispatcher.StartCoroutine(enumerator)
 
-// push value on every update time
-Observable.EveryUpdate().Subscribe();
-
-// push value on every fixedUpdate time
-Observable.EveryFixedUpdate().Subscribe();
-
-// delay on frame time
-Observable.Return(42).DelayFrame(10);
-
 // convert Coroutine to IObservable
 Observable.FromCoroutine((observer, token) => enumerator(observer, token)); 
 
 // convert IObservable to Coroutine
 yield return Observable.Range(1, 10).StartAsCoroutine();
+
+// Lifetime hooks
+Observable.EveryApplicationPause();
+Observable.EveryApplicationFocus();
+Observable.OnceApplicationQuit();
+```
+
+Frame count based time operators
+---
+UniRx has some frame count based time operators.
+
+Method | 
+-------|
+EveryUpdate|
+EveryFixedUpdate|
+EveryEndOfFrame|
+NextFrame|
+IntervalFrame|
+TimerFrame|
+DelayFrame|
+SampleFrame|
+ThrottleFrame|
+TimeoutFrame|
+DelayFrameSubscription|
+
+For example, delayed invoke once
+
+```csharp
+Observable.TimerFrame(100).Subscribe(_ => Debug.Log("after 100 frame"));
+```
+
+uGUI Integration
+---
+UniRx can handle `UnityEvent` easily. You can use `UnityEvent.AsObservable` for register events.
+
+```csharp
+public Button MyButton;
+// ---
+MyButton.onClick.AsObservable().Subscribe(_ => Debug.Log("clicked"));
+```
+
+Event as Observable, it enables declaretive ui programming. 
+
+```csharp
+public Toggle MyToggle;
+public InputField MyInput;
+public Text MyText;
+public Slider MySlider;
+
+// On Start, you can write reactive rule for declaretive/reactive ui programming
+void Start()
+{
+    // Toggle, Input etc as Observable(OnValueChangedAsObservable is helper for provide isOn value on subscribe)
+    // SubscribeToInteractable is UniRx.UI Extension Method, same as .interactable = x)
+    MyToggle.OnValueChangedAsObservable().SubscribeToInteractable(MyButton);
+    
+    // input shows delay after 1 second
+    MyInput.OnValueChangeAsObservable()
+        .Skip(1) // ignore initial text(blank)
+        .Delay(TimeSpan.FromSeconds(1))
+        .SubscribeToText(MyText); // SubscribeToText is UniRx.UI Extension Method
+    
+    // converting for human visibility
+    MySlider.OnValueChangedAsObservable()
+        .SubscribeToText(MyText, x => Math.Round(x, 2).ToString());
+}
+````
+
+If you interested in reactive ui programming, you can see Sample12, Sample13 and below ReactiveProperty section. 
+
+ReactiveProperty, ReactiveCollection
+---
+Game's data needs notification. Do you use property and event(callback)? It's too complex. UniRx provides ReactiveProperty which is lightweight property broker.
+
+```csharp
+// Reactive Notification Model
+public class Enemy
+{
+    public ReactiveProperty<long> CurrentHp { get; private set; }
+
+    public ReactiveProperty<bool> IsDead { get; private set; }
+
+    public Enemy(int initialHp)
+    {
+        // Declarative Property
+        CurrentHp = new ReactiveProperty<long>(initialHp);
+        IsDead = CurrentHp.Select(x => x <= 0).ToReactiveProperty();
+    }
+}
+
+// ---
+// onclick, HP decrement
+MyButton.OnClickAsObservable().Subscribe(_ => enemy.CurrentHp.Value -= 99);
+// subscribe from notification model.
+enemy.CurrentHp.SubscribeToText(MyText);
+enemy.IsDead.Where(isDead => isDead == true)
+    .Subscribe(_ =>
+    {
+        MyButton.interactable = false;
+    });
+```
+
+You can combine ReactiveProperty, ReactiveCollection and UnityEvent.AsObservable. All ui elements is observable.
+
+ObservableUIBehaviour
+---
+In `UniRx.UI` namespace have some observable classes. `ObservbaleButton`, `ObservableImage`, `ObservableInputField`, `ObservableSelectable`, `ObservableSlider`, `ObservableText`, `ObservableToggle`, `ObservableUIBehaviour`, `ObservableEventTrigger` are conveting to callback to IObservable(note: other than this `UniRx` namespace has similar class  `ObservableStateMachineBehaviour`).
+
+And If you using `UniRx.UI`, all class instance can call `ObserveEveryValueChanged` method it watch chaning value in every frame.
+
+```csharp
+using UniRx.UI;
+
+// watch position change
+this.transform.ObserveEveryValueChanged(x => x.position).Subscribe(x => Debug.Log(x));
 ```
 
 Samples

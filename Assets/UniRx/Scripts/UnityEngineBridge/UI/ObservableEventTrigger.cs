@@ -1,4 +1,7 @@
-﻿using System;
+﻿// for uGUI(from 4.6)
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +9,12 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
+namespace UniRx.UI
 {
     [AddComponentMenu("Event/Observable Event Trigger")]
     public class ObservableEventTrigger : EventTrigger
     {
-        #region IDSelect
+#region IDSelect
 
         Subject<BaseEventData> onDeselect;
 
@@ -26,9 +29,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onDeselect ?? (onDeselect = new Subject<BaseEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IMoveHandler
+#region IMoveHandler
 
         Subject<AxisEventData> onMove;
 
@@ -43,9 +46,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onMove ?? (onMove = new Subject<AxisEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IPointerDownHandler
+#region IPointerDownHandler
 
         Subject<PointerEventData> onPointerDown;
 
@@ -60,9 +63,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onPointerDown ?? (onPointerDown = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IPointerEnterHandler
+#region IPointerEnterHandler
 
         Subject<PointerEventData> onPointerEnter;
 
@@ -77,9 +80,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onPointerEnter ?? (onPointerEnter = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IPointerExitHandler
+#region IPointerExitHandler
 
         Subject<PointerEventData> onPointerExit;
 
@@ -94,9 +97,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onPointerExit ?? (onPointerExit = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IPointerUpHandler
+#region IPointerUpHandler
 
         Subject<PointerEventData> onPointerUp;
 
@@ -111,9 +114,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onPointerUp ?? (onPointerUp = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region ISelect
+#region ISelect
 
         Subject<BaseEventData> onSelect;
 
@@ -128,9 +131,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onSelect ?? (onSelect = new Subject<BaseEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IPointerClickHandler
+#region IPointerClickHandler
 
         Subject<PointerEventData> onPointerClick;
 
@@ -145,9 +148,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onPointerClick ?? (onPointerClick = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region ISubmitHandler
+#region ISubmitHandler
 
         Subject<BaseEventData> onSubmit;
 
@@ -162,9 +165,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onSubmit ?? (onSubmit = new Subject<BaseEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IDragHandler
+#region IDragHandler
 
         Subject<PointerEventData> onDrag;
 
@@ -179,9 +182,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onDrag ?? (onDrag = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IBeginDragHandler
+#region IBeginDragHandler
 
         Subject<PointerEventData> onBeginDrag;
 
@@ -196,9 +199,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onBeginDrag ?? (onBeginDrag = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IEndDragHandler
+#region IEndDragHandler
 
         Subject<PointerEventData> onEndDrag;
 
@@ -213,9 +216,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onEndDrag ?? (onEndDrag = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IDropHandler
+#region IDropHandler
 
         Subject<PointerEventData> onDrop;
 
@@ -230,9 +233,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onDrop ?? (onDrop = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IUpdateSelectedHandler
+#region IUpdateSelectedHandler
 
         Subject<BaseEventData> onUpdateSelected;
 
@@ -247,9 +250,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onUpdateSelected ?? (onUpdateSelected = new Subject<BaseEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IInitializePotentialDragHandler
+#region IInitializePotentialDragHandler
 
         Subject<PointerEventData> onInitializePotentialDrag;
 
@@ -264,9 +267,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onInitializePotentialDrag ?? (onInitializePotentialDrag = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region ICancelHandler
+#region ICancelHandler
 
         Subject<BaseEventData> onCancel;
 
@@ -281,9 +284,9 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onCancel ?? (onCancel = new Subject<BaseEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IScrollHandler
+#region IScrollHandler
 
         Subject<PointerEventData> onScroll;
 
@@ -298,6 +301,8 @@ namespace Assets.UniRx.Scripts.UnityEngineBridge.UI
             return onScroll ?? (onScroll = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
     }
 }
+
+#endif

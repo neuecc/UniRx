@@ -4,6 +4,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UniRx.UI;
 
 namespace UniRx.Examples
 {
@@ -61,7 +62,6 @@ namespace UniRx.Examples
         public ReactiveProperty<long> CurrentHp { get; private set; }
 
         public ReactiveProperty<bool> IsDead { get; private set; }
-
 
         public Enemy(int initialHp)
         {

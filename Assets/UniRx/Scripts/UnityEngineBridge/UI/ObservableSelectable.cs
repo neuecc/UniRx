@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿// for uGUI(from 4.6)
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
+
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -10,7 +13,7 @@ namespace UniRx.UI
     [SelectionBase]
     public class ObservableSelectable : Selectable
     {
-        #region UIBehaviour
+#region UIBehaviour
 
         Subject<Unit> awake;
 
@@ -172,9 +175,9 @@ namespace UniRx.UI
             return start ?? (start = new Subject<Unit>());
         }
 
-        #endregion
+#endregion
 
-        #region IDSelect
+#region IDSelect
 
         Subject<BaseEventData> onDeselect;
 
@@ -189,9 +192,9 @@ namespace UniRx.UI
             return onDeselect ?? (onDeselect = new Subject<BaseEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IMoveHandler
+#region IMoveHandler
 
         Subject<AxisEventData> onMove;
 
@@ -206,9 +209,9 @@ namespace UniRx.UI
             return onMove ?? (onMove = new Subject<AxisEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IPointerDownHandler
+#region IPointerDownHandler
 
         Subject<PointerEventData> onPointerDown;
 
@@ -223,9 +226,9 @@ namespace UniRx.UI
             return onPointerDown ?? (onPointerDown = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IPointerEnterHandler
+#region IPointerEnterHandler
 
         Subject<PointerEventData> onPointerEnter;
 
@@ -240,9 +243,9 @@ namespace UniRx.UI
             return onPointerEnter ?? (onPointerEnter = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IPointerExitHandler
+#region IPointerExitHandler
 
         Subject<PointerEventData> onPointerExit;
 
@@ -257,9 +260,9 @@ namespace UniRx.UI
             return onPointerExit ?? (onPointerExit = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region IPointerUpHandler
+#region IPointerUpHandler
 
         Subject<PointerEventData> onPointerUp;
 
@@ -274,9 +277,9 @@ namespace UniRx.UI
             return onPointerUp ?? (onPointerUp = new Subject<PointerEventData>());
         }
 
-        #endregion
+#endregion
 
-        #region ISelect
+#region ISelect
 
         Subject<BaseEventData> onSelect;
 
@@ -291,6 +294,8 @@ namespace UniRx.UI
             return onSelect ?? (onSelect = new Subject<BaseEventData>());
         }
 
-        #endregion
+#endregion
     }
 }
+
+#endif
