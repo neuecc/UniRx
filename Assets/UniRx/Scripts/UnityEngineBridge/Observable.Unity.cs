@@ -6,6 +6,30 @@ using UnityEngine;
 
 namespace UniRx
 {
+    public enum FrameCountType
+    {
+        Update,
+        FixedUpdate,
+        EndOfFrame,
+    }
+
+    public static class FrameCountTypeExtensions
+    {
+        public static YieldInstruction GetYieldInstruction(this FrameCountType frameCountType)
+        {
+            switch (frameCountType)
+            {
+                case FrameCountType.FixedUpdate:
+                    return new WaitForFixedUpdate();
+                case FrameCountType.EndOfFrame:
+                    return new WaitForEndOfFrame();
+                case FrameCountType.Update:
+                default:
+                    return null;
+            }
+        }
+    }
+
     public static partial class Observable
     {
         readonly static HashSet<Type> YieldInstructionTypes = new HashSet<Type>
@@ -257,36 +281,37 @@ namespace UniRx
 
         // Interval, Timer, Delay, Sample, Throttle, Timeout
 
-        public static IObservable<Unit> NextFrame()
+        public static IObservable<Unit> NextFrame(FrameCountType frameCountType = FrameCountType.Update)
         {
-            return Observable.FromCoroutine<Unit>((observer, cancellation) => NextFrameCore(observer, cancellation));
+            return Observable.FromCoroutine<Unit>((observer, cancellation) => NextFrameCore(observer, frameCountType, cancellation));
         }
 
-        static IEnumerator NextFrameCore(IObserver<Unit> observer, CancellationToken cancellation)
+        static IEnumerator NextFrameCore(IObserver<Unit> observer, FrameCountType frameCountType, CancellationToken cancellation)
         {
-            yield return null;
+            yield return frameCountType.GetYieldInstruction();
+
             if (!cancellation.IsCancellationRequested)
             {
                 observer.OnNext(Unit.Default);
             }
         }
 
-        public static IObservable<long> IntervalFrame(int intervalFrameCount)
+        public static IObservable<long> IntervalFrame(int intervalFrameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
-            return TimerFrame(intervalFrameCount, intervalFrameCount);
+            return TimerFrame(intervalFrameCount, intervalFrameCount, frameCountType);
         }
 
-        public static IObservable<long> TimerFrame(int dueTimeFrameCount)
+        public static IObservable<long> TimerFrame(int dueTimeFrameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
-            return Observable.FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, cancellation));
+            return Observable.FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, frameCountType, cancellation));
         }
 
-        public static IObservable<long> TimerFrame(int dueTimeFrameCount, int periodFrameCount)
+        public static IObservable<long> TimerFrame(int dueTimeFrameCount, int periodFrameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
-            return Observable.FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, periodFrameCount, cancellation));
+            return Observable.FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, periodFrameCount, frameCountType, cancellation));
         }
 
-        static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, CancellationToken cancel)
+        static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, FrameCountType frameCountType, CancellationToken cancel)
         {
             // normalize
             if (dueTimeFrameCount <= 0) dueTimeFrameCount = 0;
@@ -301,11 +326,11 @@ namespace UniRx
                     observer.OnNext(0);
                     break;
                 }
-                yield return null;
+                yield return frameCountType.GetYieldInstruction();
             }
         }
 
-        static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, int periodFrameCount, CancellationToken cancel)
+        static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, int periodFrameCount, FrameCountType frameCountType, CancellationToken cancel)
         {
             // normalize
             if (dueTimeFrameCount <= 0) dueTimeFrameCount = 0;
@@ -323,7 +348,7 @@ namespace UniRx
                     currentFrame = -1;
                     break;
                 }
-                yield return null;
+                yield return frameCountType.GetYieldInstruction();
             }
 
             // period phase
@@ -334,11 +359,11 @@ namespace UniRx
                     observer.OnNext(sendCount++);
                     currentFrame = 0;
                 }
-                yield return null;
+                yield return frameCountType.GetYieldInstruction();
             }
         }
 
-        public static IObservable<T> DelayFrame<T>(this IObservable<T> source, int frameCount)
+        public static IObservable<T> DelayFrame<T>(this IObservable<T> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
             if (frameCount < 0) throw new ArgumentOutOfRangeException("frameCount");
 
@@ -355,18 +380,18 @@ namespace UniRx
                         return;
                     }
 
-                    MainThreadDispatcher.StartCoroutine(DelayFrameCore(() => x.Accept(observer), frameCount, cancel));
+                    MainThreadDispatcher.StartCoroutine(DelayFrameCore(() => x.Accept(observer), frameCount, frameCountType, cancel));
                 });
 
                 return cancel;
             });
         }
 
-        static IEnumerator DelayFrameCore(Action onNext, int frameCount, ICancelable cancel)
+        static IEnumerator DelayFrameCore(Action onNext, int frameCount, FrameCountType frameCountType, ICancelable cancel)
         {
             while (!cancel.IsDisposed && frameCount-- != 0)
             {
-                yield return null;
+                yield return frameCountType.GetYieldInstruction();
             }
             if (!cancel.IsDisposed)
             {
@@ -374,7 +399,7 @@ namespace UniRx
             }
         }
 
-        public static IObservable<T> SampleFrame<T>(this IObservable<T> source, int frameCount)
+        public static IObservable<T> SampleFrame<T>(this IObservable<T> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
             return Observable.Create<T>(observer =>
             {
@@ -383,7 +408,7 @@ namespace UniRx
                 var isCompleted = false;
                 var gate = new object();
 
-                var scheduling = Observable.IntervalFrame(frameCount)
+                var scheduling = Observable.IntervalFrame(frameCount, frameCountType)
                     .Subscribe(_ =>
                     {
                         lock (gate)
@@ -431,7 +456,7 @@ namespace UniRx
             });
         }
 
-        public static IObservable<TSource> ThrottleFrame<TSource>(this IObservable<TSource> source, int frameCount)
+        public static IObservable<TSource> ThrottleFrame<TSource>(this IObservable<TSource> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
             return new AnonymousObservable<TSource>(observer =>
             {
@@ -453,7 +478,7 @@ namespace UniRx
                         }
                         var d = new SingleAssignmentDisposable();
                         cancelable.Disposable = d;
-                        d.Disposable = Observable.IntervalFrame(frameCount)
+                        d.Disposable = Observable.IntervalFrame(frameCount, frameCountType)
                             .Subscribe(_ =>
                             {
                                 lock (gate)
@@ -493,11 +518,11 @@ namespace UniRx
             });
         }
 
-        public static IObservable<T> TimeoutFrame<T>(this IObservable<T> source, int frameCount)
+        public static IObservable<T> TimeoutFrame<T>(this IObservable<T> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
             return Observable.Create<T>(observer =>
             {
-                Func<IDisposable> runTimer = () => Observable.TimerFrame(frameCount)
+                Func<IDisposable> runTimer = () => Observable.TimerFrame(frameCount, frameCountType)
                     .Subscribe(_ =>
                     {
                         observer.OnError(new TimeoutException());
@@ -515,6 +540,21 @@ namespace UniRx
                 }, observer.OnError, observer.OnCompleted);
 
                 return new CompositeDisposable { timerDisposable, sourceSubscription };
+            });
+        }
+
+        public static IObservable<T> DelayFrameSubscription<T>(this IObservable<T> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var d = new MultipleAssignmentDisposable();
+                d.Disposable = Observable.TimerFrame(frameCount, frameCountType)
+                    .Subscribe(_ =>
+                    {
+                        d.Disposable = source.Subscribe(observer);
+                    });
+
+                return d;
             });
         }
 
