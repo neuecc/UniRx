@@ -34,11 +34,12 @@ namespace UniRx.Examples
 
             // input shows delay after 1 second
             MyInput.OnValueChangeAsObservable()
+                .Skip(1) // ignore initial text(blank)
                 .Delay(TimeSpan.FromSeconds(1))
                 .SubscribeToText(MyText); // SubscribeToText is UniRx.UI Extension Method
 
             // converting for human visibility
-            MySlider.onValueChanged.AsObservable()
+            MySlider.OnValueChangedAsObservable()
                 .SubscribeToText(MyText, x => Math.Round(x, 2).ToString());
 
             // from RxProp, CurrentHp changing(Button Click) is observable
@@ -49,7 +50,7 @@ namespace UniRx.Examples
                     MyToggle.interactable = MyButton.interactable = false;
                 });
 
-            // Initial Text:)
+            // initial text:)
             IntRxProp.SubscribeToText(MyText);
         }
     }
