@@ -77,6 +77,7 @@
     <Compile Include="Assets\UniRx\Examples\Sample10_MainThreadDispatcher.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample11_Logger.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample12_ReactiveProperty.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample13_ToDoApp.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\BooleanDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\CompositeDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\Disposable.cs" />

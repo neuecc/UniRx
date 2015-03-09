@@ -25,5 +25,6 @@ namespace UniRx
             UnityEditor.EditorGUI.PropertyField(position, latestValue, label);
         }
     }
+
 #endif
 }

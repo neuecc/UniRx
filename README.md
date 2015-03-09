@@ -4,7 +4,7 @@ Created by Yoshifumi Kawai(neuecc)
 
 What is UniRx?
 ---
-UniRx(Reactive Extensions for Unity) is re-implementation of .NET Reactive Extensions. Official Rx is great but can't work on Unity and has some issue of iOS AOT. This library remove there issues and add some specified utility for Unity. Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc.   
+UniRx(Reactive Extensions for Unity) is re-implementation of .NET Reactive Extensions. Official Rx is great but can't work on Unity and has some issue of iOS AOT. This library remove there issues and add some specified utility for Unity. Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc and fully supported Unity 5(and 4.6).   
 
 UniRx is available in Unity Asset Store(FREE) - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
 
@@ -28,7 +28,10 @@ Rx curing asynchronous blues like that. Rx is a library to compose asynchronous 
   
 GameLoop(every Update, OnCollisionEnter, etc), Sensor(like Kinect, Leap Motion, etc) is all of event. Rx considere event as reactive sequence which is possible to compose and perform time-based operations easily by using many LINQ query operators.
 
-Unity is single thread but UniRx helps multithreading for join, cancel, access GameObject etc.        
+Unity is single thread but UniRx helps multithreading for join, cancel, access GameObject etc.
+
+UniRx helps UI programming for uGUI. All UI events(clicked, valuechanged, etc) can convert event streams by UniRx. 
+        
 
 The Introduction
 ---
