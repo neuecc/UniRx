@@ -142,6 +142,7 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\MainThreadScheduler.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Observable.Unity.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ObservableMonoBehaviour.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ObservableStateMachineBehaviour.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ObservableWWW.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\TypedMonoBehaviour.cs" />
