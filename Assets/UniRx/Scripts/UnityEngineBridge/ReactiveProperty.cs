@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UniRx
@@ -253,6 +254,39 @@ namespace UniRx
         public static ReadOnlyReactiveProperty<T> ToReadOnlyReactiveProperty<T>(this IObservable<T> source, T initialValue)
         {
             return new ReadOnlyReactiveProperty<T>(source, initialValue);
+        }
+
+        // for multiple toggle or etc..
+
+        /// <summary>
+        /// Lastest values of each sequence are all true.
+        /// </summary>
+        public static IObservable<bool> CombineLatestValuesAreAllTrue(this IEnumerable<IObservable<bool>> sources)
+        {
+            return sources.CombineLatest().Select(xs =>
+            {
+                foreach (var item in xs)
+                {
+                    if (item == false) return false;
+                }
+                return true;
+            });
+        }
+
+
+        /// <summary>
+        /// Lastest values of each sequence are all false.
+        /// </summary>
+        public static IObservable<bool> CombineLatestValuesAreAllFalse(this IEnumerable<IObservable<bool>> sources)
+        {
+            return sources.CombineLatest().Select(xs =>
+            {
+                foreach (var item in xs)
+                {
+                    if (item == true) return false;
+                }
+                return true;
+            });
         }
     }
 }
