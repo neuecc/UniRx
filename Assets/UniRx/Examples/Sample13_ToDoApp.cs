@@ -35,7 +35,7 @@ namespace UniRx.Examples
                   .Subscribe(x =>
                   {
                       ToDoInput.text = ""; // clear input field
-                      var item = Instantiate(SampleItemPrefab);
+                      var item = Instantiate(SampleItemPrefab) as GameObject;
                       (item.GetComponentInChildren(typeof(Text)) as Text).text = x;
                       toDos.Add(item);
                   });
