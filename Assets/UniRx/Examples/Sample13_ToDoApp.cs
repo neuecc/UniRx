@@ -36,7 +36,7 @@ namespace UniRx.Examples
                   {
                       ToDoInput.text = ""; // clear input field
                       var item = Instantiate(SampleItemPrefab);
-                      item.GetComponentInChildren<Text>().text = x;
+                      (item.GetComponentInChildren(typeof(Text)) as Text).text = x;
                       toDos.Add(item);
                   });
 
