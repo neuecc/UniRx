@@ -555,7 +555,7 @@ UniRx makes it possible to the MVP(MVRP) Pattern.
 
 ![](StoreDocument/MVP_Pattern.png)
 
-Why MVP? not MVVM? Unity doesn't have binding mechanism. But you need someone to update the View. Thus presenter know view component and updates view. Although there is no binding, Observable enables the notification subscription like binding. It calls reactive presenter. 
+Why MVP? not MVVM? Unity doesn't have binding mechanism and create a binding layer is too complex and loss the performance. But you need someone to update the View. Thus presenter know view component and updates view. Although there is no binding, Observable enables the notification subscription like binding. It calls reactive presenter. 
 
 ```csharp
 // Presenter for scene(canvas) root.
@@ -600,7 +600,7 @@ public class Enemy
 }
 ```
 
-View is Scene, Unity hierarchy. View to Presenter associates by Unity Engine on initialize. There are simple but very powerful. It is natural for Unity and achieve maximum performance and clear architecture.
+View is Scene, Unity hierarchy. View to Presenter associates by Unity Engine on initialize. XxxAsObservable is created a Signal simply, no overhead. SubscribeToText and SubscribeToInteractable(like Command) is simple binding like helper.  There are simple tools but very powerful. It is natural for Unity and achieve maximum performance and clear architecture.
 
 ObservableUIBehaviour
 ---
