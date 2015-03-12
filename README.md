@@ -627,12 +627,13 @@ Of course you can use with other MVVM(or MV*) framework. UniRx/ReactiveProperty 
 
 ObservableUIBehaviour
 ---
-In `UniRx.UI` namespace have some observable classes. `ObservbaleButton`, `ObservableImage`, `ObservableInputField`, `ObservableSelectable`, `ObservableSlider`, `ObservableText`, `ObservableToggle`, `ObservableUIBehaviour`, `ObservableEventTrigger` are conveting to callback to IObservable(note: other than this `UniRx` namespace has similar class  `ObservableStateMachineBehaviour`).
+In `UniRx.UI` namespace have some observable classes. `ObservbaleButton`, `ObservableImage`, `ObservableInputField`, `ObservableSelectable`, `ObservableSlider`, `ObservableText`, `ObservableToggle`, `ObservableUIBehaviour`, `ObservableEventTrigger`, `ObservableEventTriggerSlim` are conveting to callback to IObservable(note: other than this `UniRx` namespace has similar class  `ObservableStateMachineBehaviour`).
 
-Especially `ObservableEventTrigger` is very useful for adhoc attach and observe UI events.
+Especially `ObservableEventTrigger`, `ObservableEventTriggerSlim` is very useful for adhoc attach and observe UI events.
 
 ```csharp
-var eventTrigger = this.gameObject.AddComponent<ObservableEventTrigger>();
+// ObservableEventTriggerSlim is lightweight version of ObservableEventTrigger for only set from script.
+var eventTrigger = this.gameObject.AddComponent<ObservableEventTriggerSlim>();
 eventTrigger.OnBeginDragAsObservable()
     .SelectMany(_ => eventTrigger.OnDragAsObservable(), (start, current) => UniRx.Tuple.Create(start, current))
     .TakeUntil(eventTrigger.OnEndDragAsObservable())
