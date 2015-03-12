@@ -19,7 +19,7 @@ namespace UniRx
         Subject<T> publisher = null;
 
         [NonSerialized]
-        readonly IDisposable sourceConnection;
+        IDisposable sourceConnection;
 
         public T Value
         {
@@ -94,6 +94,12 @@ namespace UniRx
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
+            if (isDisposed)
+            {
+                observer.OnCompleted();
+                return Disposable.Empty;
+            }
+
             if (publisher == null)
             {
                 publisher = new Subject<T>();
@@ -112,10 +118,20 @@ namespace UniRx
                 if (sourceConnection != null)
                 {
                     sourceConnection.Dispose();
+                    sourceConnection = null;
                 }
                 if (publisher != null)
                 {
-                    publisher.Dispose();
+                    // when dispose, notify OnCompleted
+                    try
+                    {
+                        publisher.OnCompleted();
+                    }
+                    finally
+                    {
+                        publisher.Dispose();
+                        publisher = null;
+                    }
                 }
             }
         }
