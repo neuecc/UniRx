@@ -29,11 +29,28 @@ namespace UniRx
             }
             set
             {
-                this.value = value;
-                if (isDisposed) return;
-                if (publisher != null)
+                if (value == null)
                 {
-                    publisher.OnNext(value);
+                    if (this.value != null)
+                    {
+                        this.value = value;
+
+                        if (isDisposed) return; // don't notify but set value 
+                        if (publisher != null)
+                        {
+                            publisher.OnNext(value);
+                        }
+                    }
+                }
+                else if (!this.value.Equals(value)) // don't use EqualityComparer<T>.Default
+                {
+                    this.value = value;
+
+                    if (isDisposed) return;
+                    if (publisher != null)
+                    {
+                        publisher.OnNext(value);
+                    }
                 }
             }
         }
@@ -62,6 +79,17 @@ namespace UniRx
             publisher = new Subject<T>();
             sourceConnection = source.Subscribe(publisher);
             value = initialValue;
+        }
+
+        public void SetValueAndForceNotify(T value)
+        {
+            this.value = value;
+            if (isDisposed) return;
+
+            if (publisher != null)
+            {
+                publisher.OnNext(value);
+            }
         }
 
         public IDisposable Subscribe(IObserver<T> observer)

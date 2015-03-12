@@ -21,8 +21,8 @@ namespace UniRx
         public override void OnGUI(Rect position, UnityEditor.SerializedProperty property, GUIContent label)
         {
             var attr = this.attribute as InspectorDisplayAttribute;
-            var latestValue = property.FindPropertyRelative(attr.FieldName);
-            UnityEditor.EditorGUI.PropertyField(position, latestValue, label);
+            var fieldValue = property.FindPropertyRelative(attr.FieldName);
+            UnityEditor.EditorGUI.PropertyField(position, fieldValue, label);
         }
     }
 
