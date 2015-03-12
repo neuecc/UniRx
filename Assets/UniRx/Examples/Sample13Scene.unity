@@ -243,7 +243,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 300470760}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73208fa32ef3cd4428b2b03d1d797401, type: 3}
+  m_Script: {fileID: 11500000, guid: 89a489c663a87e348ac12644ee59f898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Title: {fileID: 852345258}
@@ -251,7 +251,7 @@ MonoBehaviour:
   AddButton: {fileID: 611575448}
   ClearButton: {fileID: 2136645853}
   TodoList: {fileID: 80191139}
-  SampleItemPrefab: {fileID: 182208, guid: 256b4c86bb0b62549bdf4ac3faad54c6, type: 2}
+  SampleItemPrefab: {fileID: 182208, guid: d7059502be0050c4a9cd9ef0e82a720b, type: 2}
 --- !u!1 &448872075
 GameObject:
   m_ObjectHideFlags: 0

@@ -136,7 +136,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 33721919}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baca9fdb9c6a42241bf685dedda344f1, type: 3}
+  m_Script: {fileID: 11500000, guid: 577cad547552f9f4e9e993261db7ab44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MyButton: {fileID: 921642175}
@@ -145,7 +145,7 @@ MonoBehaviour:
   MyText: {fileID: 579875961}
   MySlider: {fileID: 1891604358}
   IntRxProp:
-    value: 196
+    value: 0
 --- !u!114 &33721922
 MonoBehaviour:
   m_ObjectHideFlags: 0
