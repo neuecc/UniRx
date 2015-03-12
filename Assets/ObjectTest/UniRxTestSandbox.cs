@@ -217,11 +217,11 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("ReactiveProperty"))
             {
                 var enemy = new Enemy(1000);
-                enemy.CurrentHp.Subscribe(x => Debug.Log(x)).AddTo(disposables);
+                enemy.CurrentHp.Subscribe(x => logtext.AppendLine(x.ToString())).AddTo(disposables);
                 enemy.CurrentHp.Value -= 900;
 
                 var person = new Person("hoge", "huga");
-                person.FullName.Subscribe(x => Debug.Log(x)).AddTo(disposables);
+                person.FullName.Subscribe(x => logtext.AppendLine(x)).AddTo(disposables);
 
                 person.GivenName.Value = "aiueo";
                 person.FamilyName.Value = "kakikukeko";
