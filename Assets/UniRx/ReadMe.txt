@@ -555,9 +555,73 @@ Generic ReactiveProeprty is not inspecatble but UniRx provides specialized React
 public IntReactiveProperty IntRxProp = new IntReactiveProperty(); 
 ```
 
+Model-View-(Reactive)Presenter Pattern
+---
+UniRx makes it possible to the MVP(MVRP) Pattern.
+
+![](StoreDocument/MVP_Pattern.png)
+
+Why MVP? not MVVM? Unity doesn't have binding mechanism. But you need someone to update the View. Thus presenter know view component and updates view. Although there is no binding, Observable enables the notification subscription like binding. It calls reactive presenter. 
+
+```csharp
+// Presenter for scene(canvas) root.
+public class ReactivePresenter : MonoBehaviour
+{
+    // Presenter knows View(binded from inspector)
+    public Button MyButton;
+    public Toggle MyToggle;
+    
+    // State-Change-Events from Model by ReactiveProperty
+    Enemy enemy = new Enemy(1000);
+
+    void Start()
+    {
+        // user events from View by Rx and notify to Model in reactive 
+        MyButton.OnClickAsObservable().Subscribe(_ => enemy.CurrentHp.Value -= 99);
+        MyToggle.OnValueChangedAsObservable().SubscribeToInteractable(MyButton);
+
+        // notify from Model to Presenter by Rx and update View
+        enemy.CurrentHp.SubscribeToText(MyText);
+        enemy.IsDead.Where(isDead => isDead == true)
+            .Subscribe(_ =>
+            {
+                MyToggle.interactable = MyButton.interactable = false;
+            });
+    }
+}
+
+// Model, all property notify value changed 
+public class Enemy
+{
+    public ReactiveProperty<long> CurrentHp { get; private set; }
+
+    public ReactiveProperty<bool> IsDead { get; private set; }
+
+    public Enemy(int initialHp)
+    {
+        // Declarative Property
+        CurrentHp = new ReactiveProperty<long>(initialHp);
+        IsDead = CurrentHp.Select(x => x <= 0).ToReactiveProperty();
+    }
+}
+```
+
+View is Scene, Unity hierarchy. View to Presenter associates by Unity Engine on initialize. There are simple but very powerful. It is natural for Unity and achieve maximum performance and clear architecture.
+
 ObservableUIBehaviour
 ---
 In `UniRx.UI` namespace have some observable classes. `ObservbaleButton`, `ObservableImage`, `ObservableInputField`, `ObservableSelectable`, `ObservableSlider`, `ObservableText`, `ObservableToggle`, `ObservableUIBehaviour`, `ObservableEventTrigger` are conveting to callback to IObservable(note: other than this `UniRx` namespace has similar class  `ObservableStateMachineBehaviour`).
+
+Especially `ObservableEventTrigger` is very useful for adhoc attach and observe UI events.
+
+```csharp
+var eventTrigger = this.gameObject.AddComponent<ObservableEventTrigger>();
+eventTrigger.OnBeginDragAsObservable()
+    .SelectMany(_ => eventTrigger.OnDragAsObservable(), (start, current) => UniRx.Tuple.Create(start, current))
+    .TakeUntil(eventTrigger.OnEndDragAsObservable())
+    .Repeat()
+    .Subscribe(x => Debug.Log(x));
+```
 
 And If you using `UniRx.UI`, all class instance can call `ObserveEveryValueChanged` method it watch chaning value in every frame.
 
