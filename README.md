@@ -551,6 +551,25 @@ Generic ReactiveProeprty is not inspecatble but UniRx provides specialized React
 public IntReactiveProperty IntRxProp = new IntReactiveProperty(); 
 ```
 
+If value is only defined from stream, it is readonly. You can use `ReadOnlyReactiveProperty`.
+
+```csharp
+public class Person
+{
+    public ReactiveProperty<string> GivenName { get; private set; }
+    public ReactiveProperty<string> FamilyName { get; private set; }
+    public ReadOnlyReactiveProperty<string> FullName { get; private set; }
+
+    public Person(string givenName, string familyName)
+    {
+        GivenName = new ReactiveProperty<string>(givenName);
+        FamilyName = new ReactiveProperty<string>(familyName);
+        // If change the givenName or familyName, notify with fullName!
+        FullName = GivenName.CombineLatest(FamilyName, (x, y) => x + " " + y).ToReadOnlyReactiveProperty();
+    }
+}
+```
+
 Model-View-(Reactive)Presenter Pattern
 ---
 UniRx makes it possible to the MVP(MVRP) Pattern.
@@ -602,7 +621,9 @@ public class Enemy
 }
 ```
 
-View is Scene, Unity hierarchy. View to Presenter associates by Unity Engine on initialize. XxxAsObservable is created a Signal simply, no overhead. SubscribeToText and SubscribeToInteractable(like Command) is simple binding like helper.  There are simple tools but very powerful. It is natural for Unity and achieve maximum performance and clear architecture.
+View is Scene, Unity hierarchy. View to Presenter associates by Unity Engine on initialize. XxxAsObservable is created a Signal simply, no overhead. SubscribeToText and SubscribeToInteractable(like Command) is simple binding like helper.  There are simple tools but very powerful. It is natural for Unity and achieve maximum performance and clean architecture.
+
+Of course you can use with other MVVM(or MV*) framework. UniRx/ReactiveProperty is only simple toolkit. 
 
 ObservableUIBehaviour
 ---

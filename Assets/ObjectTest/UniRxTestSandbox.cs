@@ -214,6 +214,19 @@ namespace UniRx.ObjectTest
                     .AddTo(disposables);
             }
 
+            if (GUILayout.Button("ReactiveProperty"))
+            {
+                var enemy = new Enemy(1000);
+                enemy.CurrentHp.Subscribe(x => Debug.Log(x)).AddTo(disposables);
+                enemy.CurrentHp.Value -= 900;
+
+                var person = new Person("hoge", "huga");
+                person.FullName.Subscribe(x => Debug.Log(x)).AddTo(disposables);
+
+                person.GivenName.Value = "aiueo";
+                person.FamilyName.Value = "kakikukeko";
+            }
+
 
 
             //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Clear"))
@@ -544,6 +557,36 @@ namespace UniRx.ObjectTest
             }
         }
          * */
+    }
+
+
+
+    public class Enemy
+    {
+        public ReactiveProperty<long> CurrentHp { get; private set; }
+
+        public ReactiveProperty<bool> IsDead { get; private set; }
+
+        public Enemy(int initialHp)
+        {
+            CurrentHp = new ReactiveProperty<long>(initialHp);
+            IsDead = CurrentHp.Select(x => x <= 0).ToReactiveProperty();
+        }
+    }
+
+    public class Person
+    {
+        public ReactiveProperty<string> GivenName { get; private set; }
+        public ReactiveProperty<string> FamilyName { get; private set; }
+        public ReadOnlyReactiveProperty<string> FullName { get; private set; }
+
+        public Person(string givenName, string familyName)
+        {
+            GivenName = new ReactiveProperty<string>(givenName);
+            FamilyName = new ReactiveProperty<string>(familyName);
+            // If change the givenName or familyName, notify with fullName!
+            FullName = GivenName.CombineLatest(FamilyName, (x, y) => x + " " + y).ToReadOnlyReactiveProperty();
+        }
     }
 }
 

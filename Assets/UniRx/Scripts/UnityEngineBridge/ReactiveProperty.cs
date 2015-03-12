@@ -3,11 +3,21 @@ using UnityEngine;
 
 namespace UniRx
 {
+    public interface IReadOnlyReactiveProperty<T> : IObservable<T>, IDisposable
+    {
+        T Value { get; }
+    }
+
+    public interface IReactiveProperty<T> : IReadOnlyReactiveProperty<T>
+    {
+        new T Value { get; set; }
+    }
+
     /// <summary>
     /// Lightweight property broker.
     /// </summary>
     [Serializable]
-    public class ReactiveProperty<T> : IObservable<T>, IDisposable
+    public class ReactiveProperty<T> : IReactiveProperty<T>
     {
         [NonSerialized]
         bool isDisposed = false;
@@ -19,7 +29,7 @@ namespace UniRx
         Subject<T> publisher = null;
 
         [NonSerialized]
-        IDisposable sourceConnection;
+        IDisposable sourceConnection = null;
 
         public T Value
         {
@@ -138,6 +148,89 @@ namespace UniRx
     }
 
     /// <summary>
+    /// Lightweight property broker.
+    /// </summary>
+    public class ReadOnlyReactiveProperty<T> : IReadOnlyReactiveProperty<T>
+    {
+        bool isDisposed = false;
+
+        T value = default(T);
+
+        Subject<T> publisher = null;
+
+        IDisposable sourceConnection = null;
+
+        public T Value
+        {
+            get
+            {
+                return value;
+            }
+        }
+
+        public ReadOnlyReactiveProperty(IObservable<T> source)
+        {
+            publisher = new Subject<T>();
+            sourceConnection = source.Subscribe(x =>
+            {
+                value = x;
+                publisher.OnNext(x);
+            }, publisher.OnError, publisher.OnCompleted);
+        }
+
+        public ReadOnlyReactiveProperty(IObservable<T> source, T initialValue)
+        {
+            publisher = new Subject<T>();
+            sourceConnection = source.Subscribe(publisher);
+            value = initialValue;
+        }
+
+        public IDisposable Subscribe(IObserver<T> observer)
+        {
+            if (isDisposed)
+            {
+                observer.OnCompleted();
+                return Disposable.Empty;
+            }
+
+            if (publisher == null)
+            {
+                publisher = new Subject<T>();
+            }
+
+            var subscription = publisher.Subscribe(observer);
+            observer.OnNext(value); // raise latest value on subscribe
+            return subscription;
+        }
+
+        public void Dispose()
+        {
+            if (!isDisposed)
+            {
+                isDisposed = true;
+                if (sourceConnection != null)
+                {
+                    sourceConnection.Dispose();
+                    sourceConnection = null;
+                }
+                if (publisher != null)
+                {
+                    // when dispose, notify OnCompleted
+                    try
+                    {
+                        publisher.OnCompleted();
+                    }
+                    finally
+                    {
+                        publisher.Dispose();
+                        publisher = null;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// Extension methods of ReactiveProperty&lt;T&gt;
     /// </summary>
     public static class ReactivePropertyExtensions
@@ -150,6 +243,16 @@ namespace UniRx
         public static ReactiveProperty<T> ToReactiveProperty<T>(this IObservable<T> source, T initialValue)
         {
             return new ReactiveProperty<T>(source, initialValue);
+        }
+
+        public static ReadOnlyReactiveProperty<T> ToReadOnlyReactiveProperty<T>(this IObservable<T> source)
+        {
+            return new ReadOnlyReactiveProperty<T>(source);
+        }
+
+        public static ReadOnlyReactiveProperty<T> ToReadOnlyReactiveProperty<T>(this IObservable<T> source, T initialValue)
+        {
+            return new ReadOnlyReactiveProperty<T>(source, initialValue);
         }
     }
 }
