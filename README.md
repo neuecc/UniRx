@@ -544,6 +544,8 @@ Generic ReactiveProeprty is not inspecatble but UniRx provides specialized React
 
 `InspectorDisplayAttribute` helps readability in inspector. 
 
+![](StoreDocument/RxPropInspector.png)
+
 ```csharp
 [InspectorDisplay]
 public IntReactiveProperty IntRxProp = new IntReactiveProperty(); 
