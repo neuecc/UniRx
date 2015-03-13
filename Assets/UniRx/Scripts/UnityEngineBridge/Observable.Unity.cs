@@ -301,8 +301,8 @@ namespace UniRx
             if (!cancellation.IsCancellationRequested)
             {
                 observer.OnNext(Unit.Default);
+                observer.OnCompleted();
             }
-			observer.OnCompleted();
         }
 
         public static IObservable<long> IntervalFrame(int intervalFrameCount, FrameCountType frameCountType = FrameCountType.Update)
@@ -333,6 +333,7 @@ namespace UniRx
                 if (currentFrame++ == dueTimeFrameCount)
                 {
                     observer.OnNext(0);
+                    observer.OnCompleted();
                     break;
                 }
                 yield return frameCountType.GetYieldInstruction();
