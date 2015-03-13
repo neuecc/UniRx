@@ -52,7 +52,7 @@ namespace UniRx
         {
             this.Index = index;
             this.OldValue = oldValue;
-            this.NewValue = NewValue;
+            this.NewValue = newValue;
         }
     }
 
