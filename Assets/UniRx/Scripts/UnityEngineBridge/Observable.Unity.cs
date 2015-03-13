@@ -302,6 +302,7 @@ namespace UniRx
             {
                 observer.OnNext(Unit.Default);
             }
+			observer.OnCompleted();
         }
 
         public static IObservable<long> IntervalFrame(int intervalFrameCount, FrameCountType frameCountType = FrameCountType.Update)
