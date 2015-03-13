@@ -714,6 +714,12 @@ At first, see and please write GitHub issues.
 Source code is available in `Assets/UniRx/Scripts`.  
 This project is using Visual Studio with [UnityVS](http://unityvs.com/).
 
+Author's other Unity + LINQ Assets
+---
+[LINQ to GameObject](https://github.com/neuecc/LINQ-to-GameObject-for-Unity/) is GameObject extensions for Unity that allows traverse hierarchy and append GameObject like LINQ to XML. It's free and opensource on GitHub.
+
+![](https://raw.githubusercontent.com/neuecc/LINQ-to-GameObject-for-Unity/master/Images/axis.jpg)
+
 Author Info
 ---
 Yoshifumi Kawai(a.k.a. neuecc) is software developer in Japan.
