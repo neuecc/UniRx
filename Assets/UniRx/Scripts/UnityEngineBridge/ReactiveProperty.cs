@@ -53,14 +53,17 @@ namespace UniRx
                         }
                     }
                 }
-                else if (!this.value.Equals(value)) // don't use EqualityComparer<T>.Default
+                else
                 {
-                    this.value = value;
-
-                    if (isDisposed) return;
-                    if (publisher != null)
+                    if (this.value == null || !this.value.Equals(value)) // don't use EqualityComparer<T>.Default
                     {
-                        publisher.OnNext(value);
+                        this.value = value;
+
+                        if (isDisposed) return;
+                        if (publisher != null)
+                        {
+                            publisher.OnNext(value);
+                        }
                     }
                 }
             }

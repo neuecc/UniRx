@@ -227,6 +227,16 @@ namespace UniRx.ObjectTest
                 person.FamilyName.Value = "kakikukeko";
             }
 
+            if (GUILayout.Button("RxProp2"))
+            {
+                var p = new ReactiveProperty<Enemy>();
+                p.Skip(1).Subscribe(x => Debug.Log("set" + x.CurrentHp.Value));
+
+                p.Value = new Enemy(1000);
+                p.Value = new Enemy(43000);
+                p.Value = new Enemy(43000);
+            }
+
 
 
             //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Clear"))
