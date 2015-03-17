@@ -625,15 +625,12 @@ View is Scene, Unity hierarchy. View to Presenter associates by Unity Engine on 
 
 Of course you can use with other MVVM(or MV*) framework. UniRx/ReactiveProperty is only simple toolkit. 
 
-ObservableUIBehaviour
+ObservableEventTrigger
 ---
-In `UniRx.UI` namespace have some observable classes. `ObservbaleButton`, `ObservableImage`, `ObservableInputField`, `ObservableSelectable`, `ObservableSlider`, `ObservableText`, `ObservableToggle`, `ObservableUIBehaviour`, `ObservableEventTrigger`, `ObservableEventTriggerSlim` are conveting to callback to IObservable(note: other than this `UniRx` namespace has similar class  `ObservableStateMachineBehaviour`).
-
-Especially `ObservableEventTrigger`, `ObservableEventTriggerSlim` is very useful for adhoc attach and observe UI events.
+In `UniRx.UI` namespace have `ObservableEventTrigger`(note: other than this `UniRx` namespace has similar class  `ObservableStateMachineBehaviour`). ObservableEventTrigger is very useful for adhoc attach and observe UI events.
 
 ```csharp
-// ObservableEventTriggerSlim is lightweight version of ObservableEventTrigger for only set from script.
-var eventTrigger = this.gameObject.AddComponent<ObservableEventTriggerSlim>();
+var eventTrigger = this.gameObject.AddComponent<ObservableEventTrigger>();
 eventTrigger.OnBeginDragAsObservable()
     .SelectMany(_ => eventTrigger.OnDragAsObservable(), (start, current) => UniRx.Tuple.Create(start, current))
     .TakeUntil(eventTrigger.OnEndDragAsObservable())
