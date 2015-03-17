@@ -102,7 +102,7 @@ namespace UniRx
 
         protected virtual void MoveItem(int oldIndex, int newIndex)
         {
-            T item = Items[oldIndex];
+            T item = this[oldIndex];
             base.RemoveItem(oldIndex);
             base.InsertItem(newIndex, item);
 
@@ -111,7 +111,7 @@ namespace UniRx
 
         protected override void RemoveItem(int index)
         {
-            T item = Items[index];
+            T item = this[index];
             base.RemoveItem(index);
 
             if (collectionRemove != null) collectionRemove.OnNext(new CollectionRemoveEvent<T>(index, item));
@@ -120,7 +120,7 @@ namespace UniRx
 
         protected override void SetItem(int index, T item)
         {
-            T oldItem = Items[index];
+            T oldItem = this[index];
             base.SetItem(index, item);
 
             if (collectionReplace != null) collectionReplace.OnNext(new CollectionReplaceEvent<T>(index, oldItem, item));
