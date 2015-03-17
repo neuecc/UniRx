@@ -14,8 +14,8 @@ namespace UniRx.UI
     /// <summary>
     /// Lightweight ObservableEventTrigger implemented events directly.
     /// </summary>
-    [AddComponentMenu("Event/Observable Event Trigger Slim")]
-    public class ObservableEventTriggerSlim : MonoBehaviour, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler, IInitializePotentialDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IScrollHandler, IUpdateSelectedHandler, ISelectHandler, IDeselectHandler, IMoveHandler, ISubmitHandler, ICancelHandler
+    [AddComponentMenu("Event/Observable Event Trigger")]
+    public class ObservableEventTrigger : MonoBehaviour, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler, IInitializePotentialDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IScrollHandler, IUpdateSelectedHandler, ISelectHandler, IDeselectHandler, IMoveHandler, ISubmitHandler, ICancelHandler
     {
 #region IDSelect
 

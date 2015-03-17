@@ -151,7 +151,7 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\TypedMonoBehaviour.cs" />
-    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableEventTriggerSlim.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableEventTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObserveExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UnityEventExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UnityGraphicExtensions.cs" />
