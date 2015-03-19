@@ -24,13 +24,12 @@ namespace UniRx
             var fieldValue = property.FindPropertyRelative(attr.FieldName);
             if (fieldValue == null)
             {
-                Debug.LogWarning(string.Format("InspectorDisplay can't find target fieldName. PropertyName:{0} FieldName:{1}",
-                    property.name,
-                    attr.FieldName));
-                base.OnGUI(position, property, label);
-                return;
+                UnityEditor.EditorGUI.LabelField(position, label, new GUIContent() { text = "InspectorDisplay can't find target:" + attr.FieldName });
             }
-            UnityEditor.EditorGUI.PropertyField(position, fieldValue, label);
+            else
+            {
+                UnityEditor.EditorGUI.PropertyField(position, fieldValue, label);
+            }
         }
     }
 

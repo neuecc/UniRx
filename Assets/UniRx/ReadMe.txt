@@ -322,20 +322,20 @@ public class Test : ObservableMonoBehaviour
 > for example
 
 ```
-public class ObservableDestoryMonoBehaviour : MonoBehaviour
+public class ObservableCollectionEnter2DMonoBehaviour : MonoBehaviour
 {
-    Subject<Unit> onDestroy;
+    Subject<Collision2D> onCollisionEnter2D;
 
-    /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
-    public virtual void OnDestroy()
+    /// <summary>Sent when an incoming collider makes contact with this object's collider (2D physics only).</summary>
+    public virtual void OnCollisionEnter2D(Collision2D coll)
     {
-        if (onDestroy != null) onDestroy.OnNext(Unit.Default);
+        if (onCollisionEnter2D != null) onCollisionEnter2D.OnNext(coll);
     }
 
-    /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
-    public IObservable<Unit> OnDestroyAsObservable()
+    /// <summary>Sent when an incoming collider makes contact with this object's collider (2D physics only).</summary>
+    public IObservable<Unit> OnCollisionEnter2DAsObservable()
     {
-        return onDestroy ?? (onDestroy = new Subject<Unit>());
+        return onCollisionEnter2D ?? (onCollisionEnter2D = new Subject<Collision2D>());
     }
 }
 ```
@@ -624,7 +624,9 @@ public class Enemy
 
 View is Scene, Unity hierarchy. View to Presenter associates by Unity Engine on initialize. XxxAsObservable is created a Signal simply, no overhead. SubscribeToText and SubscribeToInteractable(like Command) is simple binding like helper.  There are simple tools but very powerful. It is natural for Unity and achieve maximum performance and clean architecture.
 
-Of course you can use with other MVVM(or MV*) framework. UniRx/ReactiveProperty is only simple toolkit.
+![](StoreDocument/MVRP_loop.png)
+
+V -> RP -> M -> RP -> V completely connected in reactive. UniRx provides all adaptor method/classes. Of course you can use with other MVVM(or MV*) framework. UniRx/ReactiveProperty is only simple toolkit.
 
 ObservableEventTrigger
 ---
