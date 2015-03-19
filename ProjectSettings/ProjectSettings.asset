@@ -130,6 +130,7 @@ PlayerSettings:
   - width: 320
     height: 180
     banner: {fileID: 0}
+  androidGamepadSupportLevel: 0
   resolutionDialogBanner: {fileID: 0}
   m_BuildTargetIcons:
   - m_BuildTarget: 

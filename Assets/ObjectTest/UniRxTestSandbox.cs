@@ -24,7 +24,7 @@ namespace UniRx.ObjectTest
     // test sandbox
     public class UniRxTestSandbox : MonoBehaviour
     {
-        //readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
+        readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
 
         StringBuilder logtext = new StringBuilder();
 
@@ -35,7 +35,7 @@ namespace UniRx.ObjectTest
         {
             Debug.Log("Awake");
 
-            //ObservableLogger.Listener.LogToUnityDebug();
+            ObservableLogger.Listener.LogToUnityDebug();
 
             //MainThreadDispatcher.Initialize();
             threadstaticobj = new object();
@@ -235,6 +235,14 @@ namespace UniRx.ObjectTest
                 p.Value = new Enemy(1000);
                 p.Value = new Enemy(43000);
                 p.Value = new Enemy(43000);
+            }
+
+            if (GUILayout.Button("Log"))
+            {
+                logger.DebugFormat("debug{0}format{1}", "-", "!");
+                logger.ErrorFormat("error{0}format{1}", "-", "!");
+                logger.WarningFormat("warning{0}format{1}", "-", "!");
+                logger.LogFormat("log{0}format{1}", "-", "!");
             }
 
 
