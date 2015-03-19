@@ -245,6 +245,14 @@ namespace UniRx.ObjectTest
                 logger.LogFormat("log{0}format{1}", "-", "!");
             }
 
+            if (GUILayout.Button("Cancel"))
+            {
+                var dispose = Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(3), () =>
+                {
+                    Debug.Log("MainThreadSchedule");
+                });
+                dispose.Dispose();
+            }
 
 
             //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Clear"))

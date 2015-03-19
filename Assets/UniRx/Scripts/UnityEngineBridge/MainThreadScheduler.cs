@@ -65,15 +65,19 @@ namespace UniRx
                     yield break;
                 }
 #endif
-
+                
                 if (dueTime == TimeSpan.Zero)
                 {
                     yield return null; // not immediately, run next frame
+                    if (cancellation.IsDisposed) yield break;
+
                     MainThreadDispatcher.UnsafeSend(action);
                 }
                 else if (dueTime.TotalMilliseconds % 1000 == 0)
                 {
                     yield return new WaitForSeconds((float)dueTime.TotalSeconds);
+                    if (cancellation.IsDisposed) yield break;
+
                     MainThreadDispatcher.UnsafeSend(action);
                 }
                 else
@@ -167,6 +171,8 @@ namespace UniRx
                 if (dueTime == TimeSpan.Zero)
                 {
                     yield return null;
+                    if (cancellation.IsDisposed) yield break;
+
                     MainThreadDispatcher.UnsafeSend(action);
                 }
                 else

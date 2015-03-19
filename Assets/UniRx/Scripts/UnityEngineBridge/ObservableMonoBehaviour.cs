@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace UniRx
 {
+    // Note: TypedMonoBehaviour and ObservableMonoBehaviour cause some performance down.
+    // I don't recommend instantiate many Typed/ObservableMonoBehaviour.
+    // If you want to observe MonoBehaviour's event, copy from ObservableMonoBehaviour and paste to your simple MonoBehaviour.
+
     public class ObservableMonoBehaviour : TypedMonoBehaviour
     {
         bool calledAwake = false;

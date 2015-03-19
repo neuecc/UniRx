@@ -2,6 +2,10 @@
 
 namespace UniRx
 {
+    // Note: TypedMonoBehaviour and ObservableMonoBehaviour cause some performance down.
+    // I don't recommend instantiate many Typed/ObservableMonoBehaviour.
+    // If you want to observe MonoBehaviour's event, copy from ObservableMonoBehaviour and paste to your simple MonoBehaviour.
+
     /// <summary>
     /// If you want to use coroutine, implements like "new public IEnumerator OnMouseDown() { }".
     /// </summary>
