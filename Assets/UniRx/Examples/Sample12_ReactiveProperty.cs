@@ -35,7 +35,7 @@ namespace UniRx.Examples
 
             // input shows delay after 1 second
             MyInput.OnValueChangeAsObservable()
-                .Skip(1) // ignore initial text(blank)
+                .Where(x => x != null)
                 .Delay(TimeSpan.FromSeconds(1))
                 .SubscribeToText(MyText); // SubscribeToText is UniRx.UI Extension Method
 
