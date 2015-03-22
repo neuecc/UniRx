@@ -234,7 +234,7 @@ namespace UniRx
                 // call from other thread
                 if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
 #endif
-
+                
                 Instance.queueWorker.Enqueue(() => Instance.StartCoroutine_Auto(routine));
             }
         }

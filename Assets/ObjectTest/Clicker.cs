@@ -32,5 +32,15 @@ namespace UniRx.ObjectTest
 
 #endif
 
+        public int VVV;
+
+        public void Update()
+        {
+            var t = (int)Time.time;
+            if (t % 5 == 0)
+            {
+                VVV = t;
+            }
+        }
     }
 }

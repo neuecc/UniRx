@@ -8,23 +8,50 @@ namespace UniRx.UI
         public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Func<TSource, TProperty> propertySelector)
             where TSource : class
         {
-            // same as : Observable.EveryUpdate().Select(_ => propertySelector(source)).DistinctUntilChanged();
-            var currentValue = propertySelector(source);
-            var everyValueChanged = Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishValueChanged(source, propertySelector, currentValue, observer, cancellationToken));
+            if (source == null) return Observable.Empty<TProperty>();
 
-            // publish currentValue before run valuechanged
-            return everyValueChanged.StartWith(currentValue);
+            var unityObject = source as UnityEngine.Object;
+            var isUnityObject = unityObject != null;
+            if (isUnityObject && unityObject == null) return Observable.Empty<TProperty>();
+
+            var everyValueChanged = Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishValueChanged(source, unityObject, isUnityObject, propertySelector, observer, cancellationToken));
+            return everyValueChanged;
         }
 
-        static IEnumerator PublishValueChanged<TSource, TProperty>(TSource source, Func<TSource, TProperty> propertySelector, TProperty firstValue, IObserver<TProperty> observer, CancellationToken cancellationToken)
+        static IEnumerator PublishValueChanged<TSource, TProperty>(TSource source, UnityEngine.Object unityObject, bool isUnityObject, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
-            TProperty prevValue = firstValue;
-            TProperty currentValue = default(TProperty);
+            var isFirst = true;
+            var currentValue = default(TProperty);
+            var prevValue = default(TProperty);
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
-                    currentValue = propertySelector(source);
+                    if (!isUnityObject)
+                    {
+                        if (source != null)
+                        {
+                            currentValue = propertySelector(source);
+                        }
+                        else
+                        {
+                            observer.OnCompleted();
+                            yield break;
+                        }
+                    }
+                    else
+                    {
+                        if (unityObject != null)
+                        {
+                            currentValue = propertySelector(source);
+                        }
+                        else
+                        {
+                            observer.OnCompleted();
+                            yield break;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -32,8 +59,9 @@ namespace UniRx.UI
                     yield break;
                 }
 
-                if (!object.Equals(currentValue, prevValue))
+                if (isFirst || !object.Equals(currentValue, prevValue))
                 {
+                    isFirst = false;
                     observer.OnNext(currentValue);
                     prevValue = currentValue;
                 }

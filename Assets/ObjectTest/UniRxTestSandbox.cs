@@ -26,7 +26,12 @@ namespace UniRx.ObjectTest
     {
         readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
 
+        public int VVV;
+
         StringBuilder logtext = new StringBuilder();
+
+        GameObject cube;
+        Clicker clicker;
 
         //[ThreadStatic]
         static object threadstaticobj;
@@ -36,6 +41,9 @@ namespace UniRx.ObjectTest
             Debug.Log("Awake");
 
             ObservableLogger.Listener.LogToUnityDebug();
+
+            cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            clicker = cube.AddComponent<Clicker>();
 
             //MainThreadDispatcher.Initialize();
             threadstaticobj = new object();
@@ -63,13 +71,19 @@ namespace UniRx.ObjectTest
                 .Where(xs => xs.Count >= 2)
                 .Subscribe(xs => Debug.Log("DoubleClick Detected! Count:" + xs.Count));
              */
+
+            MainThreadDispatcher.Initialize();
         }
 
         public void Update()
         {
-            // logtext.AppendLine(Time.frameCount.ToString());
+          
         }
 
+        public void OnDestroy()
+        {
+            Debug.Log("Destroy");
+        }
 
 
         IDisposable yieldCancel = null;
@@ -252,6 +266,24 @@ namespace UniRx.ObjectTest
                     Debug.Log("MainThreadSchedule");
                 });
                 dispose.Dispose();
+            }
+
+            if (GUILayout.Button("ObserveEveryValueChanged"))
+            {
+                Debug.Log("before");
+                clicker.ObserveEveryValueChanged(x => x.transform.position.x)
+                    .Subscribe(x => Debug.Log(x), Debug.LogException, () => Debug.Log("comp"));
+                Debug.Log("after");
+            }
+
+            if (GUILayout.Button("DestroyCube"))
+            {
+                GameObject.Destroy(cube);
+            }
+
+            if (GUILayout.Button("NextScene"))
+            {
+                Application.LoadLevel("NextSandbox");
             }
 
 
