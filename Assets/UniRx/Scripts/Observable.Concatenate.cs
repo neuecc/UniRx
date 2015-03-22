@@ -784,6 +784,25 @@ namespace UniRx
             });
         }
 
+        public static IObservable<T> StartWith<T>(this IObservable<T> source, Func<T> valueFactory)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                T value;
+                try
+                {
+                    value = valueFactory();
+                }
+                catch (Exception ex)
+                {
+                    observer.OnError(ex);
+                    return Disposable.Empty;
+                }
+                observer.OnNext(value);
+                return source.Subscribe(observer);
+            });
+        }
+
         public static IObservable<T> StartWith<T>(this IObservable<T> source, params T[] values)
         {
             return StartWith(source, Scheduler.DefaultSchedulers.ConstantTimeOperations, values);
