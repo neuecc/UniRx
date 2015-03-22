@@ -77,7 +77,7 @@ namespace UniRx.ObjectTest
 
         public void Update()
         {
-          
+
         }
 
         public void OnDestroy()
@@ -93,6 +93,8 @@ namespace UniRx.ObjectTest
         CompositeDisposable disposables = new CompositeDisposable();
 
 
+        Tadanoiremono iremono = null;
+
         IEnumerator Hoge()
         {
             while (true)
@@ -103,6 +105,17 @@ namespace UniRx.ObjectTest
         }
 
         Subject<Unit> throttleSubject = new Subject<Unit>();
+        Func<bool> isNull = null;
+
+        public Func<bool> IsNull<T>(T source)
+        {
+            return () => source == null;
+        }
+
+        public bool IsNullNano<T>(T source)
+        {
+            return source == null;
+        }
 
         public void OnGUI()
         {
@@ -268,7 +281,7 @@ namespace UniRx.ObjectTest
                 dispose.Dispose();
             }
 
-            if (GUILayout.Button("ObserveEveryValueChanged"))
+            if (GUILayout.Button("Observe(UnityObject)"))
             {
                 Debug.Log("before");
                 clicker.transform.ObserveEveryValueChanged(x => x.position.x)
@@ -284,6 +297,35 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("NextScene"))
             {
                 Application.LoadLevel("NextSandbox");
+            }
+
+            if (GUILayout.Button("Create POCO"))
+            {
+                iremono = new Tadanoiremono();
+            }
+
+            if (GUILayout.Button("Observe POCO"))
+            {
+                iremono.ObserveEveryValueChanged(x => x.Hoge)
+                    .Subscribe(x => Debug.Log(x), Debug.LogException, () => Debug.Log("comp"))
+                    .AddTo(disposables);
+            }
+
+            if (GUILayout.Button("Add POCO"))
+            {
+                iremono.Hoge += 100;
+            }
+
+            if (GUILayout.Button("POCO Null"))
+            {
+                iremono = null;
+            }
+
+            if (GUILayout.Button("GC"))
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
             }
 
 
@@ -644,6 +686,16 @@ namespace UniRx.ObjectTest
             FamilyName = new ReactiveProperty<string>(familyName);
             // If change the givenName or familyName, notify with fullName!
             FullName = GivenName.CombineLatest(FamilyName, (x, y) => x + " " + y).ToReadOnlyReactiveProperty();
+        }
+    }
+
+    public class Tadanoiremono
+    {
+        public int Hoge { get; set; }
+
+        ~Tadanoiremono()
+        {
+            Debug.Log("Iremono Destructor!");
         }
     }
 }
