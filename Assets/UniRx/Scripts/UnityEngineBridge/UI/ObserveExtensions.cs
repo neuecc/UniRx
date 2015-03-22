@@ -5,6 +5,9 @@ namespace UniRx.UI
 {
     public static partial class ObserveExtensions
     {
+        /// <summary>
+        /// Publish target property when value is changed. If source is UnityEngine.Object and when source was destroyed, publish OnCompleted.
+        /// </summary>
         public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Func<TSource, TProperty> propertySelector)
             where TSource : class
         {

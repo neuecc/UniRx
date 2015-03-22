@@ -271,7 +271,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("ObserveEveryValueChanged"))
             {
                 Debug.Log("before");
-                clicker.ObserveEveryValueChanged(x => x.transform.position.x)
+                clicker.transform.ObserveEveryValueChanged(x => x.position.x)
                     .Subscribe(x => Debug.Log(x), Debug.LogException, () => Debug.Log("comp"));
                 Debug.Log("after");
             }
