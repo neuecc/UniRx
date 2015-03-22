@@ -26,40 +26,48 @@ namespace UniRx
             var isFirst = true;
             var currentValue = default(TProperty);
             var prevValue = default(TProperty);
-            
+
             while (!cancellationToken.IsCancellationRequested)
             {
-                try
+                if (!isUnityObject)
                 {
-                    if (!isUnityObject)
+                    if (source != null)
                     {
-                        if (source != null)
+                        try
                         {
                             currentValue = propertySelector(source);
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            observer.OnCompleted();
+                            observer.OnError(ex);
                             yield break;
                         }
                     }
                     else
                     {
-                        if (unityObject != null)
+                        observer.OnCompleted();
+                        yield break;
+                    }
+                }
+                else
+                {
+                    if (unityObject != null)
+                    {
+                        try
                         {
                             currentValue = propertySelector(source);
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            observer.OnCompleted();
+                            observer.OnError(ex);
                             yield break;
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    observer.OnError(ex);
-                    yield break;
+                    else
+                    {
+                        observer.OnCompleted();
+                        yield break;
+                    }
                 }
 
                 if (isFirst || !object.Equals(currentValue, prevValue))
