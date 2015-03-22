@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace UniRx.UI
+namespace UniRx
 {
     public static partial class ObserveExtensions
     {
@@ -26,7 +26,7 @@ namespace UniRx.UI
             var isFirst = true;
             var currentValue = default(TProperty);
             var prevValue = default(TProperty);
-
+            
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
