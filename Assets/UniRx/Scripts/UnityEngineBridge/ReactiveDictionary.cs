@@ -59,7 +59,10 @@ namespace UniRx
     }
 
     [Serializable]
-    public class ReactiveDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IEnumerable, ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IDictionary, ISerializable, IDeserializationCallback
+    public class ReactiveDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IEnumerable, ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IDictionary
+#if !UNITY_METRO
+        , ISerializable, IDeserializationCallback
+#endif
     {
         readonly Dictionary<TKey, TValue> inner;
 
@@ -323,6 +326,8 @@ namespace UniRx
             ((IDictionary)inner).CopyTo(array, index);
         }
 
+#if !UNITY_METRO
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             ((ISerializable)inner).GetObjectData(info, context);
@@ -332,6 +337,8 @@ namespace UniRx
         {
             ((IDeserializationCallback)inner).OnDeserialization(sender);
         }
+
+#endif
 
         void IDictionary.Remove(object key)
         {

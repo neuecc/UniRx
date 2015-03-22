@@ -13,3 +13,5 @@ EditorBuildSettings:
     path: Assets/Scenes/LoadLevelTestAdditive.unity
   - enabled: 1
     path: Assets/Scenes/LoadLevelTestNew.unity
+  - enabled: 1
+    path: Assets/Scenes/NextSandBox.unity
