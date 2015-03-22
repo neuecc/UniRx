@@ -14,6 +14,11 @@ namespace UniRx
             this.Index = index;
             this.Value = value;
         }
+
+        public override string ToString()
+        {
+            return string.Format("Index:{0} Value:{1}", Index, Value);
+        }
     }
 
     public class CollectionRemoveEvent<T>
@@ -25,6 +30,11 @@ namespace UniRx
         {
             this.Index = index;
             this.Value = value;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Index:{0} Value:{1}", Index, Value);
         }
     }
 
@@ -40,6 +50,11 @@ namespace UniRx
             this.NewIndex = newIndex;
             this.Value = value;
         }
+
+        public override string ToString()
+        {
+            return string.Format("OldIndex:{0} NewIndex:{1} Value:{2}", OldIndex,NewIndex, Value);
+        }
     }
 
     public class CollectionReplaceEvent<T>
@@ -53,6 +68,11 @@ namespace UniRx
             this.Index = index;
             this.OldValue = oldValue;
             this.NewValue = newValue;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Index:{0} OldValue:{1} NewValue:{2}", Index, OldValue, NewValue);
         }
     }
 
@@ -81,10 +101,14 @@ namespace UniRx
 
         protected override void ClearItems()
         {
+            var beforeCount = Count;
             base.ClearItems();
 
             if (collectionReset != null) collectionReset.OnNext(Unit.Default);
-            if (countChanged != null) countChanged.OnNext(Count);
+            if (beforeCount > 0)
+            {
+                if (countChanged != null) countChanged.OnNext(Count);
+            }
         }
 
         protected override void InsertItem(int index, T item)
@@ -170,7 +194,7 @@ namespace UniRx
         }
     }
 
-    public static class ReactiveCollectionExtensions
+    public static partial class ReactiveCollectionExtensions
     {
         public static ReactiveCollection<T> ToReactiveCollection<T>(this IEnumerable<T> source)
         {
