@@ -145,13 +145,13 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ObservableMonoBehaviour.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ObservableStateMachineBehaviour.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ObservableWWW.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ObserveExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ReactiveCollection.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ReactiveDictionary.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\TypedMonoBehaviour.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObservableEventTrigger.cs" />
-    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UI\ObserveExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UnityEventExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UnityGraphicExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UnityUIComponentExtensions.cs" />
