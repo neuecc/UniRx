@@ -149,6 +149,11 @@ namespace UniRx
                 }
             }
         }
+
+        public override string ToString()
+        {
+            return (value == null) ? "null" : value.ToString();
+        }
     }
 
     /// <summary>
@@ -231,6 +236,11 @@ namespace UniRx
                     }
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            return (value == null) ? "null" : value.ToString();
         }
     }
 
