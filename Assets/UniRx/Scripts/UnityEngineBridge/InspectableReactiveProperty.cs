@@ -122,4 +122,24 @@ namespace UniRx
 
         }
     }
+
+    /// <summary>
+    /// <para>Inspectable ReactiveProperty.</para>
+    /// <para>If you use with InspectorDisplayAttribute that beautified show on inspector.</para>
+    /// </summary>
+    [Serializable]
+    public class BoolReactiveProperty : ReactiveProperty<bool>
+    {
+        public BoolReactiveProperty()
+            : base()
+        {
+
+        }
+
+        public BoolReactiveProperty(bool initialValue)
+            : base(initialValue)
+        {
+
+        }
+    }
 }
