@@ -8,6 +8,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System;
 using System.Text;
+using UniRx.Triggers;
 using UniRx.Diagnostics;
 #if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
     // Fallback for Unity versions below 4.5
@@ -74,6 +75,8 @@ namespace UniRx.ObjectTest
 
             MainThreadDispatcher.Initialize();
         }
+
+        GameObject primitive = null;
 
         public void Update()
         {
@@ -326,6 +329,19 @@ namespace UniRx.ObjectTest
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
+            }
+
+            if (GUILayout.Button("Trigger"))
+            {
+                primitive = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                var trigger = primitive.AddComponent<ObservableUpdateTrigger>();
+                trigger.UpdateAsObservable()
+                .Subscribe(x => Debug.Log(x), () => Debug.Log("Comp!!!")); 
+            }
+
+            if (GUILayout.Button("Destroy Primitive"))
+            {
+                if (primitive != null) GameObject.Destroy(primitive);
             }
 
 
