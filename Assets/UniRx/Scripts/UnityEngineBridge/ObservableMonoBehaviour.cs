@@ -291,6 +291,7 @@ namespace UniRx
         /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
         public IObservable<Unit> OnDestroyAsObservable()
         {
+            if (this == null) return Observable.Return(Unit.Default);
             if (calledDestroy) return Observable.Return(Unit.Default);
             return onDestroy ?? (onDestroy = new Subject<Unit>());
         }

@@ -32,6 +32,7 @@ namespace UniRx.ObjectTest
 
 #endif
 
+        Subject<Unit> update;
         public int VVV;
 
         public void Update()
@@ -41,6 +42,13 @@ namespace UniRx.ObjectTest
             {
                 VVV = t;
             }
+
+            if (update != null) update.OnNext(Unit.Default);
+        }
+
+        public IObservable<Unit> UpdateAsObservable()
+        {
+            return update ?? (update = new Subject<Unit>());
         }
     }
 }
