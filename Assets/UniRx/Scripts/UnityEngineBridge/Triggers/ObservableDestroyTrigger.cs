@@ -2,6 +2,7 @@
 
 namespace UniRx.Triggers
 {
+    [DisallowMultipleComponent]
     public class ObservableDestroyTrigger : MonoBehaviour
     {
         bool calledDestroy = false;

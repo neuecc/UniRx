@@ -336,7 +336,7 @@ namespace UniRx.ObjectTest
                 primitive = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 var trigger = primitive.AddComponent<ObservableUpdateTrigger>();
                 trigger.UpdateAsObservable()
-                .Subscribe(x => Debug.Log(x), () => Debug.Log("Comp!!!")); 
+                    .Subscribe(x => Debug.Log(x), () => Debug.Log("Comp!!!")); 
             }
 
             if (GUILayout.Button("Destroy Primitive"))

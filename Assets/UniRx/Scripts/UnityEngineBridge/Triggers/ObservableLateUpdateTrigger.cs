@@ -1,5 +1,8 @@
-﻿namespace UniRx.Triggers
+﻿using UnityEngine;
+
+namespace UniRx.Triggers
 {
+    [DisallowMultipleComponent]
     public class ObservableLateUpdateTrigger : ObservableTriggerBase
     {
         Subject<Unit> lateUpdate;

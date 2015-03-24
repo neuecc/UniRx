@@ -2,6 +2,7 @@
 
 namespace UniRx.Triggers
 {
+    [DisallowMultipleComponent]
     public class ObservableTrigger2DTrigger : ObservableTriggerBase
     {
         Subject<Collider2D> onTriggerEnter2D;

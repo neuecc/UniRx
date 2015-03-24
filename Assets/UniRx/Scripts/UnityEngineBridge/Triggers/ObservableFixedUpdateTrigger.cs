@@ -1,5 +1,8 @@
-﻿namespace UniRx.Triggers
+﻿using UnityEngine;
+
+namespace UniRx.Triggers
 {
+    [DisallowMultipleComponent]
     public class ObservableFixedUpdateTrigger : ObservableTriggerBase
     {
         Subject<Unit> fixedUpdate;

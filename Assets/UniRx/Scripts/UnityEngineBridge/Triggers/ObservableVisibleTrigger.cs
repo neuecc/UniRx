@@ -1,5 +1,8 @@
-﻿namespace UniRx.Triggers
+﻿using UnityEngine;
+
+namespace UniRx.Triggers
 {
+    [DisallowMultipleComponent]
     public class ObservableVisibleTrigger : ObservableTriggerBase
     {
         Subject<Unit> onBecameInvisible;
