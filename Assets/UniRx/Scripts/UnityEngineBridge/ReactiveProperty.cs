@@ -32,6 +32,9 @@ namespace UniRx
         [NonSerialized]
         IDisposable sourceConnection = null;
 
+        [NonSerialized]
+        readonly Func<T, T> setterHandler = null;
+
         public T Value
         {
             get
@@ -49,7 +52,14 @@ namespace UniRx
                         if (isDisposed) return; // don't notify but set value 
                         if (publisher != null)
                         {
-                            publisher.OnNext(value);
+                            if (setterHandler == null)
+                            {
+                                publisher.OnNext(value);
+                            }
+                            else
+                            {
+                                publisher.OnNext(setterHandler(value));
+                            }
                         }
                     }
                 }
@@ -62,7 +72,14 @@ namespace UniRx
                         if (isDisposed) return;
                         if (publisher != null)
                         {
-                            publisher.OnNext(value);
+                            if (setterHandler == null)
+                            {
+                                publisher.OnNext(value);
+                            }
+                            else
+                            {
+                                publisher.OnNext(setterHandler(value));
+                            }
                         }
                     }
                 }
@@ -94,6 +111,17 @@ namespace UniRx
             sourceConnection = source.Subscribe(publisher);
             value = initialValue;
         }
+
+        public ReactiveProperty(Func<T, T> setterHandler)
+        {
+            this.setterHandler = setterHandler;
+        }
+
+        public ReactiveProperty(Func<T, T> setterHandler, T initialValue) : this(initialValue)
+        {
+            this.setterHandler = setterHandler;
+        }
+
 
         public void SetValueAndForceNotify(T value)
         {
