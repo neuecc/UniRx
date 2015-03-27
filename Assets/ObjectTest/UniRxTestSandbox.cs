@@ -22,7 +22,29 @@ using UniRx.InternalUtil;
 
 namespace UniRx.ObjectTest
 {
+    public enum Mikan
+    {
+        Ringo = 30,
+        Tako = 40
+    }
+
+    [Serializable]
+    public class MikanReactiveProperty : ReactiveProperty<Mikan>
+    {
+        public MikanReactiveProperty()
+        {
+
+        }
+
+        public MikanReactiveProperty(Mikan mikan)
+            : base(mikan)
+        {
+
+        }
+    }
+
     // test sandbox
+    [Serializable]
     public class UniRxTestSandbox : MonoBehaviour
     {
         readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
@@ -37,6 +59,14 @@ namespace UniRx.ObjectTest
         //[ThreadStatic]
         static object threadstaticobj;
 
+
+        [InspectorDisplay]
+        public IntReactiveProperty IntxXXX;
+
+        [InspectorDisplay]
+        public MikanReactiveProperty MikanRP;
+
+
         public void Awake()
         {
             Debug.Log("Awake");
@@ -45,6 +75,14 @@ namespace UniRx.ObjectTest
 
             cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             clicker = cube.AddComponent<Clicker>();
+
+
+            IntxXXX.Subscribe(x => Debug.Log(x));
+
+            MikanRP.Subscribe(x =>
+            {
+                Debug.Log(x.ToString());
+            });
 
             //MainThreadDispatcher.Initialize();
             threadstaticobj = new object();
