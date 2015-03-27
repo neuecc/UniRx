@@ -1,7 +1,6 @@
 #pragma warning disable 0414
 
 using UnityEngine;
-using UniRx.UI;
 using System.Collections;
 using UniRx;
 using System.Threading;
