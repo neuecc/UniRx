@@ -8,7 +8,7 @@ using UnityEditor;
 
 namespace UniRx
 {
-    [System.AttributeUsage(System.AttributeTargets.Field)]
+    [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
     public class InspectorDisplayAttribute : PropertyAttribute
     {
         public string FieldName { get; private set; }
