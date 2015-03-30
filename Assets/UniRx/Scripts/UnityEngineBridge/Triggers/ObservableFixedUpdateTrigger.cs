@@ -8,13 +8,13 @@ namespace UniRx.Triggers
         Subject<Unit> fixedUpdate;
 
         /// <summary>This function is called every fixed framerate frame, if the MonoBehaviour is enabled.</summary>
-        void FixedUpdateAsObservable()
+        void FixedUpdate()
         {
             if (fixedUpdate != null) fixedUpdate.OnNext(Unit.Default);
         }
 
         /// <summary>This function is called every fixed framerate frame, if the MonoBehaviour is enabled.</summary>
-        public IObservable<Unit> UpdateAsObservable()
+        public IObservable<Unit> FixedUpdateAsObservable()
         {
             return fixedUpdate ?? (fixedUpdate = new Subject<Unit>());
         }

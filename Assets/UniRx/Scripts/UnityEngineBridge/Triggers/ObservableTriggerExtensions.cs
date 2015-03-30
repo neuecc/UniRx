@@ -18,6 +18,26 @@ namespace UniRx.Triggers
 
         #endregion
 
+        #region ObservableFixedUpdateTrigger
+
+        /// <summary>This function is called every fixed framerate frame, if the MonoBehaviour is enabled.</summary>
+        public static IObservable<Unit> FixedUpdateAsObservable(this GameObject gameObject)
+        {
+            return GetOrAddComponent<ObservableFixedUpdateTrigger>(gameObject).FixedUpdateAsObservable();
+        }
+
+        #endregion
+
+        #region ObservableLateUpdateTrigger
+
+        /// <summary>LateUpdate is called every frame, if the Behaviour is enabled.</summary>
+        public static IObservable<Unit> LateUpdateAsObservable(this GameObject gameObject)
+        {
+            return GetOrAddComponent<ObservableLateUpdateTrigger>(gameObject).LateUpdateAsObservable();
+        }
+
+        #endregion
+
         #region ObservableDestroyTrigger
 
         /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
