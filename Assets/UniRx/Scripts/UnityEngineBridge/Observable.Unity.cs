@@ -1,4 +1,5 @@
 ﻿using System;
+using UniRx.Triggers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -660,6 +661,16 @@ namespace UniRx
         public static IObservable<Unit> OnceApplicationQuit()
         {
             return MainThreadDispatcher.OnApplicationQuitAsObservable().Take(1);
+        }
+
+        public static IObservable<T> TakeUntilDestroy<T>(this IObservable<T> source, GameObject target)
+        {
+            return source.TakeUntil(target.OnDestroyAsObservable());
+        }
+
+        public static IObservable<T> TakeUntilDisable<T>(this IObservable<T> source, GameObject target)
+        {
+            return source.TakeUntil(target.OnDisableAsObservable());
         }
     }
 }
