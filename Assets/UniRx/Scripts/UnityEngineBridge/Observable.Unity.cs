@@ -419,7 +419,8 @@ namespace UniRx
                 var isCompleted = false;
                 var gate = new object();
 
-                var scheduling = Observable.IntervalFrame(frameCount, frameCountType)
+                var scheduling = new SingleAssignmentDisposable();
+                scheduling.Disposable = Observable.IntervalFrame(frameCount, frameCountType)
                     .Subscribe(_ =>
                     {
                         lock (gate)
@@ -428,11 +429,19 @@ namespace UniRx
                             {
                                 var value = latestValue;
                                 isUpdated = false;
-                                observer.OnNext(value);
+                                try
+                                {
+                                    observer.OnNext(value);
+                                }
+                                catch
+                                {
+                                    scheduling.Dispose();
+                                }
                             }
                             if (isCompleted)
                             {
                                 observer.OnCompleted();
+                                scheduling.Dispose();
                             }
                         }
                     });
@@ -459,7 +468,6 @@ namespace UniRx
                     {
                         isCompleted = true;
                         sourceSubscription.Dispose();
-                        scheduling.Dispose();
                     }
                 });
 
@@ -489,7 +497,7 @@ namespace UniRx
                         }
                         var d = new SingleAssignmentDisposable();
                         cancelable.Disposable = d;
-                        d.Disposable = Observable.IntervalFrame(frameCount, frameCountType)
+                        d.Disposable = Observable.TimerFrame(frameCount, frameCountType)
                             .Subscribe(_ =>
                             {
                                 lock (gate)
