@@ -37,11 +37,18 @@ namespace UniRx
     [UnityEditor.CustomPropertyDrawer(typeof(DoubleReactiveProperty))]
     [UnityEditor.CustomPropertyDrawer(typeof(StringReactiveProperty))]
     [UnityEditor.CustomPropertyDrawer(typeof(BoolReactiveProperty))]
+    [UnityEditor.CustomPropertyDrawer(typeof(Vector2ReactiveProperty))]
+    [UnityEditor.CustomPropertyDrawer(typeof(Vector3ReactiveProperty))]
+    [UnityEditor.CustomPropertyDrawer(typeof(Vector4ReactiveProperty))]
+    [UnityEditor.CustomPropertyDrawer(typeof(ColorReactiveProperty))]
+    [UnityEditor.CustomPropertyDrawer(typeof(RectReactiveProperty))]
+    [UnityEditor.CustomPropertyDrawer(typeof(AnimationCurveReactiveProperty))]
+    [UnityEditor.CustomPropertyDrawer(typeof(BoundsReactiveProperty))]
+    [UnityEditor.CustomPropertyDrawer(typeof(QuaternionReactiveProperty))]
     public class InspectorDisplayDrawer : UnityEditor.PropertyDrawer
     {
         public override void OnGUI(Rect position, UnityEditor.SerializedProperty property, GUIContent label)
         {
-            EditorGUI.BeginChangeCheck();
             string fieldName;
             bool notifyPropertyChanged;
             {
@@ -50,21 +57,28 @@ namespace UniRx
                 notifyPropertyChanged = (attr == null) ? true : attr.NotifyPropertyChanged;
             }
 
+            if (notifyPropertyChanged)
+            {
+                EditorGUI.BeginChangeCheck();
+            }
             var targetSerializedProperty = property.FindPropertyRelative(fieldName);
             if (targetSerializedProperty == null)
             {
                 UnityEditor.EditorGUI.LabelField(position, label, new GUIContent() { text = "InspectorDisplay can't find target:" + fieldName });
-                EditorGUI.EndChangeCheck();
+                if (notifyPropertyChanged)
+                {
+                    EditorGUI.EndChangeCheck();
+                }
                 return;
             }
             else
             {
-                UnityEditor.EditorGUI.PropertyField(position, targetSerializedProperty, label);
+                EmitPropertyField(position, targetSerializedProperty, label);
             }
 
-            if (EditorGUI.EndChangeCheck())
+            if (notifyPropertyChanged)
             {
-                if (notifyPropertyChanged)
+                if (EditorGUI.EndChangeCheck())
                 {
                     var propInfo = fieldInfo.FieldType.GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     if (propInfo != null)
@@ -103,6 +117,43 @@ namespace UniRx
 
                 property.serializedObject.ApplyModifiedProperties();
             }
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            var attr = this.attribute as InspectorDisplayAttribute;
+            var fieldName = (attr == null) ? "value" : attr.FieldName;
+
+            var height = base.GetPropertyHeight(property, label);
+            var valueProperty = property.FindPropertyRelative(fieldName);
+            if (valueProperty == null)
+            {
+                return height;
+            }
+
+            if (valueProperty.propertyType == SerializedPropertyType.Rect)
+            {
+                return height * 2;
+            }
+            if (valueProperty.propertyType == SerializedPropertyType.Bounds)
+            {
+                return height * 3;
+            }
+
+            if (valueProperty.isExpanded)
+            {
+                var count = 0;
+                var e = valueProperty.GetEnumerator();
+                while (e.MoveNext()) count++;
+                return ((height + 4) * count) + 6; // (Line = 20 + Padding) ?
+            }
+
+            return height;
+        }
+
+        protected virtual void EmitPropertyField(Rect position, UnityEditor.SerializedProperty targetSerializedProperty, GUIContent label)
+        {
+            UnityEditor.EditorGUI.PropertyField(position, targetSerializedProperty, label, includeChildren: true);
         }
 
         protected virtual object SerializedPropertyToObjectValue(UnityEditor.SerializedProperty property)
