@@ -104,12 +104,13 @@ namespace UniRx
 
         public void SetValueAndForceNotify(T value)
         {
-            this.value = value;
+            SetValue(value);
+
             if (isDisposed) return;
 
             if (publisher != null)
             {
-                publisher.OnNext(value);
+                publisher.OnNext(this.value);
             }
         }
 

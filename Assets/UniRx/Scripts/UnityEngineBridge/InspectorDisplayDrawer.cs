@@ -81,57 +81,23 @@ namespace UniRx
                 if (EditorGUI.EndChangeCheck())
                 {
                     var propInfo = fieldInfo.FieldType.GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    if (propInfo != null)
+
+                    property.serializedObject.ApplyModifiedProperties(); // deserialize to field
+
+                    var attachedComponent = property.serializedObject.targetObject;
+                    var targetProp = fieldInfo.GetValue(attachedComponent);
+                    var modifiedValue = propInfo.GetValue(targetProp, null); // retrieve new value
+
+                    var methodInfo = fieldInfo.FieldType.GetMethod("SetValueAndForceNotify", BindingFlags.IgnoreCase | BindingFlags.InvokeMethod | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    if (methodInfo != null)
                     {
-                        var value = SerializedPropertyToObjectValue(targetSerializedProperty);
-                        if (value != null)
-                        {
-                            var attachedComponent = property.serializedObject.targetObject;
-                            var targetProp = fieldInfo.GetValue(attachedComponent);
-
-                            // specialized for case of ReactiveProperty<Enum>
-                            if (targetSerializedProperty.propertyType == SerializedPropertyType.Enum)
-                            {
-                                var baseType = fieldInfo.FieldType.BaseType;
-                                if (baseType != null && baseType.IsGenericType)
-                                {
-                                    var generic = baseType.GetGenericArguments();
-                                    if (generic != null && generic.Length == 1)
-                                    {
-                                        var typeInfo = generic[0];
-                                        if (typeInfo.IsEnum)
-                                        {
-                                            var e = Enum.Parse(typeInfo, (string)value);
-                                            propInfo.SetValue(targetProp, e, null);
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                propInfo.SetValue(targetProp, value, null);
-                            }
-                        }
-                        else if (targetSerializedProperty.propertyType == SerializedPropertyType.Generic)
-                        {
-                            // specialized for case of ReactiveProperty<CustomType>
-                            property.serializedObject.ApplyModifiedProperties();
-
-                            var attachedComponent = property.serializedObject.targetObject;
-                            var targetProp = fieldInfo.GetValue(attachedComponent);
-                            var modifiedValue = propInfo.GetValue(targetProp, null);
-
-                            var methodInfo = fieldInfo.FieldType.GetMethod("SetValueAndForceNotify", BindingFlags.IgnoreCase | BindingFlags.InvokeMethod | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                            if (methodInfo != null)
-                            {
-                                methodInfo.Invoke(targetProp, new object[] { modifiedValue });
-                            }
-                            return;
-                        }
+                        methodInfo.Invoke(targetProp, new object[] { modifiedValue });
                     }
                 }
-
-                property.serializedObject.ApplyModifiedProperties();
+                else
+                {
+                    property.serializedObject.ApplyModifiedProperties();
+                }
             }
         }
 
@@ -170,48 +136,6 @@ namespace UniRx
         protected virtual void EmitPropertyField(Rect position, UnityEditor.SerializedProperty targetSerializedProperty, GUIContent label)
         {
             UnityEditor.EditorGUI.PropertyField(position, targetSerializedProperty, label, includeChildren: true);
-        }
-
-        protected virtual object SerializedPropertyToObjectValue(UnityEditor.SerializedProperty property)
-        {
-            switch (property.propertyType)
-            {
-                case SerializedPropertyType.Integer:
-                    return property.intValue;
-                case SerializedPropertyType.Boolean:
-                    return property.boolValue;
-                case SerializedPropertyType.Float:
-                    return property.floatValue;
-                case SerializedPropertyType.String:
-                    return property.stringValue;
-                case SerializedPropertyType.Color:
-                    return property.colorValue;
-                case SerializedPropertyType.Enum:
-                    return property.enumNames[property.enumValueIndex]; // return enumName
-                case SerializedPropertyType.Vector2:
-                    return property.vector2Value;
-                case SerializedPropertyType.Vector3:
-                    return property.vector3Value;
-                case SerializedPropertyType.Vector4:
-                    return property.vector4Value;
-                case SerializedPropertyType.Rect:
-                    return property.rectValue;
-                case SerializedPropertyType.ArraySize:
-                    return property.arraySize;
-                case SerializedPropertyType.AnimationCurve:
-                    return property.animationCurveValue;
-                case SerializedPropertyType.Bounds:
-                    return property.boundsValue;
-                case SerializedPropertyType.Quaternion:
-                    return property.quaternionValue;
-                case SerializedPropertyType.LayerMask:
-                case SerializedPropertyType.Gradient:
-                case SerializedPropertyType.Character:
-                case SerializedPropertyType.ObjectReference:
-                case SerializedPropertyType.Generic:
-                default:
-                    return null; // I don't know but customize chance for inherited drawer
-            }
         }
     }
 

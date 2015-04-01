@@ -135,8 +135,16 @@ namespace UniRx.ObjectTest
         }
     }
 
+    [Serializable]
+    public class UShortReactiveProeprty : ReactiveProperty<ushort>
+    {
+
+    }
+
+
 #if UNITY_EDITOR
 
+    [UnityEditor.CustomPropertyDrawer(typeof(UShortReactiveProeprty))]
     [UnityEditor.CustomPropertyDrawer(typeof(MikanReactiveProperty))]
     [UnityEditor.CustomPropertyDrawer(typeof(MySuperStructReactiveProperty))]
     public class ExtendInspectorDisplayDrawer : InspectorDisplayDrawer
@@ -163,12 +171,18 @@ namespace UniRx.ObjectTest
         //[ThreadStatic]
         static object threadstaticobj;
 
+        public DateTime DateTimeSonomono;
 
-        public IntReactiveProperty IntxXXX;
+
+        public IntReactiveProperty Intxxx;
+        public LongReactiveProperty LongxXXX;
         public BoolReactiveProperty Booxxx;
+        public FloatReactiveProperty FloAAX;
         public DoubleReactiveProperty DuAAX;
         public MikanReactiveProperty MikanRP;
         public StringReactiveProperty Strrrrr;
+
+        public UShortReactiveProeprty USHHHH;
 
         //[InspectorDisplay]
         //public MyContainerReactiveProperty MCCCC;
@@ -220,11 +234,15 @@ namespace UniRx.ObjectTest
             });
 
 
-            IntxXXX.Subscribe(x => Debug.Log(x));
+            Intxxx.Subscribe(x => Debug.Log(x));
+            LongxXXX.Subscribe(x => Debug.Log(x));
             DuAAX.Subscribe(x => Debug.Log(x));
+            FloAAX.Subscribe(x => Debug.Log(x));
             Booxxx.Subscribe(x => Debug.Log(x));
             MikanRP.Subscribe(x => Debug.Log(x));
             Strrrrr.Subscribe(x => Debug.Log(x));
+
+            USHHHH.Subscribe(x => Debug.Log(x));
 
             AAA.Subscribe(x => Debug.Log(x));
             BBB.Subscribe(x => Debug.Log(x));
