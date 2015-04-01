@@ -32,9 +32,6 @@ namespace UniRx
         [NonSerialized]
         IDisposable sourceConnection = null;
 
-        [NonSerialized]
-        readonly Func<T, T> setterHandler = null;
-
         public T Value
         {
             get
@@ -47,19 +44,12 @@ namespace UniRx
                 {
                     if (this.value != null)
                     {
-                        this.value = value;
+                        SetValue(value);
 
                         if (isDisposed) return; // don't notify but set value 
                         if (publisher != null)
                         {
-                            if (setterHandler == null)
-                            {
                                 publisher.OnNext(value);
-                            }
-                            else
-                            {
-                                publisher.OnNext(setterHandler(value));
-                            }
                         }
                     }
                 }
@@ -67,19 +57,12 @@ namespace UniRx
                 {
                     if (this.value == null || !this.value.Equals(value)) // don't use EqualityComparer<T>.Default
                     {
-                        this.value = value;
+                        SetValue(value);
 
                         if (isDisposed) return;
                         if (publisher != null)
                         {
-                            if (setterHandler == null)
-                            {
-                                publisher.OnNext(value);
-                            }
-                            else
-                            {
-                                publisher.OnNext(setterHandler(value));
-                            }
+                            publisher.OnNext(value);
                         }
                     }
                 }
@@ -100,28 +83,24 @@ namespace UniRx
             publisher = new Subject<T>();
             sourceConnection = source.Subscribe(x =>
             {
-                value = x;
-                publisher.OnNext(x);
+                Value = x;
             }, publisher.OnError, publisher.OnCompleted);
         }
 
         public ReactiveProperty(IObservable<T> source, T initialValue)
         {
+            Value = initialValue;
             publisher = new Subject<T>();
-            sourceConnection = source.Subscribe(publisher);
-            value = initialValue;
+            sourceConnection = source.Subscribe(x =>
+            {
+                Value = x;
+            }, publisher.OnError, publisher.OnCompleted);
         }
 
-        public ReactiveProperty(Func<T, T> setterHandler)
+        protected virtual void SetValue(T value)
         {
-            this.setterHandler = setterHandler;
+            this.value = value;
         }
-
-        public ReactiveProperty(Func<T, T> setterHandler, T initialValue) : this(initialValue)
-        {
-            this.setterHandler = setterHandler;
-        }
-
 
         public void SetValueAndForceNotify(T value)
         {
@@ -217,9 +196,13 @@ namespace UniRx
 
         public ReadOnlyReactiveProperty(IObservable<T> source, T initialValue)
         {
-            publisher = new Subject<T>();
-            sourceConnection = source.Subscribe(publisher);
             value = initialValue;
+            publisher = new Subject<T>();
+            sourceConnection = source.Subscribe(x =>
+            {
+                value = x;
+                publisher.OnNext(x);
+            }, publisher.OnError, publisher.OnCompleted);
         }
 
         public IDisposable Subscribe(IObserver<T> observer)
