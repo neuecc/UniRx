@@ -49,7 +49,7 @@ namespace UniRx
                         if (isDisposed) return; // don't notify but set value 
                         if (publisher != null)
                         {
-                                publisher.OnNext(value);
+                            publisher.OnNext(this.value);
                         }
                     }
                 }
@@ -62,7 +62,7 @@ namespace UniRx
                         if (isDisposed) return;
                         if (publisher != null)
                         {
-                            publisher.OnNext(value);
+                            publisher.OnNext(this.value);
                         }
                     }
                 }
