@@ -154,7 +154,7 @@ IEnumerator AsyncB()
 // after completed AsyncA, run AsyncB as continuous routine.
 // UniRx expands SelectMany(IEnumerator) as SelectMany(IEnumerator.ToObservable())
 var cancel = Observable.FromCoroutine(AsyncA)
-    .SelectMany(_ => AsyncB())
+    .SelectMany(AsyncB)
     .Subscribe();
 
 // you can stop coroutine use subscription's Dispose.
@@ -264,73 +264,51 @@ UniRx's default time based operation(Interval, Timer, Buffer(timeSpan), etc...)'
 
 `Scheduler.MainThread` under Time.timeScale's influence.If you want to ignore, use ` Scheduler.MainThreadIgnoreTimeScale`.
 
-
-How to Use for MonoBehaviour
+Triggers for MonoBehaviour
 ---
-UniRx has two extended MonoBehaviour. TypedMonoBehaviour is typesafe MonoBehaviour.
+UniRx can handle MonoBehaviour's event by `UniRx.Triggers`.
 
 ```csharp
-public class Test : TypedMonoBehaviour
-{
-    // all message is overridable, it's typesafe
-    public override void Update()
-    {
-        base.Update();
-    }
+using UniRx;
+using UniRx.Triggers; // need UniRx.Triggers namespace
 
-    // use Coroutine, use "new" keyword
-    new public IEnumerator Start()
+public class MyComponent : MonoBehaviour
+{
+    void Start()
     {
-        while (true)
-        {
-            yield return null;
-        }
+        // Get the plain object
+        var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+        // Add ObservableXxxTrigger for handle MonoBehaviour's event as Observable
+        cube.AddComponent<ObservableUpdateTrigger>()
+            .UpdateAsObservable()
+            .SampleFrame(30)
+            .Subscribe(x => Debug.Log("cube"), () => Debug.Log("destroy"));
+
+        // destroy after 3 second:)
+        GameObject.Destroy(cube, 3f);
     }
 }
 ```
 
-ObservableMonoBehaviour is extended TypedMonoBehaviour. All message is Observable.
+Kind of Triggers are `ObservableAnimatorTrigger`, `ObservableCollision2DTrigger`, `ObservableCollisionTrigger`, `ObservableDestroyTrigger`, `ObservableEnableTrigger`, `ObservableFixedUpdateTrigger`, `ObservableUpdateTrigger`, `ObservableLastUpdateTrigger`, `ObservableMouseTrigger`, `ObservableTrigger2DTrigger`, `ObservableTriggerTrigger`, `ObservableVisibleTrigger`.
+
+You can more easily handling, direct subscribe by Extension Methods on Component/GameObject that inject ObservableTrigger automaticaly.
 
 ```csharp
-public class Test : ObservableMonoBehaviour
+using UniRx;
+using UniRx.Triggers; // need UniRx.Triggers namespace for extend gameObejct
+
+public class DragAndDropOnce : MonoBehaviour
 {
-    public override void Start()
+    void Start()
     {
         // All events can subscribe by ***AsObservable
-        this.OnMouseDownAsObservable()
-            .SelectMany(_ => this.UpdateAsObservable())
-            .TakeUntil(this.OnMouseUpAsObservable())
+        this.gameObject.OnMouseDownAsObservable()
+            .SelectMany(_ => this.gameObject.UpdateAsObservable())
+            .TakeUntil(this.gameObject.OnMouseUpAsObservable())
             .Select(_ => Input.mousePosition)
-            .Repeat()
             .Subscribe(x => Debug.Log(x));
-
-        // If you use ObservableMonoBehaviour, must call base method
-        base.Start();
-    }
-}
-```
-
-> Note:
-> TypedMonoBehaviour and ObservableMonoBehaviour cause some performance down.
-> I don't recommend instantiate many Typed/ObservableMonoBehaviour.
-> If you want to observe MonoBehaviour's event, copy from ObservableMonoBehaviour and paste to your simple MonoBehaviour.
-> for example
-
-```
-public class ObservableCollectionEnter2DMonoBehaviour : MonoBehaviour
-{
-    Subject<Collision2D> onCollisionEnter2D;
-
-    /// <summary>Sent when an incoming collider makes contact with this object's collider (2D physics only).</summary>
-    public virtual void OnCollisionEnter2D(Collision2D coll)
-    {
-        if (onCollisionEnter2D != null) onCollisionEnter2D.OnNext(coll);
-    }
-
-    /// <summary>Sent when an incoming collider makes contact with this object's collider (2D physics only).</summary>
-    public IObservable<Unit> OnCollisionEnter2DAsObservable()
-    {
-        return onCollisionEnter2D ?? (onCollisionEnter2D = new Subject<Collision2D>());
     }
 }
 ```
