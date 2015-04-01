@@ -274,6 +274,7 @@ namespace UniRx.ObjectTest
              */
 
             MainThreadDispatcher.Initialize();
+
         }
 
         GameObject primitive = null;

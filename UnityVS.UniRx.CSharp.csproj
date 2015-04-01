@@ -166,6 +166,7 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableMouseTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTrigger2DTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerBase.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerExtensions.Component.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableUpdateTrigger.cs" />
