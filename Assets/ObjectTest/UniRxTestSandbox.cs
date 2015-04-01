@@ -921,5 +921,6 @@ namespace UniRx.ObjectTest
             }
         }
     }
+}
 
 #pragma warning restore 0414
