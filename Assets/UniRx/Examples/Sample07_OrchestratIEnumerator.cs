@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace UniRx.Examples
 {
-    public class Sample07_OrchestratIEnumerator : TypedMonoBehaviour
+    public class Sample07_OrchestratIEnumerator : MonoBehaviour
     {
         // two coroutines
         IEnumerator AsyncA()
@@ -26,12 +26,12 @@ namespace UniRx.Examples
             Debug.Log("b end");
         }
 
-        public override void Start()
+        void Start()
         {
             // after completed AsyncA, run AsyncB as continuous routine.
             // UniRx expands SelectMany(IEnumerator) as SelectMany(IEnumerator.ToObservable())
             var cancel = Observable.FromCoroutine(AsyncA)
-                .SelectMany(_ => AsyncB())
+                .SelectMany(AsyncB)
                 .Subscribe();
 
             // If you want to stop Coroutine(as cancel), call subscription.Dispose()

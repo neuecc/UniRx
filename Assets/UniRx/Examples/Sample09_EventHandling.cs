@@ -1,10 +1,11 @@
 ﻿#pragma warning disable 0067
 
 using System;
+using UnityEngine;
 
 namespace UniRx.Examples
 {
-    public class Sample09_EventHandling : TypedMonoBehaviour
+    public class Sample09_EventHandling : MonoBehaviour
     {
         public class MyEventArgs : EventArgs
         {
@@ -22,7 +23,7 @@ namespace UniRx.Examples
         Subject<int> onBarBar = new Subject<int>();
         public IObservable<int> OnBarBar { get { return onBarBar; } }
 
-        public override void Start()
+        void Start()
         {
             // convert to IO<EventPattern> as (sender, eventArgs)
             Observable.FromEventPattern<EventHandler<MyEventArgs>, MyEventArgs>(
@@ -42,12 +43,22 @@ namespace UniRx.Examples
                 .Subscribe()
                 .AddTo(disposables);
 
+            // AOT Safe EventHandling, use dummy capture, see:https://github.com/neuecc/UniRx/wiki/AOT-Exception-Patterns-and-Hacks
+            var capture = 0;
+            Observable.FromEventPattern<EventHandler<MyEventArgs>, MyEventArgs>(h =>
+                {
+                    capture.GetHashCode(); // dummy for AOT
+                    return new EventHandler<MyEventArgs>(h);
+                }, h => FooBar += h, h => FooBar -= h)
+                .Subscribe()
+                .AddTo(disposables);
+
             // Subject as like event.
             OnBarBar.Subscribe().AddTo(disposables);
             onBarBar.OnNext(1); // fire event
         }
 
-        public override void OnDestroy()
+        void OnDestroy()
         {
             // manage subscription lifecycle
             disposables.Dispose();

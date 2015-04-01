@@ -16,8 +16,7 @@ namespace UniRx.Examples
         public Text MyText;
         public Slider MySlider;
 
-        // You can monitor Inspectorable
-        [InspectorDisplay]
+        // You can monitor/modifie in inspector by SpecializedReactiveProperty
         public IntReactiveProperty IntRxProp = new IntReactiveProperty();
 
         Enemy enemy = new Enemy(1000);
