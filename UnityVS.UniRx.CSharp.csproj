@@ -69,8 +69,8 @@
     <Compile Include="Assets\ObjectTest\UniRxTestSandbox.cs" />
     <Compile Include="Assets\ObjectTest\WorkerThreadTest.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample01_ObservableWWW.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample02_TypedBehaviour.cs" />
-    <Compile Include="Assets\UniRx\Examples\Sample03_ObservableMonoBehaviour.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample02_ObservableTriggers.cs" />
+    <Compile Include="Assets\UniRx\Examples\Sample03_GameObjectAsObservable.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample04_ConvertFromUnityCallback.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample05_ConvertFromCoroutine.cs" />
     <Compile Include="Assets\UniRx\Examples\Sample06_ConvertToCoroutine.cs" />
@@ -142,7 +142,7 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\ObservableLogger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\UnityDebugSink.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\InspectableReactiveProperty.cs" />
-    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\InspectorDisplayAttribute.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\InspectorDisplayDrawer.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\LazyTask.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\LifetimeDisposableExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\MainThreadDispatcher.cs" />

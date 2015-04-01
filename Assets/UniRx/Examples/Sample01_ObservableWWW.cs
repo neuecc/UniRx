@@ -5,9 +5,9 @@ using UnityEngine;
 namespace UniRx.Examples
 {
     // sample script, attach your object.
-    public class Sample01_ObservableWWW : TypedMonoBehaviour
+    public class Sample01_ObservableWWW : MonoBehaviour
     {
-        public override void Start()
+        void Start()
         {
             // Basic: Download from google.
             {

@@ -9,6 +9,8 @@ using System;
 using System.Text;
 using UniRx.Triggers;
 using UniRx.Diagnostics;
+using UnityEngine.Events;
+using UnityEngine.UI;
 #if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
     // Fallback for Unity versions below 4.5
     using Hash = System.Collections.Hashtable;
@@ -28,6 +30,26 @@ namespace UniRx.ObjectTest
     }
 
     [Serializable]
+    public struct MySuperStruct
+    {
+        public int A;
+        public int B;
+        public int C;
+        public int D;
+        public int E;
+        public int F;
+        public int G;
+        public int X;
+        public int Y;
+        public int Z;
+
+        public override string ToString()
+        {
+            return A + ":" + B + ":" + C + ":" + D + ":" + E + ":" + F + ":" + G + ":" + X + ":" + Y + ":" + Z;
+        }
+    }
+
+    [Serializable]
     public class MikanReactiveProperty : ReactiveProperty<Mikan>
     {
         public MikanReactiveProperty()
@@ -42,13 +64,52 @@ namespace UniRx.ObjectTest
         }
     }
 
+    [Serializable]
+    public class MyContainerClass
+    {
+        public int X;
+        public int Y;
+    }
+
+
+    [Serializable]
+    public class MySuperStructReactiveProperty : ReactiveProperty<MySuperStruct>
+    {
+        public MySuperStructReactiveProperty()
+        {
+
+        }
+    }
+
+
+    [Serializable]
+    public class MyContainerReactiveProperty : ReactiveProperty<MyContainerClass>
+    {
+        public MyContainerReactiveProperty()
+        {
+
+        }
+    }
+
+#if UNITY_EDITOR
+
+    [UnityEditor.CustomPropertyDrawer(typeof(MikanReactiveProperty))]
+    [UnityEditor.CustomPropertyDrawer(typeof(MySuperStructReactiveProperty))]
+    public class ExtendInspectorDisplayDrawer : InspectorDisplayDrawer
+    {
+    }
+
+#endif
+
     // test sandbox
     [Serializable]
     public class UniRxTestSandbox : MonoBehaviour
     {
         readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
 
-        public int VVV;
+        public UnityEvent<int> SimpleEvent;
+
+        public Vector2ReactiveProperty V2R;
 
         StringBuilder logtext = new StringBuilder();
 
@@ -59,12 +120,36 @@ namespace UniRx.ObjectTest
         static object threadstaticobj;
 
 
-        [InspectorDisplay]
         public IntReactiveProperty IntxXXX;
-
-        [InspectorDisplay]
+        public BoolReactiveProperty Booxxx;
+        public DoubleReactiveProperty DuAAX;
         public MikanReactiveProperty MikanRP;
+        public StringReactiveProperty Strrrrr;
 
+        //[InspectorDisplay]
+        //public MyContainerReactiveProperty MCCCC;
+
+        //public Vector4 V4;
+        //public Rect REEEECT;
+        //public AnimationCurve ACCCCCCC;
+        //public Bounds BOO;
+        //public Quaternion ZOOOM;
+
+        public Vector2ReactiveProperty AAA;
+        public Vector3ReactiveProperty BBB;
+        public Vector4ReactiveProperty CCC;
+        public ColorReactiveProperty DDD;
+        public RectReactiveProperty EEE;
+
+        public Slider MySlider;
+
+        public MySuperStructReactiveProperty SUPER_Rx;
+
+        public AnimationCurveReactiveProperty FFF;
+        public BoundsReactiveProperty GGG;
+        public QuaternionReactiveProperty HHH;
+
+        //public Matrix4x4 MXX;
 
         public void Awake()
         {
@@ -76,21 +161,33 @@ namespace UniRx.ObjectTest
             clicker = cube.AddComponent<Clicker>();
 
 
-            IntxXXX.Subscribe(x => Debug.Log(x));
 
-            MikanRP.Subscribe(x =>
-            {
-                Debug.Log(x.ToString());
-            });
-
-            //MainThreadDispatcher.Initialize();
+            MainThreadDispatcher.Initialize();
             threadstaticobj = new object();
-            /*
+
+
             ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
             {
                 logtext.AppendLine(x.Message);
             });
-            */
+
+
+            IntxXXX.Subscribe(x => Debug.Log(x));
+            DuAAX.Subscribe(x => Debug.Log(x));
+            Booxxx.Subscribe(x => Debug.Log(x));
+            MikanRP.Subscribe(x => Debug.Log(x));
+            Strrrrr.Subscribe(x => Debug.Log(x));
+
+            AAA.Subscribe(x => Debug.Log(x));
+            BBB.Subscribe(x => Debug.Log(x));
+            CCC.Subscribe(x => Debug.Log(x));
+            DDD.Subscribe(x => Debug.Log(x));
+            EEE.Subscribe(x => Debug.Log(x));
+            FFF.Subscribe(x => Debug.Log(x));
+            GGG.Subscribe(x => Debug.Log(x));
+            HHH.Subscribe(x => Debug.Log(x));
+
+            SUPER_Rx.Subscribe(x => Debug.Log(x.ToString()));
         }
 
         public void Start()
@@ -387,6 +484,17 @@ namespace UniRx.ObjectTest
                     .Finally(() => Debug.Log("f"))
                     .Subscribe(x => Debug.Log(x));
             }
+
+            GUILayout.BeginArea(new Rect(200, 0, 100, 200));
+            {
+                if (GUILayout.Button("Simple FromEvent"))
+                {
+                    MySlider.OnValueChangedAsObservable().Subscribe(x => logger.Debug(x), ex => logger.Exception(ex));
+
+                    //Observable.FromEvent<UnityEvent>(h => h.Invoke, 
+                }
+            }
+            GUILayout.EndArea();
 
 
             //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Clear"))
