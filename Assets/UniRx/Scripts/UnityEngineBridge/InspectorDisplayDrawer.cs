@@ -25,8 +25,8 @@ namespace UniRx
 
 
     // InspectorDisplay and for Specialized ReactiveProperty
-    // If you want to cutomize other specialized ReactiveProperty
-    // [UnityEditor.CustomPropertyDrawer(typeof(YouSpecializedReactiveProperty))]
+    // If you want to customize other specialized ReactiveProperty
+    // [UnityEditor.CustomPropertyDrawer(typeof(YourSpecializedReactiveProperty))]
     // public class ExtendInspectorDisplayDrawer : InspectorDisplayDrawer { } 
 
     [UnityEditor.CustomPropertyDrawer(typeof(InspectorDisplayAttribute))]
@@ -111,6 +111,22 @@ namespace UniRx
                             {
                                 propInfo.SetValue(targetProp, value, null);
                             }
+                        }
+                        else if (targetSerializedProperty.propertyType == SerializedPropertyType.Generic)
+                        {
+                            // specialized for case of ReactiveProperty<CustomType>
+                            property.serializedObject.ApplyModifiedProperties();
+
+                            var attachedComponent = property.serializedObject.targetObject;
+                            var targetProp = fieldInfo.GetValue(attachedComponent);
+                            var modifiedValue = propInfo.GetValue(targetProp, null);
+
+                            var methodInfo = fieldInfo.FieldType.GetMethod("SetValueAndForceNotify", BindingFlags.IgnoreCase | BindingFlags.InvokeMethod | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            if (methodInfo != null)
+                            {
+                                methodInfo.Invoke(targetProp, new object[] { modifiedValue });
+                            }
+                            return;
                         }
                     }
                 }
