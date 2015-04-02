@@ -8,7 +8,7 @@ namespace UniRx
         /// <summary>
         /// Publish target property when value is changed. If source is destroyed/destructed, publish OnCompleted.
         /// </summary>
-        public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Func<TSource, TProperty> propertySelector)
+        public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType = FrameCountType.Update)
             where TSource : class
         {
             if (source == null) return Observable.Empty<TProperty>();
@@ -19,17 +19,17 @@ namespace UniRx
 
             if (isUnityObject)
             {
-                return Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishUnityObjectValueChanged(unityObject, propertySelector, observer, cancellationToken));
+                return Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishUnityObjectValueChanged(unityObject, propertySelector, frameCountType, observer, cancellationToken));
             }
             else
             {
                 var reference = new WeakReference(source);
                 source = null;
-                return Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishPocoValueChanged(reference, propertySelector, observer, cancellationToken));
+                return Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishPocoValueChanged(reference, propertySelector, frameCountType, observer, cancellationToken));
             }
         }
 
-        static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
+        static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
             var isFirst = true;
             var currentValue = default(TProperty);
@@ -68,11 +68,11 @@ namespace UniRx
                     prevValue = currentValue;
                 }
 
-                yield return null;
+                yield return frameCountType.GetYieldInstruction();
             }
         }
 
-        static IEnumerator PublishUnityObjectValueChanged<TSource, TProperty>(UnityEngine.Object unityObject, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
+        static IEnumerator PublishUnityObjectValueChanged<TSource, TProperty>(UnityEngine.Object unityObject, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
             var isFirst = true;
             var currentValue = default(TProperty);
@@ -107,7 +107,7 @@ namespace UniRx
                     prevValue = currentValue;
                 }
 
-                yield return null;
+                yield return frameCountType.GetYieldInstruction();
             }
         }
     }
