@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UniRx
 {
-    public interface IReadOnlyReactiveProperty<T> : IObservable<T>, IDisposable
+    public interface IReadOnlyReactiveProperty<T> : IObservable<T>
     {
         T Value { get; }
     }
@@ -18,7 +18,7 @@ namespace UniRx
     /// Lightweight property broker.
     /// </summary>
     [Serializable]
-    public class ReactiveProperty<T> : IReactiveProperty<T>
+    public class ReactiveProperty<T> : IReactiveProperty<T>, IDisposable
     {
         [NonSerialized]
         bool isDisposed = false;
@@ -167,7 +167,7 @@ namespace UniRx
     /// <summary>
     /// Lightweight property broker.
     /// </summary>
-    public class ReadOnlyReactiveProperty<T> : IReadOnlyReactiveProperty<T>
+    public class ReadOnlyReactiveProperty<T> : IReadOnlyReactiveProperty<T>, IDisposable
     {
         bool isDisposed = false;
 
