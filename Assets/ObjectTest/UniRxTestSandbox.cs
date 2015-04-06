@@ -11,6 +11,8 @@ using UniRx.Triggers;
 using UniRx.Diagnostics;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Net;
+using System.IO;
 #if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
     // Fallback for Unity versions below 4.5
     using Hash = System.Collections.Hashtable;
@@ -554,13 +556,29 @@ namespace UniRx.ObjectTest
 
             if (GUILayout.Button("TimeoutCheck"))
             {
-                Application.targetFrameRate = 60;   
+                Application.targetFrameRate = 60;
                 Observable.Concat(
                         Observable.Timer(TimeSpan.FromSeconds(3)).Select(_ => "a"),
                         Observable.Timer(TimeSpan.FromSeconds(6)).Select(_ => "b"))
                     .TimeoutFrame(60 * 8)
                     .Subscribe(x => Debug.Log("timer complete:" + x), ex => Debug.Log(ex.ToString()), () => Debug.Log("comp"));
 
+            }
+
+            if (GUILayout.Button("FromAsyncPattern"))
+            {
+                var req = WebRequest.Create("http://unity3d.com/");
+                Observable.FromAsyncPattern<WebResponse>(req.BeginGetResponse, req.EndGetResponse)()
+                    .ObserveOnMainThread()
+                    .Subscribe(x =>
+                    {
+                        using (var stream = x.GetResponseStream())
+                        using (var sr = new StreamReader(stream))
+                        {
+                            var txt = sr.ReadToEnd();
+                            Debug.Log(txt);
+                        }
+                    });
             }
 
             GUILayout.BeginArea(new Rect(200, 0, 100, 200));
