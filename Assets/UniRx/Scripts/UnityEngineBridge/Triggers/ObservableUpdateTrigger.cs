@@ -24,7 +24,6 @@ namespace UniRx.Triggers
             if (update != null)
             {
                 update.OnCompleted();
-                update.Dispose();
             }
         }
     }

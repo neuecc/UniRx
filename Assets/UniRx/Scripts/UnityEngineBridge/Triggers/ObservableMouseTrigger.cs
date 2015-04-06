@@ -110,37 +110,30 @@ namespace UniRx.Triggers
             if (onMouseDown != null)
             {
                 onMouseDown.OnCompleted();
-                onMouseDown.Dispose();
             }
             if (onMouseDrag != null)
             {
                 onMouseDrag.OnCompleted();
-                onMouseDrag.Dispose();
             }
             if (onMouseEnter != null)
             {
                 onMouseEnter.OnCompleted();
-                onMouseEnter.Dispose();
             }
             if (onMouseExit != null)
             {
                 onMouseExit.OnCompleted();
-                onMouseExit.Dispose();
             }
             if (onMouseOver != null)
             {
                 onMouseOver.OnCompleted();
-                onMouseOver.Dispose();
             }
             if (onMouseUp != null)
             {
                 onMouseUp.OnCompleted();
-                onMouseUp.Dispose();
             }
             if (onMouseUpAsButton != null)
             {
                 onMouseUpAsButton.OnCompleted();
-                onMouseUpAsButton.Dispose();
             }
         }
     }

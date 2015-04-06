@@ -38,12 +38,10 @@ namespace UniRx.Triggers
             if (onEnable != null)
             {
                 onEnable.OnCompleted();
-                onEnable.Dispose();
             }
             if (onDisable != null)
             {
                 onDisable.OnCompleted();
-                onDisable.Dispose();
             }
         }
     }

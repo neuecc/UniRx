@@ -52,17 +52,14 @@ namespace UniRx.Triggers
             if (onCollisionEnter2D != null)
             {
                 onCollisionEnter2D.OnCompleted();
-                onCollisionEnter2D.Dispose();
             }
             if (onCollisionExit2D != null)
             {
                 onCollisionExit2D.OnCompleted();
-                onCollisionExit2D.Dispose();
             }
             if (onCollisionStay2D != null)
             {
                 onCollisionStay2D.OnCompleted();
-                onCollisionStay2D.Dispose();
             }
         }
     }

@@ -24,7 +24,6 @@ namespace UniRx.Triggers
             if (fixedUpdate != null)
             {
                 fixedUpdate.OnCompleted();
-                fixedUpdate.Dispose();
             }
         }
     }

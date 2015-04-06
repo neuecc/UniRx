@@ -38,12 +38,10 @@ namespace UniRx.Triggers
             if (onBecameInvisible != null)
             {
                 onBecameInvisible.OnCompleted();
-                onBecameInvisible.Dispose();
             }
             if (onBecameVisible != null)
             {
                 onBecameVisible.OnCompleted();
-                onBecameVisible.Dispose();
             }
         }
     }

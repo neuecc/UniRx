@@ -286,87 +286,70 @@ namespace UniRx.Triggers
             if (onDeselect != null)
             {
                 onDeselect.OnCompleted();
-                onDeselect.Dispose();
             }
             if (onMove != null)
             {
                 onMove.OnCompleted();
-                onMove.Dispose();
             }
             if (onPointerDown != null)
             {
                 onPointerDown.OnCompleted();
-                onPointerDown.Dispose();
             }
             if (onPointerEnter != null)
             {
                 onPointerEnter.OnCompleted();
-                onPointerEnter.Dispose();
             }
             if (onPointerExit != null)
             {
                 onPointerExit.OnCompleted();
-                onPointerExit.Dispose();
             }
             if (onPointerUp != null)
             {
                 onPointerUp.OnCompleted();
-                onPointerUp.Dispose();
             }
             if (onSelect != null)
             {
                 onSelect.OnCompleted();
-                onSelect.Dispose();
             }
             if (onPointerClick != null)
             {
                 onPointerClick.OnCompleted();
-                onPointerClick.Dispose();
             }
             if (onSubmit != null)
             {
                 onSubmit.OnCompleted();
-                onSubmit.Dispose();
             }
             if (onDrag != null)
             {
                 onDrag.OnCompleted();
-                onDrag.Dispose();
             }
             if (onBeginDrag != null)
             {
                 onBeginDrag.OnCompleted();
-                onBeginDrag.Dispose();
             }
             if (onEndDrag != null)
             {
                 onEndDrag.OnCompleted();
-                onEndDrag.Dispose();
             }
             if (onDrop != null)
             {
                 onDrop.OnCompleted();
-                onDrop.Dispose();
             }
             if (onUpdateSelected != null)
             {
                 onUpdateSelected.OnCompleted();
-                onUpdateSelected.Dispose();
             }
             if (onInitializePotentialDrag != null)
             {
                 onInitializePotentialDrag.OnCompleted();
-                onInitializePotentialDrag.Dispose();
             }
             if (onCancel != null)
             {
                 onCancel.OnCompleted();
-                onCancel.Dispose();
             }
             if (onScroll != null)
             {
                 onScroll.OnCompleted();
-                onScroll.Dispose();
             }
         }
     }

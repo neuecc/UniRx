@@ -52,17 +52,14 @@ namespace UniRx.Triggers
             if (onTriggerEnter != null)
             {
                 onTriggerEnter.OnCompleted();
-                onTriggerEnter.Dispose();
             }
             if (onTriggerExit != null)
             {
                 onTriggerExit.OnCompleted();
-                onTriggerExit.Dispose();
             }
             if (onTriggerStay != null)
             {
                 onTriggerStay.OnCompleted();
-                onTriggerStay.Dispose();
             }
         }
     }

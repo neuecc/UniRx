@@ -38,12 +38,10 @@ namespace UniRx.Triggers
             if (onAnimatorIK != null)
             {
                 onAnimatorIK.OnCompleted();
-                onAnimatorIK.Dispose();
             }
             if (onAnimatorMove != null)
             {
                 onAnimatorMove.OnCompleted();
-                onAnimatorMove.Dispose();
             }
         }
     }

@@ -24,7 +24,6 @@ namespace UniRx.Triggers
             if (lateUpdate != null)
             {
                 lateUpdate.OnCompleted();
-                lateUpdate.Dispose();
             }
         }
     }
