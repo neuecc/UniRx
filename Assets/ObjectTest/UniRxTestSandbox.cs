@@ -552,6 +552,17 @@ namespace UniRx.ObjectTest
                     .Subscribe(x => Debug.Log(x));
             }
 
+            if (GUILayout.Button("TimeoutCheck"))
+            {
+                Application.targetFrameRate = 60;   
+                Observable.Concat(
+                        Observable.Timer(TimeSpan.FromSeconds(3)).Select(_ => "a"),
+                        Observable.Timer(TimeSpan.FromSeconds(6)).Select(_ => "b"))
+                    .TimeoutFrame(60 * 8)
+                    .Subscribe(x => Debug.Log("timer complete:" + x), ex => Debug.Log(ex.ToString()), () => Debug.Log("comp"));
+
+            }
+
             GUILayout.BeginArea(new Rect(200, 0, 100, 200));
             {
                 if (GUILayout.Button("Simple FromEvent"))

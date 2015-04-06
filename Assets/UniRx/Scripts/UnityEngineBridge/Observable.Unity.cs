@@ -541,22 +541,71 @@ namespace UniRx
         {
             return Observable.Create<T>(observer =>
             {
-                Func<IDisposable> runTimer = () => Observable.TimerFrame(frameCount, frameCountType)
-                    .Subscribe(_ =>
-                    {
-                        observer.OnError(new TimeoutException());
-                    });
+                object gate = new object();
+                var objectId = 0ul;
+                var isTimeout = false;
+
+                Func<ulong, IDisposable> runTimer = (timerId) =>
+                {
+                    return Observable.TimerFrame(frameCount, frameCountType)
+                        .Subscribe(_ =>
+                        {
+                            lock (gate)
+                            {
+                                if (objectId == timerId)
+                                {
+                                    isTimeout = true;
+                                }
+                            }
+                            if (isTimeout)
+                            {
+                                observer.OnError(new TimeoutException());
+                            }
+                        });
+                };
 
                 var timerDisposable = new SerialDisposable();
-                timerDisposable.Disposable = runTimer();
+                timerDisposable.Disposable = runTimer(objectId);
 
                 var sourceSubscription = new SingleAssignmentDisposable();
                 sourceSubscription.Disposable = source.Subscribe(x =>
                 {
-                    timerDisposable.Disposable = Disposable.Empty; // Cancel Old Timer
+                    bool timeout;
+                    lock (gate)
+                    {
+                        timeout = isTimeout;
+                        objectId++;
+                    }
+                    if (timeout) return;
+
+                    timerDisposable.Disposable = Disposable.Empty; // cancel old timer
                     observer.OnNext(x);
-                    timerDisposable.Disposable = runTimer();
-                }, observer.OnError, observer.OnCompleted);
+                    timerDisposable.Disposable = runTimer(objectId);
+                }, ex =>
+                {
+                    bool timeout;
+                    lock (gate)
+                    {
+                        timeout = isTimeout;
+                        objectId++;
+                    }
+                    if (timeout) return;
+
+                    timerDisposable.Dispose();
+                    observer.OnError(ex);
+                }, () =>
+                {
+                    bool timeout;
+                    lock (gate)
+                    {
+                        timeout = isTimeout;
+                        objectId++;
+                    }
+                    if (timeout) return;
+
+                    timerDisposable.Dispose();
+                    observer.OnCompleted();
+                });
 
                 return new CompositeDisposable { timerDisposable, sourceSubscription };
             });
