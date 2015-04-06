@@ -244,6 +244,102 @@ namespace UniRx
             }
         }
 
+        /// <summary>
+        /// Same as Repeat() but if arriving contiguous "OnComplete" Repeat stops.
+        /// </summary>
+        public static IObservable<T> RepeatSafe<T>(this IObservable<T> source)
+        {
+            return RepeatSafeCore(RepeatInfinite(source));
+        }
+
+        static IObservable<T> RepeatSafeCore<T>(IEnumerable<IObservable<T>> sources)
+        {
+            return Observable.Create<T>(observer =>
+            {
+                var isDisposed = false;
+                var isRunNext = false;
+                var e = sources.AsSafeEnumerable().GetEnumerator();
+                var subscription = new SerialDisposable();
+                var gate = new object();
+
+                var schedule = Scheduler.DefaultSchedulers.TailRecursion.Schedule(self =>
+                {
+                    lock (gate)
+                    {
+                        if (isDisposed) return;
+
+                        var current = default(IObservable<T>);
+                        var hasNext = false;
+                        var ex = default(Exception);
+
+                        try
+                        {
+                            hasNext = e.MoveNext();
+                            if (hasNext)
+                            {
+                                current = e.Current;
+                                if (current == null) throw new InvalidOperationException("sequence is null.");
+                            }
+                            else
+                            {
+                                e.Dispose();
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            ex = exception;
+                            e.Dispose();
+                        }
+
+                        if (ex != null)
+                        {
+                            observer.OnError(ex);
+                            return;
+                        }
+
+                        if (!hasNext)
+                        {
+                            observer.OnCompleted();
+                            return;
+                        }
+
+                        var source = e.Current;
+                        var d = new SingleAssignmentDisposable();
+                        subscription.Disposable = d;
+                        d.Disposable = source.Subscribe(x =>
+                        {
+                            isRunNext = true;
+                            observer.OnNext(x);
+                        }, observer.OnError, () =>
+                        {
+                            if (isRunNext && !isDisposed)
+                            {
+                                isRunNext = false;
+                                self();
+                            }
+                            else
+                            {
+                                e.Dispose();
+                                if (!isDisposed)
+                                {
+                                    observer.OnCompleted();
+                                }
+                            }
+                        });
+                    }
+                });
+
+                return new CompositeDisposable(schedule, subscription, Disposable.Create(() =>
+                {
+                    lock (gate)
+                    {
+                        isDisposed = true;
+                        e.Dispose();
+                    }
+                }));
+            });
+        }
+
         public static IObservable<T> Defer<T>(Func<IObservable<T>> observableFactory)
         {
             return Observable.Create<T>(observer =>

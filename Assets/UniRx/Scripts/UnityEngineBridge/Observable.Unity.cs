@@ -804,7 +804,6 @@ namespace UniRx
                     {
                         isDisposed = true;
                         e.Dispose();
-                        stopper.Dispose();
                     }
                 }));
             });

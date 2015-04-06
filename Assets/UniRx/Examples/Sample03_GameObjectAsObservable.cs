@@ -14,7 +14,10 @@ namespace UniRx.Examples
                 .SelectMany(_ => this.gameObject.UpdateAsObservable())
                 .TakeUntil(this.gameObject.OnMouseUpAsObservable())
                 .Select(_ => Input.mousePosition)
-                .Subscribe(x => Debug.Log(x));
+                .RepeatSafe()
+                .Subscribe(x => Debug.Log(x), ()=> Debug.Log("!!!" + "complete"));
+
+            Destroy(this.gameObject, 3f);
         }
     }
 }
