@@ -9,11 +9,11 @@ namespace UniRx.Triggers
     [DisallowMultipleComponent]
     public class ObservableEventTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler, IInitializePotentialDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IScrollHandler, IUpdateSelectedHandler, ISelectHandler, IDeselectHandler, IMoveHandler, ISubmitHandler, ICancelHandler
     {
-        #region IDSelect
+        #region IDeselectHandler
 
         Subject<BaseEventData> onDeselect;
 
-        public void OnDeselect(BaseEventData eventData)
+        void IDeselectHandler.OnDeselect(BaseEventData eventData)
         {
             if (onDeselect != null) onDeselect.OnNext(eventData);
         }
@@ -29,7 +29,7 @@ namespace UniRx.Triggers
 
         Subject<AxisEventData> onMove;
 
-        public void OnMove(AxisEventData eventData)
+        void IMoveHandler.OnMove(AxisEventData eventData)
         {
             if (onMove != null) onMove.OnNext(eventData);
         }
@@ -45,7 +45,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onPointerDown;
 
-        public void OnPointerDown(PointerEventData eventData)
+        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
             if (onPointerDown != null) onPointerDown.OnNext(eventData);
         }
@@ -61,7 +61,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onPointerEnter;
 
-        public void OnPointerEnter(PointerEventData eventData)
+        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
             if (onPointerEnter != null) onPointerEnter.OnNext(eventData);
         }
@@ -77,7 +77,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onPointerExit;
 
-        public void OnPointerExit(PointerEventData eventData)
+        void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
             if (onPointerExit != null) onPointerExit.OnNext(eventData);
         }
@@ -93,7 +93,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onPointerUp;
 
-        public void OnPointerUp(PointerEventData eventData)
+        void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
             if (onPointerUp != null) onPointerUp.OnNext(eventData);
         }
@@ -105,11 +105,11 @@ namespace UniRx.Triggers
 
         #endregion
 
-        #region ISelect
+        #region ISelectHandler
 
         Subject<BaseEventData> onSelect;
 
-        public void OnSelect(BaseEventData eventData)
+        void ISelectHandler.OnSelect(BaseEventData eventData)
         {
             if (onSelect != null) onSelect.OnNext(eventData);
         }
@@ -125,7 +125,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onPointerClick;
 
-        public void OnPointerClick(PointerEventData eventData)
+        void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
         {
             if (onPointerClick != null) onPointerClick.OnNext(eventData);
         }
@@ -141,7 +141,7 @@ namespace UniRx.Triggers
 
         Subject<BaseEventData> onSubmit;
 
-        public void OnSubmit(BaseEventData eventData)
+        void ISubmitHandler.OnSubmit(BaseEventData eventData)
         {
             if (onSubmit != null) onSubmit.OnNext(eventData);
         }
@@ -157,7 +157,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onDrag;
 
-        public void OnDrag(PointerEventData eventData)
+        void IDragHandler.OnDrag(PointerEventData eventData)
         {
             if (onDrag != null) onDrag.OnNext(eventData);
         }
@@ -173,7 +173,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onBeginDrag;
 
-        public void OnBeginDrag(PointerEventData eventData)
+        void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
             if (onBeginDrag != null) onBeginDrag.OnNext(eventData);
         }
@@ -189,7 +189,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onEndDrag;
 
-        public void OnEndDrag(PointerEventData eventData)
+        void IEndDragHandler.OnEndDrag(PointerEventData eventData)
         {
             if (onEndDrag != null) onEndDrag.OnNext(eventData);
         }
@@ -205,7 +205,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onDrop;
 
-        public void OnDrop(PointerEventData eventData)
+        void IDropHandler.OnDrop(PointerEventData eventData)
         {
             if (onDrop != null) onDrop.OnNext(eventData);
         }
@@ -221,7 +221,7 @@ namespace UniRx.Triggers
 
         Subject<BaseEventData> onUpdateSelected;
 
-        public void OnUpdateSelected(BaseEventData eventData)
+        void IUpdateSelectedHandler.OnUpdateSelected(BaseEventData eventData)
         {
             if (onUpdateSelected != null) onUpdateSelected.OnNext(eventData);
         }
@@ -237,7 +237,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onInitializePotentialDrag;
 
-        public void OnInitializePotentialDrag(PointerEventData eventData)
+        void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
         {
             if (onInitializePotentialDrag != null) onInitializePotentialDrag.OnNext(eventData);
         }
@@ -253,7 +253,7 @@ namespace UniRx.Triggers
 
         Subject<BaseEventData> onCancel;
 
-        public void OnCancel(BaseEventData eventData)
+        void ICancelHandler.OnCancel(BaseEventData eventData)
         {
             if (onCancel != null) onCancel.OnNext(eventData);
         }
@@ -269,7 +269,7 @@ namespace UniRx.Triggers
 
         Subject<PointerEventData> onScroll;
 
-        public void OnScroll(PointerEventData eventData)
+        void IScrollHandler.OnScroll(PointerEventData eventData)
         {
             if (onScroll != null) onScroll.OnNext(eventData);
         }
