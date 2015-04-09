@@ -264,5 +264,63 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
+
+        #region ObservableTransformChangedTrigger
+
+        /// <summary>Callback sent to the graphic before a Transform parent change occurs.</summary>
+        public static IObservable<Unit> OnBeforeTransformParentChangedAsObservable(this Component component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<Unit>();
+            return GetOrAddComponent<ObservableTransformChangedTrigger>(component.gameObject).OnBeforeTransformParentChangedAsObservable();
+        }
+
+        /// <summary>Callback sent to the graphic after a Transform parent change occurs.</summary>
+        public static IObservable<Unit> OnTransformParentChangedAsObservable(this Component component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<Unit>();
+            return GetOrAddComponent<ObservableTransformChangedTrigger>(component.gameObject).OnTransformParentChangedAsObservable();
+        }
+
+        /// <summary>Callback sent to the graphic afer a Transform children change occurs.</summary>
+        public static IObservable<Unit> OnTransformChildrenChangedAsObservable(this Component component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<Unit>();
+            return GetOrAddComponent<ObservableTransformChangedTrigger>(component.gameObject).OnTransformChildrenChangedAsObservable();
+        }
+
+        #endregion
+
+        #region ObservableCanvasGroupChangedTrigger
+
+        /// <summary>Callback that is sent if the canvas group is changed.</summary>
+        public static IObservable<Unit> OnCanvasGroupChangedAsObservable(this Component component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<Unit>();
+            return GetOrAddComponent<ObservableCanvasGroupChangedTrigger>(component.gameObject).OnCanvasGroupChangedAsObservable();
+        }
+
+        #endregion
+
+        #region ObservableRectTransformTrigger
+
+        /// <summary>Callback that is sent if an associated RectTransform has it's dimensions changed.</summary>
+        public static IObservable<Unit> OnRectTransformDimensionsChangeAsObservable(this Component component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<Unit>();
+            return GetOrAddComponent<ObservableRectTransformTrigger>(component.gameObject).OnRectTransformDimensionsChangeAsObservable();
+        }
+
+        /// <summary>Callback that is sent if an associated RectTransform is removed.</summary>
+        public static IObservable<Unit> OnRectTransformRemovedAsObservable(this Component component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<Unit>();
+            return GetOrAddComponent<ObservableRectTransformTrigger>(component.gameObject).OnRectTransformRemovedAsObservable();
+        }
+
+        #endregion
+
+#endif
     }
 }

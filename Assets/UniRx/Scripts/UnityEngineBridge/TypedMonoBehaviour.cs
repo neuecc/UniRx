@@ -2,11 +2,12 @@
 
 namespace UniRx
 {
-    // Note: TypedMonoBehaviour and ObservableMonoBehaviour cause some performance issues.
-    // This is legacy interface.
-    // I recommend use ObservableTriggers(UniRx.Triggers) instead.
-    // More information, see github page.
-
+    /// <summary>
+    /// <para>Note: TypedMonoBehaviour and ObservableMonoBehaviour cause some performance issues.</para>
+    /// <para>This is legacy interface.</para>
+    /// <para>I recommend use ObservableTriggers(UniRx.Triggers) instead.</para>
+    /// <para>More information, see github page.</para>
+    /// </summary>
     public class TypedMonoBehaviour : MonoBehaviour
     {
         /// <summary>Awake is called when the script instance is being loaded.</summary>
@@ -137,7 +138,7 @@ namespace UniRx
         /// <summary>OnRenderObject is called after camera has rendered the scene.</summary>
         public virtual void OnRenderObject() { }
 
-        /// <summary>Called on the server whenever a Network.</summary>InitializeServer was invoked and has completed.</summary>
+        /// <summary>Called on the server whenever a Network. InitializeServer was invoked and has completed.</summary>
         public virtual void OnServerInitialized() { }
 
         /// <summary>OnTriggerEnter is called when the Collider other enters the trigger.</summary>
@@ -186,7 +187,7 @@ namespace UniRx
         /// <summary>Called on clients or servers when reporting events from the MasterServer.</summary>
         public virtual void OnMasterServerEvent(MasterServerEvent msEvent) { }
 
-        /// <summary>Called on objects which have been network instantiated with Network.</summary>Instantiate.</summary>
+        /// <summary>Called on objects which have been network instantiated with Network Instantiate.</summary>
         public virtual void OnNetworkInstantiate(NetworkMessageInfo info) { }
 
         /// <summary>Called on the server whenever a new player has successfully connected.</summary>

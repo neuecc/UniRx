@@ -158,6 +158,7 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableAnimatorTrigger.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableRectTransformTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCollision2DTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCollisionTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDestroyTrigger.cs" />
@@ -166,12 +167,14 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableFixedUpdateTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableLateUpdateTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableMouseTrigger.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCanvasGroupChangedTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTrigger2DTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerBase.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerExtensions.Component.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableUpdateTrigger.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTransformChangedTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableVisibleTrigger.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\TypedMonoBehaviour.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UnityEventExtensions.cs" />
