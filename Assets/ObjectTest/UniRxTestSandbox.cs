@@ -95,6 +95,27 @@ namespace UniRx.ObjectTest
         }
     }
 
+    public enum Fruit
+    {
+        Apple, Grape
+    }
+
+    [Serializable]
+    public class FruitReactiveProperty : ReactiveProperty<Fruit>
+    {
+        public FruitReactiveProperty()
+        {
+
+        }
+
+        public FruitReactiveProperty(Fruit initialValue)
+            :base(initialValue)
+        {
+
+        }
+    }
+
+
     [Serializable]
     public class MikanReactiveProperty : ReactiveProperty<Mikan>
     {

@@ -291,7 +291,7 @@ public class MyComponent : MonoBehaviour
 }
 ```
 
-Kind of Triggers are `ObservableAnimatorTrigger`, `ObservableCollision2DTrigger`, `ObservableCollisionTrigger`, `ObservableDestroyTrigger`, `ObservableEnableTrigger`, `ObservableFixedUpdateTrigger`, `ObservableUpdateTrigger`, `ObservableLastUpdateTrigger`, `ObservableMouseTrigger`, `ObservableTrigger2DTrigger`, `ObservableTriggerTrigger`, `ObservableVisibleTrigger`.
+Kind of Triggers are `ObservableAnimatorTrigger`, `ObservableCollision2DTrigger`, `ObservableCollisionTrigger`, `ObservableDestroyTrigger`, `ObservableEnableTrigger`, `ObservableFixedUpdateTrigger`, `ObservableUpdateTrigger`, `ObservableLastUpdateTrigger`, `ObservableMouseTrigger`, `ObservableTrigger2DTrigger`, `ObservableTriggerTrigger`, `ObservableVisibleTrigger`, `ObservableTransformChangedTrigger`, `ObservableRectTransformTrigger`, `ObservableCanvasGroupChangedTrigger`, `ObservableStateMachineTrigger`.
 
 You can more easily handling, direct subscribe by Extension Methods on Component/GameObject that inject ObservableTrigger automaticaly.
 
@@ -312,6 +312,142 @@ public class DragAndDropOnce : MonoBehaviour
     }
 }
 ```
+
+> In old UniRx provided `ObservableMonoBehaviour` but it's legacy interface use UniRx.Triggers instead.
+
+Create your own custom triggers
+---
+Event as Observable is best way for handling Unity events. If standard triggers are not enought, you can create custom trigger. For example LongTap trigger for uGUI.
+
+```csharp
+public class ObservableLongPointerDownTrigger : ObservableTriggerBase, IPointerDownHandler, IPointerUpHandler
+{
+    public float IntervalSecond = 1f;
+
+    Subject<Unit> onLongPointerDown;
+
+    float? raiseTime;
+
+    void Update()
+    {
+        if (raiseTime != null && raiseTime <= Time.realtimeSinceStartup)
+        {
+            if (onLongPointerDown != null) onLongPointerDown.OnNext(Unit.Default);
+            raiseTime = null;
+        }
+    }
+
+    void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
+    {
+        raiseTime = Time.realtimeSinceStartup + IntervalSecond;
+    }
+
+    void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
+    {
+        raiseTime = null;
+    }
+
+    public IObservable<Unit> OnLongPointerDownAsObservable()
+    {
+        return onLongPointerDown ?? (onLongPointerDown = new Subject<Unit>());
+    }
+
+    protected override void RaiseOnCompletedOnDestroy()
+    {
+        if (onLongPointerDown != null)
+        {
+            onLongPointerDown.OnCompleted();
+        }
+    }
+}
+```
+
+It can handle easily same as OnClickAsObservable, etc.
+
+```csharp
+var trigger = button.AddComponent<ObservableLongPointerDownTrigger>();
+
+trigger.OnLongPointerDownAsObservable().Subscribe();
+```
+
+Observable Lifecycle Management
+---
+When called OnCompletd? Subscription's lifecycle management is very important topic for use UniRx. `ObservableTriggers` called OnCompleted at destroyed gameObject. Some static generator methods(`Observable.Timer`, `Observable.EveryUpdate`, etc...) isn't stop automatically. You should manage there subscription.
+
+At first, you can use `IDisposable.AddTo`.
+
+```csharp
+// CompositeDisposable is similar with List<IDisposable>, manage multiple IDisposable
+CompositeDisposable disposables = new CompositeDisposable(); // field
+
+void Start()
+{
+    Observable.EveryUpdate().Subscribe(x => Debug.Log(x)).AddTo(disposables);
+}
+
+void OnTriggerEnter(Collider other)
+{
+    // .Clear() => all inner disposable called Dispose and list is cleared.
+    // .Dispose() => all inner disposable called Dispose and after Add, called Dispose immediately.
+    disposables.Clear();
+}
+```
+
+If you want to Dispose at Destroy, you can use AddTo(gameObject/component).
+
+```csharp
+void Start()
+{
+    Observable.IntervalFrame(30).Subscribe(x => Debug.Log(x)).AddTo(this);
+}
+```
+
+AddTo calls Dispose but if you needs OnCompleted during pipeline, you can use `TakeWhile`, `TakeUntil`, `TakeUntilDestroy`, `TakeUntilDisable`.
+
+```csharp
+Observable.IntervalFrame(30).TakeUntilDisable(this)
+    .Subscribe(x => Debug.Log(x), () => Debug.Log("completed!"));
+```
+
+If you handle events, `Repeat` is important but carefully method. It cause infinite loop.
+
+```csharp
+using UniRx;
+using UniRx.Triggers;
+
+public class DangerousDragAndDrop : MonoBehaviour
+{
+    void Start()
+    {
+        this.gameObject.OnMouseDownAsObservable()
+            .SelectMany(_ => this.gameObject.UpdateAsObservable())
+            .TakeUntil(this.gameObject.OnMouseUpAsObservable())
+            .Select(_ => Input.mousePosition)
+            .Repeat() // dangerous!!! Repeat cause infinite repeat subscribe at GameObject was destroyed.(If in UnityEditor, Editor is freezed)
+            .Subscribe(x => Debug.Log(x));
+    }
+}
+```
+
+UniRx has safety Repeat method. `RepeatSafe` - if arriving contiguous "OnComplete" Repeat stops. `RepeatUntilDestroy(gameObject/component)`, `RepeatUntilDisable(gameObject/component)` - stops when target gameObject has been destroyed.
+
+```
+this.gameObject.OnMouseDownAsObservable()
+    .SelectMany(_ => this.gameObject.UpdateAsObservable())
+    .TakeUntil(this.gameObject.OnMouseUpAsObservable())
+    .Select(_ => Input.mousePosition)
+    .RepeatUntilDestroy(this) // safety way
+    .Subscribe(x => Debug.Log(x));            
+```
+
+By the way, All class instance can call `ObserveEveryValueChanged` method it watch chaning value in every frame.
+
+```csharp
+// watch position change
+this.transform.ObserveEveryValueChanged(x => x.position).Subscribe(x => Debug.Log(x));
+```
+
+It's very useful. It's lifecycle is if watch target is GameObject until target has been destroyed, when destroyed called OnCompleted. If watch target is plain C# Object, called OnCompleted at target on GC.
 
 Convert Unity callback to IObservable
 ---
@@ -518,15 +654,38 @@ enemy.IsDead.Where(isDead => isDead == true)
 
 You can combine ReactiveProperty, ReactiveCollection and UnityEvent.AsObservable. All ui elements is observable.
 
-Generic ReactiveProeprty is not inspecatble but UniRx provides specialized ReactiveProperty for use in inspector. You can use Int/LongReactiveProperty, Float/DoubleReactiveProperty, StringReactiveProperty, etc for show and editable in inspector. If you want to use Enum's ReactiveProperty, you can make custom ReactiveProperty[T] for inspecatable.
+Generic ReactiveProeprty is not serializable/inspecatble but UniRx provides specialized ReactiveProperty for use in inspector. You can use Int/LongReactiveProperty, Float/DoubleReactiveProperty, StringReactiveProperty, BoolReactiveProperty, etc(all lists:are [InspectableReactiveProperty.cs](https://github.com/neuecc/UniRx/blob/master/Assets/UniRx/Scripts/UnityEngineBridge/InspectableReactiveProperty.cs) for show and editable in inspector. If you want to use Enum's ReactiveProperty, you can make custom ReactiveProperty[T] for inspecatable.
 
-`InspectorDisplayAttribute` helps readability in inspector. 
+Well known InpsectableReactiveProperties display in inspector naturally and notify value changed event if change the value on inspector.
 
 ![](StoreDocument/RxPropInspector.png)
 
+It enables by [InspectorDisplayDrawer](https://github.com/neuecc/UniRx/blob/master/Assets/UniRx/Scripts/UnityEngineBridge/InspectorDisplayDrawer.cs). You can apply custom specialized ReactiveProperty by inherited `InspectorDisplayDrawer`.
+
 ```csharp
-[InspectorDisplay]
-public IntReactiveProperty IntRxProp = new IntReactiveProperty(); 
+public enum Fruit
+{
+    Apple, Grape
+}
+
+[Serializable]
+public class FruitReactiveProperty : ReactiveProperty<Fruit>
+{
+    public FruitReactiveProperty()
+    {
+    }
+
+    public FruitReactiveProperty(Fruit initialValue)
+        :base(initialValue)
+    {
+    }
+}
+
+[UnityEditor.CustomPropertyDrawer(typeof(FruitReactiveProperty))]
+[UnityEditor.CustomPropertyDrawer(typeof(YourSpecializedReactiveProperty2))] // and others...
+public class ExtendInspectorDisplayDrawer : InspectorDisplayDrawer
+{
+}
 ```
 
 If value is only defined from stream, it is readonly. You can use `ReadOnlyReactiveProperty`.
@@ -605,26 +764,15 @@ View is Scene, Unity hierarchy. View to Presenter associates by Unity Engine on 
 
 V -> RP -> M -> RP -> V completely connected in reactive. UniRx provides all adaptor method/classes. Of course you can use with other MVVM(or MV*) framework. UniRx/ReactiveProperty is only simple toolkit. 
 
-ObservableEventTrigger
----
-In `UniRx.UI` namespace have `ObservableEventTrigger`(note: other than this `UniRx` namespace has similar class  `ObservableStateMachineBehaviour`). ObservableEventTrigger is very useful for adhoc attach and observe UI events.
+Again, mentions about ObservableTriggers. ObservableTriggers converts Unity event as Observable. It's user events, you can compose MV(R)P pattern. For exampe, `ObservableEventTrigger` converts uGUI events to Observable.
 
 ```csharp
 var eventTrigger = this.gameObject.AddComponent<ObservableEventTrigger>();
 eventTrigger.OnBeginDragAsObservable()
     .SelectMany(_ => eventTrigger.OnDragAsObservable(), (start, current) => UniRx.Tuple.Create(start, current))
     .TakeUntil(eventTrigger.OnEndDragAsObservable())
-    .Repeat()
+    .RepeatUntilDestroy(this)
     .Subscribe(x => Debug.Log(x));
-```
-
-And If you using `UniRx.UI`, all class instance can call `ObserveEveryValueChanged` method it watch chaning value in every frame.
-
-```csharp
-using UniRx.UI;
-
-// watch position change
-this.transform.ObserveEveryValueChanged(x => x.position).Subscribe(x => Debug.Log(x));
 ```
 
 Samples
