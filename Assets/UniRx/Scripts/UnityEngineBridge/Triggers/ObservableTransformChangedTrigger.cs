@@ -25,13 +25,13 @@ namespace UniRx.Triggers
 
         Subject<Unit> onTransformParentChanged;
 
-        // Callback sent to the graphic afer a Transform parent change occurs
+        // This function is called when the parent property of the transform of the GameObject has changed
         void OnTransformParentChanged()
         {
             if (onTransformParentChanged != null) onTransformParentChanged.OnNext(Unit.Default);
         }
 
-        /// <summary>Callback sent to the graphic after a Transform parent change occurs.</summary>
+        /// <summary>This function is called when the parent property of the transform of the GameObject has changed.</summary>
         public IObservable<Unit> OnTransformParentChangedAsObservable()
         {
             return onTransformParentChanged ?? (onTransformParentChanged = new Subject<Unit>());
@@ -39,13 +39,13 @@ namespace UniRx.Triggers
 
         Subject<Unit> onTransformChildrenChanged;
 
-        // Callback sent to the graphic afer a Transform children change occurs
+        // This function is called when the list of children of the transform of the GameObject has changed
         void OnTransformChildrenChanged()
         {
             if (onTransformChildrenChanged != null) onTransformChildrenChanged.OnNext(Unit.Default);
         }
 
-        /// <summary>Callback sent to the graphic afer a Transform children change occurs.</summary>
+        /// <summary>This function is called when the list of children of the transform of the GameObject has changed.</summary>
         public IObservable<Unit> OnTransformChildrenChangedAsObservable()
         {
             return onTransformChildrenChanged ?? (onTransformChildrenChanged = new Subject<Unit>());

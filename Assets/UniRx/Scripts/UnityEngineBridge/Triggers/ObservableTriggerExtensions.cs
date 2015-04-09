@@ -276,14 +276,14 @@ namespace UniRx.Triggers
             return GetOrAddComponent<ObservableTransformChangedTrigger>(gameObject).OnBeforeTransformParentChangedAsObservable();
         }
 
-        /// <summary>Callback sent to the graphic after a Transform parent change occurs.</summary>
+        /// <summary>This function is called when the parent property of the transform of the GameObject has changed.</summary>
         public static IObservable<Unit> OnTransformParentChangedAsObservable(this GameObject gameObject)
         {
             if (gameObject == null) return Observable.Empty<Unit>();
             return GetOrAddComponent<ObservableTransformChangedTrigger>(gameObject).OnTransformParentChangedAsObservable();
         }
 
-        /// <summary>Callback sent to the graphic afer a Transform children change occurs.</summary>
+        /// <summary>This function is called when the list of children of the transform of the GameObject has changed.</summary>
         public static IObservable<Unit> OnTransformChildrenChangedAsObservable(this GameObject gameObject)
         {
             if (gameObject == null) return Observable.Empty<Unit>();
