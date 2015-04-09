@@ -291,9 +291,9 @@ public class MyComponent : MonoBehaviour
 }
 ```
 
-Kind of Triggers are `ObservableAnimatorTrigger`, `ObservableCollision2DTrigger`, `ObservableCollisionTrigger`, `ObservableDestroyTrigger`, `ObservableEnableTrigger`, `ObservableFixedUpdateTrigger`, `ObservableUpdateTrigger`, `ObservableLastUpdateTrigger`, `ObservableMouseTrigger`, `ObservableTrigger2DTrigger`, `ObservableTriggerTrigger`, `ObservableVisibleTrigger`, `ObservableTransformChangedTrigger`, `ObservableRectTransformTrigger`, `ObservableCanvasGroupChangedTrigger`, `ObservableStateMachineTrigger`.
+Kind of Triggers are `ObservableAnimatorTrigger`, `ObservableCollision2DTrigger`, `ObservableCollisionTrigger`, `ObservableDestroyTrigger`, `ObservableEnableTrigger`, `ObservableFixedUpdateTrigger`, `ObservableUpdateTrigger`, `ObservableLastUpdateTrigger`, `ObservableMouseTrigger`, `ObservableTrigger2DTrigger`, `ObservableTriggerTrigger`, `ObservableVisibleTrigger`, `ObservableTransformChangedTrigger`, `ObservableRectTransformTrigger`, `ObservableCanvasGroupChangedTrigger`, `ObservableStateMachineTrigger`, `ObservableEventTrigger`.
 
-You can more easily handling, direct subscribe by Extension Methods on Component/GameObject that inject ObservableTrigger automaticaly.
+You can more easily handling, direct subscribe by Extension Methods on Component/GameObject that inject ObservableTrigger automaticaly(except `ObservableEventTrigger` and `ObservableStateMachineTrigger`).
 
 ```csharp
 using UniRx;
@@ -313,7 +313,7 @@ public class DragAndDropOnce : MonoBehaviour
 }
 ```
 
-> In old UniRx provided `ObservableMonoBehaviour` but it's legacy interface use UniRx.Triggers instead.
+> Old UniRx provided `ObservableMonoBehaviour` but it's legacy interface use UniRx.Triggers instead.
 
 Create your own custom triggers
 ---
@@ -372,7 +372,7 @@ trigger.OnLongPointerDownAsObservable().Subscribe();
 
 Observable Lifecycle Management
 ---
-When called OnCompletd? Subscription's lifecycle management is very important topic for use UniRx. `ObservableTriggers` called OnCompleted at destroyed gameObject. Some static generator methods(`Observable.Timer`, `Observable.EveryUpdate`, etc...) isn't stop automatically. You should manage there subscription.
+When called OnCompleted? Subscription's lifecycle management is very important topic for use UniRx. `ObservableTriggers` called OnCompleted at destroyed gameObject. Some static generator methods(`Observable.Timer`, `Observable.EveryUpdate`, etc...) isn't stop automatically. You should manage there subscription.
 
 At first, you can use `IDisposable.AddTo`.
 
