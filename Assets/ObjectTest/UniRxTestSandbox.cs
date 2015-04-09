@@ -568,7 +568,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("FromAsyncPattern"))
             {
                 var req = WebRequest.Create("http://unity3d.com/");
-                var subscription = req.GetResponseAsObservable()
+                req.GetResponseAsObservable()
                     .ObserveOnMainThread()
                     .Subscribe(x =>
                     {
