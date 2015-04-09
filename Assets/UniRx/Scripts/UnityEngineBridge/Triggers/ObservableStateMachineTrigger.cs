@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UniRx
 {
-    public class ObservableStateMachineBehaviour : StateMachineBehaviour
+    public class ObservableStateMachineTrigger : StateMachineBehaviour
     {
         public class OnStateInfo
         {
