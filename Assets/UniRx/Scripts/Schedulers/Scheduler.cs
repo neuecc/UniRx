@@ -6,16 +6,6 @@ using System.Threading;
 
 namespace UniRx
 {
-    public interface IScheduler
-    {
-        DateTimeOffset Now { get; }
-        
-        // interface is changed from official Rx for avoid iOS AOT problem(state is dangerous).
-
-        IDisposable Schedule(Action action);
-        IDisposable Schedule(TimeSpan dueTime, Action action);
-    }
-
     // Scheduler Extension
     public static partial class Scheduler
     {
