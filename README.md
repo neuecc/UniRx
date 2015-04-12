@@ -603,14 +603,14 @@ public Slider MySlider;
 void Start()
 {
     // Toggle, Input etc as Observable(OnValueChangedAsObservable is helper for provide isOn value on subscribe)
-    // SubscribeToInteractable is UniRx.UI Extension Method, same as .interactable = x)
+    // SubscribeToInteractable is Extension Method, same as .interactable = x)
     MyToggle.OnValueChangedAsObservable().SubscribeToInteractable(MyButton);
     
     // input shows delay after 1 second
     MyInput.OnValueChangeAsObservable()
         .Where(x => x != null)
         .Delay(TimeSpan.FromSeconds(1))
-        .SubscribeToText(MyText); // SubscribeToText is UniRx.UI Extension Method
+        .SubscribeToText(MyText); // SubscribeToText is helper for subscribe to text
     
     // converting for human visibility
     MySlider.OnValueChangedAsObservable()
