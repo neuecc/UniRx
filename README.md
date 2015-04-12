@@ -304,9 +304,9 @@ public class DragAndDropOnce : MonoBehaviour
     void Start()
     {
         // All events can subscribe by ***AsObservable
-        this.gameObject.OnMouseDownAsObservable()
-            .SelectMany(_ => this.gameObject.UpdateAsObservable())
-            .TakeUntil(this.gameObject.OnMouseUpAsObservable())
+        this.OnMouseDownAsObservable()
+            .SelectMany(_ => this.UpdateAsObservable())
+            .TakeUntil(this.OnMouseUpAsObservable())
             .Select(_ => Input.mousePosition)
             .Subscribe(x => Debug.Log(x));
     }
