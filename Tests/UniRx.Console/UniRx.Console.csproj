@@ -144,6 +144,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\ImmediateScheduler.cs">
       <Link>Scripts\Schedulers\ImmediateScheduler.cs</Link>
     </Compile>
+      <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\IScheduler.cs">
+          <Link>Scripts\Schedulers\IScheduler.cs</Link>
+      </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\Scheduler.cs">
       <Link>Scripts\Schedulers\Scheduler.cs</Link>
     </Compile>
