@@ -249,8 +249,8 @@ namespace UniRx
             var count = 0L;
             while (!cancellationToken.IsCancellationRequested)
             {
-                observer.OnNext(count++);
                 yield return null;
+                observer.OnNext(count++);
             }
         }
 
