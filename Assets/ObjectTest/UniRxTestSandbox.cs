@@ -109,7 +109,7 @@ namespace UniRx.ObjectTest
         }
 
         public FruitReactiveProperty(Fruit initialValue)
-            :base(initialValue)
+            : base(initialValue)
         {
 
         }
@@ -257,7 +257,7 @@ namespace UniRx.ObjectTest
             });
 
 
-            Intxxx.Subscribe(x => Debug.Log(x));
+            // Intxxx.Subscribe(x => Debug.Log(x));
             LongxXXX.Subscribe(x => Debug.Log(x));
             DuAAX.Subscribe(x => Debug.Log(x));
             FloAAX.Subscribe(x => Debug.Log(x));
@@ -333,6 +333,7 @@ namespace UniRx.ObjectTest
 
         Subject<Unit> throttleSubject = new Subject<Unit>();
         Func<bool> isNull = null;
+        ReactiveProperty<int> fromNeverRxProp = null;
 
         public Func<bool> IsNull<T>(T source)
         {
@@ -355,12 +356,20 @@ namespace UniRx.ObjectTest
                 disposables.Clear();
             }
 
-            if (GUILayout.Button("DelayFrame"))
+            if (GUILayout.Button("RxProp1"))
             {
-                logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.Return(100)
-                    .DelayFrame(3)
-                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + ":" + Time.frameCount));
+                Intxxx.Subscribe(x => Debug.Log(x));
+            }
+
+            if (GUILayout.Button("RxProp2"))
+            {
+                fromNeverRxProp = Observable.Never<int>().ToReactiveProperty();
+                fromNeverRxProp.Subscribe(x => Debug.Log(x));
+            }
+
+            if (GUILayout.Button("RxProp2Push"))
+            {
+                fromNeverRxProp.Value = 20;
             }
 
             if (GUILayout.Button("DelayFrameEmpty"))
