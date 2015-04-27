@@ -246,10 +246,13 @@ namespace UniRx
 
         static IEnumerator EveryUpdateCore(IObserver<long> observer, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
-            while (!cancellationToken.IsCancellationRequested)
+            while (true)
             {
                 yield return null;
+                if (cancellationToken.IsCancellationRequested) yield break;
+
                 observer.OnNext(count++);
             }
         }
@@ -263,11 +266,13 @@ namespace UniRx
         {
             if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
-            do
+            while(true)
             {
                 yield return new UnityEngine.WaitForFixedUpdate();
+                if (cancellationToken.IsCancellationRequested) yield break;
+
                 observer.OnNext(count++);
-            } while (!cancellationToken.IsCancellationRequested);
+            }
         }
 
         public static IObservable<long> EveryEndOfFrame()
@@ -279,11 +284,13 @@ namespace UniRx
         {
             if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
-            do
+            while(true)
             {
                 yield return new UnityEngine.WaitForFixedUpdate();
+                if (cancellationToken.IsCancellationRequested) yield break;
+
                 observer.OnNext(count++);
-            } while (!cancellationToken.IsCancellationRequested);
+            }
         }
 
         #region Observable.Time Frame Extensions
