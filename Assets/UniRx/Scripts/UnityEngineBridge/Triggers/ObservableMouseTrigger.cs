@@ -2,8 +2,6 @@
 
 namespace UniRx.Triggers
 {
-#if !(UNITY_IPHONE || UNITY_ANDROID)
-
     [DisallowMultipleComponent]
     public class ObservableMouseTrigger : ObservableTriggerBase
     {
@@ -137,5 +135,4 @@ namespace UniRx.Triggers
             }
         }
     }
-#endif
 }

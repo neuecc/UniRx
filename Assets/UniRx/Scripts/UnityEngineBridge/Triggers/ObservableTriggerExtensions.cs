@@ -129,8 +129,6 @@ namespace UniRx.Triggers
 
         #region ObservableMouseTrigger
 
-#if !(UNITY_IPHONE || UNITY_ANDROID)
-
         /// <summary>OnMouseDown is called when the user has pressed the mouse button while over the GUIElement or Collider.</summary>
         public static IObservable<Unit> OnMouseDownAsObservable(this GameObject gameObject)
         {
@@ -179,8 +177,6 @@ namespace UniRx.Triggers
             if (gameObject == null) return Observable.Empty<Unit>();
             return GetOrAddComponent<ObservableMouseTrigger>(gameObject).OnMouseUpAsButtonAsObservable();
         }
-
-#endif
 
         #endregion
 

@@ -169,7 +169,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 723316299}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee855b2348c6bfd4a86774265bc64356, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e866ab5ccb1eda45a190fce8c1a4729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &813832944
@@ -244,6 +244,7 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
 --- !u!4 &813832949
 Transform:
   m_ObjectHideFlags: 0

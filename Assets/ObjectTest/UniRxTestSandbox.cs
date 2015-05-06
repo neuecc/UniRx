@@ -9,8 +9,6 @@ using System;
 using System.Text;
 using UniRx.Triggers;
 using UniRx.Diagnostics;
-using UnityEngine.Events;
-using UnityEngine.UI;
 using System.Net;
 using System.IO;
 #if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
@@ -182,7 +180,7 @@ namespace UniRx.ObjectTest
     {
         readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
 
-        public UnityEvent<int> SimpleEvent;
+        // public UnityEvent<int> SimpleEvent;
 
         public Vector2ReactiveProperty V2R;
 
@@ -222,7 +220,7 @@ namespace UniRx.ObjectTest
         public ColorReactiveProperty DDD;
         public RectReactiveProperty EEE;
 
-        public Slider MySlider;
+        // public Slider MySlider;
 
         public MySuperStructReactiveProperty SUPER_Rx;
 
@@ -617,7 +615,7 @@ namespace UniRx.ObjectTest
                 {
                     try
                     {
-                        MySlider.OnValueChangedAsObservable().Subscribe(x => logger.Debug(x), ex => logger.Exception(ex));
+                        // MySlider.OnValueChangedAsObservable().Subscribe(x => logger.Debug(x), ex => logger.Exception(ex));
 
                     }
                     //Observable.FromEvent<UnityEvent>(h => h.Invoke, 

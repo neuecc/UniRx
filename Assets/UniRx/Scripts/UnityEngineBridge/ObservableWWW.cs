@@ -369,7 +369,15 @@ namespace UniRx
 
         public override string ToString()
         {
-            return RawErrorMessage;
+            var text = WWW.text;
+            if (string.IsNullOrEmpty(text))
+            {
+                return RawErrorMessage;
+            }
+            else
+            {
+                return RawErrorMessage + " " + text;
+            }
         }
     }
 }
