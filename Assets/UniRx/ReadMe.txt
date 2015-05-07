@@ -19,6 +19,8 @@ Last, send me an email at: ils@neue.cc
 
 Release Notes, see [UniRx/releases](https://github.com/neuecc/UniRx/releases)
 
+UniRx is Core Library(Port of Rx) + Platform Adaptor(MainThreadScheduler/FromCoroutine/etc) + Framework(ObservableTriggers/ReactiveProeperty/PresenterBase/etc) 
+
 Why Rx?
 ---
 Ordinary, Unity Network operation use `WWW` and `Coroutine` but `Coroutine` is not good practice for asynchronous operation.
