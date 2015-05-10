@@ -777,6 +777,18 @@ eventTrigger.OnBeginDragAsObservable()
     .Subscribe(x => Debug.Log(x));
 ```
 
+Visual Studio Analyzer
+---
+If you use Visual Studio 2015, You can add UniRxAnalyzer. For example detect doesn't subscribe method call.
+
+![](StoreDocument/VSAnalyzer.jpg)
+
+`ObservableWWW`(or almost methods) isn't fire before subscribe. This analyzer make aware right usage. You can download from NuGet.
+
+* Install-Package [UniRxAnalyzer](http://www.nuget.org/packages/UniRxAnalyzer)
+
+Please request new analyzer idea on GitHub issues!
+
 Samples
 ---
 see [UniRx/Examples](https://github.com/neuecc/UniRx/tree/master/Assets/UniRx/Examples)  
