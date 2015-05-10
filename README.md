@@ -781,6 +781,8 @@ Visual Studio Analyzer
 ---
 If you use Visual Studio 2015, You can add UniRxAnalyzer. For example detect doesn't subscribe method call.
 
+![](StoreDocument/AnalyzerReference.jpg)
+
 ![](StoreDocument/VSAnalyzer.jpg)
 
 `ObservableWWW`(or almost methods) isn't fire before subscribe. This analyzer make aware right usage. You can download from NuGet.
