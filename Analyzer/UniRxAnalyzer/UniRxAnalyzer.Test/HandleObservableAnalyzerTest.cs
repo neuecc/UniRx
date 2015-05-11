@@ -46,6 +46,25 @@ class Test
         }
 
         [TestMethod]
+        public void HandleConditional()
+        {
+            var source = @"
+using System;
+   
+class Test
+{
+    IObservable<int> GetObservable() => null;
+
+    void Hoge()
+    {
+        var x = (true) ? GetObservable() : GetObservable();
+    }
+}";
+            
+            this.VerifyCSharpDiagnostic(source);
+        }
+
+        [TestMethod]
         public void OkayReturn()
         {
             var source = @"

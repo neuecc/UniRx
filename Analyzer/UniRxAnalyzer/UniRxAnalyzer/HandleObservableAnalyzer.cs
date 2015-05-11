@@ -38,11 +38,12 @@ namespace UniRxAnalyzer
                 // UniRx.IObservable? System.IObservable?
                 if (new[] { type }.Concat(type.AllInterfaces).Any(x => x.Name == "IObservable"))
                 {
-                    // Okay => x = M(), var x = M(), return M(), from x in M()
+                    // Okay => x = M(), var x = M(), return M(), from x in M(), (bool) ? M() : M()
                     if (expr.Parent.IsKind(SyntaxKind.SimpleAssignmentExpression)) continue;
                     if (expr.Parent.IsKind(SyntaxKind.EqualsValueClause) && expr.Parent.Parent.IsKind(SyntaxKind.VariableDeclarator)) continue;
                     if (expr.Parent.IsKind(SyntaxKind.ReturnStatement)) continue;
                     if (expr.Parent.IsKind(SyntaxKind.FromClause)) continue;
+                    if (expr.Parent.IsKind(SyntaxKind.ConditionalExpression)) continue;
 
                     // Okay => M().M()
                     if (expr.DescendantNodes().OfType<InvocationExpressionSyntax>().Any()) continue;
