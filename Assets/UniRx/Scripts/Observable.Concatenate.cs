@@ -821,7 +821,7 @@ namespace UniRx
         public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, IEnumerable<T> values)
         {
             var array = values as T[];
-            if (array != null)
+            if (array == null)
             {
                 array = values.ToArray();
             }
