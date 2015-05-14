@@ -457,6 +457,21 @@ namespace UniRx.ObjectTest
                     .AddTo(disposables);
             }
 
+            if (GUILayout.Button("ThrottleFirstFrame"))
+            {
+                logtext.AppendLine("ThrottleFirstFrame:" + Time.frameCount);
+                throttleSubject
+                    .ThrottleFirstFrame(60)
+                    .Subscribe(x =>
+                    {
+                        logtext.AppendLine("ThrottleFirst:" + Time.frameCount.ToString());
+                    }, () =>
+                    {
+                        logtext.AppendLine("Complete:" + Time.frameCount.ToString());
+                    })
+                    .AddTo(disposables);
+            }
+
             if (GUILayout.Button("TimeoutFrame"))
             {
                 logtext.AppendLine("TimeoutFrame:" + Time.frameCount);

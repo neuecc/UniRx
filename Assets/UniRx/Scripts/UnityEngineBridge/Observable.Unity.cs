@@ -544,6 +544,59 @@ namespace UniRx
             });
         }
 
+        public static IObservable<TSource> ThrottleFirstFrame<TSource>(this IObservable<TSource> source, int frameCount,
+            FrameCountType frameCountType = FrameCountType.Update)
+        {
+            return new AnonymousObservable<TSource>(observer =>
+            {
+                var gate = new object();
+                var open = true;
+                var cancelable = new SerialDisposable();
+
+                var subscription = source.Subscribe(x =>
+                {
+                    lock (gate)
+                    {
+                        if (!open) return;
+                        observer.OnNext(x);
+                        open = false;
+                    }
+
+                    var d = new SingleAssignmentDisposable();
+                    cancelable.Disposable = d;
+
+                    d.Disposable = Observable.TimerFrame(frameCount, frameCountType)
+                        .Subscribe(_ =>
+                        {
+                            lock (gate)
+                            {
+                                open = true;
+                            }
+                        });
+                },
+                    exception =>
+                    {
+                        cancelable.Dispose();
+
+                        lock (gate)
+                        {
+                            observer.OnError(exception);
+                        }
+                    },
+                    () =>
+                    {
+                        cancelable.Dispose();
+
+                        lock (gate)
+                        {
+                            observer.OnCompleted();
+
+                        }
+                    });
+
+                return new CompositeDisposable(subscription, cancelable);
+            });
+        }
         public static IObservable<T> TimeoutFrame<T>(this IObservable<T> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
             return Observable.Create<T>(observer =>

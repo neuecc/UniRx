@@ -574,6 +574,7 @@ TimerFrame|
 DelayFrame|
 SampleFrame|
 ThrottleFrame|
+ThrottleFirstFrame|
 TimeoutFrame|
 DelayFrameSubscription|
 

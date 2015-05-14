@@ -130,5 +130,32 @@ namespace UniRx.Tests
             xs[1].Value.Value.Is(8);
             xs[2].Kind.Is(NotificationKind.OnCompleted);
         }
+
+        [TestMethod]
+        public void ThrottleFirstTest()
+        {
+            var xs = Observable.Concat(
+                    Observable.Return(1),
+                    Observable.Return(2).Delay(TimeSpan.FromSeconds(1)),
+                    Observable.Return(3).Delay(TimeSpan.FromSeconds(1)),
+                    Observable.Return(4).Delay(TimeSpan.FromSeconds(0.4)), 
+                    Observable.Return(5).Delay(TimeSpan.FromSeconds(0.2)), // over 2500
+                    Observable.Return(6).Delay(TimeSpan.FromSeconds(1)),
+                    Observable.Return(7).Delay(TimeSpan.FromSeconds(1)), 
+                    Observable.Return(8).Delay(TimeSpan.FromSeconds(1)), // over 2500
+                    Observable.Return(9) // withCompleted
+                )
+                .Timestamp()
+                .ThrottleFirst(TimeSpan.FromMilliseconds(2500))
+                .Materialize()
+                .ToArray()
+                .Wait();
+
+            xs.Length.Is(4);
+            xs[0].Value.Value.Is(1);
+            xs[1].Value.Value.Is(5);
+            xs[2].Value.Value.Is(8);
+            xs[3].Kind.Is(NotificationKind.OnCompleted);
+        }
     }
 }
