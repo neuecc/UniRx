@@ -4,40 +4,41 @@ Created by Yoshifumi Kawai(neuecc)
 
 What is UniRx?
 ---
-UniRx(Reactive Extensions for Unity) is re-implementation of .NET Reactive Extensions. Official Rx is great but can't work on Unity and has some issue of iOS AOT. This library remove there issues and add some specified utility for Unity. Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc and fully supported Unity 5(and 4.6).   
+UniRx (Reactive Extensions for Unity) is a reimplementation of the .NET Reactive Extensions. The Official Rx implementation is great but doesn't work on Unity and has issues with iOS AOT compatibility. This library fixes those issues and adds some specific utilities for Unity. Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc and the library is fully supported on both Unity 5 and 4.6.   
 
-UniRx is available in Unity Asset Store(FREE) - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
+UniRx is available on the Unity Asset Store (FREE) - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
 
 Presentation - http://www.slideshare.net/neuecc/unirx-reactive-extensions-for-unityen
 
-Unity Forums support thread, ask me any questions - http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity
+Support thread on the Unity Forums: Ask me any question - http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity
 
 Release Notes, see [UniRx/releases](https://github.com/neuecc/UniRx/releases)
 
-UniRx is Core Library(Port of Rx) + Platform Adaptor(MainThreadScheduler/FromCoroutine/etc) + Framework(ObservableTriggers/ReactiveProeperty/PresenterBase/etc) 
+UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/PresenterBase/etc) 
 
 Why Rx?
 ---
-Ordinary, Unity Network operation use `WWW` and `Coroutine` but `Coroutine` is not good practice for asynchronous operation.
+Ordinarily, Network operations in Unity require the use of `WWW` and `Coroutine`. That said, using `Coroutine` is not good practice for asynchronous operations for the following (and other) reasons:
 
-Let me show some example.
+1. Coroutines can't return any values, since its return type must be IEnumerator.
+2. Coroutines can't handle exceptions, because yield return statements cannot be surrounded with a try-catch construction.
 
-1. Coroutine can't return result value. (because return type should be IEnumerator)
-2. It also won't handle exception. (because yield return can't surrond with try-catch)
-These lack of composability cause Operation close-coupled, and we have to write huge monolithic IEnumerator.
+This kind of lack of composability causes operations to be close-coupled, which often results in huge monolithic IEnumerators.
 
-Rx curing asynchronous blues like that. Rx is a library to compose asynchronous and event-based programs using observable collections and LINQ-style query operators. 
+Rx cures that kind of "asynchronous blues". Rx is a library for composing asynchronous and event-based programs using observable collections and LINQ-style query operators. 
   
-GameLoop(every Update, OnCollisionEnter, etc), Sensor(like Kinect, Leap Motion, etc) is all of event. Rx considere event as reactive sequence which is possible to compose and perform time-based operations easily by using many LINQ query operators.
+The game loop (every Update, OnCollisionEnter, etc), sensor data (Kinect, Leap Motion, etc.) are all types of events. Rx represents events as reactive sequences which are both easily composable and support time-based operations by using LINQ query operators.
 
-Unity is single thread but UniRx helps multithreading for join, cancel, access GameObject etc.
+Unity is generally single threaded but UniRx facilitates multithreading for joins, cancels, accessing GameObjects, etc.
 
-UniRx helps UI programming for uGUI. All UI events(clicked, valuechanged, etc) can convert event streams by UniRx. 
+UniRx helps UI programming with uGUI. All UI events (clicked, valuechanged, etc) can be converted to UniRx event streams. 
         
 
-The Introduction
+Introduction
 ---
-Great introduction article of Rx - [The introduction to Reactive Programming you've been missing](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754). Following code is same sample of detect double click.
+Great introduction to Rx article: [The introduction to Reactive Programming you've been missing](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754).
+
+The following code implements the double click detection example from the article in UniRx:
 
 ```
 var clickStream = Observable.EveryUpdate()
@@ -48,16 +49,16 @@ clickStream.Buffer(clickStream.Throttle(TimeSpan.FromMilliseconds(250)))
     .Subscribe(xs => Debug.Log("DoubleClick Detected! Count:" + xs.Count));
 ```
 
-This example includes the following contents(In only five lines!).
+This example demonstrates the following features (in only five lines!):
 
-* Game loop(Update) as event stream
-* Event stream is composable
+* The game loop (Update) as an event stream
+* Composable event streams
 * Merging self stream
-* Easily handle time based operation   
+* Easy handling of time based operations   
 
-How to Use for WWW
+Network operations
 ---
-async operation, use ObservableWWW, it's Get/Post returns IObservable.
+Use ObservableWWW for asynchronous network operations. Its Get/Post functions return subscribable IObservables:
 
 ```csharp
 ObservableWWW.Get("http://google.co.jp/")
@@ -66,7 +67,7 @@ ObservableWWW.Get("http://google.co.jp/")
         ex => Debug.LogException(ex)); // onError
 ```
 
-Rx is composable, cancelable and can query with LINQ query expressions.
+Rx is composable and cancelable. You can also query with LINQ expressions:
 
 ```csharp
 // composing asynchronous sequence with LINQ query expressions
@@ -81,7 +82,8 @@ var cancel = query.Subscribe(x => Debug.Log(x));
 cancel.Dispose();
 ```
 
-Parallel request use Observable.WhenAll
+Use Observable.WhenAll for parallel requests:
+
 ```csharp
 // Observable.WhenAll is for parallel asynchronous operation
 // (It's like Observable.Zip but specialized for single async operations like Task.WhenAll)
@@ -98,7 +100,8 @@ parallel.Subscribe(xs =>
 });
 ```
 
-with progress
+Progress information is available:
+
 ```csharp
 // notifier for progress
 var progressNotifier = new ScheduledNotifier<float>();
@@ -108,7 +111,8 @@ progressNotifier.Subscribe(x => Debug.Log(x)); // write www.progress
 ObservableWWW.Get("http://google.com/", progress: progressNotifier).Subscribe();
 ```
 
-Error Handling
+Error handling:
+
 ```csharp
 // If WWW has .error, ObservableWWW throws WWWErrorException to onError pipeline.
 // WWWErrorException has RawErrorMessage, HasResponse, StatusCode, ResponseHeaders
@@ -128,9 +132,9 @@ ObservableWWW.Get("http://www.google.com/404")
     .Subscribe();
 ```
 
-How to Use for IEnumerator(as Coroutine)
+Using with IEnumerators (Coroutines)
 ---
-IEnumerator(Coroutine) is Unity's primitive asynchronous tool. UniRx integrates coroutine and IObservable. Write async in coroutine, Orchestrate many coroutines by UniRx is best way for control asynchronous flow.
+IEnumerator (Coroutine) is Unity's primitive asynchronous tool. UniRx integrates coroutines and IObservables. You can write asynchronious code in coroutines, and orchestrate them using UniRx. This is best way to control asynchronous flow.
 
 ```csharp
 // two coroutines
@@ -150,20 +154,20 @@ IEnumerator AsyncB()
 }
 
 // main code
-// Observable.FromCoroutine convert IEnumerator to Observable<Unit>.
-// other shorthand, AsyncA().ToObservable()
+// Observable.FromCoroutine converts IEnumerator to Observable<Unit>.
+// You can also use the shorthand, AsyncA().ToObservable()
         
-// after completed AsyncA, run AsyncB as continuous routine.
+// after AsyncA completes, run AsyncB as a continuous routine.
 // UniRx expands SelectMany(IEnumerator) as SelectMany(IEnumerator.ToObservable())
 var cancel = Observable.FromCoroutine(AsyncA)
     .SelectMany(AsyncB)
     .Subscribe();
 
-// you can stop coroutine use subscription's Dispose.
+// you can stop a coroutine by calling your subscription's Dispose.
 cancel.Dispose();
 ```
 
-If you needs coroutine with return value, normally we use callback. Observable.FromCoroutine supports convert coroutine to IObservable[T] with cancellation.
+Normally, we have to use callbacks when we require a coroutine to return a value. Observable.FromCoroutine can convert coroutines to cancellable IObservable[T] instead.
 
 ```csharp
 // public method
@@ -173,8 +177,8 @@ public static IObservable<string> GetWWW(string url)
     return Observable.FromCoroutine<string>((observer, cancellationToken) => GetWWWCore(url, observer, cancellationToken));
 }
 
-// IObserver is callback publisher
-// note: Principles of IObserver is "OnNext* (OnError | Oncompleted)?" 
+// IObserver is a callback publisher
+// Note: IObserver's basic scheme is "OnNext* (OnError | Oncompleted)?" 
 static IEnumerator GetWWWCore(string url, IObserver<string> observer, CancellationToken cancellationToken)
 {
     var www = new UnityEngine.WWW(url);
@@ -197,7 +201,7 @@ static IEnumerator GetWWWCore(string url, IObserver<string> observer, Cancellati
 }
 ```
 
-more application examples, following is multiple OnNext pattern.
+Here are some more examples. Next is a multiple OnNext pattern.
 
 ```csharp
 public static IObservable<float> ToObservable(this UnityEngine.AsyncOperation asyncOperation)
@@ -229,7 +233,7 @@ Application.LoadLevelAsync("testscene")
     .Subscribe();
 ```
 
-How to Use for MultiThreading
+Using for MultiThreading
 ---
 
 ```csharp
@@ -262,13 +266,13 @@ Observable.WhenAll(heavyMethod, heavyMethod2)
 
 DefaultScheduler
 ---
-UniRx's default time based operation(Interval, Timer, Buffer(timeSpan), etc...)'s Scheduler is `Scheduler.MainThread`.It means most operator(excpet `Observable.Start`) is work on single-thread, you don't need ObserverOn and you don't mind thread safety. It's differece with RxNet but better fit to Unity environment.  
+UniRx's default time based operations (Interval, Timer, Buffer(timeSpan), etc) use `Scheduler.MainThread` as their scheduler. That means most operators (excpet for `Observable.Start`) work on a single thread, so ObserverOn isn't needed and thread safety measures can be ignored. This is differet from the standard RxNet implementation but better suited to the Unity environment.  
 
-`Scheduler.MainThread` under Time.timeScale's influence.If you want to ignore, use ` Scheduler.MainThreadIgnoreTimeScale`.
+`Scheduler.MainThread` runs under Time.timeScale's influence. If you want to ignore the time scale, use ` Scheduler.MainThreadIgnoreTimeScale` instead.
 
-Triggers for MonoBehaviour
+MonoBehaviour triggers
 ---
-UniRx can handle MonoBehaviour's event by `UniRx.Triggers`.
+UniRx can handle MonoBehaviour events with `UniRx.Triggers`:
 
 ```csharp
 using UniRx;
@@ -293,9 +297,9 @@ public class MyComponent : MonoBehaviour
 }
 ```
 
-Kind of Triggers are `ObservableAnimatorTrigger`, `ObservableCollision2DTrigger`, `ObservableCollisionTrigger`, `ObservableDestroyTrigger`, `ObservableEnableTrigger`, `ObservableFixedUpdateTrigger`, `ObservableUpdateTrigger`, `ObservableLastUpdateTrigger`, `ObservableMouseTrigger`, `ObservableTrigger2DTrigger`, `ObservableTriggerTrigger`, `ObservableVisibleTrigger`, `ObservableTransformChangedTrigger`, `ObservableRectTransformTrigger`, `ObservableCanvasGroupChangedTrigger`, `ObservableStateMachineTrigger`, `ObservableEventTrigger`.
+Supported triggers are `ObservableAnimatorTrigger`, `ObservableCollision2DTrigger`, `ObservableCollisionTrigger`, `ObservableDestroyTrigger`, `ObservableEnableTrigger`, `ObservableFixedUpdateTrigger`, `ObservableUpdateTrigger`, `ObservableLastUpdateTrigger`, `ObservableMouseTrigger`, `ObservableTrigger2DTrigger`, `ObservableTriggerTrigger`, `ObservableVisibleTrigger`, `ObservableTransformChangedTrigger`, `ObservableRectTransformTrigger`, `ObservableCanvasGroupChangedTrigger`, `ObservableStateMachineTrigger`, `ObservableEventTrigger`.
 
-You can more easily handling, direct subscribe by Extension Methods on Component/GameObject that inject ObservableTrigger automaticaly(except `ObservableEventTrigger` and `ObservableStateMachineTrigger`).
+These can also be handled more easily by directly subscribing to observables returned by extension methods on Component/GameObject. These methods inject ObservableTrigger automaticaly (except for `ObservableEventTrigger` and `ObservableStateMachineTrigger`):
 
 ```csharp
 using UniRx;
@@ -315,11 +319,11 @@ public class DragAndDropOnce : MonoBehaviour
 }
 ```
 
-> Old UniRx provided `ObservableMonoBehaviour` but it's legacy interface use UniRx.Triggers instead.
+> Previous versions of UniRx provided `ObservableMonoBehaviour`. This is a legacy interface that is no longer supported. Please use UniRx.Triggers instead.
 
-Create your own custom triggers
+Creating custom triggers
 ---
-Event as Observable is best way for handling Unity events. If standard triggers are not enought, you can create custom trigger. For example LongTap trigger for uGUI.
+Converting to Observable is the best way to handle Unity events. If the standard triggers supplied by UniRx are not enough, you can create custom triggers. To demonstrate, here's a LongTap trigger for uGUI:
 
 ```csharp
 public class ObservableLongPointerDownTrigger : ObservableTriggerBase, IPointerDownHandler, IPointerUpHandler
@@ -364,7 +368,7 @@ public class ObservableLongPointerDownTrigger : ObservableTriggerBase, IPointerD
 }
 ```
 
-It can handle easily same as OnClickAsObservable, etc.
+It can be used as easily as the standard triggers:
 
 ```csharp
 var trigger = button.AddComponent<ObservableLongPointerDownTrigger>();
@@ -374,9 +378,9 @@ trigger.OnLongPointerDownAsObservable().Subscribe();
 
 Observable Lifecycle Management
 ---
-When called OnCompleted? Subscription's lifecycle management is very important topic for use UniRx. `ObservableTriggers` called OnCompleted at destroyed gameObject. Some static generator methods(`Observable.Timer`, `Observable.EveryUpdate`, etc...) isn't stop automatically. You should manage there subscription.
+When is OnCompleted called? Subscription lifecycle management is very important to consider when using UniRx. `ObservableTriggers` call OnCompleted when the GameObject they are attached to is destroyed. Other static generator methods (`Observable.Timer`, `Observable.EveryUpdate`, etc...) do not stop automatically, and their subscriptions should be managed manually.
 
-At first, you can use `IDisposable.AddTo`.
+Rx provides some helper methods, such as `IDisposable.AddTo` which allows you to dispose of several subscriptions at once:
 
 ```csharp
 // CompositeDisposable is similar with List<IDisposable>, manage multiple IDisposable
@@ -389,13 +393,13 @@ void Start()
 
 void OnTriggerEnter(Collider other)
 {
-    // .Clear() => all inner disposable called Dispose and list is cleared.
-    // .Dispose() => all inner disposable called Dispose and after Add, called Dispose immediately.
+    // .Clear() => Dispose is called for all inner disposables, and the list is cleared.
+    // .Dispose() => Dispose is called for all inner disposables, and Dispose is called immediately after additional Adds.
     disposables.Clear();
 }
 ```
 
-If you want to Dispose at Destroy, you can use AddTo(gameObject/component).
+If you want to automatically Dispose when a GameObjects is destroyed, use AddTo(GameObject/Component):
 
 ```csharp
 void Start()
@@ -404,14 +408,14 @@ void Start()
 }
 ```
 
-AddTo calls Dispose but if you needs OnCompleted during pipeline, you can use `TakeWhile`, `TakeUntil`, `TakeUntilDestroy`, `TakeUntilDisable`.
+AddTo calls facilitate automatic Dispose. If you needs special OnCompleted handling in the pipeline, however, use `TakeWhile`, `TakeUntil`, `TakeUntilDestroy` and `TakeUntilDisable` instead:
 
 ```csharp
 Observable.IntervalFrame(30).TakeUntilDisable(this)
     .Subscribe(x => Debug.Log(x), () => Debug.Log("completed!"));
 ```
 
-If you handle events, `Repeat` is important but carefully method. It cause infinite loop.
+If you handle events, `Repeat` is an important but dangerous method. It may cause an infinite loop, so handle with care:
 
 ```csharp
 using UniRx;
@@ -431,7 +435,7 @@ public class DangerousDragAndDrop : MonoBehaviour
 }
 ```
 
-UniRx has safety Repeat method. `RepeatSafe` - if arriving contiguous "OnComplete" Repeat stops. `RepeatUntilDestroy(gameObject/component)`, `RepeatUntilDisable(gameObject/component)` - stops when target gameObject has been destroyed.
+UniRx provides an additional safe Repeat method. `RepeatSafe`: if contiguous "OnComplete" are called repeat stops. `RepeatUntilDestroy(gameObject/component)`, `RepeatUntilDisable(gameObject/component)` allows to stop when a target GameObject has been destroyed:
 
 ```
 this.gameObject.OnMouseDownAsObservable()
@@ -442,18 +446,18 @@ this.gameObject.OnMouseDownAsObservable()
     .Subscribe(x => Debug.Log(x));            
 ```
 
-By the way, All class instance can call `ObserveEveryValueChanged` method it watch chaning value in every frame.
+All class instances provide an `ObserveEveryValueChanged` method, which watches for changing values every frame:
 
 ```csharp
 // watch position change
 this.transform.ObserveEveryValueChanged(x => x.position).Subscribe(x => Debug.Log(x));
 ```
 
-It's very useful. It's lifecycle is if watch target is GameObject until target has been destroyed, when destroyed called OnCompleted. If watch target is plain C# Object, called OnCompleted at target on GC.
+It's very useful. If the watch target is a GameObject, it will stop observing when the target is destroyed, and call OnCompleted. If the watch target is a plain C# Object, OnCompleted will be called on GC.
 
-Convert Unity callback to IObservable
+Converting Unity callbacks to IObservables
 ---
-Use Subject(or AsyncSubject for async operation). For example...
+Use Subject (or AsyncSubject for asynchronious operations):
 
 ```csharp
 public class LogCallback
@@ -493,7 +497,8 @@ LogHelper.LogCallbackAsObservable()
     .Where(x => x.LogType == LogType.Error)
     .Subscribe();
 ```
-In Unity5, `Application.RegisterLogCallback` is removed to `Application.logMessageReceived`. We can simply replace by `Observable.FromEvent`.
+
+In Unity5, `Application.RegisterLogCallback` was removed in favor of `Application.logMessageReceived`, so we can now simply use `Observable.FromEvent`.
 
 ```csharp
 public static IObservable<LogCallback> LogCallbackAsObservable()
@@ -537,7 +542,7 @@ logger.Log("Message");
 logger.Exception(new Exception("test exception"));
 ```
 
-Unity specified extra gems
+Unity-specific Extra Gems
 ---
 ```csharp
 // Unity's singleton UiThread Queue Scheduler
@@ -559,9 +564,9 @@ Observable.EveryApplicationFocus();
 Observable.OnceApplicationQuit();
 ```
 
-Frame count based time operators
+Framecount-based time operators
 ---
-UniRx has some frame count based time operators.
+UniRx provides a few framecount-based time operators:
 
 Method | 
 -------|
@@ -578,7 +583,7 @@ ThrottleFirstFrame|
 TimeoutFrame|
 DelayFrameSubscription|
 
-For example, delayed invoke once
+For example, delayed invoke once:
 
 ```csharp
 Observable.TimerFrame(100).Subscribe(_ => Debug.Log("after 100 frame"));
@@ -586,7 +591,7 @@ Observable.TimerFrame(100).Subscribe(_ => Debug.Log("after 100 frame"));
 
 uGUI Integration
 ---
-UniRx can handle `UnityEvent` easily. You can use `UnityEvent.AsObservable` for register events.
+UniRx can handle `UnityEvent`s easily. Use `UnityEvent.AsObservable` to subscribe to events:
 
 ```csharp
 public Button MyButton;
@@ -594,7 +599,7 @@ public Button MyButton;
 MyButton.onClick.AsObservable().Subscribe(_ => Debug.Log("clicked"));
 ```
 
-Event as Observable, it enables declaretive ui programming. 
+Treating Events as Observables enables declarative UI programming. 
 
 ```csharp
 public Toggle MyToggle;
@@ -602,30 +607,30 @@ public InputField MyInput;
 public Text MyText;
 public Slider MySlider;
 
-// On Start, you can write reactive rule for declaretive/reactive ui programming
+// On Start, you can write reactive rules for declaretive/reactive ui programming
 void Start()
 {
-    // Toggle, Input etc as Observable(OnValueChangedAsObservable is helper for provide isOn value on subscribe)
-    // SubscribeToInteractable is Extension Method, same as .interactable = x)
+    // Toggle, Input etc as Observable (OnValueChangedAsObservable is a helper providing isOn value on subscribe)
+    // SubscribeToInteractable is an Extension Method, same as .interactable = x)
     MyToggle.OnValueChangedAsObservable().SubscribeToInteractable(MyButton);
     
-    // input shows delay after 1 second
+    // Input is displayed after a 1 second delay
     MyInput.OnValueChangeAsObservable()
         .Where(x => x != null)
         .Delay(TimeSpan.FromSeconds(1))
         .SubscribeToText(MyText); // SubscribeToText is helper for subscribe to text
     
-    // converting for human visibility
+    // Converting for human readability
     MySlider.OnValueChangedAsObservable()
         .SubscribeToText(MyText, x => Math.Round(x, 2).ToString());
 }
-````
+```
 
-If you interested in reactive ui programming, you can see Sample12, Sample13 and below ReactiveProperty section. 
+For more on reactive UI programming please consult Sample12, Sample13 and the ReactiveProperty section below. 
 
 ReactiveProperty, ReactiveCollection
 ---
-Game's data needs notification. Do you use property and event(callback)? It's too complex. UniRx provides ReactiveProperty which is lightweight property broker.
+Game data often requires notification. Should we use properties and events (callbacks)? That's often too complex. UniRx provides ReactiveProperty, a lightweight property broker.
 
 ```csharp
 // Reactive Notification Model
@@ -655,15 +660,15 @@ enemy.IsDead.Where(isDead => isDead == true)
     });
 ```
 
-You can combine ReactiveProperty, ReactiveCollection and UnityEvent.AsObservable. All ui elements is observable.
+You can combine ReactiveProperties, ReactiveCollections and observables returned by UnityEvent.AsObservable. All UI elements are observable.
 
-Generic ReactiveProeprty is not serializable/inspecatble but UniRx provides specialized ReactiveProperty for use in inspector. You can use Int/LongReactiveProperty, Float/DoubleReactiveProperty, StringReactiveProperty, BoolReactiveProperty, etc(all lists:are [InspectableReactiveProperty.cs](https://github.com/neuecc/UniRx/blob/master/Assets/UniRx/Scripts/UnityEngineBridge/InspectableReactiveProperty.cs) for show and editable in inspector. If you want to use Enum's ReactiveProperty, you can make custom ReactiveProperty[T] for inspecatable.
+Generic ReactiveProperties are not serializable or inspecatble in the Unity editor, but UniRx provides specialized subclasses of ReactiveProperty that are. These include classes such as Int/LongReactiveProperty, Float/DoubleReactiveProperty, StringReactiveProperty, BoolReactiveProperty and more (Browse them here: [InspectableReactiveProperty.cs](https://github.com/neuecc/UniRx/blob/master/Assets/UniRx/Scripts/UnityEngineBridge/InspectableReactiveProperty.cs)). All are fully editable in the inspector. For custom Enum ReactiveProperty, it's easy to write a custom inspectable ReactiveProperty[T].
 
-Well known InpsectableReactiveProperties display in inspector naturally and notify value changed event if change the value on inspector.
+The provided derived InpsectableReactiveProperties are displayed in the inspector naturally and notify when their value is changed even when it is changed in the inspector.
 
 ![](StoreDocument/RxPropInspector.png)
 
-It enables by [InspectorDisplayDrawer](https://github.com/neuecc/UniRx/blob/master/Assets/UniRx/Scripts/UnityEngineBridge/InspectorDisplayDrawer.cs). You can apply custom specialized ReactiveProperty by inherited `InspectorDisplayDrawer`.
+This functionality is provided by [InspectorDisplayDrawer](https://github.com/neuecc/UniRx/blob/master/Assets/UniRx/Scripts/UnityEngineBridge/InspectorDisplayDrawer.cs). You can supply your own custom specialized ReactiveProperties by inheriting from it:
 
 ```csharp
 public enum Fruit
@@ -691,7 +696,7 @@ public class ExtendInspectorDisplayDrawer : InspectorDisplayDrawer
 }
 ```
 
-If value is only defined from stream, it is readonly. You can use `ReadOnlyReactiveProperty`.
+If a ReactiveProperty value is only updated within a stream, you can make it read only by using from `ReadOnlyReactiveProperty`.
 
 ```csharp
 public class Person
@@ -712,17 +717,17 @@ public class Person
 
 Model-View-(Reactive)Presenter Pattern
 ---
-UniRx makes it possible to the MVP(MVRP) Pattern.
+UniRx makes it possible to implement the MVP(MVRP) Pattern.
 
 ![](StoreDocument/MVP_Pattern.png)
 
-Why MVP? not MVVM? Unity doesn't have binding mechanism and create a binding layer is too complex and loss the performance. But you need someone to update the View. Thus presenter know view component and updates view. Although there is no binding, Observable enables the notification subscription like binding. It calls reactive presenter. 
+Why should we use MVP instead of MVVM? Unity doesn't provide a UI binding mechanism and creating a binding layer is too complex and loss and affects performance. Still, Views need updating. Presenters are aware of their view's components and can update them. Although there is no real binding, Observables enables subscription to notification, which can act much like the real thing. This pattern is called a Reactive Presenter: 
 
 ```csharp
 // Presenter for scene(canvas) root.
 public class ReactivePresenter : MonoBehaviour
 {
-    // Presenter knows View(binded from inspector)
+    // Presenter is aware of its View (binded in the inspector)
     public Button MyButton;
     public Toggle MyToggle;
     
@@ -731,11 +736,11 @@ public class ReactivePresenter : MonoBehaviour
 
     void Start()
     {
-        // user events from View by Rx and notify to Model in reactive 
+        // Rx supplies user events from Views and Models in a reactive manner 
         MyButton.OnClickAsObservable().Subscribe(_ => enemy.CurrentHp.Value -= 99);
         MyToggle.OnValueChangedAsObservable().SubscribeToInteractable(MyButton);
 
-        // notify from Model to Presenter by Rx and update View
+        // Models notify Presenters via Rx, and Presenters update their views
         enemy.CurrentHp.SubscribeToText(MyText);
         enemy.IsDead.Where(isDead => isDead == true)
             .Subscribe(_ =>
@@ -745,7 +750,7 @@ public class ReactivePresenter : MonoBehaviour
     }
 }
 
-// Model, all property notify value changed 
+// The Model. All property notify when their values change
 public class Enemy
 {
     public ReactiveProperty<long> CurrentHp { get; private set; }
@@ -761,13 +766,13 @@ public class Enemy
 }
 ```
 
-View is Scene, Unity hierarchy. View to Presenter associates by Unity Engine on initialize. XxxAsObservable is created a Signal simply, no overhead. SubscribeToText and SubscribeToInteractable(like Command) is simple binding like helper.  There are simple tools but very powerful. It is natural for Unity and achieve maximum performance and clean architecture.
+A View is a scene, that is a Unity hierarchy. Views are associated with Presenters by the Unity Engine on initialize. The XxxAsObservable methods make creating event signals simple, without any overhead. SubscribeToText and SubscribeToInteractable are simple binding-like helpers. These maya be simple tools, but they are very powerful. They feel natural in the Unity environment and provide high performance and a clean architecture.
 
 ![](StoreDocument/MVRP_Loop.png)
 
-V -> RP -> M -> RP -> V completely connected in reactive. UniRx provides all adaptor method/classes. Of course you can use with other MVVM(or MV*) framework. UniRx/ReactiveProperty is only simple toolkit. 
+V -> RP -> M -> RP -> V completely connected in a reactive way. UniRx provides all of the adaptor methods and classes, but other MVVM(or MV*) frameworks can be used instead. UniRx/ReactiveProperty is only simple toolkit. 
 
-Again, mentions about ObservableTriggers. ObservableTriggers converts Unity event as Observable. It's user events, you can compose MV(R)P pattern. For exampe, `ObservableEventTrigger` converts uGUI events to Observable.
+GUI programming also benefits from ObservableTriggers. ObservableTriggers convert Unity events to Observables, so the MV(R)P pattern can be composed using them. For example, `ObservableEventTrigger` converts uGUI events to Observable:
 
 ```csharp
 var eventTrigger = this.gameObject.AddComponent<ObservableEventTrigger>();
@@ -780,101 +785,100 @@ eventTrigger.OnBeginDragAsObservable()
 
 Visual Studio Analyzer
 ---
-If you use Visual Studio 2015, You can add UniRxAnalyzer. For example detect doesn't subscribe method call.
+For Visual Studio 2015 users, a custom analyzer, UniRxAnalyzer, is provided. It can, for example, detect when streams aren't subscribed to.
 
 ![](StoreDocument/AnalyzerReference.jpg)
 
 ![](StoreDocument/VSAnalyzer.jpg)
 
-`ObservableWWW`(or almost methods) isn't fire before subscribe. This analyzer make aware right usage. You can download from NuGet.
+`ObservableWWW` doesn't fire until it's subscribed to, so the analyzer warns about incorrect usage. It can be downloaded from NuGet.
 
 * Install-Package [UniRxAnalyzer](http://www.nuget.org/packages/UniRxAnalyzer)
 
-Please request new analyzer idea on GitHub issues!
+Please submit new analyzer ideas on GitHub Issues!
 
 Samples
 ---
-see [UniRx/Examples](https://github.com/neuecc/UniRx/tree/master/Assets/UniRx/Examples)  
-How to ResourceManagement(Sample09_EventHandling), What is MainThreadDispatcher? and other notes.
+See [UniRx/Examples](https://github.com/neuecc/UniRx/tree/master/Assets/UniRx/Examples)  
 
-vs iOS AOT
+The samples demonstrate how to do resource management (Sample09_EventHandling), what is the MainThreadDispatcher, among other things.
+
+iOS AOT
 ---
-UniRx has AotSafe Utilities.
+UniRx provides AotSafe utilities:
 
 ```csharp
 // create safety iterator
 Enumerable.Range(1, 10).AsSafeEnumerable().ToArray();
 
-// elements wrap to class
+// Wrap elements in a class
 Enumerable.Range(1, 10).WrapValueToClass(); // IEnumerable<Tuple<int>>
 Observable.Range(1, 10).WrapValueToClass(); // IObservable<Tuple<int>>
 ```
 
 Please see [AOT Exception Patterns and Hacks](https://github.com/neuecc/UniRx/wiki/AOT-Exception-Patterns-and-Hacks).
 
-If you encount [Ran out of trampolines of type 2](http://developer.xamarin.com/guides/ios/troubleshooting/troubleshooting/) error, set AOT Compilation Options `nimt-trampolines=2048`. If you encount Ran out of trampolines of type 0, you should set AOT Compilation Options `ntrampolines=2048` too. I recommend set both for use UniRx.
+If you encounter the [Ran out of trampolines of type 2](http://developer.xamarin.com/guides/ios/troubleshooting/troubleshooting/) error, set the AOT compilation option `nimt-trampolines=2048`. If you encounter the Ran out of trampolines of type 0 error, set the AOT compilation options `ntrampolines=2048` as well. I recommend setting both when using UniRx.
 
-Windows Store/Phone App(NETFX_CORE) notice
+Windows Store/Phone App (NETFX_CORE)
 ---
-Some interface conflicts in Windows Store App for example `UniRx.IObservable<T>` and `System.IObservable<T>`.  
-Therefore we've decided in NETFX_CORE, remove `UniRx.IObservable<T>`.  
-There is no problem if you are using the short name.  
-If you are using the full name(`UniRx.IObservable<T>`), please replace to use the short name(`IObservable<T>`).
+Some interfaces, such as  `UniRx.IObservable<T>` and `System.IObservable<T>`, cause conflicts when submitting to the Windows Store App.
+Therefore, when using NETFX_CORE, please refrain from using such constructs as `UniRx.IObservable<T>` and refer to the UniRx components by their short name, without adding the namespace. This solves the conflicts.
 
 Reference
 ---
 * [RxJava Wiki](https://github.com/Netflix/RxJava/wiki)
  
-This wiki is recommended way for learn Rx. You can understand behavior of all operators by graphical marble diagram.
+This wiki is a great way for learn Rx. All operators are illustrated with graphical marble diagrams, which makes them easy to understand.
 
 * [Reactive Game Architectures](http://sugarpillstudios.com/wp/?page_id=279)
 
-Introduction to how to use Rx for Game.
+Introduction on how to use Rx for game programming.
 
 * [Introduction to Rx](http://introtorx.com/)
 
-Great online tutorial and eBook.
+A great online tutorial and eBook.
 
 * [Rx(Reactive Extensions)](https://rx.codeplex.com/)
 
-Original project home.
+The original project home page.
 
 * [Beginner's Guide to the Reactive Extensions](http://msdn.microsoft.com/en-us/data/gg577611)
 
-Many Videos and slides and documents.
+Many videos, slides and documents.
 
 * [ReactiveX Languages](http://reactivex.io/languages.html)
 
-UniRx is official ReacitveX language family.
+UniRx is an official ReacitveX family language.
 
 Help & Contribute
 ---
-Unity Forums support thread, ask me any questions - [http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity](http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity)  
+Support thread on the Unity forum. Ask me any question - [http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity](http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity)  
 
-We welcome to your contribute such as bug report, request, and pull request.  
-At first, see and please write GitHub issues.  
+We welcome any contributions, be they bug reports, requests or pull request.  
+Please consult and submit your reports or requests on GitHub issues.  
 Source code is available in `Assets/UniRx/Scripts`.  
 This project is using Visual Studio with [UnityVS](http://unityvs.com/).
 
 Author's other Unity + LINQ Assets
 ---
-[LINQ to GameObject](https://github.com/neuecc/LINQ-to-GameObject-for-Unity/) is GameObject extensions for Unity that allows traverse hierarchy and append GameObject like LINQ to XML. It's free and opensource on GitHub.
+[LINQ to GameObject](https://github.com/neuecc/LINQ-to-GameObject-for-Unity/) is a group of GameObject extensions for Unity that allows traversing the hierarchy and appending GameObject to it like LINQ to XML. It's free and opensource on GitHub.
 
 ![](https://raw.githubusercontent.com/neuecc/LINQ-to-GameObject-for-Unity/master/Images/axis.jpg)
 
 Author Info
 ---
-Yoshifumi Kawai(a.k.a. neuecc) is software developer in Japan.
-He is Director/CTO at Grani, Inc.
-Grani is top social game developer in Japan. 
-He awarded Microsoft MVP for Visual C# since 2011.
-He is known by creator of [linq.js](http://linqjs.codeplex.com/)(LINQ to Objects for JavaScript)
+Yoshifumi Kawai(a.k.a. neuecc) is a software developer in Japan.
+He is the Director/CTO at Grani, Inc.
+Grani is a top social game developer in Japan. 
+He was awarded Microsoft MVP for Visual C# in 2011.
+He is known as the creator of [linq.js](http://linqjs.codeplex.com/)(LINQ to Objects for JavaScript)
 
-Blog: http://neue.cc/ (JPN)  
-Twitter: https://twitter.com/neuecc (JPN)
+Blog: http://neue.cc/ (Japanese)  
+Twitter: https://twitter.com/neuecc (Japanese)
 
 License
 ---
-This library is under MIT License.
+This library is under the MIT License.
 
-Some codes are borrowed from [Rx.NET](https://rx.codeplex.com/) and [mono/mcs](https://github.com/mono/mono).
+Some code is borrowed from [Rx.NET](https://rx.codeplex.com/) and [mono/mcs](https://github.com/mono/mono).
