@@ -45,4 +45,10 @@ public class Depth2
 
     [SerializeField]
     public IntReactiveProperty IRP2;
+
+    [SerializeField]
+    private ColorReactiveProperty CRR;
+
+    [SerializeField]
+    private QuaternionReactiveProperty Qor;
 }

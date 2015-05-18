@@ -105,7 +105,7 @@ namespace UniRx
             }
         }
 
-        public object GetValueRecursive(object obj, int index, string[] paths)
+        object GetValueRecursive(object obj, int index, string[] paths)
         {
             var fieldInfo = obj.GetType().GetField(paths[index], BindingFlags.IgnoreCase | BindingFlags.GetField | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             var v = fieldInfo.GetValue(obj);
