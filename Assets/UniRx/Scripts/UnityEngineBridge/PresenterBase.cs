@@ -146,8 +146,6 @@ namespace UniRx
                 }
             }
 
-            // root is no argument
-            this.argument = default(T);
             root.StartCapturePhase();
         }
 

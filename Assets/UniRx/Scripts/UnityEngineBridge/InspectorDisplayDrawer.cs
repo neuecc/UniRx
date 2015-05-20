@@ -84,8 +84,12 @@ namespace UniRx
 
                     property.serializedObject.ApplyModifiedProperties(); // deserialize to field
 
+                    var paths = property.propertyPath.Split('.'); // X.Y.Z...
                     var attachedComponent = property.serializedObject.targetObject;
-                    var targetProp = fieldInfo.GetValue(attachedComponent);
+
+                    var targetProp = (paths.Length == 1)
+                        ? fieldInfo.GetValue(attachedComponent)
+                        : GetValueRecursive(attachedComponent, 0, paths);
                     var modifiedValue = propInfo.GetValue(targetProp, null); // retrieve new value
 
                     var methodInfo = fieldInfo.FieldType.GetMethod("SetValueAndForceNotify", BindingFlags.IgnoreCase | BindingFlags.InvokeMethod | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -99,6 +103,19 @@ namespace UniRx
                     property.serializedObject.ApplyModifiedProperties();
                 }
             }
+        }
+
+        object GetValueRecursive(object obj, int index, string[] paths)
+        {
+            var fieldInfo = obj.GetType().GetField(paths[index], BindingFlags.IgnoreCase | BindingFlags.GetField | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var v = fieldInfo.GetValue(obj);
+
+            if (index < paths.Length - 1)
+            {
+                return GetValueRecursive(v, ++index, paths);
+            }
+
+            return v;
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
