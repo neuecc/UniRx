@@ -149,7 +149,14 @@ namespace UniRx
             return subscription;
         }
 
+
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
             if (!isDisposed)
             {
@@ -249,6 +256,12 @@ namespace UniRx
         }
 
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
             if (!isDisposed)
             {
