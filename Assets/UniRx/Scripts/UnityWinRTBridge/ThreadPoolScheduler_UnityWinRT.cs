@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
+#if NETFX_CORE
+using System.Threading.Tasks;
+#endif
+
 namespace UniRx
 {
     public static partial class Scheduler
@@ -23,7 +27,17 @@ namespace UniRx
             public IDisposable Schedule(Action action)
             {
                 var d = new BooleanDisposable();
+#if NETFX_CORE
 
+                Task.Run(()=>
+                {
+                    if (!d.IsDisposed)
+                    {
+                        action();
+                    }
+                });
+
+#else
                 Action act = () =>
                 {
                     if (!d.IsDisposed)
@@ -34,6 +48,8 @@ namespace UniRx
 
                 act.BeginInvoke(ar => act.EndInvoke(ar), null);
 
+#endif
+
                 return d;
             }
 
@@ -42,6 +58,22 @@ namespace UniRx
                 var wait = Scheduler.Normalize(dueTime);
 
                 var d = new BooleanDisposable();
+
+#if NETFX_CORE
+
+                Task.Run(()=>
+                {
+                    if (!d.IsDisposed)
+                    {
+                        if (wait.Ticks > 0)
+                        {
+                            Thread.Sleep(wait);
+                        }
+                        action();
+                    }
+                });
+
+#else
 
                 Action act = () =>
                 {
@@ -56,6 +88,8 @@ namespace UniRx
                 };
 
                 act.BeginInvoke(ar => act.EndInvoke(ar), null);
+
+#endif
 
                 return d;
             }
