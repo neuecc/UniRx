@@ -346,8 +346,7 @@ PlayerSettings:
   blackberrySquareSplashScreen: {fileID: 0}
   tizenProductDescription: 
   tizenProductURL: 
-  tizenCertificatePath: 
-  tizenCertificatePassword: 
+  tizenSigningProfileName: 
   tizenGPSPermissions: 0
   tizenMicrophonePermissions: 0
   stvDeviceAddress: 
