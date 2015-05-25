@@ -1,4 +1,6 @@
-﻿using System; // require keep for Windows Universal App
+﻿#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
+
+using System; // require keep for Windows Universal App
 using UnityEngine;
 
 namespace UniRx.Triggers
@@ -137,3 +139,5 @@ namespace UniRx.Triggers
         }
     }
 }
+
+#endif

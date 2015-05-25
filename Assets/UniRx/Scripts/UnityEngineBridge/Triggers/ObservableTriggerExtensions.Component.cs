@@ -128,6 +128,8 @@ namespace UniRx.Triggers
 
         #endregion
 
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
+
         #region ObservableMouseTrigger
 
         /// <summary>OnMouseDown is called when the user has pressed the mouse button while over the GUIElement or Collider.</summary>
@@ -180,6 +182,8 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#endif
 
         #region ObservableTrigger2DTrigger
 
