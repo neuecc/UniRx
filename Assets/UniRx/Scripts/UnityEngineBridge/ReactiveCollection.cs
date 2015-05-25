@@ -153,9 +153,17 @@ namespace UniRx
 
         [NonSerialized]
         Subject<int> countChanged = null;
-        public IObservable<int> ObserveCountChanged()
+        public IObservable<int> ObserveCountChanged(bool notifyCurrentCount = false)
         {
-            return countChanged ?? (countChanged = new Subject<int>());
+            var subject = countChanged ?? (countChanged = new Subject<int>());
+            if (notifyCurrentCount)
+            {
+                return subject.StartWith(() => this.Count);
+            }
+            else
+            {
+                return subject;
+            }
         }
 
         [NonSerialized]
