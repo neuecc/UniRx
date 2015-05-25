@@ -29,7 +29,13 @@ namespace UniRx
             {
                 var subscription = new SingleAssignmentDisposable();
 
+#if UNITY_5_0
+                // In Unity 5.0.2p1/p2 occures IL2CPP compile error.
+                // IL2CPP compile error when script contains method group of interface to delegate conversion
+                var safeObserver = Observer.Create<T>(x => observer.OnNext(x), ex => observer.OnError(ex), () => observer.OnCompleted(), subscription);
+#else
                 var safeObserver = Observer.Create<T>(observer.OnNext, observer.OnError, observer.OnCompleted, subscription);
+#endif
 
                 if (Scheduler.IsCurrentThreadSchedulerScheduleRequired)
                 {
