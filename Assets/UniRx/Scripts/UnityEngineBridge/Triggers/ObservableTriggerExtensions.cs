@@ -321,7 +321,6 @@ namespace UniRx.Triggers
         }
 
         #endregion
-
 #endif
 
         static T GetOrAddComponent<T>(GameObject gameObject)

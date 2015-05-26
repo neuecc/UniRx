@@ -1,6 +1,10 @@
 ﻿using System; // require keep for Windows Universal App
 using UnityEngine;
 
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
+using UnityEngine.EventSystems;
+#endif
+
 namespace UniRx.Triggers
 {
     // for Component
@@ -318,6 +322,114 @@ namespace UniRx.Triggers
         {
             if (component == null || component.gameObject == null) return Observable.Empty<Unit>();
             return GetOrAddComponent<ObservableRectTransformTrigger>(component.gameObject).OnRectTransformRemovedAsObservable();
+        }
+
+        #endregion
+
+        // uGUI
+
+        #region ObservableEventTrigger
+
+        public static IObservable<BaseEventData> OnDeselectAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<BaseEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnDeselectAsObservable();
+        }
+
+        public static IObservable<AxisEventData> OnMoveAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<AxisEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnMoveAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnPointerDownAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnPointerDownAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnPointerEnterAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnPointerEnterAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnPointerExitAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnPointerExitAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnPointerUpAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnPointerUpAsObservable();
+        }
+
+        public static IObservable<BaseEventData> OnSelectAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<BaseEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnSelectAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnPointerClickAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnPointerClickAsObservable();
+        }
+
+        public static IObservable<BaseEventData> OnSubmitAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<BaseEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnSubmitAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnDragAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnDragAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnBeginDragAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnBeginDragAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnEndDragAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnEndDragAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnDropAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnDropAsObservable();
+        }
+
+        public static IObservable<BaseEventData> OnUpdateSelectedAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<BaseEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnUpdateSelectedAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnInitializePotentialDragAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnInitializePotentialDragAsObservable();
+        }
+
+        public static IObservable<BaseEventData> OnCancelAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<BaseEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnCancelAsObservable();
+        }
+
+        public static IObservable<PointerEventData> OnScrollAsObservable(this UIBehaviour component)
+        {
+            if (component == null || component.gameObject == null) return Observable.Empty<PointerEventData>();
+            return GetOrAddComponent<ObservableEventTrigger>(component.gameObject).OnScrollAsObservable();
         }
 
         #endregion
