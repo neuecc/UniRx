@@ -783,6 +783,68 @@ eventTrigger.OnBeginDragAsObservable()
     .Subscribe(x => Debug.Log(x));
 ```
 
+PresenterBase
+---
+UI has hierarchy and maybe contains a few presenters. But Unity's script execution order is indeterminate in default, so you can't touch child presenter's property before child has been initialized. And sometimes ReactiveProperty requires initial value but Unity doesn't have constructor.  `PresenterBase` solves there two problems.
+
+* Resolve initialize dependency of multiple presenters chain
+* Passing initial argument like constructor 
+
+```csharp
+// If Presenter receive argument inherit PresenterBase<T> otherwise inherit PresenterBase
+public class CharacterPresenter : PresenterBase<int>
+{    
+    // attach from inspector
+    public WeaponPresenter WeaponPresenter;
+    public StatusPresenter StatusPresenter;
+    
+    // model field
+    private Character character;
+
+    // indicate children dependency
+    protected override IPresenter[] Children
+    {
+        get
+        {
+            // If children is empty, you can write `return EmptyChildren;` 
+            return new IPresenter[] { WeaponPresenter, StatusPresenter };
+        }
+    }
+
+    // This Phase is Parent -> Child
+    // You can pass argument to children, but you can't touch child's property
+    protected override void BeforeInitialize(int argument)
+    {
+        var characterId = argument;
+        character = new Character(characterId); // set up character...        
+
+        // Pass argument to children, call PropagateArgument method
+        WeaponPresenter.PropagateArgument(character.Weapon);
+        StatusPresenter.PropagateArgument(character.Status);
+    }
+
+    // This Phase is Child -> Parent
+    // You can touch child's property safety
+    protected override void Initialize(int argument)
+    {
+        StatusPresenter.StatusChanged.Subscribe(x =>
+        {
+            WeaponPresenter.Weapon.Power.Fix(x.power); 
+        });
+    }
+}
+```
+
+PresenterBase has three phases.
+
+1. In Awake - Resolve parent-child dependency using Children proeperty. 
+2. In Start - Perent to Children, propagete value phase.
+3. In Start - Children to Parent, initialize phase.
+
+![](StoreDocument/presenterbase_steps.gif)
+
+Yellow is `Awake`, order is indeterminate. Green is `BeforeInitialize` phase, its parent -> child. Red is `Initialize` phase, its child -> parent. This sample, you can see `Sample14_PresenterBase`.
+
 Visual Studio Analyzer
 ---
 For Visual Studio 2015 users, a custom analyzer, UniRxAnalyzer, is provided. It can, for example, detect when streams aren't subscribed to.
