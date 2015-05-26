@@ -76,8 +76,19 @@ namespace UniRx
         }
     }
 
+    public interface IReactiveCollection<T> : IList<T>
+    {
+        void Move(int oldIndex, int newIndex);
+        IObservable<CollectionAddEvent<T>> ObserveAdd();
+        IObservable<int> ObserveCountChanged(bool notifyCurrentCount = false);
+        IObservable<CollectionMoveEvent<T>> ObserveMove();
+        IObservable<CollectionRemoveEvent<T>> ObserveRemove();
+        IObservable<CollectionReplaceEvent<T>> ObserveReplace();
+        IObservable<Unit> ObserveReset();
+    }
+
     [Serializable]
-    public class ReactiveCollection<T> : Collection<T>
+    public class ReactiveCollection<T> : Collection<T>, IReactiveCollection<T>
     {
         public ReactiveCollection()
         {
