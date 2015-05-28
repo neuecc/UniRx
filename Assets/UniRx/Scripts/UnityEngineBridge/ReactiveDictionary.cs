@@ -58,8 +58,17 @@ namespace UniRx
         }
     }
 
+    public interface IReactiveDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+    {
+        IObservable<DictionaryAddEvent<TKey, TValue>> ObserveAdd();
+        IObservable<int> ObserveCountChanged();
+        IObservable<DictionaryRemoveEvent<TKey, TValue>> ObserveRemove();
+        IObservable<DictionaryReplaceEvent<TKey, TValue>> ObserveReplace();
+        IObservable<Unit> ObserveReset();
+    }
+
     [Serializable]
-    public class ReactiveDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IEnumerable, ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IDictionary
+    public class ReactiveDictionary<TKey, TValue> : IReactiveDictionary<TKey, TValue>, IDictionary<TKey, TValue>, IEnumerable, ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IDictionary
 #if !UNITY_METRO
         , ISerializable, IDeserializationCallback
 #endif

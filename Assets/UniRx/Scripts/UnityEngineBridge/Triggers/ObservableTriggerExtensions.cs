@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System; // require keep for Windows Universal App
+using UnityEngine;
 
 namespace UniRx.Triggers
 {
@@ -127,6 +128,8 @@ namespace UniRx.Triggers
 
         #endregion
 
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
+
         #region ObservableMouseTrigger
 
         /// <summary>OnMouseDown is called when the user has pressed the mouse button while over the GUIElement or Collider.</summary>
@@ -179,6 +182,8 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#endif
 
         #region ObservableTrigger2DTrigger
 
@@ -316,7 +321,6 @@ namespace UniRx.Triggers
         }
 
         #endregion
-
 #endif
 
         static T GetOrAddComponent<T>(GameObject gameObject)

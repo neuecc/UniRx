@@ -34,6 +34,11 @@ namespace UniRx.ObjectTest
         public string Condition;
         public string StackTrace;
         public UnityEngine.LogType LogType;
+
+        public override string ToString()
+        {
+            return Condition + " " + StackTrace;
+        }
     }
 
     static class LogHelper
@@ -538,44 +543,44 @@ namespace UniRx.ObjectTest
                 Debug.Log("after");
             }
 
-            if (GUILayout.Button("DestroyCube"))
-            {
-                GameObject.Destroy(cube);
-            }
+            //if (GUILayout.Button("DestroyCube"))
+            //{
+            //    GameObject.Destroy(cube);
+            //}
 
-            if (GUILayout.Button("NextScene"))
-            {
-                Application.LoadLevel("NextSandbox");
-            }
+            //if (GUILayout.Button("NextScene"))
+            //{
+            //    Application.LoadLevel("NextSandbox");
+            //}
 
-            if (GUILayout.Button("Create POCO"))
-            {
-                iremono = new Tadanoiremono();
-            }
+            //if (GUILayout.Button("Create POCO"))
+            //{
+            //    iremono = new Tadanoiremono();
+            //}
 
-            if (GUILayout.Button("Observe POCO"))
-            {
-                iremono.ObserveEveryValueChanged(x => x.Hoge)
-                    .Subscribe(x => Debug.Log(x), Debug.LogException, () => Debug.Log("comp"))
-                    .AddTo(disposables);
-            }
+            //if (GUILayout.Button("Observe POCO"))
+            //{
+            //    iremono.ObserveEveryValueChanged(x => x.Hoge)
+            //        .Subscribe(x => Debug.Log(x), Debug.LogException, () => Debug.Log("comp"))
+            //        .AddTo(disposables);
+            //}
 
-            if (GUILayout.Button("Add POCO"))
-            {
-                iremono.Hoge += 100;
-            }
+            //if (GUILayout.Button("Add POCO"))
+            //{
+            //    iremono.Hoge += 100;
+            //}
 
-            if (GUILayout.Button("POCO Null"))
-            {
-                iremono = null;
-            }
+            //if (GUILayout.Button("POCO Null"))
+            //{
+            //    iremono = null;
+            //}
 
-            if (GUILayout.Button("GC"))
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-            }
+            //if (GUILayout.Button("GC"))
+            //{
+            //    GC.Collect();
+            //    GC.WaitForPendingFinalizers();
+            //    GC.Collect();
+            //}
 
             if (GUILayout.Button("Trigger"))
             {
@@ -622,6 +627,13 @@ namespace UniRx.ObjectTest
                             Debug.Log(txt);
                         }
                     });
+            }
+
+            if (GUILayout.Button("ThreadPoolScheduler"))
+            {
+                Observable.Start(() => 100)
+                    .ObserveOnMainThread()
+                    .Subscribe(_ => logtext.AppendLine("ThreadPool!"), ex => logtext.AppendLine(ex.ToString()));
             }
 
             GUILayout.BeginArea(new Rect(200, 0, 100, 200));

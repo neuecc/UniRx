@@ -54,6 +54,8 @@ namespace Assets.UniRx.Examples
             AnimationMarker.MarkBubblingPhase(this);
         }
 
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
+
         public void OnMouseDown()
         {
             // value is reactive!
@@ -62,6 +64,8 @@ namespace Assets.UniRx.Examples
             child1.Number.Value = f;
             child2.Number.Value = f;
         }
+
+#endif
     }
 
     public static class AnimationMarker

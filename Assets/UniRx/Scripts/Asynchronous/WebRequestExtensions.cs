@@ -48,7 +48,7 @@ namespace UniRx
             return AbortableDeferredAsyncRequest<WebResponse>(request.BeginGetResponse, request.EndGetResponse, request);
         }
 
-        public static IObservable<HttpWebResponse> GetResponseObservableAsync(this HttpWebRequest request)
+        public static IObservable<HttpWebResponse> GetResponseAsObservable(this HttpWebRequest request)
         {
             return AbortableDeferredAsyncRequest<HttpWebResponse>(request.BeginGetResponse, ar => (HttpWebResponse)request.EndGetResponse(ar), request);
         }
