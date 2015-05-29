@@ -355,7 +355,7 @@ namespace UniRx
             this.ResponseHeaders = www.responseHeaders;
             this.HasResponse = false;
 
-            var splitted = RawErrorMessage.Split(' ');
+            var splitted = RawErrorMessage.Split(' ', ':');
             if (splitted.Length != 0)
             {
                 int statusCode;
