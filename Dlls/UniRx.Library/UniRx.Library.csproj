@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UniRx</RootNamespace>
+    <AssemblyName>UniRx</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;UniRxLibrary</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Asynchronous\WebRequestExtensions.cs">
+      <Link>Asynchronous\WebRequestExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\BooleanDisposable.cs">
+      <Link>Disposables\BooleanDisposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\CompositeDisposable.cs">
+      <Link>Disposables\CompositeDisposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\Disposable.cs">
+      <Link>Disposables\Disposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\DisposableExtensions.cs">
+      <Link>Disposables\DisposableExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\ICancelable.cs">
+      <Link>Disposables\ICancelable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\MultipleAssignmentDisposable.cs">
+      <Link>Disposables\MultipleAssignmentDisposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\RefCountDisposable.cs">
+      <Link>Disposables\RefCountDisposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\ScheduledDisposable.cs">
+      <Link>Disposables\ScheduledDisposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\SerialDisposable.cs">
+      <Link>Disposables\SerialDisposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\SingleAssignmentDisposable.cs">
+      <Link>Disposables\SingleAssignmentDisposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\EventPattern.cs">
+      <Link>EventPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\ImmutableList.cs">
+      <Link>InternalUtil\ImmutableList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\ListObserver.cs">
+      <Link>InternalUtil\ListObserver.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\PriorityQueue.cs">
+      <Link>InternalUtil\PriorityQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\ReflectionAccessor.cs">
+      <Link>InternalUtil\ReflectionAccessor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\ScheduledItem.cs">
+      <Link>InternalUtil\ScheduledItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\ThreadSafeQueueWorker.cs">
+      <Link>InternalUtil\ThreadSafeQueueWorker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Notification.cs">
+      <Link>Notification.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Notifiers\BooleanNotifier.cs">
+      <Link>Notifiers\BooleanNotifier.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Notifiers\CountNotifier.cs">
+      <Link>Notifiers\CountNotifier.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Notifiers\MessageBroker.cs">
+      <Link>Notifiers\MessageBroker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Notifiers\ScheduledNotifier.cs">
+      <Link>Notifiers\ScheduledNotifier.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Aggregate.cs">
+      <Link>Observable.Aggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Binding.cs">
+      <Link>Observable.Binding.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Blocking.cs">
+      <Link>Observable.Blocking.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Concatenate.cs">
+      <Link>Observable.Concatenate.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Concurrency.cs">
+      <Link>Observable.Concurrency.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Conversions.cs">
+      <Link>Observable.Conversions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Creation.cs">
+      <Link>Observable.Creation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.cs">
+      <Link>Observable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.ErrorHandling.cs">
+      <Link>Observable.ErrorHandling.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Events.cs">
+      <Link>Observable.Events.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.FromAsync.cs">
+      <Link>Observable.FromAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Joins.cs">
+      <Link>Observable.Joins.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Paging.cs">
+      <Link>Observable.Paging.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observable.Time.cs">
+      <Link>Observable.Time.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Observer.cs">
+      <Link>Observer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs">
+      <Link>Schedulers\CurrentThreadScheduler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\ImmediateScheduler.cs">
+      <Link>Schedulers\ImmediateScheduler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\IScheduler.cs">
+      <Link>Schedulers\IScheduler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\Scheduler.cs">
+      <Link>Schedulers\Scheduler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\ThreadPoolScheduler.cs">
+      <Link>Schedulers\ThreadPoolScheduler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Subjects\AsyncSubject.cs">
+      <Link>Subjects\AsyncSubject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Subjects\BehaviorSubject.cs">
+      <Link>Subjects\BehaviorSubject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Subjects\ConnectableObservable.cs">
+      <Link>Subjects\ConnectableObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Subjects\ISubject.cs">
+      <Link>Subjects\ISubject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Subjects\ReplaySubject.cs">
+      <Link>Subjects\ReplaySubject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Subjects\Subject.cs">
+      <Link>Subjects\Subject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\System\IObservable.cs">
+      <Link>System\IObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\System\IObserver.cs">
+      <Link>System\IObserver.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\System\IProgress.cs">
+      <Link>System\IProgress.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\System\Tuple.cs">
+      <Link>System\Tuple.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\System\Unit.cs">
+      <Link>System\Unit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\TimeInterval.cs">
+      <Link>TimeInterval.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Timestamped.cs">
+      <Link>Timestamped.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\AotSafeExtensions.cs">
+      <Link>UnityEngineBridge\AotSafeExtensions.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections;
 
+#if !UniRxLibrary
+using ObservableUnity = UniRx.Observable;
+#endif
+
 namespace UniRx
 {
     public static partial class ObserveExtensions
@@ -19,13 +23,13 @@ namespace UniRx
 
             if (isUnityObject)
             {
-                return Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishUnityObjectValueChanged(unityObject, propertySelector, frameCountType, observer, cancellationToken));
+                return ObservableUnity.FromCoroutine<TProperty>((observer, cancellationToken) => PublishUnityObjectValueChanged(unityObject, propertySelector, frameCountType, observer, cancellationToken));
             }
             else
             {
                 var reference = new WeakReference(source);
                 source = null;
-                return Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishPocoValueChanged(reference, propertySelector, frameCountType, observer, cancellationToken));
+                return ObservableUnity.FromCoroutine<TProperty>((observer, cancellationToken) => PublishPocoValueChanged(reference, propertySelector, frameCountType, observer, cancellationToken));
             }
         }
 
