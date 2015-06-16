@@ -16,9 +16,16 @@ public class Sandbox2 : MonoBehaviour
 
     void Start()
     {
-        Direct.Subscribe(x => Debug.Log("Direct " + x));
-        MS.IRP.Subscribe(x => Debug.Log("IRP " + x));
-        MS.Depth.IRP2.Subscribe(x => Debug.Log("IRP2 " + x));
+        Debug.Log("start");
+
+        var subject = new Subject<int>();
+        var rxp = subject.ToReactiveProperty();
+
+        Debug.Log("before subscribe");
+        rxp.Subscribe(x => Debug.Log("called:" + x));
+        Debug.Log("after subscribe");
+
+        subject.OnNext(0);
     }
 }
 
