@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -80,7 +81,11 @@ namespace UniRx
             {
                 if (EditorGUI.EndChangeCheck())
                 {
-                    var propInfo = fieldInfo.FieldType.GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    var targetType = (fieldInfo.FieldType.IsArray)
+                        ? fieldInfo.FieldType.GetElementType()
+                        : fieldInfo.FieldType;
+
+                    var propInfo = targetType.GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
                     property.serializedObject.ApplyModifiedProperties(); // deserialize to field
 
@@ -92,7 +97,7 @@ namespace UniRx
                         : GetValueRecursive(attachedComponent, 0, paths);
                     var modifiedValue = propInfo.GetValue(targetProp, null); // retrieve new value
 
-                    var methodInfo = fieldInfo.FieldType.GetMethod("SetValueAndForceNotify", BindingFlags.IgnoreCase | BindingFlags.InvokeMethod | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    var methodInfo = targetType.GetMethod("SetValueAndForceNotify", BindingFlags.IgnoreCase | BindingFlags.InvokeMethod | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     if (methodInfo != null)
                     {
                         methodInfo.Invoke(targetProp, new object[] { modifiedValue });
@@ -107,9 +112,31 @@ namespace UniRx
 
         object GetValueRecursive(object obj, int index, string[] paths)
         {
-            var fieldInfo = obj.GetType().GetField(paths[index], BindingFlags.IgnoreCase | BindingFlags.GetField | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            var v = fieldInfo.GetValue(obj);
+            var path = paths[index];
+            var fieldInfo = obj.GetType().GetField(path, BindingFlags.IgnoreCase | BindingFlags.GetField | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
+            // If array, path = Array.data[index]
+            if (fieldInfo == null && path == "Array")
+            {
+                path = paths[++index];
+                var m = Regex.Match(path, @"(.+)\[([0-9]+)*\]");
+                var arrayIndex = int.Parse(m.Groups[2].Value);
+                var arrayValue = ((Array)obj).GetValue(arrayIndex);
+                if (index < paths.Length - 1)
+                {
+                    return GetValueRecursive(arrayValue, ++index, paths);
+                }
+                else
+                {
+                    return arrayValue;
+                }
+            }
+            else if (fieldInfo == null)
+            {
+                throw new Exception("Can't decode path, please report to UniRx's GitHub issues:" + string.Join(", ", paths));
+            }
+
+            var v = fieldInfo.GetValue(obj);
             if (index < paths.Length - 1)
             {
                 return GetValueRecursive(v, ++index, paths);
