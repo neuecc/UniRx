@@ -7,29 +7,29 @@ using UnityEngine.EventSystems;
 
 namespace UniRx.Triggers
 {
-		[DisallowMultipleComponent]
-		public class ObservablePointerClickTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerClickHandler
-		{
-				Subject<PointerEventData> onPointerClick;
+    [DisallowMultipleComponent]
+    public class ObservablePointerClickTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerClickHandler
+    {
+        Subject<PointerEventData> onPointerClick;
 
-				void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
-				{
-						if (onPointerClick != null) onPointerClick.OnNext(eventData);
-				}
+        void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
+        {
+            if (onPointerClick != null) onPointerClick.OnNext(eventData);
+        }
 
-				public IObservable<PointerEventData> OnPointerClickAsObservable()
-				{
-						return onPointerClick ?? (onPointerClick = new Subject<PointerEventData>());
-				}
+        public IObservable<PointerEventData> OnPointerClickAsObservable()
+        {
+            return onPointerClick ?? (onPointerClick = new Subject<PointerEventData>());
+        }
 
-				protected override void RaiseOnCompletedOnDestroy()
-				{
-						if (onPointerClick != null)
-						{
-								onPointerClick.OnCompleted();
-						}							
-				}
-		}
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onPointerClick != null)
+            {
+                onPointerClick.OnCompleted();
+            }
+        }
+    }
 }
 
 

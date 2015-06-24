@@ -7,29 +7,29 @@ using UnityEngine.EventSystems;
 
 namespace UniRx.Triggers
 {
-		[DisallowMultipleComponent]
-		public class ObservableEndDragTrigger : ObservableTriggerBase, IEventSystemHandler, IEndDragHandler
-		{
-				Subject<PointerEventData> onEndDrag;
+    [DisallowMultipleComponent]
+    public class ObservableEndDragTrigger : ObservableTriggerBase, IEventSystemHandler, IEndDragHandler
+    {
+        Subject<PointerEventData> onEndDrag;
 
-				void IEndDragHandler.OnEndDrag(PointerEventData eventData)
-				{
-						if (onEndDrag != null) onEndDrag.OnNext(eventData);
-				}
+        void IEndDragHandler.OnEndDrag(PointerEventData eventData)
+        {
+            if (onEndDrag != null) onEndDrag.OnNext(eventData);
+        }
 
-				public IObservable<PointerEventData> OnEndDragAsObservable()
-				{
-						return onEndDrag ?? (onEndDrag = new Subject<PointerEventData>());
-				}
+        public IObservable<PointerEventData> OnEndDragAsObservable()
+        {
+            return onEndDrag ?? (onEndDrag = new Subject<PointerEventData>());
+        }
 
-				protected override void RaiseOnCompletedOnDestroy()
-				{
-						if (onEndDrag != null)
-						{
-								onEndDrag.OnCompleted();
-						}							
-				}
-		}
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onEndDrag != null)
+            {
+                onEndDrag.OnCompleted();
+            }
+        }
+    }
 }
 
 

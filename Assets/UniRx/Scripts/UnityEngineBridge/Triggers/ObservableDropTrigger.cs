@@ -7,29 +7,29 @@ using UnityEngine.EventSystems;
 
 namespace UniRx.Triggers
 {
-		[DisallowMultipleComponent]
-		public class ObservableDropTrigger : ObservableTriggerBase, IEventSystemHandler, IDropHandler
-		{
-				Subject<PointerEventData> onDrop;
+    [DisallowMultipleComponent]
+    public class ObservableDropTrigger : ObservableTriggerBase, IEventSystemHandler, IDropHandler
+    {
+        Subject<PointerEventData> onDrop;
 
-				void IDropHandler.OnDrop(PointerEventData eventData)
-				{
-						if (onDrop != null) onDrop.OnNext(eventData);
-				}
+        void IDropHandler.OnDrop(PointerEventData eventData)
+        {
+            if (onDrop != null) onDrop.OnNext(eventData);
+        }
 
-				public IObservable<PointerEventData> OnDropAsObservable()
-				{
-						return onDrop ?? (onDrop = new Subject<PointerEventData>());
-				}
+        public IObservable<PointerEventData> OnDropAsObservable()
+        {
+            return onDrop ?? (onDrop = new Subject<PointerEventData>());
+        }
 
-				protected override void RaiseOnCompletedOnDestroy()
-				{
-						if (onDrop != null)
-						{
-								onDrop.OnCompleted();
-						}							
-				}
-		}
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onDrop != null)
+            {
+                onDrop.OnCompleted();
+            }
+        }
+    }
 }
 
 

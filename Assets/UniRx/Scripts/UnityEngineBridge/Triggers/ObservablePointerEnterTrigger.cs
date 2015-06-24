@@ -7,29 +7,29 @@ using UnityEngine.EventSystems;
 
 namespace UniRx.Triggers
 {
-		[DisallowMultipleComponent]
-		public class ObservablePointerEnterTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerEnterHandler
-		{
-				Subject<PointerEventData> onPointerEnter;
+    [DisallowMultipleComponent]
+    public class ObservablePointerEnterTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerEnterHandler
+    {
+        Subject<PointerEventData> onPointerEnter;
 
-				void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
-				{
-						if (onPointerEnter != null) onPointerEnter.OnNext(eventData);
-				}
+        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
+        {
+            if (onPointerEnter != null) onPointerEnter.OnNext(eventData);
+        }
 
-				public IObservable<PointerEventData> OnPointerEnterAsObservable()
-				{
-						return onPointerEnter ?? (onPointerEnter = new Subject<PointerEventData>());
-				}
+        public IObservable<PointerEventData> OnPointerEnterAsObservable()
+        {
+            return onPointerEnter ?? (onPointerEnter = new Subject<PointerEventData>());
+        }
 
-				protected override void RaiseOnCompletedOnDestroy()
-				{
-						if (onPointerEnter != null)
-						{
-								onPointerEnter.OnCompleted();
-						}							
-				}
-		}
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onPointerEnter != null)
+            {
+                onPointerEnter.OnCompleted();
+            }
+        }
+    }
 }
 
 

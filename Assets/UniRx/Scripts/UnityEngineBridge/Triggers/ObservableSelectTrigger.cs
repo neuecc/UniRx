@@ -7,29 +7,29 @@ using UnityEngine.EventSystems;
 
 namespace UniRx.Triggers
 {
-		[DisallowMultipleComponent]
-		public class ObservableSelectTrigger : ObservableTriggerBase, IEventSystemHandler, ISelectHandler
-		{
-				Subject<BaseEventData> onSelect;
+    [DisallowMultipleComponent]
+    public class ObservableSelectTrigger : ObservableTriggerBase, IEventSystemHandler, ISelectHandler
+    {
+        Subject<BaseEventData> onSelect;
 
-				void ISelectHandler.OnSelect(BaseEventData eventData)
-				{
-						if (onSelect != null) onSelect.OnNext(eventData);
-				}
+        void ISelectHandler.OnSelect(BaseEventData eventData)
+        {
+            if (onSelect != null) onSelect.OnNext(eventData);
+        }
 
-				public IObservable<BaseEventData> OnSelectAsObservable()
-				{
-						return onSelect ?? (onSelect = new Subject<BaseEventData>());
-				}
+        public IObservable<BaseEventData> OnSelectAsObservable()
+        {
+            return onSelect ?? (onSelect = new Subject<BaseEventData>());
+        }
 
-				protected override void RaiseOnCompletedOnDestroy()
-				{
-						if (onSelect != null)
-						{
-								onSelect.OnCompleted();
-						}							
-				}
-		}
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onSelect != null)
+            {
+                onSelect.OnCompleted();
+            }
+        }
+    }
 }
 
 

@@ -7,29 +7,29 @@ using UnityEngine.EventSystems;
 
 namespace UniRx.Triggers
 {
-		[DisallowMultipleComponent]
-		public class ObservablePointerUpTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerUpHandler
-		{
-				Subject<PointerEventData> onPointerUp;
+    [DisallowMultipleComponent]
+    public class ObservablePointerUpTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerUpHandler
+    {
+        Subject<PointerEventData> onPointerUp;
 
-				void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
-				{
-						if (onPointerUp != null) onPointerUp.OnNext(eventData);
-				}
+        void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
+        {
+            if (onPointerUp != null) onPointerUp.OnNext(eventData);
+        }
 
-				public IObservable<PointerEventData> OnPointerUpAsObservable()
-				{
-						return onPointerUp ?? (onPointerUp = new Subject<PointerEventData>());
-				}
+        public IObservable<PointerEventData> OnPointerUpAsObservable()
+        {
+            return onPointerUp ?? (onPointerUp = new Subject<PointerEventData>());
+        }
 
-				protected override void RaiseOnCompletedOnDestroy()
-				{
-						if (onPointerUp != null)
-						{
-								onPointerUp.OnCompleted();
-						}							
-				}
-		}
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onPointerUp != null)
+            {
+                onPointerUp.OnCompleted();
+            }
+        }
+    }
 }
 
 

@@ -7,29 +7,29 @@ using UnityEngine.EventSystems;
 
 namespace UniRx.Triggers
 {
-		[DisallowMultipleComponent]
-		public class ObservableMoveTrigger : ObservableTriggerBase, IEventSystemHandler, IMoveHandler
-		{
-				Subject<AxisEventData> onMove;
+    [DisallowMultipleComponent]
+    public class ObservableMoveTrigger : ObservableTriggerBase, IEventSystemHandler, IMoveHandler
+    {
+        Subject<AxisEventData> onMove;
 
-				void IMoveHandler.OnMove(AxisEventData eventData)
-				{
-						if (onMove != null) onMove.OnNext(eventData);
-				}
+        void IMoveHandler.OnMove(AxisEventData eventData)
+        {
+            if (onMove != null) onMove.OnNext(eventData);
+        }
 
-				public IObservable<AxisEventData> OnMoveAsObservable()
-				{
-						return onMove ?? (onMove = new Subject<AxisEventData>());
-				}
+        public IObservable<AxisEventData> OnMoveAsObservable()
+        {
+            return onMove ?? (onMove = new Subject<AxisEventData>());
+        }
 
-				protected override void RaiseOnCompletedOnDestroy()
-				{
-						if (onMove != null)
-						{
-								onMove.OnCompleted();
-						}							
-				}
-		}
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onMove != null)
+            {
+                onMove.OnCompleted();
+            }
+        }
+    }
 }
 
 
