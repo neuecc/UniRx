@@ -178,7 +178,7 @@ namespace UniRx
 #endif
 
             var dispatcher = Instance;
-            if (dispatcher != null)
+            if (!isQuitting && !object.ReferenceEquals(dispatcher, null))
             {
                 dispatcher.queueWorker.Enqueue(action);
             }
@@ -248,7 +248,7 @@ namespace UniRx
 #endif
 
                 var dispatcher = Instance;
-                if (dispatcher != null)
+                if (!isQuitting && !object.ReferenceEquals(dispatcher, null))
                 {
                     dispatcher.queueWorker.Enqueue(() =>
                     {
