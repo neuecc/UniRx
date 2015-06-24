@@ -77,19 +77,24 @@ namespace UniRx.Triggers
             return onStateIK ?? (onStateIK = new Subject<OnStateInfo>());
         }
 
-        // OnStateMove
+        // ObservableStateMachine Trigger makes stop animating #70
+        // Is this Unity's bug?
+        // comment out until fixed bugs 
 
-        Subject<OnStateInfo> onStateMove;
+        //// OnStateMove
 
-        public override void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-        {
-            if (onStateMove != null) onStateMove.OnNext(new OnStateInfo(animator, stateInfo, layerIndex));
-        }
+        //Subject<OnStateInfo> onStateMove;
 
-        public IObservable<OnStateInfo> OnStateMoveAsObservable()
-        {
-            return onStateMove ?? (onStateMove = new Subject<OnStateInfo>());
-        }
+        //public override void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        //{
+        //    if (onStateMove != null) onStateMove.OnNext(new OnStateInfo(animator, stateInfo, layerIndex));
+        //}
+
+        //public IObservable<OnStateInfo> OnStateMoveAsObservable()
+        //{
+        //    return onStateMove ?? (onStateMove = new Subject<OnStateInfo>());
+        //}
+
         // OnStateUpdate
 
         Subject<OnStateInfo> onStateUpdate;
