@@ -32,7 +32,13 @@ namespace UniRxAnalyzer
                 .DescendantNodes(descendIntoChildren: x => !(x is InvocationExpressionSyntax))
                 .OfType<InvocationExpressionSyntax>();
 
-            foreach (var expr in invocationExpressions)
+            // in lambda expression
+            var inlambdaInvocationExpressions = context.Node.DescendantNodes()
+                .OfType<LambdaExpressionSyntax>()
+                .SelectMany(x => x.DescendantNodes(descendIntoChildren: y => !(y is InvocationExpressionSyntax)))
+                .OfType<InvocationExpressionSyntax>();
+
+            foreach (var expr in invocationExpressions.Concat(inlambdaInvocationExpressions))
             {
                 var type = context.SemanticModel.GetTypeInfo(expr).Type;
                 // UniRx.IObservable? System.IObservable?

@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>UniRxAnalyzer</id>
-        <version>1.0.2.0</version>
+        <version>1.0.3.0</version>
         <title>UniRxAnalyzer</title>
         <authors>neuecc</authors>
         <projectUrl>https://github.com/neuecc/UniRx</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Various Analyzers for UniRx</description>
-        <releaseNotes>Initial Release, HandleObservableAnalyzer.</releaseNotes>
+        <releaseNotes>Analyze inner lambda expressions.</releaseNotes>
         <tags>UniRx, analyzers</tags>
         <frameworkAssemblies>
             <frameworkAssembly assemblyName="System" targetFramework="" />
