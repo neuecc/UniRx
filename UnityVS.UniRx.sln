@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRxAnalyzer.Test", "Analy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRxAnalyzer.Vsix", "Analyzer\UniRxAnalyzer\UniRxAnalyzer.Vsix\UniRxAnalyzer.Vsix.csproj", "{65D45FBA-A76A-4645-BF10-75D3A3D756C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Library", "Dlls\UniRx.Library\UniRx.Library.csproj", "{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Library.Unity", "Dlls\UniRx.Library.Unity\UniRx.Library.Unity.csproj", "{0039CA1D-87A6-4F2F-85DC-659FFE5B56FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,14 @@ Global
 		{65D45FBA-A76A-4645-BF10-75D3A3D756C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65D45FBA-A76A-4645-BF10-75D3A3D756C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65D45FBA-A76A-4645-BF10-75D3A3D756C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0039CA1D-87A6-4F2F-85DC-659FFE5B56FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0039CA1D-87A6-4F2F-85DC-659FFE5B56FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0039CA1D-87A6-4F2F-85DC-659FFE5B56FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0039CA1D-87A6-4F2F-85DC-659FFE5B56FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
