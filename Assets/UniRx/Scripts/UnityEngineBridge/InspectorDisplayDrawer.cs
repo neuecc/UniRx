@@ -135,7 +135,7 @@ namespace UniRx
                 }
                 catch
                 {
-                    Debug.Log("InspectorDisplayDrawer Exception, path:" + string.Join(", ", paths));
+                    Debug.Log("InspectorDisplayDrawer Exception, objType:" + obj.GetType().Name + " path:" + string.Join(", ", paths));
                     throw;
                 }
             }
