@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if !UniRxLibrary
 using UnityEngine;
+#endif
 
 namespace UniRx
 {
@@ -26,7 +28,9 @@ namespace UniRx
         [NonSerialized]
         bool isDisposed = false;
 
+#if !UniRxLibrary
         [SerializeField]
+#endif
         T value = default(T);
 
         [NonSerialized]
