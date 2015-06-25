@@ -118,17 +118,25 @@ namespace UniRx
             // If array, path = Array.data[index]
             if (fieldInfo == null && path == "Array")
             {
-                path = paths[++index];
-                var m = Regex.Match(path, @"(.+)\[([0-9]+)*\]");
-                var arrayIndex = int.Parse(m.Groups[2].Value);
-                var arrayValue = ((Array)obj).GetValue(arrayIndex);
-                if (index < paths.Length - 1)
+                try
                 {
-                    return GetValueRecursive(arrayValue, ++index, paths);
+                    path = paths[++index];
+                    var m = Regex.Match(path, @"(.+)\[([0-9]+)*\]");
+                    var arrayIndex = int.Parse(m.Groups[2].Value);
+                    var arrayValue = ((Array)obj).GetValue(arrayIndex);
+                    if (index < paths.Length - 1)
+                    {
+                        return GetValueRecursive(arrayValue, ++index, paths);
+                    }
+                    else
+                    {
+                        return arrayValue;
+                    }
                 }
-                else
+                catch
                 {
-                    return arrayValue;
+                    Debug.Log("InspectorDisplayDrawer Exception, path:" + string.Join(", ", paths));
+                    throw;
                 }
             }
             else if (fieldInfo == null)
