@@ -4,6 +4,7 @@ using UniRx.Triggers;
 using System.Collections;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 
 public class Sandbox2 : MonoBehaviour
 {
@@ -42,13 +43,13 @@ public class ObjectiveModel
     public int ObjectiveNum = 0;
 
     public IntReactiveProperty Array; // not array:)
-    public ObjectiveThingsModel[] AiueoObjects;
+    public List<ObjectiveThingsModel> AiueoObjects;
     public IntReactiveProperty[] ArrayIntReactiveProps;
 
     public void Initialize()
     {
 
-        ObjectiveNum = AiueoObjects.Length;
+        ObjectiveNum = AiueoObjects.Count;
 
         //observe everything in objectivethings model
         foreach (ObjectiveThingsModel otm in AiueoObjects)

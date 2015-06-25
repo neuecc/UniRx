@@ -123,7 +123,7 @@ namespace UniRx
                     path = paths[++index];
                     var m = Regex.Match(path, @"(.+)\[([0-9]+)*\]");
                     var arrayIndex = int.Parse(m.Groups[2].Value);
-                    var arrayValue = ((Array)obj).GetValue(arrayIndex);
+                    var arrayValue = (obj as System.Collections.IList)[arrayIndex];
                     if (index < paths.Length - 1)
                     {
                         return GetValueRecursive(arrayValue, ++index, paths);
