@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if UNITY_5
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,3 +24,5 @@ namespace Assets.ObjectTest
         //}
     }
 }
+
+#endif
