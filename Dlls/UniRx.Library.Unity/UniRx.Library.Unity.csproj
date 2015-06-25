@@ -116,6 +116,12 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableAnimatorTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableAnimatorTrigger.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableBeginDragTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableBeginDragTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCancelTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableCancelTrigger.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCanvasGroupChangedTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableCanvasGroupChangedTrigger.cs</Link>
     </Compile>
@@ -125,11 +131,23 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCollisionTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableCollisionTrigger.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDeselectTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableDeselectTrigger.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDestroyTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableDestroyTrigger.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDragTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableDragTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDropTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableDropTrigger.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableEnableTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableEnableTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableEndDragTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableEndDragTrigger.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableEventTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableEventTrigger.cs</Link>
@@ -137,17 +155,47 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableFixedUpdateTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableFixedUpdateTrigger.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableInitializePotentialDragTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableInitializePotentialDragTrigger.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableLateUpdateTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableLateUpdateTrigger.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableMouseTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableMouseTrigger.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableMoveTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableMoveTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerClickTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservablePointerClickTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerDownTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservablePointerDownTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerEnterTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservablePointerEnterTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerExitTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservablePointerExitTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerUpTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservablePointerUpTrigger.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableRectTransformTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableRectTransformTrigger.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableScrollTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableScrollTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableSelectTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableSelectTrigger.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableStateMachineTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableStateMachineTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableSubmitTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableSubmitTrigger.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTransformChangedTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableTransformChangedTrigger.cs</Link>
@@ -166,6 +214,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableTriggerTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableUpdateSelectedTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableUpdateSelectedTrigger.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableUpdateTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableUpdateTrigger.cs</Link>
