@@ -19,6 +19,9 @@ public class Sandbox2 : MonoBehaviour
 
     [SerializeField]
     public IntReactiveProperty[] FirstLayerArray;
+    
+    [SerializeField]
+    public List<IntReactiveProperty> ListIntReacProp;
 
 
     void Start()

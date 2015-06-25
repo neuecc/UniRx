@@ -2,6 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -81,12 +82,6 @@ namespace UniRx
             {
                 if (EditorGUI.EndChangeCheck())
                 {
-                    var targetType = (fieldInfo.FieldType.IsArray)
-                        ? fieldInfo.FieldType.GetElementType()
-                        : fieldInfo.FieldType;
-
-                    var propInfo = targetType.GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
                     property.serializedObject.ApplyModifiedProperties(); // deserialize to field
 
                     var paths = property.propertyPath.Split('.'); // X.Y.Z...
@@ -95,9 +90,11 @@ namespace UniRx
                     var targetProp = (paths.Length == 1)
                         ? fieldInfo.GetValue(attachedComponent)
                         : GetValueRecursive(attachedComponent, 0, paths);
+                    if (targetProp == null) return;
+                    var propInfo = targetProp.GetType().GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     var modifiedValue = propInfo.GetValue(targetProp, null); // retrieve new value
 
-                    var methodInfo = targetType.GetMethod("SetValueAndForceNotify", BindingFlags.IgnoreCase | BindingFlags.InvokeMethod | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    var methodInfo = targetProp.GetType().GetMethod("SetValueAndForceNotify", BindingFlags.IgnoreCase | BindingFlags.InvokeMethod | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     if (methodInfo != null)
                     {
                         methodInfo.Invoke(targetProp, new object[] { modifiedValue });

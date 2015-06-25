@@ -399,12 +399,12 @@ MonoBehaviour:
   Direct:
     value: 0
   HogeMoge:
-    Id: fefe
+    Id: fdsfdsfsd
     Name: fe
     Info: efe
     Finished:
       value: 1
-    ObjectiveNum: 29
+    ObjectiveNum: 107
     Array:
       value: 43
     AiueoObjects:
@@ -421,12 +421,18 @@ MonoBehaviour:
     - Obtained:
         value: 0
       IntHogeMoge:
-        value: 0
+        value: 197
       TadanoInt: 4242
       MoreInArray:
-      - value: 0
-      - value: 0
-      - value: 0
+      - value: 322
+      - value: 121121
+      - value: 32
+    - Obtained:
+        value: 0
+      IntHogeMoge:
+        value: 0
+      TadanoInt: 0
+      MoreInArray: []
     - Obtained:
         value: 0
       IntHogeMoge:
@@ -437,11 +443,18 @@ MonoBehaviour:
     - value: 46
     - value: 12
     - value: -52
+    - value: 432423
+    - value: 432
   FirstLayerArray:
   - value: 167
-  - value: 206
-  - value: -3991
+  - value: 244
+  - value: -4095
   - value: -4249
+  ListIntReacProp:
+  - value: 188
+  - value: 0
+  - value: 0
+  - value: 0
 --- !u!1 &813832944
 GameObject:
   m_ObjectHideFlags: 0
