@@ -845,6 +845,8 @@ PresenterBase has three phases.
 
 Yellow is `Awake`, order is indeterminate. Green is `BeforeInitialize` phase, its parent -> child. Red is `Initialize` phase, its child -> parent. This sample, you can see `Sample14_PresenterBase`.
 
+If you create `PresenterBase` dynamically for example from Prefab, you can call `ForceInitialize(argument)` after instantiate.
+
 Visual Studio Analyzer
 ---
 For Visual Studio 2015 users, a custom analyzer, UniRxAnalyzer, is provided. It can, for example, detect when streams aren't subscribed to.
