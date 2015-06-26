@@ -32,33 +32,59 @@ namespace UniRxAnalyzer
                 .DescendantNodes(descendIntoChildren: x => !(x is InvocationExpressionSyntax))
                 .OfType<InvocationExpressionSyntax>();
 
-            // in lambda expression
-            var inlambdaInvocationExpressions = context.Node.DescendantNodes()
-                .OfType<LambdaExpressionSyntax>()
-                .SelectMany(x => x.DescendantNodes(descendIntoChildren: y => !(y is InvocationExpressionSyntax)))
-                .OfType<InvocationExpressionSyntax>();
-
-            foreach (var expr in invocationExpressions.Concat(inlambdaInvocationExpressions))
+            foreach (var expr in invocationExpressions)
             {
                 var type = context.SemanticModel.GetTypeInfo(expr).Type;
                 // UniRx.IObservable? System.IObservable?
                 if (new[] { type }.Concat(type.AllInterfaces).Any(x => x.Name == "IObservable"))
                 {
-                    // Okay => x = M(), var x = M(), return M(), from x in M(), (bool) ? M() : M()
-                    if (expr.Parent.IsKind(SyntaxKind.SimpleAssignmentExpression)) continue;
-                    if (expr.Parent.IsKind(SyntaxKind.EqualsValueClause) && expr.Parent.Parent.IsKind(SyntaxKind.VariableDeclarator)) continue;
-                    if (expr.Parent.IsKind(SyntaxKind.ReturnStatement)) continue;
-                    if (expr.Parent.IsKind(SyntaxKind.FromClause)) continue;
-                    if (expr.Parent.IsKind(SyntaxKind.ConditionalExpression)) continue;
-
-                    // Okay => M().M()
-                    if (expr.DescendantNodes().OfType<InvocationExpressionSyntax>().Any()) continue;
+                    if (ValidateInvocation(expr)) continue;
 
                     // Report Warning
                     var diagnostic = Diagnostic.Create(Rule, expr.GetLocation());
                     context.ReportDiagnostic(diagnostic);
                 }
             }
+
+            // in lambda expression
+
+            var inlambdaInvocationExpressions = context.Node.DescendantNodes()
+                .OfType<LambdaExpressionSyntax>()
+                .SelectMany(x => x.DescendantNodes(descendIntoChildren: y => !(y is InvocationExpressionSyntax)).OfType<InvocationExpressionSyntax>(),
+                    (lambda, invocation) => new { lambda, invocation });
+
+            foreach (var inlambda in inlambdaInvocationExpressions)
+            {
+                if (!inlambda.lambda.ChildNodes().OfType<BlockSyntax>().Any()) continue;
+
+                var expr = inlambda.invocation;
+
+                var type = context.SemanticModel.GetTypeInfo(expr).Type;
+                // UniRx.IObservable? System.IObservable?
+                if (new[] { type }.Concat(type.AllInterfaces).Any(x => x.Name == "IObservable"))
+                {
+                    if (ValidateInvocation(expr)) continue;
+
+                    // Report Warning
+                    var diagnostic = Diagnostic.Create(Rule, expr.GetLocation());
+                    context.ReportDiagnostic(diagnostic);
+                }
+            }
+        }
+
+        static bool ValidateInvocation(InvocationExpressionSyntax expr)
+        {
+            // Okay => x = M(), var x = M(), return M(), from x in M(), (bool) ? M() : M()
+            if (expr.Parent.IsKind(SyntaxKind.SimpleAssignmentExpression)) return true;
+            if (expr.Parent.IsKind(SyntaxKind.EqualsValueClause) && expr.Parent.Parent.IsKind(SyntaxKind.VariableDeclarator)) return true;
+            if (expr.Parent.IsKind(SyntaxKind.ReturnStatement)) return true;
+            if (expr.Parent.IsKind(SyntaxKind.FromClause)) return true;
+            if (expr.Parent.IsKind(SyntaxKind.ConditionalExpression)) return true;
+
+            // Okay => M().M()
+            if (expr.DescendantNodes().OfType<InvocationExpressionSyntax>().Any()) return true;
+
+            return false;
         }
     }
 }
