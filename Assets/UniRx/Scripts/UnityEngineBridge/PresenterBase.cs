@@ -72,7 +72,7 @@ namespace UniRx
         IPresenter parent = null;
         T argument = default(T);
 
-        IPresenter IPresenter.Parent
+        public IPresenter Parent
         {
             get
             {
