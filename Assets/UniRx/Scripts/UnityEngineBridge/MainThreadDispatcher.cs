@@ -236,6 +236,7 @@ namespace UniRx
         /// <summary>ThreadSafe StartCoroutine.</summary>
         public static void SendStartCoroutine(IEnumerator routine)
         {
+            Initialize();
             if (mainThreadToken != null)
             {
                 StartCoroutine(routine);
