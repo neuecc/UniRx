@@ -6,30 +6,38 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 
+// for Scenes/NextSandBox
 public class Sandbox2 : MonoBehaviour
 {
-    [SerializeField]
-    public MySerializable MS;
+    private class Operator : IEnumerator
+    {
+        public object Current
+        {
+            get { return 1; }
+        }
 
-    [SerializeField]
-    public IntReactiveProperty Direct;
+        public bool MoveNext()
+        {
+            return false;
+        }
 
-    [SerializeField]
-    public ObjectiveModel HogeMoge;
+        public void Reset()
+        {
+        }
+    }
 
-    [SerializeField]
-    public IntReactiveProperty[] FirstLayerArray;
-    
-    [SerializeField]
-    public List<IntReactiveProperty> ListIntReacProp;
-
-
+    void Awake()
+    {
+        MainThreadDispatcher.Initialize();
+    }
     void Start()
     {
-        FirstLayerArray[0].Subscribe(x => Debug.Log(x));
-        HogeMoge.ArrayIntReactiveProps[0].Subscribe(x => Debug.Log(x));
-        HogeMoge.AiueoObjects[1].Obtained.Subscribe(x => Debug.Log(x));
-        HogeMoge.AiueoObjects[1].IntHogeMoge.Subscribe(x => Debug.Log(x));
+        int frameStarted = Time.frameCount;
+        var ope = new Operator();
+        ope.ToObservable().Subscribe(
+            _ => Debug.Log(string.Format("unirx next: consumed frames = {0}", Time.frameCount - frameStarted)),
+            () => Debug.Log(string.Format("unirx cmpl: consumed frames = {0}", Time.frameCount - frameStarted))
+        );
     }
 }
 
