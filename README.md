@@ -1,5 +1,7 @@
 UniRx - Reactive Extensions for Unity
 ===
+
+[![Join the chat at https://gitter.im/neuecc/UniRx](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/neuecc/UniRx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Created by Yoshifumi Kawai(neuecc)
 
 What is UniRx?
