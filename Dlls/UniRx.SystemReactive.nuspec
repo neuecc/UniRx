@@ -1,0 +1,29 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>UniRx.SystemReactive</id>
+    <version>1.0.0.0</version>
+    <title>UniRx.SystemReactive</title>
+    <authors>OrangeCube</authors>
+    <owners>OranbeCube</owners>
+    <licenseUrl>https://github.com/OrangeCube/UniRxblob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/OrangeCube/UniRx</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>UniRx in System.Reactive namespace</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>OrangeCube</copyright>
+    <tags>UniRx, Rx, reactive extensions</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" targetFramework="" />
+    </frameworkAssemblies>
+      <dependencies>
+          <group targetFramework="net45">
+              <dependency id="Rx-Main" version="2.2.5" />
+          </group>
+      </dependencies>
+  </metadata>
+  <files>
+      <file src="UniRx.SystemReactive\bin\Release\UniRx.dll" target="lib\net35\" />
+      <file src="UniRx.SystemReactive.TypeForwarding\bin\Release\UniRx.dll" target="lib\net45\" />
+  </files>
+</package>
