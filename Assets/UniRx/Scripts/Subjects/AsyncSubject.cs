@@ -62,8 +62,6 @@ namespace UniRx
             {
                 old.OnCompleted();
             }
-
-            old.OnCompleted();
         }
 
         public void OnError(Exception error)
