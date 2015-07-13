@@ -29,7 +29,12 @@ namespace UniRx
             }
         }
 
-        class AnonymousObserver<T> : IObserver<T>
+        internal interface ISafeObserver<T> : IObserver<T>
+        {
+
+        }
+
+        class AnonymousObserver<T> : IObserver<T>, ISafeObserver<T>
         {
             readonly Action<T> onNext;
             readonly Action<Exception> onError;
@@ -94,7 +99,7 @@ namespace UniRx
             }
         }
 
-        class EmptyOnNextAnonymousObserver<T> : IObserver<T>
+        class EmptyOnNextAnonymousObserver<T> : IObserver<T>, ISafeObserver<T>
         {
             readonly Action<Exception> onError;
             readonly Action onCompleted;
