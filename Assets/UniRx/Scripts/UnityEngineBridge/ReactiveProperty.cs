@@ -20,7 +20,7 @@ namespace UniRx
     /// Lightweight property broker.
     /// </summary>
     [Serializable]
-    public class ReactiveProperty<T> : IReactiveProperty<T>, IDisposable
+    public class ReactiveProperty<T> : IReactiveProperty<T>, IDisposable, IOptimizedObservable<T>
     {
         [NonSerialized]
         bool canPublishValueOnSubscribe = false;
@@ -201,12 +201,17 @@ namespace UniRx
         {
             return (value == null) ? "null" : value.ToString();
         }
+
+        public bool IsRquiredSubscribeOnCurrentThread()
+        {
+            return false;
+        }
     }
 
     /// <summary>
     /// Lightweight property broker.
     /// </summary>
-    public class ReadOnlyReactiveProperty<T> : IReadOnlyReactiveProperty<T>, IDisposable
+    public class ReadOnlyReactiveProperty<T> : IReadOnlyReactiveProperty<T>, IDisposable, IOptimizedObservable<T>
     {
         bool canPublishValueOnSubscribe = false;
 
@@ -305,6 +310,11 @@ namespace UniRx
         public override string ToString()
         {
             return (value == null) ? "null" : value.ToString();
+        }
+
+        public bool IsRquiredSubscribeOnCurrentThread()
+        {
+            return false;
         }
     }
 

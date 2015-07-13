@@ -4,7 +4,7 @@ using UniRx.InternalUtil;
 
 namespace UniRx
 {
-    public sealed class ReplaySubject<T> : ISubject<T>
+    public sealed class ReplaySubject<T> : ISubject<T>, IOptimizedObservable<T>
     {
         object observerLock = new object();
 
@@ -203,6 +203,11 @@ namespace UniRx
         void ThrowIfDisposed()
         {
             if (isDisposed) throw new ObjectDisposedException("");
+        }
+
+        public bool IsRquiredSubscribeOnCurrentThread()
+        {
+            return false;
         }
 
         class Subscription : IDisposable

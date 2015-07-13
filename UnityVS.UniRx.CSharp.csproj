@@ -147,6 +147,7 @@
     <Compile Include="Assets\UniRx\Scripts\System\IObserver.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\IProgress.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\Tuple.cs" />
+    <Compile Include="Assets\UniRx\Scripts\System\IOptimizedObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\Unit.cs" />
     <Compile Include="Assets\UniRx\Scripts\TimeInterval.cs" />
     <Compile Include="Assets\UniRx\Scripts\Timestamped.cs" />

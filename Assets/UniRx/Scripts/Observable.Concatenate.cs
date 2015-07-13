@@ -498,7 +498,7 @@ namespace UniRx
                 });
 
                 return new CompositeDisposable { lsubscription, rsubscription };
-            });
+            }, isRequiredSubscribeOnCurrentThread: left.IsRequiredSubscribeOnCurrentThread() && right.IsRequiredSubscribeOnCurrentThread());
         }
 
         public static IObservable<IList<T>> CombineLatest<T>(this IEnumerable<IObservable<T>> sources)

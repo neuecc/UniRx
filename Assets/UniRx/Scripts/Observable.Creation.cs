@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace UniRx
@@ -16,32 +15,44 @@ namespace UniRx
             return new AnonymousObservable<T>(subscribe);
         }
 
-        class AnonymousObservable<T> : IObservable<T>
+        /// <summary>
+        /// Create anonymous observable. Observer is auto detach when error, completed.
+        /// </summary>
+        public static IObservable<T> Create<T>(Func<IObserver<T>, IDisposable> subscribe, bool isRequiredSubscribeOnCurrentThread)
         {
+            if (subscribe == null) throw new ArgumentNullException("subscribe");
+
+            return new AnonymousObservable<T>(subscribe, isRequiredSubscribeOnCurrentThread);
+        }
+
+        class AnonymousObservable<T> : IObservable<T>, IOptimizedObservable<T>
+        {
+            readonly bool isRequiredSubscribeOnCurrentThread;
             readonly Func<IObserver<T>, IDisposable> subscribe;
 
             public AnonymousObservable(Func<IObserver<T>, IDisposable> subscribe)
+                : this(subscribe, false)
+            {
+
+            }
+
+            public AnonymousObservable(Func<IObserver<T>, IDisposable> subscribe, bool isSchedulerlessObservable)
             {
                 this.subscribe = subscribe;
+                this.isRequiredSubscribeOnCurrentThread = isSchedulerlessObservable;
+            }
+
+            public bool IsRquiredSubscribeOnCurrentThread()
+            {
+                return isRequiredSubscribeOnCurrentThread;
             }
 
             public IDisposable Subscribe(IObserver<T> observer)
             {
                 var subscription = new SingleAssignmentDisposable();
+                var safeObserver = Observer.CreateAutoDetachObserver<T>(observer, subscription);
 
-                IObserver<T> safeObserver = observer as Observer.ISafeObserver<T>;
-                if (safeObserver == null)
-                {
-#if UNITY_5_0
-                    // In Unity 5.0.2p1/p2 occures IL2CPP compile error.
-                    // IL2CPP compile error when script contains method group of interface to delegate conversion
-                    safeObserver = Observer.Create<T>(x => observer.OnNext(x), ex => observer.OnError(ex), () => observer.OnCompleted(), subscription);
-#else
-                    safeObserver = Observer.Create<T>(observer.OnNext, observer.OnError, observer.OnCompleted, subscription);
-#endif
-                }
-
-                if (Scheduler.IsCurrentThreadSchedulerScheduleRequired)
+                if (!isRequiredSubscribeOnCurrentThread && Scheduler.IsCurrentThreadSchedulerScheduleRequired)
                 {
                     Scheduler.CurrentThread.Schedule(() => subscription.Disposable = subscribe(safeObserver));
                 }
