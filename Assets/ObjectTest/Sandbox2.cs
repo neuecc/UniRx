@@ -42,29 +42,31 @@ public class Sandbox2 : MonoBehaviour
         button.OnClickAsObservable().Subscribe(_ =>
         {
             var list = Enumerable.Range(1, 10000).Select(x => new ReactiveProperty<int>(x)).ToArray();
-            //var list2 = Enumerable.Range(1, 10000).Select(x => new MyEventClass()).ToArray();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
 
-            //var empty = Observer.Create<int>(___ => { }, ex => { }, () => { });
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-
-            foreach (var item in list)
             {
-                item.Select(x => x).Subscribe();
-                //item.Subscribe();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+                foreach (var item in list)
+                {
+                    item.Select(x => x).Select(x => x).Select(x => x).Select(x => x).Subscribe();
+                }
+                sw.Stop();
+                Debug.Log(sw.Elapsed.TotalMilliseconds + "ms");
             }
-            //foreach (var item in list2)
-            //{
-            //    item.Hoge += delegate { };
-            //    item.Push(100);
-            //}
-
-            sw.Stop();
-            Debug.Log(sw.Elapsed.TotalMilliseconds + "ms");
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+                foreach (var item in list)
+                {
+                    item.Value = -10;
+                }
+                sw.Stop();
+                Debug.Log(sw.Elapsed.TotalMilliseconds + "ms");
+            }
         });
-
     }
 }
-

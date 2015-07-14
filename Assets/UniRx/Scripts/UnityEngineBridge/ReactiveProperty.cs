@@ -202,7 +202,7 @@ namespace UniRx
             return (value == null) ? "null" : value.ToString();
         }
 
-        public bool IsRquiredSubscribeOnCurrentThread()
+        public bool IsRequiredSubscribeOnCurrentThread()
         {
             return false;
         }
@@ -312,7 +312,7 @@ namespace UniRx
             return (value == null) ? "null" : value.ToString();
         }
 
-        public bool IsRquiredSubscribeOnCurrentThread()
+        public bool IsRequiredSubscribeOnCurrentThread()
         {
             return false;
         }

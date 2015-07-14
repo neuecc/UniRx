@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using UniRx.Operators;
 
 namespace UniRx
 {
@@ -11,138 +12,24 @@ namespace UniRx
     // try{ otherFunc(); } catch { onError() }
     // onNext();
 
-    public class SelectObservable<T, TR> : IObservable<TR>
-    {
-        readonly IObservable<T> source;
-        readonly Func<T, TR> selector;
-
-        public SelectObservable(IObservable<T> source, Func<T, TR> selector)
-        {
-            this.source = source;
-            this.selector = selector;
-        }
-
-        public IDisposable Subscribe(IObserver<TR> observer)
-        {
-            var subscription = new SingleAssignmentDisposable();
-            var obs = new SelectObserver(observer, selector);
-            var safeObserver = Observer.CreateAutoDetachObserver<T>(obs, subscription);
-            subscription.Disposable = source.Subscribe(safeObserver);
-            return subscription;
-        }
-
-        class SelectObserver : IObserver<T>
-        {
-            readonly IObserver<TR> observer;
-            readonly Func<T, TR> selector;
-            int isStopped = 0;
-
-            public SelectObserver(IObserver<TR> observer, Func<T, TR> selector)
-            {
-                this.observer = observer;
-                this.selector = selector;
-            }
-
-            public void OnCompleted()
-            {
-                if (Interlocked.Increment(ref isStopped) == 1)
-                    observer.OnCompleted();
-            }
-
-            public void OnError(Exception error)
-            {
-                if (Interlocked.Increment(ref isStopped) == 1)
-                    observer.OnError(error);
-            }
-
-            public void OnNext(T value)
-            {
-                if (isStopped == 0)
-                {
-                    var v = default(TR);
-                    try
-                    {
-                        v = selector(value);
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-                    observer.OnNext(v);
-                }
-            }
-        }
-    }
-
     public static partial class Observable
     {
         static readonly TimeSpan InfiniteTimeSpan = new TimeSpan(0, 0, 0, 0, -1); // from .NET 4.5
 
         public static IObservable<TR> Select<T, TR>(this IObservable<T> source, Func<T, TR> selector)
         {
-            //return Observable.Create<TR>(observer =>
-            //{
-            //    return source.Subscribe(Observer.Create<T, TR>(x =>
-            //    {
-            //        var v = default(TR);
-            //        try
-            //        {
-            //            v = selector(x);
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            observer.OnError(ex);
-            //            return;
-            //        }
-            //        observer.OnNext(v);
-            //    }, observer));
-            //}, isSchedulerlessObservable: source.IsSchedulerless());
-
-            return new SelectObservable<T, TR>(source, selector);
-        }
-
-        public static IObservable<TR> Select2<T, TR>(this IObservable<T> source, Func<T, TR> selector)
-        {
-            return Observable.Create<TR>(observer =>
+            var select = source as ISelect<T>;
+            if (select != null)
             {
-                return source.Subscribe(Observer.Create<T, TR>(x =>
-                {
-                    var v = default(TR);
-                    try
-                    {
-                        v = selector(x);
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-                    observer.OnNext(v);
-                }, observer));
-            }, isRequiredSubscribeOnCurrentThread: source.IsRequiredSubscribeOnCurrentThread());
+                return select.CombineSelector(selector);
+            }
+
+            return new Select<T, TR>(source, selector);
         }
 
         public static IObservable<TR> Select<T, TR>(this IObservable<T> source, Func<T, int, TR> selector)
         {
-            return Observable.Create<TR>(observer =>
-            {
-                var index = 0;
-                return source.Subscribe(Observer.Create<T, TR>(x =>
-                {
-                    var v = default(TR);
-                    try
-                    {
-                        v = selector(x, index++);
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-                    observer.OnNext(v);
-                }, observer));
-            }, isRequiredSubscribeOnCurrentThread: source.IsRequiredSubscribeOnCurrentThread());
+            return new Select<T, TR>(source, selector);
         }
 
         public static IObservable<T> Where<T>(this IObservable<T> source, Func<T, bool> predicate)

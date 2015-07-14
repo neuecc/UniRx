@@ -167,7 +167,7 @@ namespace UniRx
             if (isDisposed) throw new ObjectDisposedException("");
         }
 
-        public bool IsRquiredSubscribeOnCurrentThread()
+        public bool IsRequiredSubscribeOnCurrentThread()
         {
             return false;
         }

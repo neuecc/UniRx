@@ -42,7 +42,7 @@ namespace UniRx
                 this.isRequiredSubscribeOnCurrentThread = isSchedulerlessObservable;
             }
 
-            public bool IsRquiredSubscribeOnCurrentThread()
+            public bool IsRequiredSubscribeOnCurrentThread()
             {
                 return isRequiredSubscribeOnCurrentThread;
             }
@@ -52,7 +52,7 @@ namespace UniRx
                 var subscription = new SingleAssignmentDisposable();
                 var safeObserver = Observer.CreateAutoDetachObserver<T>(observer, subscription);
 
-                if (!isRequiredSubscribeOnCurrentThread && Scheduler.IsCurrentThreadSchedulerScheduleRequired)
+                if (isRequiredSubscribeOnCurrentThread && Scheduler.IsCurrentThreadSchedulerScheduleRequired)
                 {
                     Scheduler.CurrentThread.Schedule(() => subscription.Disposable = subscribe(safeObserver));
                 }

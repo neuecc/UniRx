@@ -4,7 +4,7 @@ namespace UniRx
 {
     public interface IOptimizedObservable<T> : IObservable<T>
     {
-        bool IsRquiredSubscribeOnCurrentThread();
+        bool IsRequiredSubscribeOnCurrentThread();
     }
 
     public static class OptimizedObservableExtensions
@@ -14,7 +14,7 @@ namespace UniRx
             var obs = source as IOptimizedObservable<T>;
             if (obs == null) return true;
 
-            return obs.IsRquiredSubscribeOnCurrentThread();
+            return obs.IsRequiredSubscribeOnCurrentThread();
         }
 
         public static bool IsRequiredSubscribeOnCurrentThread<T>(this IObservable<T> source, IScheduler scheduler)

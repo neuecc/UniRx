@@ -153,6 +153,15 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Observer.cs">
       <Link>Observer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs">
+      <Link>Operators\OperatorObservableBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs">
+      <Link>Operators\OperatorObserverBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Select.cs">
+      <Link>Operators\Select.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs">
       <Link>Schedulers\CurrentThreadScheduler.cs</Link>
     </Compile>
@@ -191,6 +200,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\System\IObserver.cs">
       <Link>System\IObserver.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\System\IOptimizedObservable.cs">
+      <Link>System\IOptimizedObservable.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\System\IProgress.cs">
       <Link>System\IProgress.cs</Link>
