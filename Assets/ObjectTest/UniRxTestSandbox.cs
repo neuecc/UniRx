@@ -293,6 +293,20 @@ namespace UniRx.ObjectTest
                     sw.Stop();
                     logger.Debug("Direct Subscribe:" + sw.Elapsed.TotalMilliseconds + "ms");
                 }
+
+                {
+                    var r = UnityEngine.Random.Range(1, 100);
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    foreach (var item in list)
+                    {
+                        item.Value = r;
+                    }
+                    sw.Stop();
+                    logger.Debug("Push Direct Perf:" + sw.Elapsed.TotalMilliseconds + "ms");
+                }
             }
             ypos += 100;
 
@@ -311,6 +325,20 @@ namespace UniRx.ObjectTest
                     }
                     sw.Stop();
                     logger.Debug("Select.Subscribe:" + sw.Elapsed.TotalMilliseconds + "ms");
+                }
+
+                {
+                    var r = UnityEngine.Random.Range(1, 100);
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    foreach (var item in list)
+                    {
+                        item.Value = r;
+                    }
+                    sw.Stop();
+                    logger.Debug("Push Select Perf:" + sw.Elapsed.TotalMilliseconds + "ms");
                 }
             }
             ypos += 100;
