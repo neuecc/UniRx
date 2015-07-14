@@ -11,6 +11,7 @@ using UniRx.Triggers;
 using UniRx.Diagnostics;
 using System.Net;
 using System.IO;
+using System.Linq;
 #if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
     // Fallback for Unity versions below 4.5
     using Hash = System.Collections.Hashtable;
@@ -233,795 +234,324 @@ namespace UniRx.ObjectTest
         public BoundsReactiveProperty GGG;
         public QuaternionReactiveProperty HHH;
 
-        //public Matrix4x4 MXX;
-
         public void Awake()
         {
-            Debug.Log("Awake");
+            MainThreadDispatcher.Initialize();
+
             LogHelper.LogCallbackAsObservable()
                 .ObserveOnMainThread()
+                .Where(x => x.LogType == LogType.Exception)
                 .Subscribe(x => logtext.AppendLine(x.ToString()));
 
-
             ObservableLogger.Listener.LogToUnityDebug();
-
-            cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            clicker = cube.AddComponent<Clicker>();
-
-
-
-            MainThreadDispatcher.Initialize();
-            threadstaticobj = new object();
-
-
             ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
             {
                 logtext.AppendLine(x.Message);
             });
-
-
-            // Intxxx.Subscribe(x => Debug.Log(x));
-            LongxXXX.Subscribe(x => Debug.Log(x));
-            DuAAX.Subscribe(x => Debug.Log(x));
-            FloAAX.Subscribe(x => Debug.Log(x));
-            Booxxx.Subscribe(x => Debug.Log(x));
-            MikanRP.Subscribe(x => Debug.Log(x));
-            Strrrrr.Subscribe(x => Debug.Log(x));
-
-            USHHHH.Subscribe(x => Debug.Log(x));
-
-            AAA.Subscribe(x => Debug.Log(x));
-            BBB.Subscribe(x => Debug.Log(x));
-            CCC.Subscribe(x => Debug.Log(x));
-            DDD.Subscribe(x => Debug.Log(x));
-            EEE.Subscribe(x => Debug.Log(x));
-            FFF.Subscribe(x => Debug.Log(x));
-            GGG.Subscribe(x => Debug.Log(x));
-            HHH.Subscribe(x => Debug.Log(x));
-
-            SUPER_Rx.Subscribe(x => Debug.Log(x.ToString()));
         }
-
-        public void Start()
-        {
-            Debug.Log("Start");
-
-            // DoubleCLick Sample of
-            // The introduction to Reactive Programming you've been missing
-            // https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
-
-            /*
-            var clickStream = Observable.EveryUpdate()
-                .Where(_ => Input.GetMouseButtonDown(0));
-
-            clickStream.Buffer(clickStream.Throttle(TimeSpan.FromMilliseconds(250)))
-                .Where(xs => xs.Count >= 2)
-                .Subscribe(xs => Debug.Log("DoubleClick Detected! Count:" + xs.Count));
-             */
-
-            MainThreadDispatcher.Initialize();
-
-        }
-
-        GameObject primitive = null;
-
-        public void Update()
-        {
-
-        }
-
-        public void OnDestroy()
-        {
-            Debug.Log("Destroy");
-        }
-
-
-        IDisposable yieldCancel = null;
-
-        // Subscriber subscriber = new Subscriber();
 
         CompositeDisposable disposables = new CompositeDisposable();
-
-
-        Tadanoiremono iremono = null;
-
-        IEnumerator Hoge()
-        {
-            while (true)
-            {
-                // logtext.AppendLine(Time.frameCount.ToString());
-                yield return null;
-            }
-        }
-
-        Subject<Unit> throttleSubject = new Subject<Unit>();
-        Func<bool> isNull = null;
-        ReactiveProperty<int> fromNeverRxProp = null;
-
-        public Func<bool> IsNull<T>(T source)
-        {
-            return () => source == null;
-        }
-
-        public bool IsNullNano<T>(T source)
-        {
-            return source == null;
-        }
+        Subject<int> Source = new Subject<int>();
 
         public void OnGUI()
         {
-            //var xpos = 0;
-            //var ypos = 0;
+            var xpos = 0;
+            var ypos = 0;
 
-            if (GUILayout.Button("Clear"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Clear"))
             {
                 logtext.Length = 0;
                 disposables.Clear();
             }
+            ypos += 100;
 
-            if (GUILayout.Button("RxProp1"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "PushSource"))
             {
-                Intxxx.Subscribe(x => Debug.Log(x));
+                Source.OnNext(UnityEngine.Random.Range(1, 100));
             }
+            ypos += 100;
 
-            if (GUILayout.Button("RxProp2"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Select"))
             {
-                fromNeverRxProp = Observable.Never<int>().ToReactiveProperty();
-                fromNeverRxProp.Subscribe(x => Debug.Log(x));
+                Source.Select(x => x * 100).Subscribe(x => logger.Debug(x)).AddTo(disposables);
             }
+            ypos += 100;
 
-            if (GUILayout.Button("RxProp2Push"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "SubscribePerf1"))
             {
-                fromNeverRxProp.Value = 20;
-            }
+                var list = Enumerable.Range(1, 10000).Select(x => new ReactiveProperty<int>(x)).ToArray();
 
-            if (GUILayout.Button("DelayFrameEmpty"))
-            {
-                logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.Empty<int>()
-                    .DelayFrame(3)
-                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + ":" + Time.frameCount));
-            }
-
-            if (GUILayout.Button("NextFrame"))
-            {
-                logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.NextFrame()
-                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
-                    .AddTo(disposables);
-            }
-
-            if (GUILayout.Button("IntervalFrame"))
-            {
-                logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.IntervalFrame(3)
-                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
-                    .AddTo(disposables);
-            }
-
-            if (GUILayout.Button("TimerFrame1"))
-            {
-                logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.TimerFrame(3)
-                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
-                    .AddTo(disposables);
-            }
-
-            if (GUILayout.Button("TimerFrame2"))
-            {
-                logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.TimerFrame(5, 3)
-                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
-                    .AddTo(disposables);
-            }
-
-            if (GUILayout.Button("TimeScaleZero"))
-            {
-                logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Time.timeScale = 0f;
-                Scheduler.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromSeconds(3), () =>
                 {
-                    logtext.AppendLine(Time.frameCount.ToString());
-                });
-            }
-
-            if (GUILayout.Button("SampleFrame"))
-            {
-                logtext.AppendLine("SampleFrame:" + Time.frameCount);
-                Observable.IntervalFrame(10)
-                    .SampleFrame(25)
-                    .Take(6)
-                    .Subscribe(x =>
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    foreach (var item in list)
                     {
-                        logtext.AppendLine("Sample:" + Time.frameCount.ToString());
-                    }, () =>
-                    {
-                        logtext.AppendLine("Complete:" + Time.frameCount.ToString());
-                    })
-                    .AddTo(disposables);
+                        item.Subscribe();
+                    }
+                    sw.Stop();
+                    logger.Debug("Direct Subscribe:" + sw.Elapsed.TotalMilliseconds + "ms");
+                }
             }
+            ypos += 100;
 
-            if (GUILayout.Button("ThrottleClick"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "SubscribePerf2"))
             {
-                logtext.AppendLine("ClickFrame:" + Time.frameCount);
-                throttleSubject.OnNext(Unit.Default);
-            }
+                var list = Enumerable.Range(1, 10000).Select(x => new ReactiveProperty<int>(x)).ToArray();
 
-            if (GUILayout.Button("ThrottleFrame"))
-            {
-                logtext.AppendLine("ThrottleFrame:" + Time.frameCount);
-                throttleSubject
-                    .ThrottleFrame(60)
-                    .Subscribe(x =>
-                    {
-                        logtext.AppendLine("Throttle:" + Time.frameCount.ToString());
-                    }, () =>
-                    {
-                        logtext.AppendLine("Complete:" + Time.frameCount.ToString());
-                    })
-                    .AddTo(disposables);
-            }
-
-            if (GUILayout.Button("ThrottleFirstFrame"))
-            {
-                logtext.AppendLine("ThrottleFirstFrame:" + Time.frameCount);
-                throttleSubject
-                    .ThrottleFirstFrame(60)
-                    .Subscribe(x =>
-                    {
-                        logtext.AppendLine("ThrottleFirst:" + Time.frameCount.ToString());
-                    }, () =>
-                    {
-                        logtext.AppendLine("Complete:" + Time.frameCount.ToString());
-                    })
-                    .AddTo(disposables);
-            }
-
-            if (GUILayout.Button("TimeoutFrame"))
-            {
-                logtext.AppendLine("TimeoutFrame:" + Time.frameCount);
-                throttleSubject
-                    .TimeoutFrame(60)
-                    .Subscribe(x =>
-                    {
-                        logtext.AppendLine("Throttle:" + Time.frameCount.ToString());
-                    }, ex =>
-                        {
-                            logtext.AppendLine("Timeout:" + ex.ToString());
-                        }, () =>
-                    {
-                        logtext.AppendLine("Complete:" + Time.frameCount.ToString());
-                    })
-                    .AddTo(disposables);
-            }
-
-            if (GUILayout.Button("ReactiveProperty"))
-            {
-                var enemy = new Enemy(1000);
-                enemy.CurrentHp.Subscribe(x => logtext.AppendLine(x.ToString())).AddTo(disposables);
-                enemy.CurrentHp.Value -= 900;
-
-                var person = new Person("hoge", "huga");
-                person.FullName.Subscribe(x => logtext.AppendLine(x)).AddTo(disposables);
-
-                person.GivenName.Value = "aiueo";
-                person.FamilyName.Value = "kakikukeko";
-            }
-
-            if (GUILayout.Button("RxProp2"))
-            {
-                var p = new ReactiveProperty<Enemy>();
-                p.Skip(1).Subscribe(x => Debug.Log("set" + x.CurrentHp.Value));
-
-                p.Value = new Enemy(1000);
-                p.Value = new Enemy(43000);
-                p.Value = new Enemy(43000);
-            }
-
-            if (GUILayout.Button("Log"))
-            {
-                logger.DebugFormat("debug{0}format{1}", "-", "!");
-                logger.ErrorFormat("error{0}format{1}", "-", "!");
-                logger.WarningFormat("warning{0}format{1}", "-", "!");
-                logger.LogFormat("log{0}format{1}", "-", "!");
-            }
-
-            if (GUILayout.Button("Cancel"))
-            {
-                var dispose = Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(3), () =>
                 {
-                    Debug.Log("MainThreadSchedule");
-                });
-                dispose.Dispose();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    foreach (var item in list)
+                    {
+                        item.Select(x => x).Subscribe();
+                    }
+                    sw.Stop();
+                    logger.Debug("Select.Subscribe:" + sw.Elapsed.TotalMilliseconds + "ms");
+                }
             }
+            ypos += 100;
 
-            if (GUILayout.Button("Observe(UnityObject)"))
-            {
-                Debug.Log("before");
-                clicker.transform.ObserveEveryValueChanged(x => x.position.x)
-                    .Subscribe(x => Debug.Log(x), Debug.LogException, () => Debug.Log("comp"));
-                Debug.Log("after");
-            }
 
-            //if (GUILayout.Button("DestroyCube"))
+            //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "CurrentThreadScheduler"))
             //{
-            //    GameObject.Destroy(cube);
+            //    try
+            //    {
+            //        Scheduler.CurrentThread.Schedule(() =>
+            //        {
+            //            try
+            //            {
+            //                logtext.AppendLine("test threadscheduler");
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                logtext.AppendLine("innner ex" + ex.ToString());
+            //            }
+            //        });
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        logtext.AppendLine("outer ex" + ex.ToString());
+            //    }
             //}
-
-            //if (GUILayout.Button("NextScene"))
+            //ypos += 100;
+            //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "EveryUpdate"))
             //{
-            //    Application.LoadLevel("NextSandbox");
-            //}
-
-            //if (GUILayout.Button("Create POCO"))
-            //{
-            //    iremono = new Tadanoiremono();
-            //}
-
-            //if (GUILayout.Button("Observe POCO"))
-            //{
-            //    iremono.ObserveEveryValueChanged(x => x.Hoge)
-            //        .Subscribe(x => Debug.Log(x), Debug.LogException, () => Debug.Log("comp"))
+            //    Observable.EveryUpdate()
+            //        .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()))
             //        .AddTo(disposables);
             //}
-
-            //if (GUILayout.Button("Add POCO"))
+            //ypos += 100;
+            //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "FromCoroutinePure"))
             //{
-            //    iremono.Hoge += 100;
+            //    Observable.Create<Unit>(observer =>
+            //    {
+            //        var cancel = new BooleanDisposable();
+
+            //        MainThreadDispatcher.StartCoroutine(Hoge(observer));
+
+            //        return cancel;
+            //    })
+            //    .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()));
+            //}
+            //ypos += 100;
+            //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "FromCoroutine"))
+            //{
+            //    Observable.FromCoroutine<Unit>(Hoge)
+            //    .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()));
             //}
 
-            //if (GUILayout.Button("POCO Null"))
-            //{
-            //    iremono = null;
-            //}
 
-            //if (GUILayout.Button("GC"))
-            //{
-            //    GC.Collect();
-            //    GC.WaitForPendingFinalizers();
-            //    GC.Collect();
-            //}
-
-            if (GUILayout.Button("Trigger"))
-            {
-                primitive = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                var trigger = primitive.AddComponent<ObservableUpdateTrigger>();
-                trigger.UpdateAsObservable()
-                    .Subscribe(x => Debug.Log(x), () => Debug.Log("Comp!!!"));
-            }
-
-            if (GUILayout.Button("Destroy Primitive"))
-            {
-                if (primitive != null) GameObject.Destroy(primitive);
-            }
-
-            if (GUILayout.Button("Cube Update"))
-            {
-                clicker.UpdateAsObservable()
-                    .Finally(() => Debug.Log("f"))
-                    .Subscribe(x => Debug.Log(x));
-            }
-
-            if (GUILayout.Button("TimeoutCheck"))
-            {
-                Application.targetFrameRate = 60;
-                Observable.Concat(
-                        Observable.Timer(TimeSpan.FromSeconds(3)).Select(_ => "a"),
-                        Observable.Timer(TimeSpan.FromSeconds(6)).Select(_ => "b"))
-                    .TimeoutFrame(60 * 8)
-                    .Subscribe(x => Debug.Log("timer complete:" + x), ex => Debug.Log(ex.ToString()), () => Debug.Log("comp"));
-
-            }
-
-            if (GUILayout.Button("FromAsyncPattern"))
-            {
-                var req = WebRequest.Create("http://unity3d.com/");
-                req.GetResponseAsObservable()
-                    .ObserveOnMainThread()
-                    .Subscribe(x =>
-                    {
-                        using (var stream = x.GetResponseStream())
-                        using (var sr = new StreamReader(stream))
-                        {
-                            var txt = sr.ReadToEnd();
-                            Debug.Log(txt);
-                        }
-                    });
-            }
-
-            if (GUILayout.Button("ThreadPoolScheduler"))
-            {
-                Observable.Start(() => 100)
-                    .ObserveOnMainThread()
-                    .Subscribe(_ => logtext.AppendLine("ThreadPool!"), ex => logtext.AppendLine(ex.ToString()));
-            }
-
-            GUILayout.BeginArea(new Rect(200, 0, 100, 200));
-            {
-                if (GUILayout.Button("Simple FromEvent"))
-                {
-                    try
-                    {
-                        // MySlider.OnValueChangedAsObservable().Subscribe(x => logger.Debug(x), ex => logger.Exception(ex));
-
-                    }
-                    //Observable.FromEvent<UnityEvent>(h => h.Invoke, 
-                    catch (Exception ex)
-                    {
-                        logger.Exception(ex);
-                    }
-                }
-                GUILayout.EndArea();
-
-
-                //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Clear"))
-                //{
-                //    logtext.Length = 0;
-                //    disposables.Clear();
-                //}
-                //ypos += 100;
-                //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "CurrentThreadScheduler"))
-                //{
-                //    try
-                //    {
-                //        Scheduler.CurrentThread.Schedule(() =>
-                //        {
-                //            try
-                //            {
-                //                logtext.AppendLine("test threadscheduler");
-                //            }
-                //            catch (Exception ex)
-                //            {
-                //                logtext.AppendLine("innner ex" + ex.ToString());
-                //            }
-                //        });
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        logtext.AppendLine("outer ex" + ex.ToString());
-                //    }
-                //}
-                //ypos += 100;
-                //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "EveryUpdate"))
-                //{
-                //    Observable.EveryUpdate()
-                //        .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()))
-                //        .AddTo(disposables);
-                //}
-                //ypos += 100;
-                //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "FromCoroutinePure"))
-                //{
-                //    Observable.Create<Unit>(observer =>
-                //    {
-                //        var cancel = new BooleanDisposable();
-
-                //        MainThreadDispatcher.StartCoroutine(Hoge(observer));
-
-                //        return cancel;
-                //    })
-                //    .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()));
-                //}
-                //ypos += 100;
-                //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "FromCoroutine"))
-                //{
-                //    Observable.FromCoroutine<Unit>(Hoge)
-                //    .Subscribe(x => logtext.AppendLine(x.ToString()), ex => logtext.AppendLine("ex:" + ex.ToString()));
-                //}
-
-
-                /*
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale-1"))
-                {
-                    Time.timeScale -= 1f;
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale+1"))
-                {
-                    Time.timeScale += 1f;
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale=0"))
-                {
-                    Time.timeScale = 0;
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale=100"))
-                {
-                    Time.timeScale = 100;
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler0"))
-                {
-                    logger.Debug("run");
-                    Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5000), () =>
-                    {
-                        logger.Debug(DateTime.Now);
-                    });
-                }
-
-                xpos += 100;
-                ypos = 0;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler1"))
-                {
-                    logger.Debug("Before Start");
-                    Scheduler.MainThread.Schedule(() => logger.Debug("immediate"));
-                    Scheduler.MainThread.Schedule(TimeSpan.Zero, () => logger.Debug("zero span"));
-                    Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(1), () => logger.Debug("0.1 span"));
-                    logger.Debug("After Start");
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler2"))
-                {
-                    logger.Debug("M:Before Start");
-                    Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(5), () => logger.Debug("M:after 5 minutes"));
-                    Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5500), () => logger.Debug("M:after 5.5 minutes"));
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Realtime"))
-                {
-                    logger.Debug("R:Before Start");
-                    Scheduler.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromSeconds(5), () => logger.Debug("R:after 5 minutes"));
-                    Scheduler.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromMilliseconds(5500), () => logger.Debug("R:after 5.5 minutes"));
-                }
-
-    #if !UNITY_METRO
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ManagedThreadId"))
-                {
-                    logger.Debug("Current:" + Thread.CurrentThread.ManagedThreadId);
-                    new Thread(_ => logger.Debug("NewThread:" + Thread.CurrentThread.ManagedThreadId)).Start();
-                    ThreadPool.QueueUserWorkItem(_ =>
-                    {
-                        logger.Debug("ThraedPool:" + Thread.CurrentThread.ManagedThreadId);
-                        this.transform.position = new Vector3(0, 0, 0); // exception
-                    });
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ThreadStatic"))
-                {
-                    logger.Debug(threadstaticobj != null);
-                    new Thread(_ => logger.Debug(threadstaticobj != null)).Start();
-                    ThreadPool.QueueUserWorkItem(_ => logger.Debug(threadstaticobj != null));
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Log"))
-                {
-                    logger.Debug("test", this);
-                    ThreadPool.QueueUserWorkItem(_ => logger.Debug("test2", this));
-                }
-
-    #endif
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "POST"))
-                {
-                    var form = new WWWForm();
-                    form.AddField("test", "abcdefg");
-                    ObservableWWW.PostWWW("http://localhost:53395/Handler1.ashx", form, new Hash
-                {
-                    {"aaaa", "bbb"},
-                    {"User-Agent", "HugaHuga"}
-                })
-                    .Subscribe(x => logger.Debug(x.text));
-                }
-
-                xpos += 100;
-                ypos = 0;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Yield"))
-                {
-                    yieldCancel = Observable.FromCoroutineValue<string>(StringYield, false)
-                        .Subscribe(x => logger.Debug(x), ex => logger.Debug("E-x:" + ex));
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "YieldCancel"))
-                {
-                    yieldCancel.Dispose();
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ThreadPool"))
-                {
-                    Observable.Timer(TimeSpan.FromMilliseconds(400), Scheduler.ThreadPool)
-                        .ObserveOnMainThread()
-                        .Subscribe(x => logger.Debug(x));
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Subscribe"))
-                {
-                    subscriber.InitSubscriptions();
-                    logger.Debug("Subscribe++ : " + subscriber.SubscriptionCount);
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Push"))
-                {
-                    Publisher.foo();
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Unsubscriber"))
-                {
-                    subscriber.RemoveSubscriptions();
-                    logger.Debug("UnsubscribeAll : " + subscriber.SubscriptionCount);
-                }
-
-                ypos += 100;
-                if (GUI.Button(new Rect(xpos, ypos, 100, 100), "DistinctUntilChanged"))
-                {
-                    new[] { "hoge", null, null, "huga", "huga", "hoge" }
-                        .ToObservable()
-                        .DistinctUntilChanged()
-                        .Subscribe(x => logger.Debug(x));
-                }
-                 * */
-
-                // Time
-
-                var sb = new StringBuilder();
-                sb.AppendLine("CaptureFramerate:" + Time.captureFramerate);
-                sb.AppendLine("deltaTime:" + Time.deltaTime);
-                sb.AppendLine("fixedDeltaTime:" + Time.fixedDeltaTime);
-                sb.AppendLine("fixedTime:" + Time.fixedTime);
-                sb.AppendLine("frameCount:" + Time.frameCount);
-                sb.AppendLine("maximumDeltaTime:" + Time.maximumDeltaTime);
-                sb.AppendLine("realtimeSinceStartup:" + Time.realtimeSinceStartup);
-                sb.AppendLine("renderedFrameCount:" + Time.renderedFrameCount);
-                sb.AppendLine("smoothDeltaTime:" + Time.smoothDeltaTime);
-                sb.AppendLine("time:" + Time.time);
-                sb.AppendLine("timeScale:" + Time.timeScale);
-                sb.AppendLine("timeSinceLevelLoad:" + Time.timeSinceLevelLoad);
-                sb.AppendLine("unscaledDeltaTime:" + Time.unscaledDeltaTime);
-                sb.AppendLine("unscaledTime:" + Time.unscaledTime);
-
-                //GUI.Box(new Rect(Screen.width - 300, Screen.height - 300, 300, 300), "Time");
-                //GUI.Label(new Rect(Screen.width - 290, Screen.height - 290, 290, 290), sb.ToString());
-
-                // logtext only
-                GUI.Box(new Rect(Screen.width - 300, Screen.height - 300, 300, 300), "logtext");
-                GUI.Label(new Rect(Screen.width - 290, Screen.height - 290, 290, 290), logtext.ToString());
-
-                // Log
-                //GUI.Box(new Rect(Screen.width - 300, 0, 300, 300), "Log");
-                //GUI.Label(new Rect(Screen.width - 290, 10, 290, 290), logtext.ToString());
-            }
             /*
-            IEnumerator StringYield()
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale-1"))
             {
-                try
-                {
-                    yield return "aaa";
-                    yield return "bbb";
-                    yield return new WaitForSeconds(5);
-                    yield return "ccc";
-                    yield return null;
-                    throw new Exception("ex!!!");
-                }
-                finally
-                {
-                    logger.Debug("finally!");
-                }
+                Time.timeScale -= 1f;
             }
 
-            IEnumerator Work()
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale+1"))
             {
-                var t1 = Observable.Interval(TimeSpan.FromSeconds(1)).Take(4).ToLazyTask();
-                var t2 = Observable.Interval(TimeSpan.FromSeconds(1)).Select(x => x * x).Take(4).ToLazyTask();
-                var t3 = Observable.Throw<Unit>(new Exception()).ToLazyTask();
-
-                yield return LazyTask.WhenAll(t1, t2, t3);
-
-                logger.Debug(t1.Result + ":" + t2.Result);
-                logger.Debug(t3.Exception);
+                Time.timeScale += 1f;
             }
 
-            IEnumerator Test()
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale=0"))
             {
-                logger.Debug("first");
-                yield return 1000;
-                logger.Debug("second");
+                Time.timeScale = 0;
             }
 
-            // Question from UnityForum  #45
-
-            public static class Publisher
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale=100"))
             {
-                private static readonly object _Lock = new object();
-                private static Subject<bool> item = new UniRx.Subject<bool>();
-
-                public static IObservable<bool> Item
-                {
-                    get
-                    {
-                        return item; // no needs lock
-                    }
-                }
-
-                public static void foo()
-                {
-                    item.OnNext(true);
-                }
+                Time.timeScale = 100;
             }
 
-            public class Subscriber
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler0"))
             {
-                private CompositeDisposable m_Subscriptions = new CompositeDisposable();
-
-                public int SubscriptionCount { get { return m_Subscriptions.Count; } }
-
-                public void InitSubscriptions()
+                logger.Debug("run");
+                Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5000), () =>
                 {
-                    m_Subscriptions.Add(Publisher.Item.Subscribe(UniRx.Observer.Create<bool>(result => this.HandleItem(result), ex => this.HandleError(ex), () => { })));
-                }
+                    logger.Debug(DateTime.Now);
+                });
+            }
 
-                void HandleItem(bool args)
-                {
-                    logger.Debug("Received Item: " + args);
-                }
+            xpos += 100;
+            ypos = 0;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler1"))
+            {
+                logger.Debug("Before Start");
+                Scheduler.MainThread.Schedule(() => logger.Debug("immediate"));
+                Scheduler.MainThread.Schedule(TimeSpan.Zero, () => logger.Debug("zero span"));
+                Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(1), () => logger.Debug("0.1 span"));
+                logger.Debug("After Start");
+            }
 
-                void HandleError(Exception ex)
-                {
-                    logger.Debug("Exception: " + ex.Message);
-                }
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Scheduler2"))
+            {
+                logger.Debug("M:Before Start");
+                Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(5), () => logger.Debug("M:after 5 minutes"));
+                Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(5500), () => logger.Debug("M:after 5.5 minutes"));
+            }
 
-                public void RemoveSubscriptions()
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Realtime"))
+            {
+                logger.Debug("R:Before Start");
+                Scheduler.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromSeconds(5), () => logger.Debug("R:after 5 minutes"));
+                Scheduler.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromMilliseconds(5500), () => logger.Debug("R:after 5.5 minutes"));
+            }
+
+#if !UNITY_METRO
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ManagedThreadId"))
+            {
+                logger.Debug("Current:" + Thread.CurrentThread.ManagedThreadId);
+                new Thread(_ => logger.Debug("NewThread:" + Thread.CurrentThread.ManagedThreadId)).Start();
+                ThreadPool.QueueUserWorkItem(_ =>
                 {
-                    m_Subscriptions.Clear();
-                }
+                    logger.Debug("ThraedPool:" + Thread.CurrentThread.ManagedThreadId);
+                    this.transform.position = new Vector3(0, 0, 0); // exception
+                });
+            }
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ThreadStatic"))
+            {
+                logger.Debug(threadstaticobj != null);
+                new Thread(_ => logger.Debug(threadstaticobj != null)).Start();
+                ThreadPool.QueueUserWorkItem(_ => logger.Debug(threadstaticobj != null));
+            }
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Log"))
+            {
+                logger.Debug("test", this);
+                ThreadPool.QueueUserWorkItem(_ => logger.Debug("test2", this));
+            }
+
+#endif
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "POST"))
+            {
+                var form = new WWWForm();
+                form.AddField("test", "abcdefg");
+                ObservableWWW.PostWWW("http://localhost:53395/Handler1.ashx", form, new Hash
+            {
+                {"aaaa", "bbb"},
+                {"User-Agent", "HugaHuga"}
+            })
+                .Subscribe(x => logger.Debug(x.text));
+            }
+
+            xpos += 100;
+            ypos = 0;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Yield"))
+            {
+                yieldCancel = Observable.FromCoroutineValue<string>(StringYield, false)
+                    .Subscribe(x => logger.Debug(x), ex => logger.Debug("E-x:" + ex));
+            }
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "YieldCancel"))
+            {
+                yieldCancel.Dispose();
+            }
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ThreadPool"))
+            {
+                Observable.Timer(TimeSpan.FromMilliseconds(400), Scheduler.ThreadPool)
+                    .ObserveOnMainThread()
+                    .Subscribe(x => logger.Debug(x));
+            }
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Subscribe"))
+            {
+                subscriber.InitSubscriptions();
+                logger.Debug("Subscribe++ : " + subscriber.SubscriptionCount);
+            }
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Push"))
+            {
+                Publisher.foo();
+            }
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Unsubscriber"))
+            {
+                subscriber.RemoveSubscriptions();
+                logger.Debug("UnsubscribeAll : " + subscriber.SubscriptionCount);
+            }
+
+            ypos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "DistinctUntilChanged"))
+            {
+                new[] { "hoge", null, null, "huga", "huga", "hoge" }
+                    .ToObservable()
+                    .DistinctUntilChanged()
+                    .Subscribe(x => logger.Debug(x));
             }
              * */
-        }
 
+            // Time
 
+            var sb = new StringBuilder();
+            sb.AppendLine("CaptureFramerate:" + Time.captureFramerate);
+            sb.AppendLine("deltaTime:" + Time.deltaTime);
+            sb.AppendLine("fixedDeltaTime:" + Time.fixedDeltaTime);
+            sb.AppendLine("fixedTime:" + Time.fixedTime);
+            sb.AppendLine("frameCount:" + Time.frameCount);
+            sb.AppendLine("maximumDeltaTime:" + Time.maximumDeltaTime);
+            sb.AppendLine("realtimeSinceStartup:" + Time.realtimeSinceStartup);
+            sb.AppendLine("renderedFrameCount:" + Time.renderedFrameCount);
+            sb.AppendLine("smoothDeltaTime:" + Time.smoothDeltaTime);
+            sb.AppendLine("time:" + Time.time);
+            sb.AppendLine("timeScale:" + Time.timeScale);
+            sb.AppendLine("timeSinceLevelLoad:" + Time.timeSinceLevelLoad);
+            sb.AppendLine("unscaledDeltaTime:" + Time.unscaledDeltaTime);
+            sb.AppendLine("unscaledTime:" + Time.unscaledTime);
 
-        public class Enemy
-        {
-            public ReactiveProperty<long> CurrentHp { get; private set; }
+            //GUI.Box(new Rect(Screen.width - 300, Screen.height - 300, 300, 300), "Time");
+            //GUI.Label(new Rect(Screen.width - 290, Screen.height - 290, 290, 290), sb.ToString());
 
-            public ReactiveProperty<bool> IsDead { get; private set; }
+            // logtext only
+            GUI.Box(new Rect(Screen.width - 300, Screen.height - 300, 300, 300), "logtext");
+            GUI.Label(new Rect(Screen.width - 290, Screen.height - 290, 290, 290), logtext.ToString());
 
-            public Enemy(int initialHp)
-            {
-                CurrentHp = new ReactiveProperty<long>(initialHp);
-                IsDead = CurrentHp.Select(x => x <= 0).ToReactiveProperty();
-            }
-        }
-
-        public class Person
-        {
-            public ReactiveProperty<string> GivenName { get; private set; }
-            public ReactiveProperty<string> FamilyName { get; private set; }
-            public ReadOnlyReactiveProperty<string> FullName { get; private set; }
-
-            public Person(string givenName, string familyName)
-            {
-                GivenName = new ReactiveProperty<string>(givenName);
-                FamilyName = new ReactiveProperty<string>(familyName);
-                // If change the givenName or familyName, notify with fullName!
-                FullName = GivenName.CombineLatest(FamilyName, (x, y) => x + " " + y).ToReadOnlyReactiveProperty();
-            }
-        }
-
-        public class Tadanoiremono
-        {
-            public int Hoge { get; set; }
-
-            ~Tadanoiremono()
-            {
-                Debug.Log("Iremono Destructor!");
-            }
+            // Log
+            //GUI.Box(new Rect(Screen.width - 300, 0, 300, 300), "Log");
+            //GUI.Label(new Rect(Screen.width - 290, 10, 290, 290), logtext.ToString());
         }
     }
 }

@@ -132,6 +132,9 @@
     <Compile Include="Assets\UniRx\Scripts\Observable.Time.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observer.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Select.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\IScheduler.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\ImmediateScheduler.cs" />
@@ -145,6 +148,7 @@
     <Compile Include="Assets\UniRx\Scripts\Subjects\Subject.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\IObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\IObserver.cs" />
+    <Compile Include="Assets\UniRx\Scripts\System\IOptimizedObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\IProgress.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\Tuple.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\Unit.cs" />

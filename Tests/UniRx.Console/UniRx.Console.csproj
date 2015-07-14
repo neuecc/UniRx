@@ -138,15 +138,24 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Observer.cs">
       <Link>Scripts\Observer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs">
+      <Link>Scripts\Operators\OperatorObservableBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs">
+      <Link>Scripts\Operators\OperatorObserverBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Select.cs">
+      <Link>Scripts\Operators\Select.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs">
       <Link>Scripts\Schedulers\CurrentThreadScheduler.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\ImmediateScheduler.cs">
       <Link>Scripts\Schedulers\ImmediateScheduler.cs</Link>
     </Compile>
-      <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\IScheduler.cs">
-          <Link>Scripts\Schedulers\IScheduler.cs</Link>
-      </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\IScheduler.cs">
+      <Link>Scripts\Schedulers\IScheduler.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\Scheduler.cs">
       <Link>Scripts\Schedulers\Scheduler.cs</Link>
     </Compile>
@@ -176,6 +185,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\System\IObserver.cs">
       <Link>Scripts\System\IObserver.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\System\IOptimizedObservable.cs">
+      <Link>Scripts\System\IOptimizedObservable.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\System\IProgress.cs">
       <Link>Scripts\System\IProgress.cs</Link>

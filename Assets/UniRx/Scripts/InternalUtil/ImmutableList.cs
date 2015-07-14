@@ -38,7 +38,7 @@ namespace UniRx.InternalUtil
         public int IndexOf(T value)
         {
             for (var i = 0; i < data.Length; ++i)
-                if (data[i].Equals(value))
+                if (object.Equals(data[i], value))
                     return i;
             return -1;
         }
