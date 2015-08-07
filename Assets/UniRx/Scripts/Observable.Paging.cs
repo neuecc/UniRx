@@ -670,15 +670,21 @@ namespace UniRx
         {
             return Observable.Create<T>(observer =>
             {
+                var isFirst = true;
                 return source.Subscribe(x =>
                 {
-                    observer.OnNext(x);
-                    observer.OnCompleted();
+                    if(isFirst)
+                    {
+                        isFirst = false;
+                        observer.OnNext(x);
+                        observer.OnCompleted();
+                    }
                 }, observer.OnError,
                 () =>
                 {
                     if (useDefault)
                     {
+                        isFirst = false;
                         observer.OnNext(default(T));
                         observer.OnCompleted();
                     }
