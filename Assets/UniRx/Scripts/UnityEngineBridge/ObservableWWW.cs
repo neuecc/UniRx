@@ -132,11 +132,11 @@ namespace UniRx
             var newHeaders = new Hash();
             foreach (DictionaryEntry item in wwwFormHeaders)
             {
-                newHeaders.Add(item.Key.ToString(), item.Value.ToString());
+                newHeaders[item.Key.ToString()] = item.Value.ToString();
             }
             foreach (HashEntry item in externalHeaders)
             {
-                newHeaders.Add(item.Key, item.Value);
+                newHeaders[item.Key] =  item.Value;
             }
             return newHeaders;
         }
