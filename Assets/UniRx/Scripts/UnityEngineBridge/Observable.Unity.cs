@@ -274,9 +274,10 @@ namespace UniRx
         {
             if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
-            while(true)
+            var yieldInstruction = YieldInstructionCache.WaitForFixedUpdate;
+            while (true)
             {
-                yield return new UnityEngine.WaitForFixedUpdate();
+                yield return yieldInstruction;
                 if (cancellationToken.IsCancellationRequested) yield break;
 
                 observer.OnNext(count++);
@@ -292,9 +293,10 @@ namespace UniRx
         {
             if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
-            while(true)
+            var yieldInstruction = YieldInstructionCache.WaitForEndOfFrame;
+            while (true)
             {
-                yield return new UnityEngine.WaitForFixedUpdate();
+                yield return yieldInstruction;
                 if (cancellationToken.IsCancellationRequested) yield break;
 
                 observer.OnNext(count++);
