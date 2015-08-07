@@ -218,6 +218,7 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UnityEventExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UnityGraphicExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\UnityUIComponentExtensions.cs" />
+    <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\YieldInstructionCache.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityWinRTBridge\Thread.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityWinRTBridge\ThreadPoolScheduler_UnityWinRT.cs" />
   </ItemGroup>

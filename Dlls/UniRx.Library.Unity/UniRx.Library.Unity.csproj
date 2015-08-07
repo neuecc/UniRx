@@ -227,6 +227,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\UnityUIComponentExtensions.cs">
       <Link>UnityEngineBridge\UnityUIComponentExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\YieldInstructionCache.cs">
+      <Link>YieldInstructionCache.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityWinRTBridge\Thread.cs">
       <Link>UnityWinRTBridge\Thread.cs</Link>
     </Compile>

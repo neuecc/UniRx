@@ -25,9 +25,9 @@ namespace UniRx
             switch (frameCountType)
             {
                 case FrameCountType.FixedUpdate:
-                    return new WaitForFixedUpdate();
+                    return YieldInstructionCache.WaitForFixedUpdate;
                 case FrameCountType.EndOfFrame:
-                    return new WaitForEndOfFrame();
+                    return YieldInstructionCache.WaitForEndOfFrame;
                 case FrameCountType.Update:
                 default:
                     return null;
@@ -930,7 +930,7 @@ namespace UniRx
 
         static IEnumerator SubscribeAfterEndOfFrame<T>(SingleAssignmentDisposable d, IObservable<T> source, IObserver<T> observer, GameObject lifeTimeChecker)
         {
-            yield return new WaitForEndOfFrame();
+            yield return YieldInstructionCache.WaitForEndOfFrame;
             if (!d.IsDisposed && lifeTimeChecker != null)
             {
                 d.Disposable = source.Subscribe(observer);
