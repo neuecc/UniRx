@@ -343,6 +343,85 @@ namespace UniRx
             return new ReadOnlyReactiveProperty<T>(source, initialValue);
         }
 
+
+        // for inspectable properties
+
+        public static IntReactiveProperty ToInspectableReactiveProperty(this IObservable<int> source, int initialValue = default(int))
+        {
+          return new IntReactiveProperty(source, initialValue);
+        }
+
+        public static LongReactiveProperty ToInspectableReactiveProperty(this IObservable<long> source, long initialValue = default(long))
+        {
+          return new LongReactiveProperty(source, initialValue);
+        }
+
+        public static ByteReactiveProperty ToInspectableReactiveProperty(this IObservable<byte> source, byte initialValue = default(byte))
+        {
+          return new ByteReactiveProperty(source, initialValue);
+        }
+
+        public static FloatReactiveProperty ToInspectableReactiveProperty(this IObservable<float> source, float initialValue = default(float))
+        {
+          return new FloatReactiveProperty(source, initialValue);
+        }
+
+        public static DoubleReactiveProperty ToInspectableReactiveProperty(this IObservable<double> source, double initialValue = default(double))
+        {
+          return new DoubleReactiveProperty(source, initialValue);
+        }
+
+        public static StringReactiveProperty ToInspectableReactiveProperty(this IObservable<string> source, string initialValue = default(string))
+        {
+          return new StringReactiveProperty(source, initialValue);
+        }
+
+        public static BoolReactiveProperty ToInspectableReactiveProperty(this IObservable<bool> source, bool initialValue = default(bool))
+        {
+          return new BoolReactiveProperty(source, initialValue);
+        }
+
+        public static Vector2ReactiveProperty ToInspectableReactiveProperty(this IObservable<Vector2> source, Vector2 initialValue = default(Vector2))
+        {
+          return new Vector2ReactiveProperty(source, initialValue);
+        }
+
+        public static Vector3ReactiveProperty ToInspectableReactiveProperty(this IObservable<Vector3> source, Vector3 initialValue = default(Vector3))
+        {
+          return new Vector3ReactiveProperty(source, initialValue);
+        }
+
+        public static Vector4ReactiveProperty ToInspectableReactiveProperty(this IObservable<Vector4> source, Vector4 initialValue = default(Vector4))
+        {
+          return new Vector4ReactiveProperty(source, initialValue);
+        }
+
+        public static ColorReactiveProperty ToInspectableReactiveProperty(this IObservable<Color> source, Color initialValue = default(Color))
+        {
+          return new ColorReactiveProperty(source, initialValue);
+        }
+
+        public static RectReactiveProperty ToInspectableReactiveProperty(this IObservable<Rect> source, Rect initialValue = default(Rect))
+        {
+          return new RectReactiveProperty(source, initialValue);
+        }
+
+        public static AnimationCurveReactiveProperty ToInspectableReactiveProperty(this IObservable<AnimationCurve> source, AnimationCurve initialValue = default(AnimationCurve))
+        {
+          return new AnimationCurveReactiveProperty(source, initialValue);
+        }
+
+        public static BoundsReactiveProperty ToInspectableReactiveProperty(this IObservable<Bounds> source, Bounds initialValue = default(Bounds))
+        {
+          return new BoundsReactiveProperty(source, initialValue);
+        }
+
+        public static QuaternionReactiveProperty ToInspectableReactiveProperty(this IObservable<Quaternion> source, Quaternion initialValue = default(Quaternion))
+        {
+          return new QuaternionReactiveProperty(source, initialValue);
+        }
+
+
         // for multiple toggle or etc..
 
         /// <summary>

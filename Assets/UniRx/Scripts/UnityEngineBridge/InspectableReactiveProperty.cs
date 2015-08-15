@@ -20,6 +20,18 @@ namespace UniRx
         {
 
         }
+
+        public IntReactiveProperty(IObservable<int> source, int initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public IntReactiveProperty(IObservable<int> source)
+          : base(source)
+        {
+
+        }
     }
 
     /// <summary>
@@ -36,6 +48,18 @@ namespace UniRx
 
         public LongReactiveProperty(long initialValue)
             : base(initialValue)
+        {
+
+        }
+
+        public LongReactiveProperty(IObservable<long> source, long initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public LongReactiveProperty(IObservable<long> source)
+          : base(source)
         {
 
         }
@@ -59,6 +83,18 @@ namespace UniRx
         {
 
         }
+
+        public ByteReactiveProperty(IObservable<byte> source, byte initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public ByteReactiveProperty(IObservable<byte> source)
+          : base(source)
+        {
+
+        }
     }
 
     /// <summary>
@@ -75,6 +111,18 @@ namespace UniRx
 
         public FloatReactiveProperty(float initialValue)
             : base(initialValue)
+        {
+
+        }
+
+        public FloatReactiveProperty(IObservable<float> source, float initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public FloatReactiveProperty(IObservable<float> source)
+          : base(source)
         {
 
         }
@@ -97,6 +145,18 @@ namespace UniRx
         {
 
         }
+
+        public DoubleReactiveProperty(IObservable<double> source, double initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public DoubleReactiveProperty(IObservable<double> source)
+          : base(source)
+        {
+
+        }
     }
 
     /// <summary>
@@ -113,6 +173,18 @@ namespace UniRx
 
         public StringReactiveProperty(string initialValue)
             : base(initialValue)
+        {
+
+        }
+
+        public StringReactiveProperty(IObservable<string> source, string initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public StringReactiveProperty(IObservable<string> source)
+          : base(source)
         {
 
         }
@@ -135,6 +207,18 @@ namespace UniRx
         {
 
         }
+
+        public BoolReactiveProperty(IObservable<bool> source, bool initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public BoolReactiveProperty(IObservable<bool> source)
+          : base(source)
+        {
+
+        }
     }
 
     /// <summary>Inspectable ReactiveProperty.</summary>
@@ -148,6 +232,18 @@ namespace UniRx
 
         public Vector2ReactiveProperty(Vector2 initialValue)
             : base(initialValue)
+        {
+
+        }
+
+        public Vector2ReactiveProperty(IObservable<Vector2> source, Vector2 initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public Vector2ReactiveProperty(IObservable<Vector2> source)
+          : base(source)
         {
 
         }
@@ -167,6 +263,18 @@ namespace UniRx
         {
 
         }
+
+        public Vector3ReactiveProperty(IObservable<Vector3> source, Vector3 initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public Vector3ReactiveProperty(IObservable<Vector3> source)
+          : base(source)
+        {
+
+        }
     }
 
     /// <summary>Inspectable ReactiveProperty.</summary>
@@ -180,6 +288,18 @@ namespace UniRx
 
         public Vector4ReactiveProperty(Vector4 initialValue)
             : base(initialValue)
+        {
+
+        }
+
+        public Vector4ReactiveProperty(IObservable<Vector4> source, Vector4 initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public Vector4ReactiveProperty(IObservable<Vector4> source)
+          : base(source)
         {
 
         }
@@ -199,6 +319,18 @@ namespace UniRx
         {
 
         }
+
+        public ColorReactiveProperty(IObservable<Color> source, Color initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public ColorReactiveProperty(IObservable<Color> source)
+          : base(source)
+        {
+
+        }
     }
 
     /// <summary>Inspectable ReactiveProperty.</summary>
@@ -212,6 +344,18 @@ namespace UniRx
 
         public RectReactiveProperty(Rect initialValue)
             : base(initialValue)
+        {
+
+        }
+
+        public RectReactiveProperty(IObservable<Rect> source, Rect initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public RectReactiveProperty(IObservable<Rect> source)
+          : base(source)
         {
 
         }
@@ -231,6 +375,18 @@ namespace UniRx
         {
 
         }
+
+        public AnimationCurveReactiveProperty(IObservable<AnimationCurve> source, AnimationCurve initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public AnimationCurveReactiveProperty(IObservable<AnimationCurve> source)
+          : base(source)
+        {
+
+        }
     }
 
     /// <summary>Inspectable ReactiveProperty.</summary>
@@ -247,6 +403,18 @@ namespace UniRx
         {
 
         }
+
+        public BoundsReactiveProperty(IObservable<Bounds> source, Bounds initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public BoundsReactiveProperty(IObservable<Bounds> source)
+          : base(source)
+        {
+
+        }
     }
 
     /// <summary>Inspectable ReactiveProperty.</summary>
@@ -260,6 +428,18 @@ namespace UniRx
 
         public QuaternionReactiveProperty(Quaternion initialValue)
             : base(initialValue)
+        {
+
+        }
+
+        public QuaternionReactiveProperty(IObservable<Quaternion> source, Quaternion initialValue)
+          : base(source, initialValue)
+        {
+
+        }
+
+        public QuaternionReactiveProperty(IObservable<Quaternion> source)
+          : base(source)
         {
 
         }
