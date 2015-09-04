@@ -30,152 +30,68 @@ namespace UniRx
 
         public static CullingMode cullingMode = CullingMode.Self;
 
-#if UNITY_EDITOR
-
-        // In UnityEditor's EditorMode can't instantiate and work MonoBehaviour.Update.
-        // EditorThreadDispatcher use EditorApplication.update instead of MonoBehaviour.Update.
-        class EditorThreadDispatcher
+        public class EditorThreadDispatcherStub
         {
-            static object gate = new object();
-            static EditorThreadDispatcher instance;
+            private static Type editorThreadDispatcherType = null;
 
-            public static EditorThreadDispatcher Instance
+            private static MethodInfo enqueueMethod = null;
+            private static MethodInfo unsafeInvokeMethod = null;
+            private static MethodInfo pseudoStartCoroutineMethod = null;
+
+            static EditorThreadDispatcherStub()
             {
-                get
+                editorThreadDispatcherType = TypeLoader.GetType("EditorThreadDispatcher");
+                if (editorThreadDispatcherType != null)
                 {
-                    // Activate EditorThreadDispatcher is dangerous, completely Lazy.
-                    lock (gate)
-                    {
-                        if (instance == null)
-                        {
-                            instance = new EditorThreadDispatcher();
-                        }
+                    enqueueMethod = editorThreadDispatcherType.GetMethod(
+                        "EnqueueOnInstance",
+                        BindingFlags.Public | BindingFlags.Static);
 
-                        return instance;
-                    }
+                    unsafeInvokeMethod = editorThreadDispatcherType.GetMethod(
+                        "UnsafeInvokeOnInstance",
+                        BindingFlags.Public | BindingFlags.Static);
+
+                    pseudoStartCoroutineMethod = editorThreadDispatcherType.GetMethod(
+                        "PseudoStartCoroutineOnInstance",
+                        BindingFlags.Public | BindingFlags.Static);
                 }
             }
 
-            ThreadSafeQueueWorker editorQueueWorker = new ThreadSafeQueueWorker();
-
-            EditorThreadDispatcher()
+            public static void EnqueueOnInstance(Action action)
             {
-                UnityEditor.EditorApplication.update += Update;
-            }
-
-            public void Enqueue(Action action)
-            {
-                editorQueueWorker.Enqueue(action);
-            }
-
-            public void UnsafeInvoke(Action action)
-            {
-                try
+                if (editorThreadDispatcherType == null)
                 {
-                    action();
+                    return;
                 }
-                catch (Exception ex)
+
+                enqueueMethod.Invoke(null, new object[] { action });
+            }
+
+            public static void UnsafeInvokeOnInstance(Action action)
+            {
+                if (editorThreadDispatcherType == null)
                 {
-                    Debug.LogException(ex);
+                    return;
                 }
+
+                unsafeInvokeMethod.Invoke(null, new object[] { action });
             }
 
-            public void PseudoStartCoroutine(IEnumerator routine)
+            public static void PseudoStartCoroutineOnInstance(IEnumerator routine)
             {
-                editorQueueWorker.Enqueue(() => ConsumeEnumerator(routine));
-            }
-
-            void Update()
-            {
-                editorQueueWorker.ExecuteAll(x => Debug.LogException(x));
-            }
-
-            void ConsumeEnumerator(IEnumerator routine)
-            {
-                if (routine.MoveNext())
+                if (editorThreadDispatcherType == null)
                 {
-                    var current = routine.Current;
-                    if (current == null)
-                    {
-                        goto ENQUEUE;
-                    }
-
-                    var type = current.GetType();
-                    if (type == typeof(WWW))
-                    {
-                        var www = (WWW)current;
-                        editorQueueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitWWW(www, routine)));
-                        return;
-                    }
-                    else if (type == typeof(AsyncOperation))
-                    {
-                        var asyncOperation = (AsyncOperation)current;
-                        editorQueueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitAsyncOperation(asyncOperation, routine)));
-                        return;
-                    }
-                    else if (type == typeof(WaitForSeconds))
-                    {
-                        var waitForSeconds = (WaitForSeconds)current;
-                        var accessor = typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic);
-                        var second = (float)accessor.GetValue(waitForSeconds);
-                        editorQueueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitForSeconds(second, routine)));
-                        return;
-                    }
-                    else if (type == typeof(Coroutine))
-                    {
-                        Debug.Log("Can't wait coroutine on UnityEditor");
-                        goto ENQUEUE;
-                    }
-
-                    ENQUEUE:
-                    editorQueueWorker.Enqueue(() => ConsumeEnumerator(routine)); // next update
+                    return;
                 }
-            }
 
-            IEnumerator UnwrapWaitWWW(WWW www, IEnumerator continuation)
-            {
-                while (!www.isDone)
-                {
-                    yield return null;
-                }
-                ConsumeEnumerator(continuation);
-            }
-
-            IEnumerator UnwrapWaitAsyncOperation(AsyncOperation asyncOperation, IEnumerator continuation)
-            {
-                while (!asyncOperation.isDone)
-                {
-                    yield return null;
-                }
-                ConsumeEnumerator(continuation);
-            }
-
-            IEnumerator UnwrapWaitForSeconds(float second, IEnumerator continuation)
-            {
-                var startTime = DateTimeOffset.UtcNow;
-                while (true)
-                {
-                    yield return null;
-
-                    var elapsed = (DateTimeOffset.UtcNow - startTime).TotalSeconds;
-                    if (elapsed >= second)
-                    {
-                        break;
-                    }
-                };
-                ConsumeEnumerator(continuation);
+                pseudoStartCoroutineMethod.Invoke(null, new object[] { routine });
             }
         }
-
-#endif
 
         /// <summary>Dispatch Asyncrhonous action.</summary>
         public static void Post(Action action)
         {
-#if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
-
-#endif
+            if (!ScenePlaybackDetectorStub.IsPlaying) { EditorThreadDispatcherStub.EnqueueOnInstance(action); return; }
 
             var dispatcher = Instance;
             if (!isQuitting && !object.ReferenceEquals(dispatcher, null))
@@ -187,9 +103,7 @@ namespace UniRx
         /// <summary>Dispatch Synchronous action if possible.</summary>
         public static void Send(Action action)
         {
-#if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
-#endif
+            if (!ScenePlaybackDetectorStub.IsPlaying) { EditorThreadDispatcherStub.EnqueueOnInstance(action); return; }
 
             if (mainThreadToken != null)
             {
@@ -215,9 +129,7 @@ namespace UniRx
         /// <summary>Run Synchronous action.</summary>
         public static void UnsafeSend(Action action)
         {
-#if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action); return; }
-#endif
+            if (!ScenePlaybackDetectorStub.IsPlaying) { EditorThreadDispatcherStub.UnsafeInvokeOnInstance(action); return; }
 
             try
             {
@@ -242,10 +154,7 @@ namespace UniRx
             }
             else
             {
-#if UNITY_EDITOR
-                // call from other thread
-                if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
-#endif
+                if (!ScenePlaybackDetectorStub.IsPlaying) { EditorThreadDispatcherStub.PseudoStartCoroutineOnInstance(routine); return; }
 
                 var dispatcher = Instance;
                 if (!isQuitting && !object.ReferenceEquals(dispatcher, null))
@@ -264,9 +173,7 @@ namespace UniRx
 
         new public static Coroutine StartCoroutine(IEnumerator routine)
         {
-#if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return null; }
-#endif
+            if (!ScenePlaybackDetectorStub.IsPlaying) { EditorThreadDispatcherStub.PseudoStartCoroutineOnInstance(routine); return null; }
 
             var dispatcher = Instance;
             if (dispatcher != null)
@@ -332,10 +239,7 @@ namespace UniRx
         {
             if (!initialized)
             {
-#if UNITY_EDITOR
-                // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
-                if (!ScenePlaybackDetector.IsPlaying) return;
-#endif
+                if (!ScenePlaybackDetectorStub.IsPlaying) { return; }
                 MainThreadDispatcher dispatcher = null;
 
                 try

@@ -59,8 +59,7 @@ namespace UniRx
             // Okay to action run synchronous and guaranteed run on MainThread
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
             {
-#if UNITY_EDITOR
-                if (!ScenePlaybackDetector.IsPlaying)
+                if (!ScenePlaybackDetectorStub.IsPlaying)
                 {
                     var startTime = DateTimeOffset.UtcNow;
                     while (true)
@@ -77,7 +76,6 @@ namespace UniRx
                     };
                     yield break;
                 }
-#endif
                 
                 if (dueTime == TimeSpan.Zero)
                 {
@@ -161,8 +159,7 @@ namespace UniRx
 
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
             {
-#if UNITY_EDITOR
-                if (!ScenePlaybackDetector.IsPlaying)
+                if (!ScenePlaybackDetectorStub.IsPlaying)
                 {
                     var startTime = DateTimeOffset.UtcNow;
                     while (true)
@@ -179,7 +176,6 @@ namespace UniRx
                     };
                     yield break;
                 }
-#endif
 
                 if (dueTime == TimeSpan.Zero)
                 {

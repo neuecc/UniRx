@@ -84,7 +84,7 @@ namespace UniRx.ObjectTest
         public static void IsPlaying()
         {
             // huga huga hug 2
-            Debug.Log(UniRx.ScenePlaybackDetector.IsPlaying);
+            Debug.Log(UniRx.ScenePlaybackDetectorStub.IsPlaying);
         }
 
         static IEnumerator Hoge()

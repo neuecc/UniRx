@@ -27,9 +27,16 @@ namespace UniRx
             var ex = default(Exception);
 
             using (source.Subscribe(
-                onNext: x => { seenValue = true; value = x; },
-                onError: x => { ex = x; semaphore.Set(); },
-                onCompleted: () => semaphore.Set()))
+                onNext: x =>
+                    {
+                        seenValue = true; value = x;
+                    },
+                onError: x =>
+                    {
+                        ex = x; semaphore.Set();
+                    },
+                onCompleted: () => 
+                    semaphore.Set()))
             {
                 var waitComplete = (timeout == InfiniteTimeSpan)
                     ? semaphore.WaitOne()
