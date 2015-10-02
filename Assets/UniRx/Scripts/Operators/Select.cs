@@ -4,7 +4,7 @@ namespace UniRx.Operators
 {
     internal interface ISelect<TR>
     {
-        IObservable<TR2> CombineSelector<TR2>(Func<TR, TR2> selector);
+        // IObservable<TR2> CombineSelector<TR2>(Func<TR, TR2> selector);
     }
 
     internal class Select<T, TR> : OperatorObservableBase<TR>, ISelect<TR>
@@ -27,17 +27,19 @@ namespace UniRx.Operators
             this.selectorWithIndex = selector;
         }
 
-        public IObservable<TR2> CombineSelector<TR2>(Func<TR, TR2> combineSelector)
-        {
-            if (this.selector != null)
-            {
-                return new Select<T, TR2>(source, x => combineSelector(this.selector(x)));
-            }
-            else
-            {
-                return new Select<TR, TR2>(this, combineSelector);
-            }
-        }
+        // sometimes cause "which no ahead of time (AOT) code was generated." on IL2CPP...
+
+        //public IObservable<TR2> CombineSelector<TR2>(Func<TR, TR2> combineSelector)
+        //{
+        //    if (this.selector != null)
+        //    {
+        //        return new Select<T, TR2>(source, x => combineSelector(this.selector(x)));
+        //    }
+        //    else
+        //    {
+        //        return new Select<TR, TR2>(this, combineSelector);
+        //    }
+        //}
 
         protected override IDisposable SubscribeCore(IObserver<TR> observer, IDisposable cancel)
         {

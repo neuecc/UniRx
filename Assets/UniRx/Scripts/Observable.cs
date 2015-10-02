@@ -18,11 +18,13 @@ namespace UniRx
 
         public static IObservable<TR> Select<T, TR>(this IObservable<T> source, Func<T, TR> selector)
         {
-            var select = source as ISelect<T>;
-            if (select != null)
-            {
-                return select.CombineSelector(selector);
-            }
+            // sometimes cause "which no ahead of time (AOT) code was generated." on IL2CPP...
+
+            //var select = source as ISelect<T>;
+            //if (select != null)
+            //{
+            //    return select.CombineSelector(selector);
+            //}
 
             return new Select<T, TR>(source, selector);
         }
