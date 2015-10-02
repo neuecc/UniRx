@@ -134,6 +134,7 @@
     <Compile Include="Assets\UniRx\Scripts\Observer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Return.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Select.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\IScheduler.cs" />

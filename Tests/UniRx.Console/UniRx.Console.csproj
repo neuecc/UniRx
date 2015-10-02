@@ -144,6 +144,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs">
       <Link>Scripts\Operators\OperatorObserverBase.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Return.cs">
+      <Link>Scripts\Operators\Return.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Select.cs">
       <Link>Scripts\Operators\Select.cs</Link>
     </Compile>

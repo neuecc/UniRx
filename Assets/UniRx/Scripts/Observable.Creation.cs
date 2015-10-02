@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UniRx.Operators;
 
 namespace UniRx
 {
@@ -117,7 +118,7 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Return single sequence on DefaultSchedulers.ConstantTimeOperations.
+        /// Return single sequence Immediately.
         /// </summary>
         public static IObservable<T> Return<T>(T value)
         {
@@ -129,14 +130,15 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Return<T>(T value, IScheduler scheduler)
         {
-            return Observable.Create<T>(observer =>
-            {
-                return scheduler.Schedule(() =>
-                {
-                    observer.OnNext(value);
-                    observer.OnCompleted();
-                });
-            });
+            return new Return<T>(value, scheduler);
+        }
+
+        /// <summary>
+        /// Same as Observable.Return(Unit.Default);
+        /// </summary>
+        public static IObservable<Unit> ReturnUnit<T>()
+        {
+            return Return(Unit.Default);
         }
 
         /// <summary>
