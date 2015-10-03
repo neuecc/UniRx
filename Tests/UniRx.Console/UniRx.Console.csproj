@@ -66,6 +66,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\SingleAssignmentDisposable.cs">
       <Link>Scripts\Disposables\SingleAssignmentDisposable.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\StableCompositeDisposable.cs">
+      <Link>Scripts\Disposables\StableCompositeDisposable.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\EventPattern.cs">
       <Link>Scripts\EventPattern.cs</Link>
     </Compile>
@@ -138,17 +141,41 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Observer.cs">
       <Link>Scripts\Observer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Create.cs">
+      <Link>Scripts\Operators\Create.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Defer.cs">
+      <Link>Scripts\Operators\Defer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Empty.cs">
+      <Link>Scripts\Operators\Empty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Never.cs">
+      <Link>Scripts\Operators\Never.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs">
       <Link>Scripts\Operators\OperatorObservableBase.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs">
       <Link>Scripts\Operators\OperatorObserverBase.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Range.cs">
+      <Link>Scripts\Operators\Range.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Repeat.cs">
+      <Link>Scripts\Operators\Repeat.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\RepeatSafe.cs">
+      <Link>Scripts\Operators\RepeatSafe.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Return.cs">
       <Link>Scripts\Operators\Return.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Select.cs">
       <Link>Scripts\Operators\Select.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Throw.cs">
+      <Link>Scripts\Operators\Throw.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs">
       <Link>Scripts\Schedulers\CurrentThreadScheduler.cs</Link>

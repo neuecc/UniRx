@@ -324,7 +324,7 @@ namespace UniRx
         public static IObservable<TSource> Throttle<TSource>(this IObservable<TSource> source, TimeSpan dueTime, IScheduler scheduler)
         {
             // this code is borrowed from Rx Official(rx.codeplex.com)
-            return new AnonymousObservable<TSource>(observer =>
+            return Observable.Create<TSource>(observer =>
             {
                 var gate = new object();
                 var value = default(TSource);
@@ -390,7 +390,7 @@ namespace UniRx
 
         public static IObservable<TSource> ThrottleFirst<TSource>(this IObservable<TSource> source, TimeSpan dueTime, IScheduler scheduler)
         {
-            return new AnonymousObservable<TSource>(observer =>
+            return Observable.Create<TSource>(observer =>
             {
                 var gate = new object();
                 var open = true;

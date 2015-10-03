@@ -105,6 +105,7 @@
     <Compile Include="Assets\UniRx\Scripts\Disposables\ScheduledDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\SerialDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\SingleAssignmentDisposable.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Disposables\StableCompositeDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\EventPattern.cs" />
     <Compile Include="Assets\UniRx\Scripts\InternalUtil\ImmutableList.cs" />
     <Compile Include="Assets\UniRx\Scripts\InternalUtil\ListObserver.cs" />
@@ -132,8 +133,16 @@
     <Compile Include="Assets\UniRx\Scripts\Observable.Time.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observer.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Never.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Empty.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Create.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\RepeatSafe.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Repeat.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Range.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Defer.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Throw.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Return.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Select.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs" />

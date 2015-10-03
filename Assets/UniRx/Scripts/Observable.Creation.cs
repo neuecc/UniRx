@@ -13,7 +13,7 @@ namespace UniRx
         {
             if (subscribe == null) throw new ArgumentNullException("subscribe");
 
-            return new AnonymousObservable<T>(subscribe);
+            return new Create<T>(subscribe);
         }
 
         /// <summary>
@@ -23,51 +23,11 @@ namespace UniRx
         {
             if (subscribe == null) throw new ArgumentNullException("subscribe");
 
-            return new AnonymousObservable<T>(subscribe, isRequiredSubscribeOnCurrentThread);
-        }
-
-        class AnonymousObservable<T> : IObservable<T>, IOptimizedObservable<T>
-        {
-            readonly bool isRequiredSubscribeOnCurrentThread;
-            readonly Func<IObserver<T>, IDisposable> subscribe;
-
-            public AnonymousObservable(Func<IObserver<T>, IDisposable> subscribe)
-                : this(subscribe, false)
-            {
-
-            }
-
-            public AnonymousObservable(Func<IObserver<T>, IDisposable> subscribe, bool isSchedulerlessObservable)
-            {
-                this.subscribe = subscribe;
-                this.isRequiredSubscribeOnCurrentThread = isSchedulerlessObservable;
-            }
-
-            public bool IsRequiredSubscribeOnCurrentThread()
-            {
-                return isRequiredSubscribeOnCurrentThread;
-            }
-
-            public IDisposable Subscribe(IObserver<T> observer)
-            {
-                var subscription = new SingleAssignmentDisposable();
-                var safeObserver = Observer.CreateAutoDetachObserver<T>(observer, subscription);
-
-                if (isRequiredSubscribeOnCurrentThread && Scheduler.IsCurrentThreadSchedulerScheduleRequired)
-                {
-                    Scheduler.CurrentThread.Schedule(() => subscription.Disposable = subscribe(safeObserver));
-                }
-                else
-                {
-                    subscription.Disposable = subscribe(safeObserver);
-                }
-
-                return subscription;
-            }
+            return new Create<T>(subscribe, isRequiredSubscribeOnCurrentThread);
         }
 
         /// <summary>
-        /// Empty Observable. Returns only OnCompleted on DefaultSchedulers.ConstantTimeOperations.
+        /// Empty Observable. Returns only OnCompleted.
         /// </summary>
         public static IObservable<T> Empty<T>()
         {
@@ -79,14 +39,11 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Empty<T>(IScheduler scheduler)
         {
-            return Observable.Create<T>(observer =>
-            {
-                return scheduler.Schedule(observer.OnCompleted);
-            });
+            return new Empty<T>(scheduler);
         }
 
         /// <summary>
-        /// Empty Observable. Returns only OnCompleted on DefaultSchedulers.ConstantTimeOperations. witness is for type inference.
+        /// Empty Observable. Returns only OnCompleted. witness is for type inference.
         /// </summary>
         public static IObservable<T> Empty<T>(T witness)
         {
@@ -106,7 +63,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Never<T>()
         {
-            return Observable.Create<T>(observer => Disposable.Empty);
+            return new Never<T>();
         }
 
         /// <summary>
@@ -142,7 +99,7 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Empty Observable. Returns only onError on DefaultSchedulers.ConstantTimeOperations.
+        /// Empty Observable. Returns only onError.
         /// </summary>
         public static IObservable<T> Throw<T>(Exception error)
         {
@@ -150,7 +107,7 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Empty Observable. Returns only onError on DefaultSchedulers.ConstantTimeOperations. witness if for Type inference.
+        /// Empty Observable. Returns only onError. witness if for Type inference.
         /// </summary>
         public static IObservable<T> Throw<T>(Exception error, T witness)
         {
@@ -162,10 +119,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Throw<T>(Exception error, IScheduler scheduler)
         {
-            return Observable.Create<T>(observer =>
-            {
-                return scheduler.Schedule(() => observer.OnError(error));
-            });
+            return new Throw<T>(error, scheduler);
         }
 
         /// <summary>
@@ -183,24 +137,7 @@ namespace UniRx
 
         public static IObservable<int> Range(int start, int count, IScheduler scheduler)
         {
-            return Observable.Create<int>(observer =>
-            {
-                var i = 0;
-                return scheduler.Schedule((Action self) =>
-                {
-                    if (i < count)
-                    {
-                        int v = start + i;
-                        observer.OnNext(v);
-                        System.Threading.Interlocked.Increment(ref i);
-                        self();
-                    }
-                    else
-                    {
-                        observer.OnCompleted();
-                    }
-                });
-            });
+            return new Range(start, count, scheduler);
         }
 
         public static IObservable<T> Repeat<T>(T value)
@@ -212,14 +149,7 @@ namespace UniRx
         {
             if (scheduler == null) throw new ArgumentNullException("scheduler");
 
-            return Observable.Create<T>(observer =>
-            {
-                return scheduler.Schedule(self =>
-                {
-                    observer.OnNext(value);
-                    self();
-                });
-            });
+            return new Repeat<T>(value, null, scheduler);
         }
 
         public static IObservable<T> Repeat<T>(T value, int repeatCount)
@@ -232,26 +162,7 @@ namespace UniRx
             if (repeatCount < 0) throw new ArgumentOutOfRangeException("repeatCount");
             if (scheduler == null) throw new ArgumentNullException("scheduler");
 
-            return Observable.Create<T>(observer =>
-            {
-                var currentCount = repeatCount;
-                return scheduler.Schedule(self =>
-                {
-                    if (currentCount > 0)
-                    {
-                        observer.OnNext(value);
-                        currentCount--;
-                    }
-
-                    if (currentCount == 0)
-                    {
-                        observer.OnCompleted();
-                        return;
-                    }
-
-                    self();
-                });
-            });
+            return new Repeat<T>(value, repeatCount, scheduler);
         }
 
         public static IObservable<T> Repeat<T>(this IObservable<T> source)
@@ -272,113 +183,12 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> RepeatSafe<T>(this IObservable<T> source)
         {
-            return RepeatSafeCore(RepeatInfinite(source));
-        }
-
-        static IObservable<T> RepeatSafeCore<T>(IEnumerable<IObservable<T>> sources)
-        {
-            return Observable.Create<T>(observer =>
-            {
-                var isDisposed = false;
-                var isRunNext = false;
-                var e = sources.AsSafeEnumerable().GetEnumerator();
-                var subscription = new SerialDisposable();
-                var gate = new object();
-
-                var schedule = Scheduler.DefaultSchedulers.TailRecursion.Schedule(self =>
-                {
-                    lock (gate)
-                    {
-                        if (isDisposed) return;
-
-                        var current = default(IObservable<T>);
-                        var hasNext = false;
-                        var ex = default(Exception);
-
-                        try
-                        {
-                            hasNext = e.MoveNext();
-                            if (hasNext)
-                            {
-                                current = e.Current;
-                                if (current == null) throw new InvalidOperationException("sequence is null.");
-                            }
-                            else
-                            {
-                                e.Dispose();
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            ex = exception;
-                            e.Dispose();
-                        }
-
-                        if (ex != null)
-                        {
-                            observer.OnError(ex);
-                            return;
-                        }
-
-                        if (!hasNext)
-                        {
-                            observer.OnCompleted();
-                            return;
-                        }
-
-                        var source = e.Current;
-                        var d = new SingleAssignmentDisposable();
-                        subscription.Disposable = d;
-                        d.Disposable = source.Subscribe(x =>
-                        {
-                            isRunNext = true;
-                            observer.OnNext(x);
-                        }, observer.OnError, () =>
-                        {
-                            if (isRunNext && !isDisposed)
-                            {
-                                isRunNext = false;
-                                self();
-                            }
-                            else
-                            {
-                                e.Dispose();
-                                if (!isDisposed)
-                                {
-                                    observer.OnCompleted();
-                                }
-                            }
-                        });
-                    }
-                });
-
-                return new CompositeDisposable(schedule, subscription, Disposable.Create(() =>
-                {
-                    lock (gate)
-                    {
-                        isDisposed = true;
-                        e.Dispose();
-                    }
-                }));
-            });
+            return new RepeatSafe<T>(RepeatInfinite(source), source.IsRequiredSubscribeOnCurrentThread());
         }
 
         public static IObservable<T> Defer<T>(Func<IObservable<T>> observableFactory)
         {
-            return Observable.Create<T>(observer =>
-            {
-                IObservable<T> source;
-                try
-                {
-                    source = observableFactory();
-                }
-                catch (Exception ex)
-                {
-                    source = Throw<T>(ex);
-                }
-
-                return source.Subscribe(observer);
-            });
+            return new Defer<T>(observableFactory);
         }
 
         public static IObservable<T> Start<T>(Func<T> function)
