@@ -970,34 +970,6 @@ namespace UniRx
         }
 
 #if UniRxLibrary || SystemReactive
-        class AnonymousObservable<T> : IObservable<T>
-        {
-            readonly Func<IObserver<T>, IDisposable> subscribe;
-
-            public AnonymousObservable(Func<IObserver<T>, IDisposable> subscribe)
-            {
-                this.subscribe = subscribe;
-            }
-
-            public IDisposable Subscribe(IObserver<T> observer)
-            {
-                var subscription = new SingleAssignmentDisposable();
-
-                var safeObserver = Observer.Create<T>(observer.OnNext, observer.OnError, observer.OnCompleted, subscription);
-
-                if (Scheduler.IsCurrentThreadSchedulerScheduleRequired)
-                {
-                    Scheduler.CurrentThread.Schedule(() => subscription.Disposable = subscribe(safeObserver));
-                }
-                else
-                {
-                    subscription.Disposable = subscribe(safeObserver);
-                }
-
-                return subscription;
-            }
-        }
-
         static IEnumerable<IObservable<T>> RepeatInfinite<T>(IObservable<T> source)
         {
             while (true)
