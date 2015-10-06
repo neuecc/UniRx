@@ -2,7 +2,14 @@
 using System.Collections.Generic;
 using UniRx.InternalUtil;
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+
+namespace System.Reactive.Subjects
+#else
 namespace UniRx
+#endif
 {
     public sealed class ReplaySubject<T> : ISubject<T>, IOptimizedObservable<T>
     {

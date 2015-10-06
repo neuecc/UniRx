@@ -3,7 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using UniRx.InternalUtil;
 
+#if SystemReactive
+using System.Reactive.Disposables;
+
+namespace System.Reactive.Subjects
+#else
 namespace UniRx
+#endif
 {
     public sealed class Subject<T> : ISubject<T>, IDisposable, IOptimizedObservable<T>
     {

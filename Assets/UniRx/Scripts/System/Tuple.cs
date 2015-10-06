@@ -3,11 +3,16 @@
 
 #if !NETFX_CORE
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 
+#if SystemReactive
+namespace System.Collections
+#else
+using System;
+using System.Collections;
+
 namespace UniRx
+#endif
 {
     public interface IStructuralEquatable
     {
@@ -21,6 +26,14 @@ namespace UniRx
         int CompareTo(object other, IComparer comparer);
     }
 
+#if SystemReactive
+}
+
+namespace System
+{
+    using Collections;
+
+#endif
     interface ITuple
     {
         string ToString();

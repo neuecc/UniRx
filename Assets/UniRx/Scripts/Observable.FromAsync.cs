@@ -1,6 +1,13 @@
 ﻿using System;
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+using System.Reactive.Subjects;
+
+namespace System.Reactive.Linq
+#else
 namespace UniRx
+#endif
 {
     public static partial class Observable
     {

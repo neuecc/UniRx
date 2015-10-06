@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections;
 
+#if SystemReactive
+namespace System.Reactive.Disposables
+#else
 namespace UniRx
+#endif
 {
     public class BooleanDisposable : IDisposable, ICancelable
     {

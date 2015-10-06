@@ -1,6 +1,10 @@
 ﻿using System;
 
+#if SystemReactive
+namespace System.Reactive.Concurrency
+#else
 namespace UniRx
+#endif
 {
     public interface IScheduler
     {

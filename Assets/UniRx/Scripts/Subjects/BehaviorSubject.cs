@@ -1,7 +1,13 @@
 ﻿using System;
 using UniRx.InternalUtil;
 
+#if SystemReactive
+using System.Reactive.Disposables;
+
+namespace System.Reactive.Subjects
+#else
 namespace UniRx
+#endif
 {
     public sealed class BehaviorSubject<T> : ISubject<T>, IDisposable, IOptimizedObservable<T>
     {

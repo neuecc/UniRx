@@ -7,7 +7,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
+#if SystemReactive
+namespace System.Reactive.Disposables
+#else
 namespace UniRx
+#endif
 {
     /// <summary>
     /// Represents a disposable resource that only disposes its underlying disposable resource when all <see cref="GetDisposable">dependent disposable objects</see> have been disposed.
@@ -138,6 +142,7 @@ namespace UniRx
         }
     }
 
+#if !SystemReactive
     public partial class Observable
     {
         static IObservable<T> AddRef<T>(IObservable<T> xs, RefCountDisposable r)
@@ -149,4 +154,5 @@ namespace UniRx
 	        }));
         }
     }
+#endif
 }

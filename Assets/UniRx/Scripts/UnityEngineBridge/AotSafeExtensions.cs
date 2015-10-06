@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
+#if SystemReactive
+using System.Reactive.Linq;
+#endif
+
 namespace UniRx
 {
     public static class AotSafeExtensions

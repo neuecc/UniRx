@@ -10,7 +10,11 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 
+#if SystemReactive
+namespace System.Reactive.Concurrency
+#else
 namespace UniRx
+#endif
 {
 
     public static partial class Scheduler

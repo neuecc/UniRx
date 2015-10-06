@@ -2,7 +2,16 @@
 using System.Collections.Generic;
 using UniRx.Operators;
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+using System.Reactive.Subjects;
+using UniRx;
+
+namespace System.Reactive.Linq
+#else
 namespace UniRx
+#endif
 {
     public static partial class Observable
     {
