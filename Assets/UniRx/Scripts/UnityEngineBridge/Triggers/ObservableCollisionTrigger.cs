@@ -5,10 +5,6 @@ using UnityEngine;
 using System.Reactive.Subjects;
 #endif
 
-#if SystemReactive
-using System.Reactive.Subjects;
-#endif
-
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]

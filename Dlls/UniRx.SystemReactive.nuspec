@@ -24,6 +24,6 @@
   </metadata>
   <files>
       <file src="UniRx.SystemReactive\bin\Release\UniRx.*" target="lib\net35\" />
-      <file src="UniRx.SystemReactive.TypeForwarding\bin\Release\UniRx.dll" target="lib\net45\" />
+      <file src="UniRx.SystemReactive.TypeForwarding\bin\Release\UniRx.*" target="lib\net45\" />
   </files>
 </package>
