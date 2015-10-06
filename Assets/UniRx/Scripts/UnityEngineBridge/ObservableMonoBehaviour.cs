@@ -1,8 +1,17 @@
 ﻿using System;
 using UnityEngine;
 
+#if SystemReactive
+using System.Reactive;
+using System.Reactive.Subjects;
+#endif
+
 namespace UniRx
 {
+#if SystemReactive
+    using Observable = System.Reactive.Linq.Observable;
+#endif
+
     // not yet obsolete
     // [Obsolete("ObservableMonoBehaviour is legacy component. use triggres instead")]
 

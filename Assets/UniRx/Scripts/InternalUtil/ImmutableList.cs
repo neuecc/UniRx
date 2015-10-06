@@ -2,7 +2,10 @@
 
 namespace UniRx.InternalUtil
 {
-    public class ImmutableList<T>
+#if !SystemReactive
+    public
+#endif
+    class ImmutableList<T>
     {
         public static readonly ImmutableList<T> Empty = new ImmutableList<T>();
 

@@ -654,6 +654,22 @@ namespace UniRx
             });
         }
 
+#if SystemReactive
+        public static IObservable<T> FirstAsync<T>(this IObservable<T> source)
+        {
+            return FirstCore<T>(source, false);
+        }
+        public static IObservable<T> FirstAsync<T>(this IObservable<T> source, Func<T, bool> predicate)
+        {
+            return FirstCore<T>(source.Where(predicate), false);
+        }
+
+        [Obsolete]
+        public static IObservable<T> First<T>(this IObservable<T> source) { throw new NotImplementedException(); }
+
+        [Obsolete]
+        public static IObservable<T> First<T>(this IObservable<T> source, Func<T, bool> predicate) { throw new NotImplementedException(); }
+#else
         public static IObservable<T> First<T>(this IObservable<T> source)
         {
             return FirstCore<T>(source, false);
@@ -662,8 +678,8 @@ namespace UniRx
         {
             return FirstCore<T>(source.Where(predicate), false);
         }
-
-        public static IObservable<T> FirstOrDefault<T>(this IObservable<T> source)
+#endif
+         public static IObservable<T> FirstOrDefault<T>(this IObservable<T> source)
         {
             return FirstCore<T>(source, true);
         }

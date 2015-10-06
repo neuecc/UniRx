@@ -5,6 +5,10 @@ using System; // require keep for Windows Universal App
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+#if SystemReactive
+using System.Reactive.Subjects;
+#endif
+
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]

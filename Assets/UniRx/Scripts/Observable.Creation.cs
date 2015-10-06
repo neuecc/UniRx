@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UniRx.Operators;
 
 #if SystemReactive
 using System.Reactive.Concurrency;
@@ -10,6 +9,8 @@ using UniRx;
 
 namespace System.Reactive.Linq
 #else
+using UniRx.Operators;
+
 namespace UniRx
 #endif
 {

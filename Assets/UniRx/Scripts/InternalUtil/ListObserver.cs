@@ -4,7 +4,10 @@ using System.Text;
 
 namespace UniRx.InternalUtil
 {
-    public class ListObserver<T> : IObserver<T>
+#if !SystemReactive
+    public
+#endif
+    class ListObserver<T> : IObserver<T>
     {
         private readonly ImmutableList<IObserver<T>> _observers;
 

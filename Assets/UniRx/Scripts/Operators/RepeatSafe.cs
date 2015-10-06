@@ -2,7 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
+#if SystemReactive
+using UniRx;
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+
+namespace System.Reactive.Linq
+#else
 namespace UniRx.Operators
+#endif
 {
     internal class RepeatSafe<T> : OperatorObservableBase<T>
     {

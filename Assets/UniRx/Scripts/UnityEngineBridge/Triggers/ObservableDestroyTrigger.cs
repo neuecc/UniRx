@@ -1,8 +1,17 @@
 ﻿using System; // require keep for Windows Universal App
 using UnityEngine;
 
+#if SystemReactive
+using System.Reactive;
+using System.Reactive.Subjects;
+#endif
+
 namespace UniRx.Triggers
 {
+#if SystemReactive
+    using Observable = System.Reactive.Linq.Observable;
+#endif
+
     [DisallowMultipleComponent]
     public class ObservableDestroyTrigger : MonoBehaviour
     {

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Threading;
 
+#if SystemReactive
+namespace System.Reactive.Linq
+#else
 namespace UniRx.Operators
+#endif
 {
     internal abstract class OperatorObserverBase<TSource, TResult> : IDisposable, IObserver<TSource>
     {

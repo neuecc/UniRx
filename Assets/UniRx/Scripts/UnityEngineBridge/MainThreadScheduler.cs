@@ -1,13 +1,19 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using UnityEngine;
+
+#if SystemReactive
+using System.Reactive.Disposables;
+using System.Reactive.Concurrency;
+#endif
 
 namespace UniRx
 {
-#if UniRxLibrary
+#if SystemReactive
+    using IScheduler = System.Reactive.Concurrency.IScheduler;
+#endif
+
+#if UniRxLibrary || SystemReactive
     public static partial class SchedulerUnity
     {
 #else

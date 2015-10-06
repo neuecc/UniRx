@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using UniRx.Operators;
 
 #if SystemReactive
 using UniRx;
 
 namespace System.Reactive.Linq
 #else
+using UniRx.Operators;
+
 namespace UniRx
 #endif
 {

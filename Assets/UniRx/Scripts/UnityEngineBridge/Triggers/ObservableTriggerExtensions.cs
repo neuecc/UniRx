@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace UniRx.Triggers
 {
+#if SystemReactive
+    using Observable = System.Reactive.Linq.Observable;
+#endif
+
     // for GameObject
     public static partial class ObservableTriggerExtensions
     {

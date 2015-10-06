@@ -10,7 +10,10 @@ namespace System.Reactive.Subjects
 namespace UniRx
 #endif
 {
-    public sealed class AsyncSubject<T> : ISubject<T>, IOptimizedObservable<T>
+    public sealed class AsyncSubject<T> : ISubject<T>
+#if !SystemReactive
+        , IOptimizedObservable<T>
+#endif
     {
         object observerLock = new object();
 

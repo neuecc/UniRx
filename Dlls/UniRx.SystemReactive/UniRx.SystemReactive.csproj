@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System.Reactive</RootNamespace>
-    <AssemblyName>UniRx</AssemblyName>
+    <AssemblyName>UniRx.SystemReactive</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -65,6 +65,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\SingleAssignmentDisposable.cs">
       <Link>Disposables\SingleAssignmentDisposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Disposables\StableCompositeDisposable.cs">
+      <Link>Disposables\StableCompositeDisposable.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\EventPattern.cs">
       <Link>EventPattern.cs</Link>
@@ -132,6 +135,42 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Observer.cs">
       <Link>Observer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Create.cs">
+      <Link>Operators\Create.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Defer.cs">
+      <Link>Operators\Defer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Empty.cs">
+      <Link>Operators\Empty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Never.cs">
+      <Link>Operators\Never.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs">
+      <Link>Operators\OperatorObservableBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs">
+      <Link>Operators\OperatorObserverBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Range.cs">
+      <Link>Operators\Range.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Repeat.cs">
+      <Link>Operators\Repeat.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\RepeatSafe.cs">
+      <Link>Operators\RepeatSafe.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Return.cs">
+      <Link>Operators\Return.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Select.cs">
+      <Link>Operators\Select.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Throw.cs">
+      <Link>Operators\Throw.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs">
       <Link>Schedulers\CurrentThreadScheduler.cs</Link>
     </Compile>
@@ -171,6 +210,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\System\IObserver.cs">
       <Link>System\IObserver.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\System\IOptimizedObservable.cs">
+      <Link>System\IOptimizedObservable.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\System\Tuple.cs">
       <Link>System\Tuple.cs</Link>
     </Compile>
@@ -186,7 +228,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unit.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

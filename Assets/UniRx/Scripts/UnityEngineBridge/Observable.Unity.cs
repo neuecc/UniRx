@@ -1,16 +1,27 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UniRx.Triggers;
 using UnityEngine;
 
-#if !UniRxLibrary
+#if !UniRxLibrary && !SystemReactive
 using SchedulerUnity = UniRx.Scheduler;
+#endif
+
+#if SystemReactive
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Threading;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 #endif
 
 namespace UniRx
 {
+#if SystemReactive
+    using Observable = System.Reactive.Linq.Observable;
+#endif
+
     public enum FrameCountType
     {
         Update,
@@ -35,7 +46,7 @@ namespace UniRx
         }
     }
 
-#if UniRxLibrary
+#if UniRxLibrary || SystemReactive
     public static partial class ObservableUnity
 #else
     public static partial class Observable
@@ -216,7 +227,13 @@ namespace UniRx
             {
                 var cancel = new BooleanDisposable();
 
-                MainThreadDispatcher.SendStartCoroutine(coroutine(observer, new CancellationToken(cancel)));
+#if SystemReactive
+                var ct = cancel.ToCancellationToken();
+#else
+                var ct = new CancellationToken(cancel);
+#endif
+
+                MainThreadDispatcher.SendStartCoroutine(coroutine(observer, ct));
 
                 return cancel;
             });
@@ -721,7 +738,11 @@ namespace UniRx
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onResult, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
         {
+#if SystemReactive
+            if (cancel == null) cancel = CancellationToken.None;
+#else
             if (cancel == null) cancel = CancellationToken.Empty;
+#endif
             var running = true;
 
             var subscription = source
@@ -948,7 +969,34 @@ namespace UniRx
             }
         }
 
-#if UniRxLibrary
+#if UniRxLibrary || SystemReactive
+        class AnonymousObservable<T> : IObservable<T>
+        {
+            readonly Func<IObserver<T>, IDisposable> subscribe;
+
+            public AnonymousObservable(Func<IObserver<T>, IDisposable> subscribe)
+            {
+                this.subscribe = subscribe;
+            }
+
+            public IDisposable Subscribe(IObserver<T> observer)
+            {
+                var subscription = new SingleAssignmentDisposable();
+
+                var safeObserver = Observer.Create<T>(observer.OnNext, observer.OnError, observer.OnCompleted, subscription);
+
+                if (Scheduler.IsCurrentThreadSchedulerScheduleRequired)
+                {
+                    Scheduler.CurrentThread.Schedule(() => subscription.Disposable = subscribe(safeObserver));
+                }
+                else
+                {
+                    subscription.Disposable = subscribe(safeObserver);
+                }
+
+                return subscription;
+            }
+        }
 
         static IEnumerable<IObservable<T>> RepeatInfinite<T>(IObservable<T> source)
         {
@@ -960,7 +1008,7 @@ namespace UniRx
 #endif
     }
 
-#if UniRxLibrary
+#if UniRxLibrary || SystemReactive
     internal static class Stubs
     {
         public static readonly Action Nop = () => { };
