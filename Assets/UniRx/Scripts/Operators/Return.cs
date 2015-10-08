@@ -16,6 +16,8 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
+            observer = new ReturnObserver(observer, cancel);
+
             if (scheduler == Scheduler.Immediate)
             {
                 observer.OnNext(value);
@@ -29,6 +31,14 @@ namespace UniRx.Operators
                     observer.OnNext(value);
                     observer.OnCompleted();
                 });
+            }
+        }
+
+        class ReturnObserver : AutoDetachOperatorObserverBase<T>
+        {
+            public ReturnObserver(IObserver<T> observer, IDisposable cancel) 
+                : base(observer, cancel)
+            {
             }
         }
     }

@@ -14,6 +14,8 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
+            observer = new DeferObserver(observer, cancel);
+
             IObservable<T> source;
             try
             {
@@ -25,6 +27,13 @@ namespace UniRx.Operators
             }
 
             return source.Subscribe(observer);
+        }
+
+        class DeferObserver : AutoDetachOperatorObserverBase<T>
+        {
+            public DeferObserver(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            {
+            }
         }
     }
 }

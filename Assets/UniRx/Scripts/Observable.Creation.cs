@@ -93,7 +93,7 @@ namespace UniRx
         /// <summary>
         /// Same as Observable.Return(Unit.Default);
         /// </summary>
-        public static IObservable<Unit> ReturnUnit<T>()
+        public static IObservable<Unit> ReturnUnit()
         {
             return Return(Unit.Default);
         }

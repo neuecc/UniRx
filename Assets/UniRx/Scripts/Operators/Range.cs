@@ -20,6 +20,8 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<int> observer, IDisposable cancel)
         {
+            observer = new RangeObserver(observer, cancel);
+
             return scheduler.Schedule((Action self) =>
             {
                 if (i < count)
@@ -34,6 +36,14 @@ namespace UniRx.Operators
                     observer.OnCompleted();
                 }
             });
+        }
+
+        class RangeObserver : AutoDetachOperatorObserverBase<int>
+        {
+            public RangeObserver(IObserver<int> observer, IDisposable cancel)
+                : base(observer, cancel)
+            {
+            }
         }
     }
 }

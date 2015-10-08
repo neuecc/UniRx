@@ -16,6 +16,8 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
+            observer = new ThrowObserver(observer, cancel);
+
             if (scheduler == Scheduler.Immediate)
             {
                 observer.OnError(error);
@@ -28,6 +30,14 @@ namespace UniRx.Operators
                     observer.OnError(error);
                     observer.OnCompleted();
                 });
+            }
+        }
+
+        class ThrowObserver : AutoDetachOperatorObserverBase<T>
+        {
+            public ThrowObserver(IObserver<T> observer, IDisposable cancel)
+                : base(observer, cancel)
+            {
             }
         }
     }

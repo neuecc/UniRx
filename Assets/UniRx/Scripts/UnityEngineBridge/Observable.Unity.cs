@@ -303,7 +303,7 @@ namespace UniRx
             }
         }
 
-#region Observable.Time Frame Extensions
+        #region Observable.Time Frame Extensions
 
         // Interval, Timer, Delay, Sample, Throttle, Timeout
 
@@ -698,7 +698,7 @@ namespace UniRx
             });
         }
 
-#endregion
+        #endregion
 
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, CancellationToken cancel = default(CancellationToken))
@@ -728,8 +728,19 @@ namespace UniRx
                 .LastOrDefault()
                 .ObserveOnMainThread()
                 .SubscribeOnMainThread()
-                .Finally(() => running = false)
-                .Subscribe(onResult, onError, Stubs.Nop);
+                .Finally(() =>
+                {
+                    UnityEngine.Debug.Log("called finally");
+                    running = false;
+                })
+                .Subscribe(t =>
+                {
+                    UnityEngine.Debug.Log("called subscribe");
+                    onResult(t);
+                }, onError, () =>
+            {
+                UnityEngine.Debug.Log("called oncompleted");
+            });
 
             while (running && !cancel.IsCancellationRequested)
             {

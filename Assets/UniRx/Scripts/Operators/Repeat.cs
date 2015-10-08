@@ -20,6 +20,8 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
+            observer = new RepeatObserver(observer, cancel);
+
             if (repeatCount == null)
             {
                 return scheduler.Schedule((Action self) =>
@@ -46,6 +48,14 @@ namespace UniRx.Operators
 
                     self();
                 });
+            }
+        }
+
+        class RepeatObserver : AutoDetachOperatorObserverBase<T>
+        {
+            public RepeatObserver(IObserver<T> observer, IDisposable cancel)
+                : base(observer, cancel)
+            {
             }
         }
     }
