@@ -730,12 +730,10 @@ namespace UniRx
                 .SubscribeOnMainThread()
                 .Finally(() =>
                 {
-                    UnityEngine.Debug.Log("called finally");
                     running = false;
                 })
                 .Subscribe(t =>
                 {
-                    UnityEngine.Debug.Log("called subscribe");
                     onResult(t);
                 }, onError, () =>
             {
