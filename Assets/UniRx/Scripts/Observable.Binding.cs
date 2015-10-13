@@ -3,7 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+
+using System.Reactive.Subjects;
+
+namespace System.Reactive.Linq
+#else
 namespace UniRx
+#endif
 {
     public static partial class Observable
     {

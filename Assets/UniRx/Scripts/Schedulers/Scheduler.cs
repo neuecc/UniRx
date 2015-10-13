@@ -4,7 +4,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
+#if SystemReactive
+using System.Reactive.Disposables;
+
+namespace System.Reactive.Concurrency
+#else
 namespace UniRx
+#endif
 {
     // Scheduler Extension
     public static partial class Scheduler
@@ -56,7 +62,7 @@ namespace UniRx
             {
                 get
                 {
-#if UniRxLibrary
+#if UniRxLibrary || SystemReactive
                     return timeBasedOperations ?? (timeBasedOperations = Scheduler.ThreadPool);
 #else
                     return timeBasedOperations ?? (timeBasedOperations = Scheduler.MainThread); // MainThread as default for TimeBased Operation

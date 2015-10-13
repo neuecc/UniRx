@@ -5,7 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
+#if SystemReactive
+using System.Reactive.Disposables;
+
+namespace System.Reactive.Concurrency
+#else
 namespace UniRx
+#endif
 {
     public static partial class Scheduler
     {

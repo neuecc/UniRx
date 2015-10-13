@@ -2,9 +2,13 @@
 
 #if !NETFX_CORE
 
+#if SystemReactive
+namespace System
+#else
 using System;
 
 namespace UniRx
+#endif
 {
     public interface IObservable<T>
     {

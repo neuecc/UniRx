@@ -1,8 +1,18 @@
 ﻿using System;
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+
+namespace System.Reactive.Linq
+#else
 namespace UniRx.Operators
+#endif
 {
-    internal abstract class OperatorObservableBase<T> : IObservable<T>, IOptimizedObservable<T>
+    internal abstract class OperatorObservableBase<T> : IObservable<T>
+#if !SystemReactive
+        , IOptimizedObservable<T>
+#endif
     {
         readonly bool isRequiredSubscribeOnCurrentThread;
 

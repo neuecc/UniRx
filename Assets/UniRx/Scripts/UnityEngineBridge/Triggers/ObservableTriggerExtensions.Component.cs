@@ -5,10 +5,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 #endif
 
+#if SystemReactive
+using System.Reactive;
+#endif
+
 namespace UniRx.Triggers
 {
-		// for Component
-		public static partial class ObservableTriggerExtensions
+#if SystemReactive
+    using Observable = System.Reactive.Linq.Observable;
+#endif
+
+    // for Component
+    public static partial class ObservableTriggerExtensions
 		{
 				#region ObservableAnimatorTrigger
 

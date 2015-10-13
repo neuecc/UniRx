@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Threading;
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+
+namespace System.Reactive.Disposables
+#else
 namespace UniRx
+#endif
 {
     public sealed class ScheduledDisposable : ICancelable
     {

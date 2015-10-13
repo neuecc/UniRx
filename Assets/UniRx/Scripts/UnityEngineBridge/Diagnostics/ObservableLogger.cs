@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
+#if SystemReactive
+using System.Reactive.Subjects;
+#endif
+
 namespace UniRx.Diagnostics
 {
     public class ObservableLogger : IObservable<LogEntry>

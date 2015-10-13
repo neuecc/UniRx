@@ -3,7 +3,15 @@ using System.Collections.Generic;
 using System.Linq; // memo, remove LINQ(for avoid AOT)
 using System.Text;
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+using UniRx;
+
+namespace System.Reactive.Linq
+#else
 namespace UniRx
+#endif
 {
     // concatenate multiple observable
     // merge, concat, zip...

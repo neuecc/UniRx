@@ -2,13 +2,25 @@
 using System.Collections.Generic;
 using System.Text;
 
+#if SystemReactive
+namespace System.Reactive.Subjects
+#else
 namespace UniRx
+#endif
 {
     public interface IConnectableObservable<T> : IObservable<T>
     {
         IDisposable Connect();
     }
 
+#if SystemReactive
+}
+
+namespace System.Reactive.Linq
+{
+    using Subjects;
+
+#endif
     public static partial class Observable
     {
         class ConnectableObservable<T> : IConnectableObservable<T>

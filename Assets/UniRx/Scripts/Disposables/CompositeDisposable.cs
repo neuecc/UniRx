@@ -3,7 +3,11 @@ using System.Collections.Generic;
 // using System.Linq; do not use LINQ
 using System.Text;
 
+#if SystemReactive
+namespace System.Reactive.Disposables
+#else
 namespace UniRx
+#endif
 {
     // copy, modified from Rx Official
 

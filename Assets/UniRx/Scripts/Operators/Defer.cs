@@ -1,6 +1,10 @@
 ﻿using System;
 
+#if SystemReactive
+namespace System.Reactive.Linq
+#else
 namespace UniRx.Operators
+#endif
 {
     internal class Defer<T> : OperatorObservableBase<T>
     {

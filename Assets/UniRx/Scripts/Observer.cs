@@ -1,7 +1,14 @@
 ﻿using System;
 using System.Threading;
 
+#if SystemReactive
+using System.Reactive.Linq;
+using System.Reactive.Disposables;
+
+namespace System
+#else
 namespace UniRx
+#endif
 {
     public static class Observer
     {

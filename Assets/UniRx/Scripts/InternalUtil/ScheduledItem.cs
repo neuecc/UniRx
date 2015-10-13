@@ -4,13 +4,19 @@
 
 using System;
 using System.Collections.Generic;
+#if SystemReactive
+using System.Reactive.Disposables;
+#endif
 
 namespace UniRx.InternalUtil
 {
     /// <summary>
     /// Abstract base class for scheduled work items.
     /// </summary>
-    public class ScheduledItem : IComparable<ScheduledItem>
+#if !SystemReactive
+    public
+#endif
+    class ScheduledItem : IComparable<ScheduledItem>
     {
         private readonly BooleanDisposable _disposable = new BooleanDisposable();
         private readonly TimeSpan _dueTime;
@@ -45,7 +51,7 @@ namespace UniRx.InternalUtil
             }
         }
 
-        #region Inequality
+#region Inequality
 
         /// <summary>
         /// Compares the work item with another work item based on absolute time values.
@@ -110,9 +116,9 @@ namespace UniRx.InternalUtil
             return left.CompareTo(right) >= 0;
         }
 
-        #endregion
+#endregion
 
-        #region Equality
+#region Equality
 
         /// <summary>
         /// Determines whether two specified ScheduledItem&lt;TAbsolute, TValue&gt; objects are equal.
@@ -157,7 +163,7 @@ namespace UniRx.InternalUtil
             return base.GetHashCode();
         }
 
-        #endregion
+#endregion
 
         public IDisposable Cancellation
         {
@@ -181,7 +187,10 @@ namespace UniRx.InternalUtil
     /// </summary>
     /// <remarks>This type is not thread safe; users should ensure proper synchronization.</remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "But it *is* a queue!")]
-    public class SchedulerQueue
+#if !SystemReactive
+    public
+#endif
+    class SchedulerQueue
     {
         private readonly PriorityQueue<ScheduledItem> _queue;
 
