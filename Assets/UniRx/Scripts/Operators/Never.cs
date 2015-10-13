@@ -1,6 +1,12 @@
 ﻿using System;
 
+#if SystemReactive
+using System.Reactive.Disposables;
+
+namespace System.Reactive.Linq
+#else
 namespace UniRx.Operators
+#endif
 {
     internal class Never<T> : OperatorObservableBase<T>
     {

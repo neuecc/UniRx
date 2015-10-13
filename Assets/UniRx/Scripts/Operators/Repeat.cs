@@ -1,6 +1,12 @@
 ﻿using System;
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+
+namespace System.Reactive.Linq
+#else
 namespace UniRx.Operators
+#endif
 {
     internal class Repeat<T> : OperatorObservableBase<T>
     {

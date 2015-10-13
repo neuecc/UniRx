@@ -2,8 +2,12 @@
 using System.Collections;
 using UnityEngine;
 
-#if !UniRxLibrary
+#if !UniRxLibrary && !SystemReactive
 using ObservableUnity = UniRx.Observable;
+#endif
+
+#if SystemReactive
+using System.Threading;
 #endif
 
 namespace UniRx

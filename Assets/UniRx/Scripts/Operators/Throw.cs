@@ -1,6 +1,13 @@
 ﻿using System;
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+
+namespace System.Reactive.Linq
+#else
 namespace UniRx.Operators
+#endif
 {
     internal class Throw<T> : OperatorObservableBase<T>
     {

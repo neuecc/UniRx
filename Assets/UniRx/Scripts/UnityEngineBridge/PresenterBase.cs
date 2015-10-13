@@ -1,8 +1,16 @@
 ﻿using System;
 using UnityEngine;
 
+#if SystemReactive
+using System.Reactive.Subjects;
+#endif
+
 namespace UniRx
 {
+#if SystemReactive
+    using Observable = System.Reactive.Linq.Observable;
+#endif
+
     // InEditor : Construct Children Dependency
     // Awake : Construct Parent Dependency
     // Start(Capture phase)  : Parent to Child, pass argument

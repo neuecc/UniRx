@@ -4,13 +4,16 @@
 
 using System.ComponentModel;
 using System.Threading;
-using UniRx.InternalUtil;
-using UniRx;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using UniRx.InternalUtil;
 
+#if SystemReactive
+namespace System.Reactive.Concurrency
+#else
 namespace UniRx
+#endif
 {
 
     public static partial class Scheduler

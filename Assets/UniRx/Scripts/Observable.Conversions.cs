@@ -3,7 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq; // in future, should remove LINQ(for avoid AOT)
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+using UniRx;
+
+namespace System.Reactive.Linq
+#else
 namespace UniRx
+#endif
 {
     public static partial class Observable
     {

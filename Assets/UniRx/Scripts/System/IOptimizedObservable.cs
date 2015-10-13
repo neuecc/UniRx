@@ -1,6 +1,12 @@
-﻿using System;
+﻿#if SystemReactive
+using System.Reactive.Concurrency;
+
+namespace System
+#else
+using System;
 
 namespace UniRx
+#endif
 {
     public interface IOptimizedObservable<T> : IObservable<T>
     {

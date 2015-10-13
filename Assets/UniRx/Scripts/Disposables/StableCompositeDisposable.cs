@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Threading;
 
+#if SystemReactive
+namespace System.Reactive.Disposables
+#else
 namespace UniRx
+#endif
 {
     /// <summary>
     /// Represents a group of disposable resources that are disposed together.

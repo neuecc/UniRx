@@ -9,7 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
+#if SystemReactive
+namespace System.Reactive
+#else
 namespace UniRx
+#endif
 {
     /// <summary>
     /// Represents a value associated with time interval information.

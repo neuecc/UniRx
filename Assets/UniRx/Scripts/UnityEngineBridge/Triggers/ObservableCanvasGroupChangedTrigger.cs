@@ -4,6 +4,10 @@
 using System;
 using UnityEngine;
 
+#if SystemReactive
+using System.Reactive.Subjects;
+#endif
+
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]

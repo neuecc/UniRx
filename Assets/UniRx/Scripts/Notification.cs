@@ -13,7 +13,14 @@ using System;
 #pragma warning disable 0659
 #pragma warning disable 0661
 
+#if SystemReactive
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+
+namespace System.Reactive
+#else
 namespace UniRx
+#endif
 {
     /// <summary>
     /// Provides a mechanism for receiving push-based notifications and returning a response.

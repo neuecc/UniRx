@@ -5,8 +5,17 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+#if SystemReactive
+using System.Reactive;
+using System.Threading;
+#endif
+
 namespace UniRx
 {
+#if SystemReactive
+    using Observable = System.Reactive.Linq.Observable;
+#endif
+
     public static partial class UnityUIComponentExtensions
     {
         public static IDisposable SubscribeToText(this IObservable<string> source, Text text)

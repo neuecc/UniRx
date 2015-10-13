@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Collections;
 
-#if !UniRxLibrary
+#if !UniRxLibrary && !SystemReactive
 using ObservableUnity = UniRx.Observable;
+#endif
+
+#if SystemReactive
+using System.Threading;
 #endif
 
 namespace UniRx
 {
+#if SystemReactive
+    using Observable = System.Reactive.Linq.Observable;
+#endif
+
     public static partial class ObserveExtensions
     {
         /// <summary>

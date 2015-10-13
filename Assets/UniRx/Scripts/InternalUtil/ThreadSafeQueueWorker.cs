@@ -2,7 +2,10 @@
 
 namespace UniRx.InternalUtil
 {
-    public class ThreadSafeQueueWorker
+#if !SystemReactive
+    public
+#endif
+    class ThreadSafeQueueWorker
     {
         const int InitialSize = 10;
 

@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using System.Linq; // in future, should remove LINQ
 using UnityEngine;
 
+#if SystemReactive
+using System.Threading;
+using System.Reactive.Disposables;
+#endif
+
 namespace UniRx
 {
     public abstract class LazyTask
@@ -94,8 +99,11 @@ namespace UniRx
             var coroutine = source.StartAsCoroutine(
                 onResult: x => { result = x; Status = TaskStatus.Completed; },
                 onError: ex => { Exception = ex; Status = TaskStatus.Faulted; },
+#if SystemReactive
+                cancel: cancellation.ToCancellationToken());
+#else
                 cancel: new CancellationToken(cancellation));
-
+#endif
             return coroutine;
         }
 
