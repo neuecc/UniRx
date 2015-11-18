@@ -184,7 +184,7 @@ namespace UniRx.ObjectTest
     [Serializable]
     public class UniRxTestSandbox : MonoBehaviour
     {
-        readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
+		readonly static UniRx.Diagnostics.Logger logger = new UniRx.Diagnostics.Logger("UniRx.Test.NewBehaviour");
 
         // public UnityEvent<int> SimpleEvent;
 
