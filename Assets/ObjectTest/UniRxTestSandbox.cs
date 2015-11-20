@@ -171,12 +171,12 @@ namespace UniRx.ObjectTest
 
 #if UNITY_EDITOR
 
-    [UnityEditor.CustomPropertyDrawer(typeof(UShortReactiveProeprty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(MikanReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(MySuperStructReactiveProperty))]
-    public class ExtendInspectorDisplayDrawer : InspectorDisplayDrawer
-    {
-    }
+    //[UnityEditor.CustomPropertyDrawer(typeof(UShortReactiveProeprty))]
+    //[UnityEditor.CustomPropertyDrawer(typeof(MikanReactiveProperty))]
+    //[UnityEditor.CustomPropertyDrawer(typeof(MySuperStructReactiveProperty))]
+    //public class ExtendInspectorDisplayDrawer : InspectorDisplayDrawer
+    //{
+    //}
 
 #endif
 
