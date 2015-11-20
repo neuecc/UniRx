@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -68,7 +68,7 @@ namespace UniRx
     }
 
     [Serializable]
-    public class ReactiveDictionary<TKey, TValue> : IReactiveDictionary<TKey, TValue>, IDictionary<TKey, TValue>, IEnumerable, ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IDictionary
+    public class ReactiveDictionary<TKey, TValue> : IReactiveDictionary<TKey, TValue>, IDictionary<TKey, TValue>, IEnumerable, ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IDictionary, IDisposable
 #if !UNITY_METRO
         , ISerializable, IDeserializationCallback
 #endif
@@ -190,6 +190,55 @@ namespace UniRx
         public Dictionary<TKey, TValue>.Enumerator GetEnumerator()
         {
             return inner.GetEnumerator();
+        }
+
+        public void Dispose()
+        {
+            if(countChanged != null) {
+                try {
+                    countChanged.OnCompleted();
+                }
+                finally {
+                    countChanged.Dispose();
+                    countChanged = null;
+                }
+            }
+            if(collectionReset != null) {
+                try {
+                    collectionReset.OnCompleted();
+                }
+                finally {
+                    collectionReset.Dispose();
+                    collectionReset = null;
+                }
+            }
+            if(dictionaryAdd != null) {
+                try {
+                    dictionaryAdd.OnCompleted();
+                }
+                finally {
+                    dictionaryAdd.Dispose();
+                    dictionaryAdd = null;
+                }
+            }
+            if(dictionaryRemove != null) {
+                try {
+                    dictionaryRemove.OnCompleted();
+                }
+                finally {
+                    dictionaryRemove.Dispose();
+                    dictionaryRemove = null;
+                }
+            }
+            if(dictionaryReplace != null) {
+                try {
+                    dictionaryReplace.OnCompleted();
+                }
+                finally {
+                    dictionaryReplace.Dispose();
+                    dictionaryReplace = null;
+                }
+            }
         }
 
         #region Observe
