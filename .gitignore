@@ -16,7 +16,6 @@ TestResults
 *.meta
 !MainThreadDispatcher.cs.meta
 !/Assets/ObjectTest/*.meta
-[Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
 
@@ -83,7 +82,7 @@ _ReSharper*
 *.ncrunch*
 .*crunch*.local.xml
 
-# Installshield output folder 
+# Installshield output folder
 [Ee]xpress
 
 # DocProject is a documentation generator add-in
@@ -124,6 +123,7 @@ ClientBin
 ~$*
 *.dbmdl
 Generated_Code #added for RIA/Silverlight projects
+.nuget
 
 # Backup & report files from converting an old project file to a newer
 # Visual Studio version. Backup files are not needed, because we have git ;-)
