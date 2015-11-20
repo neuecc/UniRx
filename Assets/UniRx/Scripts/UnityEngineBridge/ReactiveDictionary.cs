@@ -198,71 +198,33 @@ namespace UniRx
             return inner.GetEnumerator();
         }
 
+        void DisposeSubject<TSubject>(ref Subject<TSubject> subject)
+        {
+            if (subject != null)
+            {
+                try
+                {
+                    subject.OnCompleted();
+                }
+                finally
+                {
+                    subject.Dispose();
+                    subject = null;
+                }
+            }
+        }
+
+
         public void Dispose()
         {
             if (isDisposed) return;
             isDisposed = true;
 
-            if (countChanged != null)
-            {
-                try
-                {
-                    countChanged.OnCompleted();
-                }
-                finally
-                {
-                    countChanged.Dispose();
-                    countChanged = null;
-                }
-            }
-            if (collectionReset != null)
-            {
-                try
-                {
-                    collectionReset.OnCompleted();
-                }
-                finally
-                {
-                    collectionReset.Dispose();
-                    collectionReset = null;
-                }
-            }
-            if (dictionaryAdd != null)
-            {
-                try
-                {
-                    dictionaryAdd.OnCompleted();
-                }
-                finally
-                {
-                    dictionaryAdd.Dispose();
-                    dictionaryAdd = null;
-                }
-            }
-            if (dictionaryRemove != null)
-            {
-                try
-                {
-                    dictionaryRemove.OnCompleted();
-                }
-                finally
-                {
-                    dictionaryRemove.Dispose();
-                    dictionaryRemove = null;
-                }
-            }
-            if (dictionaryReplace != null)
-            {
-                try
-                {
-                    dictionaryReplace.OnCompleted();
-                }
-                finally
-                {
-                    dictionaryReplace.Dispose();
-                    dictionaryReplace = null;
-                }
-            }
+            DisposeSubject(ref countChanged);
+            DisposeSubject(ref collectionReset);
+            DisposeSubject(ref dictionaryAdd);
+            DisposeSubject(ref dictionaryRemove);
+            DisposeSubject(ref dictionaryReplace);
         }
 
         #region Observe

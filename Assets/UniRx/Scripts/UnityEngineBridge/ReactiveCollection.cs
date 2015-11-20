@@ -88,8 +88,11 @@ namespace UniRx
     }
 
     [Serializable]
-    public class ReactiveCollection<T> : Collection<T>, IReactiveCollection<T>
+    public class ReactiveCollection<T> : Collection<T>, IReactiveCollection<T>, IDisposable
     {
+        [NonSerialized]
+        bool isDisposed = false;
+
         public ReactiveCollection()
         {
 
@@ -166,6 +169,8 @@ namespace UniRx
         Subject<int> countChanged = null;
         public IObservable<int> ObserveCountChanged(bool notifyCurrentCount = false)
         {
+            if (isDisposed) return Observable.Empty<int>();
+
             var subject = countChanged ?? (countChanged = new Subject<int>());
             if (notifyCurrentCount)
             {
@@ -181,6 +186,7 @@ namespace UniRx
         Subject<Unit> collectionReset = null;
         public IObservable<Unit> ObserveReset()
         {
+            if (isDisposed) return Observable.Empty<Unit>();
             return collectionReset ?? (collectionReset = new Subject<Unit>());
         }
 
@@ -188,6 +194,7 @@ namespace UniRx
         Subject<CollectionAddEvent<T>> collectionAdd = null;
         public IObservable<CollectionAddEvent<T>> ObserveAdd()
         {
+            if (isDisposed) return Observable.Empty<CollectionAddEvent<T>>();
             return collectionAdd ?? (collectionAdd = new Subject<CollectionAddEvent<T>>());
         }
 
@@ -195,6 +202,7 @@ namespace UniRx
         Subject<CollectionMoveEvent<T>> collectionMove = null;
         public IObservable<CollectionMoveEvent<T>> ObserveMove()
         {
+            if (isDisposed) return Observable.Empty<CollectionMoveEvent<T>>();
             return collectionMove ?? (collectionMove = new Subject<CollectionMoveEvent<T>>());
         }
 
@@ -202,6 +210,7 @@ namespace UniRx
         Subject<CollectionRemoveEvent<T>> collectionRemove = null;
         public IObservable<CollectionRemoveEvent<T>> ObserveRemove()
         {
+            if (isDisposed) return Observable.Empty<CollectionRemoveEvent<T>>();
             return collectionRemove ?? (collectionRemove = new Subject<CollectionRemoveEvent<T>>());
         }
 
@@ -209,7 +218,36 @@ namespace UniRx
         Subject<CollectionReplaceEvent<T>> collectionReplace = null;
         public IObservable<CollectionReplaceEvent<T>> ObserveReplace()
         {
+            if (isDisposed) return Observable.Empty<CollectionReplaceEvent<T>>();
             return collectionReplace ?? (collectionReplace = new Subject<CollectionReplaceEvent<T>>());
+        }
+
+        void DisposeSubject<TSubject>(ref Subject<TSubject> subject)
+        {
+            if (subject != null)
+            {
+                try
+                {
+                    subject.OnCompleted();
+                }
+                finally
+                {
+                    subject.Dispose();
+                    subject = null;
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            if (isDisposed) return;
+            isDisposed = true;
+
+            DisposeSubject(ref collectionReset);
+            DisposeSubject(ref collectionAdd);
+            DisposeSubject(ref collectionMove);
+            DisposeSubject(ref collectionRemove);
+            DisposeSubject(ref collectionReplace);
         }
     }
 
