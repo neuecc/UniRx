@@ -123,7 +123,7 @@ namespace UniRx
                 if (isStopped) return;
 
                 // enQ
-                queue.Enqueue(new TimeInterval<T>(value, Scheduler.Now - startTime));
+                queue.Enqueue(new TimeInterval<T>(value, scheduler.Now - startTime));
                 Trim();
 
                 current = outObserver;
