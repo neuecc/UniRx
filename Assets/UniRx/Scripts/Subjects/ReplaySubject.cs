@@ -4,7 +4,7 @@ using UniRx.InternalUtil;
 
 namespace UniRx
 {
-    public sealed class ReplaySubject<T> : ISubject<T>, IOptimizedObservable<T>
+    public sealed class ReplaySubject<T> : ISubject<T>, IOptimizedObservable<T>, IDisposable
     {
         object observerLock = new object();
 
