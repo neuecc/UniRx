@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -73,7 +73,13 @@ namespace UniRx
         , ISerializable, IDeserializationCallback
 #endif
     {
+        [NonSerialized]
+        bool isDisposed = false;
+
+#if !UniRxLibrary
+        [UnityEngine.SerializeField]
         readonly Dictionary<TKey, TValue> inner;
+#endif
 
         public ReactiveDictionary()
         {
@@ -194,47 +200,65 @@ namespace UniRx
 
         public void Dispose()
         {
-            if(countChanged != null) {
-                try {
+            if (isDisposed) return;
+            isDisposed = true;
+
+            if (countChanged != null)
+            {
+                try
+                {
                     countChanged.OnCompleted();
                 }
-                finally {
+                finally
+                {
                     countChanged.Dispose();
                     countChanged = null;
                 }
             }
-            if(collectionReset != null) {
-                try {
+            if (collectionReset != null)
+            {
+                try
+                {
                     collectionReset.OnCompleted();
                 }
-                finally {
+                finally
+                {
                     collectionReset.Dispose();
                     collectionReset = null;
                 }
             }
-            if(dictionaryAdd != null) {
-                try {
+            if (dictionaryAdd != null)
+            {
+                try
+                {
                     dictionaryAdd.OnCompleted();
                 }
-                finally {
+                finally
+                {
                     dictionaryAdd.Dispose();
                     dictionaryAdd = null;
                 }
             }
-            if(dictionaryRemove != null) {
-                try {
+            if (dictionaryRemove != null)
+            {
+                try
+                {
                     dictionaryRemove.OnCompleted();
                 }
-                finally {
+                finally
+                {
                     dictionaryRemove.Dispose();
                     dictionaryRemove = null;
                 }
             }
-            if(dictionaryReplace != null) {
-                try {
+            if (dictionaryReplace != null)
+            {
+                try
+                {
                     dictionaryReplace.OnCompleted();
                 }
-                finally {
+                finally
+                {
                     dictionaryReplace.Dispose();
                     dictionaryReplace = null;
                 }
@@ -247,6 +271,7 @@ namespace UniRx
         Subject<int> countChanged = null;
         public IObservable<int> ObserveCountChanged()
         {
+            if (isDisposed) return Observable.Empty<int>();
             return countChanged ?? (countChanged = new Subject<int>());
         }
 
@@ -254,6 +279,7 @@ namespace UniRx
         Subject<Unit> collectionReset = null;
         public IObservable<Unit> ObserveReset()
         {
+            if (isDisposed) return Observable.Empty<Unit>();
             return collectionReset ?? (collectionReset = new Subject<Unit>());
         }
 
@@ -261,6 +287,7 @@ namespace UniRx
         Subject<DictionaryAddEvent<TKey, TValue>> dictionaryAdd = null;
         public IObservable<DictionaryAddEvent<TKey, TValue>> ObserveAdd()
         {
+            if (isDisposed) return Observable.Empty<DictionaryAddEvent<TKey, TValue>>();
             return dictionaryAdd ?? (dictionaryAdd = new Subject<DictionaryAddEvent<TKey, TValue>>());
         }
 
@@ -268,6 +295,7 @@ namespace UniRx
         Subject<DictionaryRemoveEvent<TKey, TValue>> dictionaryRemove = null;
         public IObservable<DictionaryRemoveEvent<TKey, TValue>> ObserveRemove()
         {
+            if (isDisposed) return Observable.Empty<DictionaryRemoveEvent<TKey, TValue>>();
             return dictionaryRemove ?? (dictionaryRemove = new Subject<DictionaryRemoveEvent<TKey, TValue>>());
         }
 
@@ -275,6 +303,7 @@ namespace UniRx
         Subject<DictionaryReplaceEvent<TKey, TValue>> dictionaryReplace = null;
         public IObservable<DictionaryReplaceEvent<TKey, TValue>> ObserveReplace()
         {
+            if (isDisposed) return Observable.Empty<DictionaryReplaceEvent<TKey, TValue>>();
             return dictionaryReplace ?? (dictionaryReplace = new Subject<DictionaryReplaceEvent<TKey, TValue>>());
         }
 
