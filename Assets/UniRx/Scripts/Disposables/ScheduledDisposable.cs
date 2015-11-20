@@ -37,7 +37,7 @@ namespace UniRx
 
         private void DisposeInner()
         {
-            if (Interlocked.Increment(ref isDisposed) == 0)
+            if (Interlocked.Increment(ref isDisposed) == 1)
             {
                 disposable.Dispose();
             }
