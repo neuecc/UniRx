@@ -3,6 +3,7 @@ using System.Reflection;
 using UnityEngine;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -20,6 +21,25 @@ namespace UniRx
         {
             FieldName = fieldName;
             NotifyPropertyChanged = notifyPropertyChanged;
+        }
+    }
+
+    /// <summary>
+    /// Enables multiline input field for StringReactiveProperty. Default line is 3.
+    /// </summary>
+    [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    public class MultilineReactivePropertyAttribute : PropertyAttribute
+    {
+        public int Lines { get; private set; }
+
+        public MultilineReactivePropertyAttribute()
+        {
+            Lines = 3;
+        }
+
+        public MultilineReactivePropertyAttribute(int lines)
+        {
+            this.Lines = lines;
         }
     }
 
@@ -170,6 +190,14 @@ namespace UniRx
             {
                 return height * 3;
             }
+            if (valueProperty.propertyType == SerializedPropertyType.String)
+            {
+                var multilineAttr = GetMultilineAttribute();
+                if (multilineAttr != null)
+                {
+                    return ((!EditorGUIUtility.wideMode) ? 16f : 0f) + 16f + (float)((multilineAttr.Lines - 1) * 13);
+                };
+            }
 
             if (valueProperty.isExpanded)
             {
@@ -184,7 +212,37 @@ namespace UniRx
 
         protected virtual void EmitPropertyField(Rect position, UnityEditor.SerializedProperty targetSerializedProperty, GUIContent label)
         {
-            UnityEditor.EditorGUI.PropertyField(position, targetSerializedProperty, label, includeChildren: true);
+            var multiline = GetMultilineAttribute();
+            if (multiline == null)
+            {
+                UnityEditor.EditorGUI.PropertyField(position, targetSerializedProperty, label, includeChildren: true);
+            }
+            else
+            {
+                var property = targetSerializedProperty;
+
+                label = EditorGUI.BeginProperty(position, label, property);
+                var method = typeof(EditorGUI).GetMethod("MultiFieldPrefixLabel", BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic);
+                position = (Rect)method.Invoke(null, new object[] { position, 0, label, 1 });
+
+                EditorGUI.BeginChangeCheck();
+                int indentLevel = EditorGUI.indentLevel;
+                EditorGUI.indentLevel = 0;
+                var stringValue = EditorGUI.TextArea(position, property.stringValue);
+                EditorGUI.indentLevel = indentLevel;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    property.stringValue = stringValue;
+                }
+                EditorGUI.EndProperty();
+            }
+        }
+
+        MultilineReactivePropertyAttribute GetMultilineAttribute()
+        {
+            var fi = this.fieldInfo;
+            if (fi == null) return null;
+            return fi.GetCustomAttributes(false).OfType<MultilineReactivePropertyAttribute>().FirstOrDefault();
         }
     }
 

@@ -209,6 +209,9 @@ namespace UniRx.ObjectTest
         public MikanReactiveProperty MikanRP;
         public StringReactiveProperty Strrrrr;
 
+        [Multiline]
+        public StringReactiveProperty MultilineStrrrr;
+
         public UShortReactiveProeprty USHHHH;
 
         //[InspectorDisplay]
