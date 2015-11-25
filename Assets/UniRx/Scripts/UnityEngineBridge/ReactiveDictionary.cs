@@ -78,8 +78,8 @@ namespace UniRx
 
 #if !UniRxLibrary
         [UnityEngine.SerializeField]
-        readonly Dictionary<TKey, TValue> inner;
 #endif
+        readonly Dictionary<TKey, TValue> inner;
 
         public ReactiveDictionary()
         {
