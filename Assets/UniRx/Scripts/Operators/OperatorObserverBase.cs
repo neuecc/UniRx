@@ -52,18 +52,7 @@ namespace UniRx.Operators
             this.cancel = cancel;
         }
 
-        public void OnNext(T value)
-        {
-            try
-            {
-                this.observer.OnNext(value);
-            }
-            catch
-            {
-                Dispose();
-                throw;
-            }
-        }
+        public abstract void OnNext(T value);
 
         public void OnError(Exception error)
         {

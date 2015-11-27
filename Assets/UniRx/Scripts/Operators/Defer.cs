@@ -34,6 +34,19 @@ namespace UniRx.Operators
             public DeferObserver(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
             }
+
+            public override void OnNext(T value)
+            {
+                try
+                {
+                    base.observer.OnNext(value);
+                }
+                catch
+                {
+                    Dispose();
+                    throw;
+                }
+            }
         }
     }
 }

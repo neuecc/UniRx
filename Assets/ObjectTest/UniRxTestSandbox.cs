@@ -184,7 +184,7 @@ namespace UniRx.ObjectTest
     [Serializable]
     public class UniRxTestSandbox : MonoBehaviour
     {
-		readonly static UniRx.Diagnostics.Logger logger = new UniRx.Diagnostics.Logger("UniRx.Test.NewBehaviour");
+        readonly static UniRx.Diagnostics.Logger logger = new UniRx.Diagnostics.Logger("UniRx.Test.NewBehaviour");
 
         // public UnityEvent<int> SimpleEvent;
 
@@ -343,6 +343,15 @@ namespace UniRx.ObjectTest
                     sw.Stop();
                     logger.Debug("Push Select Perf:" + sw.Elapsed.TotalMilliseconds + "ms");
                 }
+            }
+            ypos += 100;
+
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StackTraceCheck"))
+            {
+                Observable.Return(1000)
+                    .Take(50)
+                    .Select(x => x)
+                    .Subscribe(x => Debug.Log(x));
             }
             ypos += 100;
 

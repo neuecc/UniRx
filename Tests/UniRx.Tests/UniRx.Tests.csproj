@@ -69,6 +69,7 @@
     <Compile Include="Init.cs" />
     <Compile Include="Observable.ConcurrencyTest.cs" />
     <Compile Include="OfficialRx\Observable.ConcurrencyTestCopy.cs" />
+    <Compile Include="Operators\TakeTest.cs" />
     <Compile Include="Operators\RangeTest.cs" />
     <Compile Include="ReflectionAccessorTest.cs" />
     <Compile Include="QueueWorkerTest.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="ReactriveDictionaryTest.cs" />
     <Compile Include="SubjectTest.cs" />
     <Compile Include="Observable.GeneratorTest.cs" />
+    <Compile Include="TestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

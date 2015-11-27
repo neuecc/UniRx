@@ -10,6 +10,19 @@ namespace UniRx
 
     public static class Observer
     {
+        internal static IObserver<T> CreateSubscribeObserver<T>(Action<T> onNext, Action<Exception> onError, Action onCompleted)
+        {
+            // need compare for avoid iOS AOT
+            if (onNext == Stubs.Ignore<T>)
+            {
+                return new SubscribeObserver_<T>(onError, onCompleted);
+            }
+            else
+            {
+                return new SubscribeObserver<T>(onNext, onError, onCompleted);
+            }
+        }
+
         public static IObserver<T> Create<T>(Action<T> onNext, Action<Exception> onError, Action onCompleted)
         {
             // need compare for avoid iOS AOT
@@ -111,6 +124,83 @@ namespace UniRx
             }
         }
 
+        // same as AnonymousObserver...
+        class SubscribeObserver<T> : IObserver<T>, ISafeObserver
+        {
+            readonly Action<T> onNext;
+            readonly Action<Exception> onError;
+            readonly Action onCompleted;
+
+            int isStopped = 0;
+
+            public SubscribeObserver(Action<T> onNext, Action<Exception> onError, Action onCompleted)
+            {
+                this.onNext = onNext;
+                this.onError = onError;
+                this.onCompleted = onCompleted;
+            }
+
+            public void OnNext(T value)
+            {
+                if (isStopped == 0)
+                {
+                    onNext(value);
+                }
+            }
+
+            public void OnError(Exception error)
+            {
+                if (Interlocked.Increment(ref isStopped) == 1)
+                {
+                    onError(error);
+                }
+            }
+
+
+            public void OnCompleted()
+            {
+                if (Interlocked.Increment(ref isStopped) == 1)
+                {
+                    onCompleted();
+                }
+            }
+        }
+
+        // same as EmptyOnNextAnonymousObserver...
+        class SubscribeObserver_<T> : IObserver<T>, ISafeObserver
+        {
+            readonly Action<Exception> onError;
+            readonly Action onCompleted;
+
+            int isStopped = 0;
+
+            public SubscribeObserver_(Action<Exception> onError, Action onCompleted)
+            {
+                this.onError = onError;
+                this.onCompleted = onCompleted;
+            }
+
+            public void OnNext(T value)
+            {
+            }
+
+            public void OnError(Exception error)
+            {
+                if (Interlocked.Increment(ref isStopped) == 1)
+                {
+                    onError(error);
+                }
+            }
+
+            public void OnCompleted()
+            {
+                if (Interlocked.Increment(ref isStopped) == 1)
+                {
+                    onCompleted();
+                }
+            }
+        }
+
         class DelegatedOnNextObserver<T, TRoot> : UniRx.Operators.OperatorObserverBase<T, TRoot>
         {
             readonly Action<T> onNext;
@@ -142,6 +232,19 @@ namespace UniRx
             {
 
             }
+
+            public override void OnNext(T value)
+            {
+                try
+                {
+                    base.observer.OnNext(value);
+                }
+                catch
+                {
+                    Dispose();
+                    throw;
+                }
+            }
         }
     }
 
@@ -149,27 +252,27 @@ namespace UniRx
     {
         public static IDisposable Subscribe<T>(this IObservable<T> source)
         {
-            return source.Subscribe(Observer.Create<T>(Stubs.Ignore<T>, Stubs.Throw, Stubs.Nop));
+            return source.Subscribe(Observer.CreateSubscribeObserver<T>(Stubs.Ignore<T>, Stubs.Throw, Stubs.Nop));
         }
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext)
         {
-            return source.Subscribe(Observer.Create(onNext, Stubs.Throw, Stubs.Nop));
+            return source.Subscribe(Observer.CreateSubscribeObserver(onNext, Stubs.Throw, Stubs.Nop));
         }
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError)
         {
-            return source.Subscribe(Observer.Create(onNext, onError, Stubs.Nop));
+            return source.Subscribe(Observer.CreateSubscribeObserver(onNext, onError, Stubs.Nop));
         }
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted)
         {
-            return source.Subscribe(Observer.Create(onNext, Stubs.Throw, onCompleted));
+            return source.Subscribe(Observer.CreateSubscribeObserver(onNext, Stubs.Throw, onCompleted));
         }
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted)
         {
-            return source.Subscribe(Observer.Create(onNext, onError, onCompleted));
+            return source.Subscribe(Observer.CreateSubscribeObserver(onNext, onError, onCompleted));
         }
     }
 

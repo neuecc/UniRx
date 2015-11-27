@@ -45,6 +45,19 @@ namespace UniRx.Operators
                 : base(observer, cancel)
             {
             }
+
+            public override void OnNext(int value)
+            {
+                try
+                {
+                    base.observer.OnNext(value);
+                }
+                catch
+                {
+                    Dispose();
+                    throw;
+                }
+            }
         }
     }
 }

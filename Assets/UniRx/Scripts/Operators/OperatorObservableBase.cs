@@ -37,9 +37,7 @@ namespace UniRx.Operators
             }
             else
             {
-                // TODO:Currently Error... should be fix after all
-                //subscription.Disposable = SubscribeCore(safeObserver, subscription);
-                Scheduler.CurrentThread.Schedule(() => subscription.Disposable = SubscribeCore(safeObserver, subscription));
+                subscription.Disposable = SubscribeCore(safeObserver, subscription);
             }
 
             return subscription;

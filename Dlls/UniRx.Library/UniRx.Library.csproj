@@ -189,6 +189,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Select.cs">
       <Link>Operators\Select.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Take.cs">
+      <Link>Operators\Take.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Throw.cs">
       <Link>Operators\Throw.cs</Link>
     </Compile>

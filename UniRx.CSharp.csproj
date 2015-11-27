@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.3.0f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -147,6 +149,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Repeat.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\RepeatSafe.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Return.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Take.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Select.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Throw.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs" />

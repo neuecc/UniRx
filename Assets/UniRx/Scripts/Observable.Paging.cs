@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UniRx.Operators;
 
 namespace UniRx
 {
@@ -16,20 +17,7 @@ namespace UniRx
 
             if (count == 0) return Empty<T>();
 
-            return Observable.Create<T>(observer =>
-            {
-                var rest = count;
-
-                return source.Subscribe(x =>
-                {
-                    if (rest > 0)
-                    {
-                        rest -= 1;
-                        observer.OnNext(x);
-                        if (rest == 0) observer.OnCompleted();
-                    }
-                }, observer.OnError, observer.OnCompleted);
-            });
+            return new Take<T>(source, count);
         }
 
         public static IObservable<T> TakeWhile<T>(this IObservable<T> source, Func<T, bool> predicate)
@@ -673,7 +661,7 @@ namespace UniRx
                 var isFirst = true;
                 return source.Subscribe(x =>
                 {
-                    if(isFirst)
+                    if (isFirst)
                     {
                         isFirst = false;
                         observer.OnNext(x);

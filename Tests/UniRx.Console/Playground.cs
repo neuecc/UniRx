@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace UniRx
 {
@@ -10,16 +11,15 @@ namespace UniRx
         public void Run()
         {
 
-
-            var xs = Observable.Return(1, Scheduler.CurrentThread)
-                //.Do(x => { Console.WriteLine("DO:" + x); })
-                .Repeat()
-                .Take(3)
-                .Subscribe(x => Console.WriteLine(x));
+                var xs = Observable.Return(1, Scheduler.CurrentThread)
+                    .Do(x => { Console.WriteLine("DO:" + x); })
+                    .Repeat()
+                    .Take(3)
+                    .Subscribe(x => Console.WriteLine(x), () => Console.WriteLine("comp"));
 
             Console.WriteLine("---");
-                
 
+            Console.ReadLine();
             
 
         }

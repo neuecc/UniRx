@@ -7,7 +7,7 @@ namespace UniRx.Operators
         readonly Func<IObserver<T>, IDisposable> subscribe;
 
         public Create(Func<IObserver<T>, IDisposable> subscribe)
-            : base(false)
+            : base(true) // fail safe
         {
             this.subscribe = subscribe;
         }
@@ -28,6 +28,19 @@ namespace UniRx.Operators
         {
             public CreateObserver(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
+            }
+
+            public override void OnNext(T value)
+            {
+                try
+                {
+                    base.observer.OnNext(value);
+                }
+                catch
+                {
+                    Dispose();
+                    throw;
+                }
             }
         }
     }
