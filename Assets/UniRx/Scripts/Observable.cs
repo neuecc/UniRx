@@ -682,5 +682,52 @@ namespace UniRx
                 return source.Subscribe(Stubs.Ignore<T>, observer.OnError, observer.OnCompleted);
             });
         }
+
+        public static IObservable<Unit> ForEachAsync<T>(this IObservable<T> source, Action<T> onNext)
+        {
+            return Observable.Create<Unit>(observer =>
+            {
+                return source.Subscribe(x =>
+                {
+                    try
+                    {
+                        onNext(x);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
+                }, observer.OnError, () =>
+                {
+                    observer.OnNext(Unit.Default);
+                    observer.OnCompleted();
+                });
+            });
+        }
+
+        public static IObservable<Unit> ForEachAsync<T>(this IObservable<T> source, Action<T, int> onNext)
+        {
+            return Observable.Create<Unit>(observer =>
+            {
+                var index = 0;
+                return source.Subscribe(x =>
+                {
+                    try
+                    {
+                        onNext(x, index++);
+                    }
+                    catch (Exception ex)
+                    {
+                        observer.OnError(ex);
+                        return;
+                    }
+                }, observer.OnError, () =>
+                {
+                    observer.OnNext(Unit.Default);
+                    observer.OnCompleted();
+                });
+            });
+        }
     }
 }

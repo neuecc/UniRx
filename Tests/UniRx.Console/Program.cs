@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS0162
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,10 +65,16 @@ namespace UniRx
             Console.WriteLine(a.GetHashCode());
         }
 
+
         static void Main(string[] args)
         // static void Main2(string[] args)
         {
+            new Playground().Run();
+            return;
+
+
             Test("ReturnEmpty", () => Observable.Return(1).Subscribe());
+
 
             Test("Throw", () => Observable.Return(1).Do(_ => { throw new Exception(); }).Do(_ => { })
                 .CatchIgnore().Subscribe());
@@ -402,3 +410,5 @@ namespace UniRx
         }
     }
 }
+
+#pragma warning restore CS0162

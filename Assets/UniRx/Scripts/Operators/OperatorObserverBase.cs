@@ -39,7 +39,6 @@ namespace UniRx.Operators
         }
     }
 
-
     internal abstract class AutoDetachOperatorObserverBase<T> : IObserver<T>
     {
         protected internal volatile IObserver<T> observer;
