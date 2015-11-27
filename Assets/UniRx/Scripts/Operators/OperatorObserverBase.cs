@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace UniRx.Operators
 {
-    internal abstract class OperatorObserverBase<TSource, TResult> : IDisposable, IObserver<TSource>
+    internal abstract class OperatorObserverBase<TSource, TResult> : IDisposable, IObserver<TSource>, ISafeObserver
     {
         protected internal volatile IObserver<TResult> observer;
         IDisposable cancel;
@@ -39,10 +39,10 @@ namespace UniRx.Operators
         }
     }
 
-    internal abstract class AutoDetachOperatorObserverBase<T> : IObserver<T>
+    internal abstract class AutoDetachOperatorObserverBase<T> : IObserver<T>, IDisposable, ISafeObserver
     {
         protected internal volatile IObserver<T> observer;
-        readonly IDisposable cancel;
+        IDisposable cancel;
 
         int isStopped = 0;
 
@@ -54,17 +54,14 @@ namespace UniRx.Operators
 
         public void OnNext(T value)
         {
-            if (isStopped == 0)
+            try
             {
-                try
-                {
-                    this.observer.OnNext(value);
-                }
-                catch
-                {
-                    cancel.Dispose();
-                    throw;
-                }
+                this.observer.OnNext(value);
+            }
+            catch
+            {
+                Dispose();
+                throw;
             }
         }
 
@@ -78,7 +75,7 @@ namespace UniRx.Operators
                 }
                 finally
                 {
-                    cancel.Dispose();
+                    Dispose();
                 }
             }
         }
@@ -93,8 +90,18 @@ namespace UniRx.Operators
                 }
                 finally
                 {
-                    cancel.Dispose();
+                    Dispose();
                 }
+            }
+        }
+
+        public void Dispose()
+        {
+            observer = new UniRx.InternalUtil.EmptyObserver<T>();
+            var target = System.Threading.Interlocked.Exchange(ref cancel, null);
+            if (target != null)
+            {
+                target.Dispose();
             }
         }
     }

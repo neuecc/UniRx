@@ -3,6 +3,11 @@ using System.Threading;
 
 namespace UniRx
 {
+    internal interface ISafeObserver
+    {
+
+    }
+
     public static class Observer
     {
         public static IObserver<T> Create<T>(Action<T> onNext, Action<Exception> onError, Action onCompleted)
@@ -31,7 +36,7 @@ namespace UniRx
             return new AutoDetachObserver<T>(observer, disposable);
         }
 
-        class AnonymousObserver<T> : IObserver<T>
+        class AnonymousObserver<T> : IObserver<T>, ISafeObserver
         {
             readonly Action<T> onNext;
             readonly Action<Exception> onError;
@@ -72,7 +77,7 @@ namespace UniRx
             }
         }
 
-        class EmptyOnNextAnonymousObserver<T> : IObserver<T>
+        class EmptyOnNextAnonymousObserver<T> : IObserver<T>, ISafeObserver
         {
             readonly Action<Exception> onError;
             readonly Action onCompleted;
@@ -97,7 +102,6 @@ namespace UniRx
                 }
             }
 
-
             public void OnCompleted()
             {
                 if (Interlocked.Increment(ref isStopped) == 1)
@@ -107,127 +111,36 @@ namespace UniRx
             }
         }
 
-        class DelegatedOnNextObserver<T, TRoot> : IObserver<T>
+        class DelegatedOnNextObserver<T, TRoot> : UniRx.Operators.OperatorObserverBase<T, TRoot>
         {
             readonly Action<T> onNext;
-            readonly IObserver<TRoot> observer;
-            readonly IDisposable disposable;
 
-            int isStopped = 0;
-
-            public DelegatedOnNextObserver(Action<T> onNext, IObserver<TRoot> observer, IDisposable disposable)
+            public DelegatedOnNextObserver(Action<T> onNext, IObserver<TRoot> observer, IDisposable cancel)
+                : base(observer, cancel)
             {
                 this.onNext = onNext;
-                this.observer = observer;
-                this.disposable = disposable;
             }
 
-            public void OnNext(T value)
+            public override void OnNext(T value)
             {
-                if (isStopped == 0)
+                try
                 {
-                    try
-                    {
-                        onNext(value);
-                    }
-                    catch
-                    {
-                        disposable.Dispose();
-                        throw;
-                    }
+                    this.onNext(value);
                 }
-            }
-
-            public void OnError(Exception error)
-            {
-                if (Interlocked.Increment(ref isStopped) == 1)
+                catch
                 {
-                    try
-                    {
-                        observer.OnError(error);
-                    }
-                    finally
-                    {
-                        disposable.Dispose();
-                    }
-                }
-            }
-
-
-            public void OnCompleted()
-            {
-                if (Interlocked.Increment(ref isStopped) == 1)
-                {
-                    try
-                    {
-                        observer.OnCompleted();
-                    }
-                    finally
-                    {
-                        disposable.Dispose();
-                    }
+                    Dispose();
+                    throw;
                 }
             }
         }
 
-        class AutoDetachObserver<T> : IObserver<T>
+        class AutoDetachObserver<T> : UniRx.Operators.AutoDetachOperatorObserverBase<T>
         {
-            readonly IObserver<T> observer;
-            readonly IDisposable disposable;
-
-            int isStopped = 0;
-
-            public AutoDetachObserver(IObserver<T> observer, IDisposable disposable)
+            public AutoDetachObserver(IObserver<T> observer, IDisposable cancel)
+                : base(observer, cancel)
             {
-                this.observer = observer;
-                this.disposable = disposable;
-            }
 
-            public void OnNext(T value)
-            {
-                if (isStopped == 0)
-                {
-                    try
-                    {
-                        this.observer.OnNext(value);
-                    }
-                    catch
-                    {
-                        disposable.Dispose();
-                        throw;
-                    }
-                }
-            }
-
-            public void OnError(Exception error)
-            {
-                if (Interlocked.Increment(ref isStopped) == 1)
-                {
-                    try
-                    {
-                        this.observer.OnError(error);
-                    }
-                    finally
-                    {
-                        disposable.Dispose();
-                    }
-                }
-            }
-
-
-            public void OnCompleted()
-            {
-                if (Interlocked.Increment(ref isStopped) == 1)
-                {
-                    try
-                    {
-                        this.observer.OnCompleted();
-                    }
-                    finally
-                    {
-                        disposable.Dispose();
-                    }
-                }
             }
         }
     }

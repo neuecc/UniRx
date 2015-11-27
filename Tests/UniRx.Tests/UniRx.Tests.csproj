@@ -68,6 +68,8 @@
     <Compile Include="ChainingAssertion.MSTest.cs" />
     <Compile Include="Init.cs" />
     <Compile Include="Observable.ConcurrencyTest.cs" />
+    <Compile Include="OfficialRx\Observable.ConcurrencyTestCopy.cs" />
+    <Compile Include="Operators\RangeTest.cs" />
     <Compile Include="ReflectionAccessorTest.cs" />
     <Compile Include="QueueWorkerTest.cs" />
     <Compile Include="DisposableTest.cs" />
@@ -97,10 +99,11 @@
     <Content Include="RxJS\HtmlPage1.html" />
     <Content Include="RxJS\rx.js" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\..\UnityVS.UniRx.CSharp.csproj">
-      <Project>{55db241b-2717-422c-3093-18d20f58b73b}</Project>
-      <Name>UnityVS.UniRx.CSharp</Name>
+    <ProjectReference Include="..\..\Dlls\UniRx.Library\UniRx.Library.csproj">
+      <Project>{21c57e17-d4b8-4da4-a6a2-07d8b2e5b3bd}</Project>
+      <Name>UniRx.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

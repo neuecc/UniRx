@@ -2,23 +2,17 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 
-namespace UniRx.Tests
+namespace OfficialRx
 {
     [TestClass]
-    public class ObservableConcurrencyTest
+    public class ObservableConcurrencyTestCopy
     {
         [TestMethod]
-        public void AmbTest()
+        public void AmbTestRxOfficial()
         {
             var xs = Observable.Return(10).Delay(TimeSpan.FromSeconds(1)).Concat(Observable.Range(1, 3));
-
-            var xss = Observable.Return(10).Concat(Observable.Range(1, 3));
-            var a = xss.ToArray().Wait();
-            var b = xss.ToArray().Wait();
-            var c = xss.ToArray().Wait();
-
-
             var ys = Observable.Return(30).Delay(TimeSpan.FromSeconds(2)).Concat(Observable.Range(5, 3));
 
             // win left
@@ -39,7 +33,7 @@ namespace UniRx.Tests
         }
 
         [TestMethod]
-        public void AmbMultiTest()
+        public void AmbMultiTestRxOfficial()
         {
             var xs = Observable.Return(10).Delay(TimeSpan.FromSeconds(5)).Concat(Observable.Range(1, 3));
             var ys = Observable.Return(30).Delay(TimeSpan.FromSeconds(1)).Concat(Observable.Range(5, 3));

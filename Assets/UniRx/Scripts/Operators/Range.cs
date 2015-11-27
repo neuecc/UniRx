@@ -8,11 +8,11 @@ namespace UniRx.Operators
         readonly int count;
         readonly IScheduler scheduler;
 
-        int i = 0;
-
         public Range(int start, int count, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
+            if (count < 0) throw new ArgumentOutOfRangeException("count < 0");
+
             this.start = start;
             this.count = count;
             this.scheduler = scheduler;
@@ -22,6 +22,7 @@ namespace UniRx.Operators
         {
             observer = new RangeObserver(observer, cancel);
 
+            var i = 0;
             return scheduler.Schedule((Action self) =>
             {
                 if (i < count)

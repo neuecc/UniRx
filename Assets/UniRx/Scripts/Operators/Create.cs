@@ -21,7 +21,7 @@ namespace UniRx.Operators
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
             observer = new CreateObserver(observer, cancel);
-            return subscribe(observer);
+            return subscribe(observer) ?? Disposable.Empty;
         }
 
         class CreateObserver : AutoDetachOperatorObserverBase<T>

@@ -28,7 +28,7 @@ namespace UniRx.Tests
 
             var xs = Observable.Range(1, 10)
                 .Concat(hoge)
-                .Buffer(TimeSpan.FromSeconds(3), Scheduler.CurrentThread)
+                .Buffer(TimeSpan.FromSeconds(3))
                 .ToArray()
                 .Wait();
 

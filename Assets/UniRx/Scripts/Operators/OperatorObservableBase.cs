@@ -2,6 +2,7 @@
 
 namespace UniRx.Operators
 {
+    // implements note : all field must be readonly.
     internal abstract class OperatorObservableBase<T> : IObservable<T>, IOptimizedObservable<T>
     {
         readonly bool isRequiredSubscribeOnCurrentThread;
@@ -18,21 +19,16 @@ namespace UniRx.Operators
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
-            return Subscribe(observer, false);
-        }
-
-        public IDisposable Subscribe(IObserver<T> observer, bool enableSafeGuard)
-        {
             var subscription = new SingleAssignmentDisposable();
 
             IObserver<T> safeObserver;
-            if (enableSafeGuard)
+            if (observer is ISafeObserver)
             {
-                safeObserver = Observer.CreateAutoDetachObserver<T>(observer, subscription);
+                safeObserver = observer;
             }
             else
             {
-                safeObserver = observer;
+                safeObserver = Observer.CreateAutoDetachObserver<T>(observer, subscription);
             }
 
             if (isRequiredSubscribeOnCurrentThread && Scheduler.IsCurrentThreadSchedulerScheduleRequired)
@@ -41,7 +37,9 @@ namespace UniRx.Operators
             }
             else
             {
-                subscription.Disposable = SubscribeCore(safeObserver, subscription);
+                // TODO:Currently Error... should be fix after all
+                //subscription.Disposable = SubscribeCore(safeObserver, subscription);
+                Scheduler.CurrentThread.Schedule(() => subscription.Disposable = SubscribeCore(safeObserver, subscription));
             }
 
             return subscription;

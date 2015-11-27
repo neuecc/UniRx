@@ -8,8 +8,6 @@ namespace UniRx.Operators
         readonly int? repeatCount;
         readonly IScheduler scheduler;
 
-        int currentCount;
-
         public Repeat(T value, int? repeatCount, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
@@ -32,6 +30,7 @@ namespace UniRx.Operators
             }
             else
             {
+                var currentCount = 0;
                 return scheduler.Schedule((Action self) =>
                 {
                     if (currentCount > 0)

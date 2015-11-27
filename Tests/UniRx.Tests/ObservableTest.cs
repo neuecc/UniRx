@@ -61,7 +61,6 @@ namespace UniRx.Tests
             subject.Wait().Is(100);
         }
 
-
         [TestMethod]
         public void DistinctUntilChanged()
         {
