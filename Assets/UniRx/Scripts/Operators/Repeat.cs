@@ -30,7 +30,7 @@ namespace UniRx.Operators
             }
             else
             {
-                var currentCount = 0;
+                var currentCount = this.repeatCount.Value;
                 return scheduler.Schedule((Action self) =>
                 {
                     if (currentCount > 0)

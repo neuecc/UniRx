@@ -36,16 +36,21 @@ namespace UniRx.Tests
         [TestMethod]
         public void Repeat()
         {
-            Observable.Range(1, 3, Scheduler.CurrentThread)
+            var xs = Observable.Range(1, 3, Scheduler.CurrentThread)
                 .Concat(Observable.Return(100))
                 .Repeat()
                 .Take(10)
                 .ToArray()
-                .Wait()
-                .Is(1, 2, 3, 100, 1, 2, 3, 100, 1, 2);
+                .Wait();
+            xs.Is(1, 2, 3, 100, 1, 2, 3, 100, 1, 2);
             Observable.Repeat(100).Take(5).ToArray().Wait().Is(100, 100, 100, 100, 100);
+        }
 
-            Observable.Repeat(5, 3).ToArray().Wait().Is(5, 5, 5);
+        [TestMethod]
+        public void RepeatStatic()
+        {
+            var xss = Observable.Repeat(5, 3).ToArray().Wait();
+            xss.Is(5, 5, 5);
         }
 
         [TestMethod]
