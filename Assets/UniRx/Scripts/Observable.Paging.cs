@@ -8,8 +8,6 @@ namespace UniRx
     // Take, Skip, etc..
     public static partial class Observable
     {
-        // needs timebase Take. Take(TimeSpan)
-
         public static IObservable<T> Take<T>(this IObservable<T> source, int count)
         {
             if (source == null) throw new ArgumentNullException("source");
@@ -17,7 +15,34 @@ namespace UniRx
 
             if (count == 0) return Empty<T>();
 
+            // optimize .Take(count).Take(count)
+            var take = source as Take<T>;
+            if (take != null && take.scheduler == null)
+            {
+                return take.Combine(count);
+            }
+
             return new Take<T>(source, count);
+        }
+
+        public static IObservable<T> Take<T>(this IObservable<T> source, TimeSpan duration)
+        {
+            return Take(source, duration, Scheduler.DefaultSchedulers.TimeBasedOperations);
+        }
+
+        public static IObservable<T> Take<T>(this IObservable<T> source, TimeSpan duration, IScheduler scheduler)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+
+            // optimize .Take(duration).Take(duration)
+            var take = source as Take<T>;
+            if (take != null && take.scheduler == scheduler)
+            {
+                return take.Combine(duration);
+            }
+
+            return new Take<T>(source, duration, scheduler);
         }
 
         public static IObservable<T> TakeWhile<T>(this IObservable<T> source, Func<T, bool> predicate)
