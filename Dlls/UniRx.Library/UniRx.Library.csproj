@@ -78,6 +78,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\EventPattern.cs">
       <Link>EventPattern.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\AscynLock.cs">
+      <Link>InternalUtil\AscynLock.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\InternalUtil\ImmutableList.cs">
       <Link>InternalUtil\ImmutableList.cs</Link>
     </Compile>
@@ -194,6 +197,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Throw.cs">
       <Link>Operators\Throw.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Timer.cs">
+      <Link>Operators\Timer.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs">
       <Link>Schedulers\CurrentThreadScheduler.cs</Link>

@@ -12,4 +12,14 @@ namespace UniRx
 
         IDisposable Schedule(TimeSpan dueTime, Action action);
     }
+
+    public interface ISchedulerPeriodic
+    {
+        IDisposable SchedulePeriodic(TimeSpan period, Action action);
+    }
+
+    public interface ISchedulerLongRunning
+    {
+        IDisposable ScheduleLongRunning(Action<ICancelable> action);
+    }
 }

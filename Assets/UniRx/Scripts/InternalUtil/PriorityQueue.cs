@@ -7,8 +7,6 @@ using System.Threading;
 
 namespace UniRx.InternalUtil
 {
-    // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
-
     internal class PriorityQueue<T> where T : IComparable<T>
     {
         private static long _count = long.MinValue;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UniRx.Operators;
 
 namespace UniRx
 {
@@ -10,123 +11,52 @@ namespace UniRx
 
         public static IObservable<long> Interval(TimeSpan period)
         {
-            return TimerCore(period, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new Timer(period, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<long> Interval(TimeSpan period, IScheduler scheduler)
         {
-            return TimerCore(period, period, scheduler);
+            return new Timer(period, period, scheduler);
         }
 
         public static IObservable<long> Timer(TimeSpan dueTime)
         {
-            return TimerCore(dueTime, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new Timer(dueTime, null, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<long> Timer(DateTimeOffset dueTime)
         {
-            return TimerCore(dueTime, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new Timer(dueTime, null, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<long> Timer(TimeSpan dueTime, TimeSpan period)
         {
-            return TimerCore(dueTime, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new Timer(dueTime, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<long> Timer(DateTimeOffset dueTime, TimeSpan period)
         {
-            return TimerCore(dueTime, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new Timer(dueTime, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<long> Timer(TimeSpan dueTime, IScheduler scheduler)
         {
-            return TimerCore(dueTime, scheduler);
+            return new Timer(dueTime, null, scheduler);
         }
 
         public static IObservable<long> Timer(DateTimeOffset dueTime, IScheduler scheduler)
         {
-            return TimerCore(dueTime, scheduler);
+            return new Timer(dueTime, null, scheduler);
         }
 
         public static IObservable<long> Timer(TimeSpan dueTime, TimeSpan period, IScheduler scheduler)
         {
-            return TimerCore(dueTime, period, scheduler);
+            return new Timer(dueTime, period, scheduler);
         }
 
         public static IObservable<long> Timer(DateTimeOffset dueTime, TimeSpan period, IScheduler scheduler)
         {
-            return TimerCore(dueTime, period, scheduler);
-        }
-
-        static IObservable<long> TimerCore(TimeSpan dueTime, IScheduler scheduler)
-        {
-            var time = Scheduler.Normalize(dueTime);
-
-            return Observable.Create<long>(observer =>
-            {
-                return scheduler.Schedule(time, self =>
-                {
-                    observer.OnNext(0);
-                    observer.OnCompleted();
-                });
-            });
-        }
-
-        static IObservable<long> TimerCore(DateTimeOffset dueTime, IScheduler scheduler)
-        {
-            return Observable.Create<long>(observer =>
-            {
-                return scheduler.Schedule(dueTime, self =>
-                {
-                    observer.OnNext(0);
-                    observer.OnCompleted();
-                });
-            });
-        }
-
-        static IObservable<long> TimerCore(TimeSpan dueTime, TimeSpan period, IScheduler scheduler)
-        {
-            var timeD = Scheduler.Normalize(dueTime);
-            var timeP = Scheduler.Normalize(period);
-
-            return Observable.Create<long>(observer =>
-            {
-                var count = 0;
-                return scheduler.Schedule(timeD, self =>
-                {
-                    observer.OnNext(count);
-                    count++;
-                    self(timeP);
-                });
-            });
-        }
-
-        static IObservable<long> TimerCore(DateTimeOffset dueTime, TimeSpan period, IScheduler scheduler)
-        {
-            var timeP = Scheduler.Normalize(period);
-
-            return Observable.Create<long>(observer =>
-            {
-                var nextTime = dueTime;
-                var count = 0L;
-
-                return scheduler.Schedule(nextTime, self =>
-                {
-                    if (timeP > TimeSpan.Zero)
-                    {
-                        nextTime = nextTime + period;
-                        var now = scheduler.Now;
-                        if (nextTime <= now)
-                        {
-                            nextTime = now + period;
-                        }
-                    }
-
-                    observer.OnNext(count);
-                    count++;
-                    self(nextTime);
-                });
-            });
+            return new Timer(dueTime, period, scheduler);
         }
 
         public static IObservable<Timestamped<TSource>> Timestamp<TSource>(this IObservable<TSource> source)

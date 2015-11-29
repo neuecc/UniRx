@@ -48,7 +48,7 @@ namespace UniRx
             }
         }
 
-        class MainThreadScheduler : IScheduler
+        class MainThreadScheduler : IScheduler, ISchedulerPeriodic
         {
             public MainThreadScheduler()
             {
@@ -59,55 +59,44 @@ namespace UniRx
             // Okay to action run synchronous and guaranteed run on MainThread
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
             {
-#if UNITY_EDITOR
-                if (!ScenePlaybackDetector.IsPlaying)
-                {
-                    var startTime = DateTimeOffset.UtcNow;
-                    while (true)
-                    {
-                        yield return null;
-                        if (cancellation.IsDisposed) break;
-
-                        var elapsed = DateTimeOffset.UtcNow - startTime;
-                        if (elapsed >= dueTime)
-                        {
-                            MainThreadDispatcher.UnsafeSend(action);
-                            break;
-                        }
-                    };
-                    yield break;
-                }
-#endif
-                
+                // zero == every frame
                 if (dueTime == TimeSpan.Zero)
                 {
                     yield return null; // not immediately, run next frame
-                    if (cancellation.IsDisposed) yield break;
-
-                    MainThreadDispatcher.UnsafeSend(action);
-                }
-                else if (dueTime.TotalMilliseconds % 1000 == 0)
-                {
-                    yield return new WaitForSeconds((float)dueTime.TotalSeconds);
-                    if (cancellation.IsDisposed) yield break;
-
-                    MainThreadDispatcher.UnsafeSend(action);
                 }
                 else
                 {
-                    var startTime = Time.time;
-                    var dt = (float)dueTime.TotalSeconds;
+                    yield return new WaitForSeconds((float)dueTime.TotalSeconds);
+                }
+
+                if (cancellation.IsDisposed) yield break;
+                MainThreadDispatcher.UnsafeSend(action);
+            }
+
+            IEnumerator PeriodicAction(TimeSpan period, Action action, ICancelable cancellation)
+            {
+                // zero == every frame
+                if (period == TimeSpan.Zero)
+                {
                     while (true)
                     {
-                        yield return null;
-                        if (cancellation.IsDisposed) break;
+                        yield return null; // not immediately, run next frame
+                        if (cancellation.IsDisposed) yield break;
 
-                        var elapsed = Time.time - startTime;
-                        if (elapsed >= dt)
-                        {
-                            MainThreadDispatcher.UnsafeSend(action);
-                            break;
-                        }
+                        MainThreadDispatcher.UnsafeSend(action);
+                    }
+                }
+                else
+                {
+                    var seconds = (float)(period.TotalMilliseconds / 1000.0);
+                    var yieldInstruction = new WaitForSeconds(seconds); // cache single instruction object
+
+                    while (true)
+                    {
+                        yield return yieldInstruction;
+                        if (cancellation.IsDisposed) yield break;
+
+                        MainThreadDispatcher.UnsafeSend(action);
                     }
                 }
             }
@@ -140,19 +129,23 @@ namespace UniRx
                 var d = new BooleanDisposable();
                 var time = Scheduler.Normalize(dueTime);
 
-                MainThreadDispatcher.SendStartCoroutine(DelayAction(time, () =>
-                {
-                    if (!d.IsDisposed)
-                    {
-                        action();
-                    }
-                }, d));
+                MainThreadDispatcher.SendStartCoroutine(DelayAction(time, action, d));
+
+                return d;
+            }
+
+            public IDisposable SchedulePeriodic(TimeSpan period, Action action)
+            {
+                var d = new BooleanDisposable();
+                var time = Scheduler.Normalize(period);
+
+                MainThreadDispatcher.SendStartCoroutine(PeriodicAction(time, action, d));
 
                 return d;
             }
         }
 
-        class IgnoreTimeScaleMainThreadScheduler : IScheduler
+        class IgnoreTimeScaleMainThreadScheduler : IScheduler, ISchedulerPeriodic
         {
             public IgnoreTimeScaleMainThreadScheduler()
             {
@@ -161,26 +154,6 @@ namespace UniRx
 
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
             {
-#if UNITY_EDITOR
-                if (!ScenePlaybackDetector.IsPlaying)
-                {
-                    var startTime = DateTimeOffset.UtcNow;
-                    while (true)
-                    {
-                        yield return null;
-                        if (cancellation.IsDisposed) break;
-
-                        var elapsed = DateTimeOffset.UtcNow - startTime;
-                        if (elapsed >= dueTime)
-                        {
-                            MainThreadDispatcher.UnsafeSend(action);
-                            break;
-                        }
-                    };
-                    yield break;
-                }
-#endif
-
                 if (dueTime == TimeSpan.Zero)
                 {
                     yield return null;
@@ -190,7 +163,7 @@ namespace UniRx
                 }
                 else
                 {
-                    var startTime = Time.realtimeSinceStartup; // this is difference
+                    var startTime = Time.realtimeSinceStartup; // WaitForSeconds is affected in timescale, doesn't use.
                     var dt = (float)dueTime.TotalSeconds;
                     while (true)
                     {
@@ -207,6 +180,38 @@ namespace UniRx
                 }
             }
 
+            IEnumerator PeriodicAction(TimeSpan period, Action action, ICancelable cancellation)
+            {
+                // zero == every frame
+                if (period == TimeSpan.Zero)
+                {
+                    while (true)
+                    {
+                        yield return null; // not immediately, run next frame
+                        if (cancellation.IsDisposed) yield break;
+
+                        MainThreadDispatcher.UnsafeSend(action);
+                    }
+                }
+                else
+                {
+                    var startTime = Time.realtimeSinceStartup; // WaitForSeconds is affected in timescale, doesn't use.
+                    var dt = (float)period.TotalSeconds;
+                    while (true)
+                    {
+                        yield return null;
+                        if (cancellation.IsDisposed) break;
+
+                        var elapsed = Time.realtimeSinceStartup - startTime;
+                        if (elapsed >= dt)
+                        {
+                            startTime = Time.realtimeSinceStartup; // set next start
+                            MainThreadDispatcher.UnsafeSend(action);
+                        }
+                    }
+                }
+            }
+
             public DateTimeOffset Now
             {
                 get { return Scheduler.Now; }
@@ -235,13 +240,17 @@ namespace UniRx
                 var d = new BooleanDisposable();
                 var time = Scheduler.Normalize(dueTime);
 
-                MainThreadDispatcher.SendStartCoroutine(DelayAction(time, () =>
-                {
-                    if (!d.IsDisposed)
-                    {
-                        action();
-                    }
-                }, d));
+                MainThreadDispatcher.SendStartCoroutine(DelayAction(time, action, d));
+
+                return d;
+            }
+
+            public IDisposable SchedulePeriodic(TimeSpan period, Action action)
+            {
+                var d = new BooleanDisposable();
+                var time = Scheduler.Normalize(period);
+
+                MainThreadDispatcher.SendStartCoroutine(PeriodicAction(time, action, d));
 
                 return d;
             }

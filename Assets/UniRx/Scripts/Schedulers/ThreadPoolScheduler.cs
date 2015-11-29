@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using UniRx.InternalUtil;
 
 namespace UniRx
 {
@@ -11,7 +12,7 @@ namespace UniRx
     {
         public static readonly IScheduler ThreadPool = new ThreadPoolScheduler();
 
-        class ThreadPoolScheduler : IScheduler
+        class ThreadPoolScheduler : IScheduler, ISchedulerPeriodic
         {
             public ThreadPoolScheduler()
             {
@@ -45,6 +46,11 @@ namespace UniRx
             public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
                 return new Timer(dueTime, action);
+            }
+
+            public IDisposable SchedulePeriodic(TimeSpan period, Action action)
+            {
+                return new PeriodicTimer(period, action);
             }
 
             // timer was borrwed from Rx Official
@@ -97,7 +103,7 @@ namespace UniRx
 
                 private void Unroot()
                 {
-                    _action = () => { }; // NOP
+                    _action = Stubs.Nop;
 
                     var timer = default(System.Threading.Timer);
 
@@ -122,6 +128,55 @@ namespace UniRx
                 public void Dispose()
                 {
                     _disposable.Dispose();
+                }
+            }
+
+            sealed class PeriodicTimer : IDisposable
+            {
+                static readonly HashSet<System.Threading.Timer> s_timers = new HashSet<System.Threading.Timer>();
+
+                private Action _action;
+                private System.Threading.Timer _timer;
+                private readonly AsyncLock _gate;
+
+                public PeriodicTimer(TimeSpan period, Action action)
+                {
+                    this._action = action;
+                    this._timer = new System.Threading.Timer(Tick, null, period, period);
+                    this._gate = new AsyncLock();
+
+                    lock (s_timers)
+                    {
+                        s_timers.Add(_timer);
+                    }
+                }
+
+                private void Tick(object state)
+                {
+                    _gate.Wait(() =>
+                    {
+                        _action();
+                    });
+                }
+
+                public void Dispose()
+                {
+                    var timer = default(System.Threading.Timer);
+
+                    lock (s_timers)
+                    {
+                        timer = _timer;
+                        _timer = null;
+
+                        if (timer != null)
+                            s_timers.Remove(timer);
+                    }
+
+                    if (timer != null)
+                    {
+                        timer.Dispose();
+                        _action = Stubs.Nop;
+                    }
                 }
             }
         }

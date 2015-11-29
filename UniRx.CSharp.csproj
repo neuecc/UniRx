@@ -113,6 +113,7 @@
     <Compile Include="Assets\UniRx\Scripts\Disposables\SingleAssignmentDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Disposables\StableCompositeDisposable.cs" />
     <Compile Include="Assets\UniRx\Scripts\EventPattern.cs" />
+    <Compile Include="Assets\UniRx\Scripts\InternalUtil\AscynLock.cs" />
     <Compile Include="Assets\UniRx\Scripts\InternalUtil\ImmutableList.cs" />
     <Compile Include="Assets\UniRx\Scripts\InternalUtil\ListObserver.cs" />
     <Compile Include="Assets\UniRx\Scripts\InternalUtil\PriorityQueue.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Never.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Timer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Range.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Repeat.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\RepeatSafe.cs" />
