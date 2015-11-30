@@ -216,5 +216,47 @@ namespace UniRx.Tests
             xs[2].Value.Value.Is(8);
             xs[3].Kind.Is(NotificationKind.OnCompleted);
         }
+
+        [TestMethod]
+        public void Timestamp()
+        {
+            var xs = Observable.Concat(
+                Observable.Return(1),
+                Observable.Return(2).Delay(TimeSpan.FromSeconds(1)),
+                Observable.Return(3).Delay(TimeSpan.FromSeconds(1)),
+                Observable.Return(4).Delay(TimeSpan.FromSeconds(0.4)),
+                Observable.Return(5).Delay(TimeSpan.FromSeconds(0.2)) // over 2500
+            ).Timestamp()
+            .ToArray()
+            .Wait();
+
+            var now = DateTime.Now;
+
+            xs[0].Value.Is(1); (now - xs[0].Timestamp).TotalSeconds.Is(x => 2.5 <= x && x <= 3.0);
+            xs[1].Value.Is(2); (now - xs[1].Timestamp).TotalSeconds.Is(x => 1.4 <= x && x <= 1.8);
+            xs[2].Value.Is(3); (now - xs[2].Timestamp).TotalSeconds.Is(x => 0.5 <= x && x <= 0.8);
+            xs[3].Value.Is(4); (now - xs[3].Timestamp).TotalSeconds.Is(x => 0.18 <= x && x <= 0.3);
+            xs[4].Value.Is(5); (now - xs[4].Timestamp).TotalSeconds.Is(x => 0 <= x && x <= 0.1);
+        }
+
+        [TestMethod]
+        public void TimeInterval()
+        {
+            var xs = Observable.Concat(
+                Observable.Return(1),
+                Observable.Return(2).Delay(TimeSpan.FromSeconds(1)),
+                Observable.Return(3).Delay(TimeSpan.FromSeconds(1)),
+                Observable.Return(4).Delay(TimeSpan.FromSeconds(0.4)),
+                Observable.Return(5).Delay(TimeSpan.FromSeconds(0.2)) // over 2500
+            ).TimeInterval()
+            .ToArray()
+            .Wait();
+
+            xs[0].Value.Is(1); xs[0].Interval.TotalSeconds.Is(x => 0.0 <= x && x <= 0.1);
+            xs[1].Value.Is(2); xs[1].Interval.TotalSeconds.Is(x => 0.9 <= x && x <= 1.1);
+            xs[2].Value.Is(3); xs[2].Interval.TotalSeconds.Is(x => 0.9 <= x && x <= 1.1);
+            xs[3].Value.Is(4); xs[3].Interval.TotalSeconds.Is(x => 0.3 <= x && x <= 0.5);
+            xs[4].Value.Is(5); xs[4].Interval.TotalSeconds.Is(x => 0.15 <= x && x <= 0.25);
+        }
     }
 }

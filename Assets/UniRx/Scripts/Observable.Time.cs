@@ -66,27 +66,17 @@ namespace UniRx
 
         public static IObservable<Timestamped<TSource>> Timestamp<TSource>(this IObservable<TSource> source, IScheduler scheduler)
         {
-            return source.Select(x => new Timestamped<TSource>(x, scheduler.Now));
+            return new Timestamp<TSource>(source, scheduler);
         }
 
-        public static IObservable<TimeInterval<TSource>> TimeInterval<TSource>(this IObservable<TSource> source)
+        public static IObservable<UniRx.TimeInterval<TSource>> TimeInterval<TSource>(this IObservable<TSource> source)
         {
             return TimeInterval(source, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
-        public static IObservable<TimeInterval<TSource>> TimeInterval<TSource>(this IObservable<TSource> source, IScheduler scheduler)
+        public static IObservable<UniRx.TimeInterval<TSource>> TimeInterval<TSource>(this IObservable<TSource> source, IScheduler scheduler)
         {
-            return Defer(() =>
-            {
-                var last = scheduler.Now;
-                return source.Select(x =>
-                {
-                    var now = scheduler.Now;
-                    var span = now.Subtract(last);
-                    last = now;
-                    return new TimeInterval<TSource>(x, span);
-                });
-            });
+            return new UniRx.Operators.TimeInterval<TSource>(source, scheduler);
         }
 
         public static IObservable<T> Delay<T>(this IObservable<T> source, TimeSpan dueTime)

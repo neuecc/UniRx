@@ -228,8 +228,14 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Throw.cs">
       <Link>Operators\Throw.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\TimeInterval.cs">
+      <Link>Operators\TimeInterval.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Timer.cs">
       <Link>Operators\Timer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Timestamp.cs">
+      <Link>Operators\Timestamp.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\ToObservable.cs">
       <Link>Operators\ToObservable.cs</Link>
