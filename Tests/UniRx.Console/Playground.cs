@@ -11,26 +11,24 @@ namespace UniRx
         public void Run()
         {
 
+            var a = new Subject<int>();
+            var b = new Subject<int>();
 
-            var now = Scheduler.ThreadPool.Now;
-            var xs = Observable.Timer(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(1))
-                .Take(3)
-                .Timestamp()
-                .Select(x => Math.Round((x.Timestamp - now).TotalSeconds, 0))
-                .ToArray()
-                .Wait();
+            var list = new List<int>();
+            a.SelectMany(_ => b).Subscribe(x => list.Add(x));
 
-            /*
-            xs[0].Value.Is(0L);
-            (now.AddMilliseconds(800) <= xs[0].Timestamp && xs[0].Timestamp <= now.AddMilliseconds(1200)).IsTrue();
+            a.OnNext(10);
+            a.OnCompleted();
+            b.OnNext(100);
 
-            xs[1].Value.Is(1L);
-            (now.AddMilliseconds(1800) <= xs[1].Timestamp && xs[1].Timestamp <= now.AddMilliseconds(2200)).IsTrue();
+            //list.Count.Is(1);
+            //list[0].Is(100);
 
-            xs[2].Value.Is(2L);
-            (now.AddMilliseconds(2800) <= xs[2].Timestamp && xs[2].Timestamp <= now.AddMilliseconds(3200)).IsTrue();
-            */
 
+            foreach (var item in list)
+            {
+                Console.WriteLine(item);
+            }
         }
     }
 }

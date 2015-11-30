@@ -28,7 +28,7 @@ namespace UniRx.Operators
             Dispose();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             observer = new UniRx.InternalUtil.EmptyObserver<TResult>();
             var target = System.Threading.Interlocked.Exchange(ref cancel, null);

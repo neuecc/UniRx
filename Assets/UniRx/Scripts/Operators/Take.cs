@@ -18,7 +18,7 @@ namespace UniRx.Operators
         }
 
         public Take(IObservable<T> source, TimeSpan duration, IScheduler scheduler)
-            : base(source.IsRequiredSubscribeOnCurrentThread())
+            : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.duration = duration;

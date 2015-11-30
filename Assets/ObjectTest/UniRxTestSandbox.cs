@@ -256,6 +256,25 @@ namespace UniRx.ObjectTest
         CompositeDisposable disposables = new CompositeDisposable();
         Subject<int> Source = new Subject<int>();
 
+
+        IEnumerator TestEnumerator()
+        {
+            while (true)
+            {
+                yield return null;
+            }
+        }
+
+        IEnumerator MoreTestEnumerator()
+        {
+            for (var i = 0; i < 1;)
+            {
+                yield return null;
+            }
+        }
+
+        Action<long> action = _ => { };
+
         public void OnGUI()
         {
             var xpos = 0;
@@ -351,6 +370,15 @@ namespace UniRx.ObjectTest
                 Observable.Return(1000)
                     .Take(50)
                     .Select(x => x)
+                    .Subscribe(x => Debug.Log(x));
+            }
+            ypos += 100;
+
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StackTraceCheck2"))
+            {
+
+                Observable.Return(100)
+                    .SelectMany(x => Observable.Return(x * x), (x, y) => x * y)
                     .Subscribe(x => Debug.Log(x));
             }
             ypos += 100;

@@ -146,6 +146,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Never.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\SelectMany.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Timer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Range.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Repeat.cs" />

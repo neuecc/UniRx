@@ -38,6 +38,7 @@ namespace UniRx
             var isFirst = true;
             var currentValue = default(TProperty);
             var prevValue = default(TProperty);
+            var yieldInstruction = frameCountType.GetYieldInstruction();
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -72,7 +73,7 @@ namespace UniRx
                     prevValue = currentValue;
                 }
 
-                yield return frameCountType.GetYieldInstruction();
+                yield return yieldInstruction;
             }
         }
 
@@ -81,6 +82,7 @@ namespace UniRx
             var isFirst = true;
             var currentValue = default(TProperty);
             var prevValue = default(TProperty);
+            var yieldInstruction = frameCountType.GetYieldInstruction();
 
             var source = (TSource)(object)unityObject;
 
@@ -111,7 +113,7 @@ namespace UniRx
                     prevValue = currentValue;
                 }
 
-                yield return frameCountType.GetYieldInstruction();
+                yield return yieldInstruction;
             }
         }
     }
