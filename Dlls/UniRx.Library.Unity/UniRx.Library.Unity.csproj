@@ -98,6 +98,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ObserveExtensions.cs">
       <Link>UnityEngineBridge\ObserveExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\FromCoroutine.cs">
+      <Link>UnityEngineBridge\Operators\FromCoroutine.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\PresenterBase.cs">
       <Link>UnityEngineBridge\PresenterBase.cs</Link>
     </Compile>

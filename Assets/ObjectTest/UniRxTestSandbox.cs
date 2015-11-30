@@ -376,9 +376,11 @@ namespace UniRx.ObjectTest
 
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StackTraceCheck2"))
             {
-
-                Observable.Return(100)
-                    .SelectMany(x => Observable.Return(x * x), (x, y) => x * y)
+                Observable.EveryUpdate()
+                    .Where(x => x % 2 == 0)
+                    .Where(x => x % 3 == 0)
+                    .Select(x => x * x)
+                    .Take(100)
                     .Subscribe(x => Debug.Log(x));
             }
             ypos += 100;

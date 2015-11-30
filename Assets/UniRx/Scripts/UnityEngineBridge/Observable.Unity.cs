@@ -213,14 +213,7 @@ namespace UniRx
 
         public static IObservable<T> FromCoroutine<T>(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine)
         {
-            return Observable.Create<T>(observer =>
-            {
-                var cancel = new BooleanDisposable();
-
-                MainThreadDispatcher.SendStartCoroutine(coroutine(observer, new CancellationToken(cancel)));
-
-                return cancel;
-            });
+            return new UniRx.Operators.FromCoroutine<T>(coroutine);
         }
 
         public static IObservable<Unit> SelectMany<T>(this IObservable<T> source, IEnumerator coroutine, bool publishEveryYield = false)
