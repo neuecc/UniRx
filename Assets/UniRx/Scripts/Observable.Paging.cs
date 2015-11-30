@@ -662,51 +662,21 @@ namespace UniRx
 
         public static IObservable<T> First<T>(this IObservable<T> source)
         {
-            return FirstCore<T>(source, false);
+            return new First<T>(source, false);
         }
         public static IObservable<T> First<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return FirstCore<T>(source.Where(predicate), false);
+            return new First<T>(source, predicate, false);
         }
 
         public static IObservable<T> FirstOrDefault<T>(this IObservable<T> source)
         {
-            return FirstCore<T>(source, true);
+            return new First<T>(source, true);
         }
 
         public static IObservable<T> FirstOrDefault<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return FirstCore<T>(source.Where(predicate), true);
-        }
-
-        static IObservable<T> FirstCore<T>(this IObservable<T> source, bool useDefault)
-        {
-            return Observable.Create<T>(observer =>
-            {
-                var isFirst = true;
-                return source.Subscribe(x =>
-                {
-                    if (isFirst)
-                    {
-                        isFirst = false;
-                        observer.OnNext(x);
-                        observer.OnCompleted();
-                    }
-                }, observer.OnError,
-                () =>
-                {
-                    if (useDefault)
-                    {
-                        isFirst = false;
-                        observer.OnNext(default(T));
-                        observer.OnCompleted();
-                    }
-                    else
-                    {
-                        observer.OnError(new InvalidOperationException("sequence is empty"));
-                    }
-                });
-            });
+            return new First<T>(source, predicate, true);
         }
 
         public static IObservable<T> Single<T>(this IObservable<T> source)

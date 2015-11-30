@@ -177,6 +177,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Empty.cs">
       <Link>Operators\Empty.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\First.cs">
+      <Link>Operators\First.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Never.cs">
       <Link>Operators\Never.cs</Link>
     </Compile>
