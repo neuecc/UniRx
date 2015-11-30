@@ -165,6 +165,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\AsUnitObservable.cs">
       <Link>Operators\AsUnitObservable.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Cast.cs">
+      <Link>Operators\Cast.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Create.cs">
       <Link>Operators\Create.cs</Link>
     </Compile>
@@ -176,6 +179,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Never.cs">
       <Link>Operators\Never.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OfType.cs">
+      <Link>Operators\OfType.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs">
       <Link>Operators\OperatorObservableBase.cs</Link>
@@ -209,6 +215,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Timer.cs">
       <Link>Operators\Timer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\ToObservable.cs">
+      <Link>Operators\ToObservable.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Where.cs">
       <Link>Operators\Where.cs</Link>

@@ -11,19 +11,7 @@ namespace UniRx
         public void Run()
         {
 
-            var a = new Subject<int>();
-            var b = new Subject<int>();
-
-            var list = new List<int>();
-            a.SelectMany(_ => b).Subscribe(x => list.Add(x));
-
-            a.OnNext(10);
-            a.OnCompleted();
-            b.OnNext(100);
-
-            //list.Count.Is(1);
-            //list[0].Is(100);
-
+            var list = Enumerable.Range(1, 3).ToObservable().ToArray().Wait();
 
             foreach (var item in list)
             {
