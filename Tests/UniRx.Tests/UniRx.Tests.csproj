@@ -71,6 +71,7 @@
     <Compile Include="OfficialRx\Observable.ConcurrencyTestCopy.cs" />
     <Compile Include="Operators\ConversionTest.cs" />
     <Compile Include="Operators\SelectMany.cs" />
+    <Compile Include="Operators\AggregateTest.cs" />
     <Compile Include="Operators\TakeTest.cs" />
     <Compile Include="Operators\RangeTest.cs" />
     <Compile Include="ReflectionAccessorTest.cs" />

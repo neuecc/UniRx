@@ -207,6 +207,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Return.cs">
       <Link>Operators\Return.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Scan.cs">
+      <Link>Operators\Scan.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Select.cs">
       <Link>Operators\Select.cs</Link>
     </Compile>
