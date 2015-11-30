@@ -180,6 +180,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\First.cs">
       <Link>Operators\First.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Last.cs">
+      <Link>Operators\Last.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Never.cs">
       <Link>Operators\Never.cs</Link>
     </Compile>
@@ -209,6 +212,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\SelectMany.cs">
       <Link>Operators\SelectMany.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Single.cs">
+      <Link>Operators\Single.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Take.cs">
       <Link>Operators\Take.cs</Link>

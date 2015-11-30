@@ -614,50 +614,21 @@ namespace UniRx
 
         public static IObservable<T> Last<T>(this IObservable<T> source)
         {
-            return LastCore<T>(source, false);
+            return new Last<T>(source, false);
         }
         public static IObservable<T> Last<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return LastCore<T>(source.Where(predicate), false);
+            return new Last<T>(source, predicate, false);
         }
 
         public static IObservable<T> LastOrDefault<T>(this IObservable<T> source)
         {
-            return LastCore<T>(source, true);
+            return new Last<T>(source, true);
         }
 
         public static IObservable<T> LastOrDefault<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return LastCore<T>(source.Where(predicate), true);
-        }
-
-        static IObservable<T> LastCore<T>(this IObservable<T> source, bool useDefault)
-        {
-            return Observable.Create<T>(observer =>
-            {
-                var value = default(T);
-                var hasValue = false;
-                return source.Subscribe(x => { value = x; hasValue = true; }, observer.OnError, () =>
-                {
-                    if (hasValue)
-                    {
-                        observer.OnNext(value);
-                        observer.OnCompleted();
-                    }
-                    else
-                    {
-                        if (useDefault)
-                        {
-                            observer.OnNext(default(T));
-                            observer.OnCompleted();
-                        }
-                        else
-                        {
-                            observer.OnError(new InvalidOperationException("sequence is empty"));
-                        }
-                    }
-                });
-            });
+            return new Last<T>(source, predicate, true);
         }
 
         public static IObservable<T> First<T>(this IObservable<T> source)
@@ -681,58 +652,21 @@ namespace UniRx
 
         public static IObservable<T> Single<T>(this IObservable<T> source)
         {
-            return SingleCore<T>(source, false);
+            return new Single<T>(source, false);
         }
         public static IObservable<T> Single<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return SingleCore<T>(source.Where(predicate), false);
+            return new Single<T>(source, predicate, false);
         }
 
         public static IObservable<T> SingleOrDefault<T>(this IObservable<T> source)
         {
-            return SingleCore<T>(source, true);
+            return new Single<T>(source, true);
         }
 
         public static IObservable<T> SingleOrDefault<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return SingleCore<T>(source.Where(predicate), true);
-        }
-
-        static IObservable<T> SingleCore<T>(this IObservable<T> source, bool useDefault)
-        {
-            return Observable.Create<T>(observer =>
-            {
-                var value = default(T);
-                var seenValue = false;
-                return source.Subscribe(x =>
-                {
-                    if (seenValue)
-                    {
-                        observer.OnError(new InvalidOperationException("sequence is not single"));
-                    }
-                    value = x;
-                    seenValue = true;
-                }, observer.OnError, () =>
-                {
-                    if (seenValue)
-                    {
-                        observer.OnNext(value);
-                        observer.OnCompleted();
-                    }
-                    else
-                    {
-                        if (useDefault)
-                        {
-                            observer.OnNext(default(T));
-                            observer.OnCompleted();
-                        }
-                        else
-                        {
-                            observer.OnError(new InvalidOperationException("sequence is empty"));
-                        }
-                    }
-                });
-            });
+            return new Single<T>(source, predicate, true);
         }
     }
 }

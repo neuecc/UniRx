@@ -3,7 +3,7 @@
 --- !u!129 &1
 PlayerSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 8
+  serializedVersion: 7
   AndroidProfiler: 0
   defaultScreenOrientation: 0
   targetDevice: 2
@@ -14,7 +14,6 @@ PlayerSettings:
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_ShowUnitySplashScreen: 1
-  m_VirtualRealitySplashScreen: {fileID: 0}
   defaultScreenWidth: 1024
   defaultScreenHeight: 768
   defaultScreenWidthWeb: 960
@@ -117,7 +116,6 @@ PlayerSettings:
   iPhoneTargetOSVersion: 22
   uIPrerenderedIcon: 0
   uIRequiresPersistentWiFi: 0
-  uIRequiresFullScreen: 1
   uIStatusBarHidden: 1
   uIExitOnSuspend: 0
   uIStatusBarStyle: 0
@@ -131,7 +129,6 @@ PlayerSettings:
   iPadHighResPortraitSplashScreen: {fileID: 0}
   iPadLandscapeSplashScreen: {fileID: 0}
   iPadHighResLandscapeSplashScreen: {fileID: 0}
-  appleTVSplashScreen: {fileID: 0}
   iOSLaunchScreenType: 0
   iOSLaunchScreenPortrait: {fileID: 0}
   iOSLaunchScreenLandscape: {fileID: 0}
@@ -265,12 +262,7 @@ PlayerSettings:
   playerPrefsSupport: 0
   ps4ReprojectionSupport: 0
   ps4UseAudio3dBackend: 0
-  ps4SocialScreenEnabled: 0
   ps4Audio3dVirtualSpeakerCount: 14
-  ps4attribCpuUsage: 0
-  ps4PatchPkgPath: 
-  ps4PatchLatestPkgPath: 
-  ps4PatchChangeinfoPath: 
   ps4attribUserManagement: 0
   ps4attribMoveSupport: 0
   ps4attrib3DSupport: 0
@@ -327,6 +319,10 @@ PlayerSettings:
   spritePackerPolicy: 
   scriptingDefineSymbols: {}
   metroPackageName: UnityRx
+  metroPackageLogo: 
+  metroPackageLogo140: 
+  metroPackageLogo180: 
+  metroPackageLogo240: 
   metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
@@ -334,7 +330,44 @@ PlayerSettings:
   metroCertificateIssuer: neuecc
   metroCertificateNotAfter: 00218354c983d101
   metroApplicationDescription: UnityRx
-  wsaImages: {}
+  metroStoreTileLogo80: 
+  metroStoreTileLogo: 
+  metroStoreTileLogo140: 
+  metroStoreTileLogo180: 
+  metroStoreTileWideLogo80: 
+  metroStoreTileWideLogo: 
+  metroStoreTileWideLogo140: 
+  metroStoreTileWideLogo180: 
+  metroStoreTileSmallLogo80: 
+  metroStoreTileSmallLogo: 
+  metroStoreTileSmallLogo140: 
+  metroStoreTileSmallLogo180: 
+  metroStoreSmallTile80: 
+  metroStoreSmallTile: 
+  metroStoreSmallTile140: 
+  metroStoreSmallTile180: 
+  metroStoreLargeTile80: 
+  metroStoreLargeTile: 
+  metroStoreLargeTile140: 
+  metroStoreLargeTile180: 
+  metroStoreSplashScreenImage: 
+  metroStoreSplashScreenImage140: 
+  metroStoreSplashScreenImage180: 
+  metroPhoneAppIcon: 
+  metroPhoneAppIcon140: 
+  metroPhoneAppIcon240: 
+  metroPhoneSmallTile: 
+  metroPhoneSmallTile140: 
+  metroPhoneSmallTile240: 
+  metroPhoneMediumTile: 
+  metroPhoneMediumTile140: 
+  metroPhoneMediumTile240: 
+  metroPhoneWideTile: 
+  metroPhoneWideTile140: 
+  metroPhoneWideTile240: 
+  metroPhoneSplashScreenImage: 
+  metroPhoneSplashScreenImage140: 
+  metroPhoneSplashScreenImage240: 
   metroTileShortName: 
   metroCommandLineArgsFile: 
   metroTileShowName: 1
@@ -410,6 +443,7 @@ PlayerSettings:
   XboxOneAllowedProductIds: []
   XboxOnePersistentLocalStorageSize: 0
   intPropertyNames:
+  - Android::ScriptingBackend
   - Metro::ScriptingBackend
   - Standalone::ScriptingBackend
   - WP8::ScriptingBackend
@@ -418,7 +452,9 @@ PlayerSettings:
   - WebGL::exceptionSupport
   - WebGL::memorySize
   - iOS::Architecture
+  - iOS::EnableIncrementalBuildSupportForIl2cpp
   - iOS::ScriptingBackend
+  Android::ScriptingBackend: 0
   Metro::ScriptingBackend: 2
   Standalone::ScriptingBackend: 0
   WP8::ScriptingBackend: 2
@@ -427,6 +463,7 @@ PlayerSettings:
   WebGL::exceptionSupport: 1
   WebGL::memorySize: 256
   iOS::Architecture: 2
+  iOS::EnableIncrementalBuildSupportForIl2cpp: 0
   iOS::ScriptingBackend: 1
   boolPropertyNames:
   - WebGL::analyzeBuildSize

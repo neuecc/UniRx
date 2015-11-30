@@ -147,6 +147,8 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Create.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Defer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Empty.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Single.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Last.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Never.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OfType.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs" />
