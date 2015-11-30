@@ -47,6 +47,7 @@ namespace UniRx
             typeof(WaitForEndOfFrame),
             typeof(WaitForFixedUpdate),
             typeof(WaitForSeconds),
+            typeof(AsyncOperation),
             typeof(Coroutine)
         };
 
