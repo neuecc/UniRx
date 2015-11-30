@@ -147,6 +147,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Create.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Defer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Empty.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Aggregate.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Scan.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Single.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Last.cs" />

@@ -7,14 +7,29 @@ namespace UniRx
 {
     public static partial class Observable
     {
-        public static IObservable<TSource> Scan<TSource>(this IObservable<TSource> source, Func<TSource, TSource, TSource> func)
+        public static IObservable<TSource> Scan<TSource>(this IObservable<TSource> source, Func<TSource, TSource, TSource> accumulator)
         {
-            return new Scan<TSource>(source, func);
+            return new Scan<TSource>(source, accumulator);
         }
 
-        public static IObservable<TAccumulate> Scan<TSource, TAccumulate>(this IObservable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func)
+        public static IObservable<TAccumulate> Scan<TSource, TAccumulate>(this IObservable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator)
         {
-            return new Scan<TSource, TAccumulate>(source, seed, func);
+            return new Scan<TSource, TAccumulate>(source, seed, accumulator);
+        }
+
+        public static IObservable<TSource> Aggregate<TSource>(this IObservable<TSource> source, Func<TSource, TSource, TSource> accumulator)
+        {
+            return new Aggregate<TSource>(source, accumulator);
+        }
+
+        public static IObservable<TAccumulate> Aggregate<TSource, TAccumulate>(this IObservable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator)
+        {
+            return new Aggregate<TSource, TAccumulate>(source, seed, accumulator);
+        }
+
+        public static IObservable<TResult> Aggregate<TSource, TAccumulate, TResult>(this IObservable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator, Func<TAccumulate, TResult> resultSelector)
+        {
+            return new Aggregate<TSource, TAccumulate, TResult>(source, seed, accumulator, resultSelector);
         }
     }
 }
