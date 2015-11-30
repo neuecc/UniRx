@@ -201,6 +201,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Range.cs">
       <Link>Operators\Range.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\RefCount.cs">
+      <Link>Operators\RefCount.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Repeat.cs">
       <Link>Operators\Repeat.cs</Link>
     </Compile>

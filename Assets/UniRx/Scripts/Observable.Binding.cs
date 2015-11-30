@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+using UniRx.Operators;
 
 namespace UniRx
 {
@@ -64,34 +62,7 @@ namespace UniRx
 
         public static IObservable<T> RefCount<T>(this IConnectableObservable<T> source)
         {
-            var connection = default(IDisposable);
-            var gate = new object();
-            var refCount = 0;
-
-            return Observable.Create<T>(observer =>
-            {
-                var subscription = source.Subscribe(observer);
-
-                lock (gate)
-                {
-                    if (++refCount == 1)
-                    {
-                        connection = source.Connect();
-                    }
-                }
-
-                return Disposable.Create(() =>
-                {
-                    subscription.Dispose();
-                    lock (gate)
-                    {
-                        if (--refCount == 0)
-                        {
-                            connection.Dispose(); // connection isn't null.
-                        }
-                    }
-                });
-            });
+            return new RefCount<T>(source);
         }
     }
 }
