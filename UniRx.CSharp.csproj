@@ -140,12 +140,14 @@
     <Compile Include="Assets\UniRx\Scripts\Observable.Time.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observer.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\AsUnitObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Create.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Defer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Empty.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Never.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\AsObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Where.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\SelectMany.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Timer.cs" />

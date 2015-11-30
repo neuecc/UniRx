@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq; // in future, should remove LINQ(for avoid AOT)
+using UniRx.Operators;
 
 namespace UniRx
 {
@@ -11,7 +12,13 @@ namespace UniRx
         {
             if (source == null) throw new ArgumentNullException("source");
 
-            return Observable.Create<T>(observer => source.Subscribe(observer));
+            // optimize, don't double wrap
+            if (source is UniRx.Operators.AsObservable<T>)
+            {
+                return source;
+            }
+
+            return new AsObservable<T>(source);
         }
 
         public static IObservable<T> ToObservable<T>(this IEnumerable<T> source)
@@ -105,14 +112,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<Unit> AsUnitObservable<T>(this IObservable<T> source)
         {
-            // .Select(_ => Unit.Default), avoid AOT.
-            return Observable.Create<Unit>(observer =>
-            {
-                return source.Subscribe(Observer.Create<T>(_ =>
-                {
-                    observer.OnNext(Unit.Default);
-                }, observer.OnError, observer.OnCompleted));
-            });
+            return new AsUnitObservable<T>(source);
         }
     }
 }
