@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace UniRx
 {
@@ -15,22 +13,58 @@ namespace UniRx
         {
             readonly IObservable<T> source;
             readonly ISubject<T> subject;
+            readonly object gate = new object();
+            Connection connection;
 
             public ConnectableObservable(IObservable<T> source, ISubject<T> subject)
             {
-                this.source = source;
+                this.source = source.AsObservable();
                 this.subject = subject;
             }
 
             public IDisposable Connect()
             {
-                var subscription = source.Subscribe(subject);
-                return subscription;
+                lock (gate)
+                {
+                    // don't subscribe twice
+                    if (connection == null)
+                    {
+                        var subscription = source.Subscribe(subject);
+                        connection = new Connection(this, subscription);
+                    }
+
+                    return connection;
+                }
             }
 
             public IDisposable Subscribe(IObserver<T> observer)
             {
                 return subject.Subscribe(observer);
+            }
+
+            class Connection : IDisposable
+            {
+                readonly ConnectableObservable<T> parent;
+                IDisposable subscription;
+
+                public Connection(ConnectableObservable<T> parent, IDisposable subscription)
+                {
+                    this.parent = parent;
+                    this.subscription = subscription;
+                }
+
+                public void Dispose()
+                {
+                    lock (parent.gate)
+                    {
+                        if (subscription != null)
+                        {
+                            subscription.Dispose();
+                            subscription = null;
+                            parent.connection = null;
+                        }
+                    }
+                }
             }
         }
     }
