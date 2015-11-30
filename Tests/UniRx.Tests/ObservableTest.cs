@@ -203,5 +203,72 @@ namespace UniRx.Tests
                 list.Is(0, 2000, 6000);
             }
         }
+
+        [TestMethod]
+        public void Where()
+        {
+            {
+                var a = new Subject<int>();
+
+                var list = new List<int>();
+                a.Where(x => x % 3 == 0).Subscribe(x => list.Add(x));
+
+                a.OnNext(3);
+                a.OnNext(5);
+                a.OnNext(7);
+                a.OnNext(9);
+                a.OnNext(300);
+                a.OnCompleted();
+
+                list.Is(3, 9, 300);
+            }
+
+            {
+                var a = new Subject<int>();
+
+                var list = new List<int>();
+                a.Where((x, i) => (x + i) % 3 == 0).Subscribe(x => list.Add(x));
+
+                a.OnNext(3); // 3 + 0
+                a.OnNext(5); // 5 + 1
+                a.OnNext(7); // 7 + 2
+                a.OnNext(9); // 9 + 3
+                a.OnNext(300); // 300 + 4
+                a.OnCompleted();
+
+                list.Is(3, 5, 7, 9);
+            }
+            {
+                var a = new Subject<int>();
+
+                var list = new List<int>();
+                a.Where(x => x % 3 == 0).Where(x => x % 5 == 0).Subscribe(x => list.Add(x));
+
+                a.OnNext(3);
+                a.OnNext(5);
+                a.OnNext(7);
+                a.OnNext(9);
+                a.OnNext(300);
+                a.OnCompleted();
+
+                list.Is(300);
+            }
+
+            {
+                var a = new Subject<int>();
+
+                var list = new List<int>();
+                a.Where((x, i) => (x + i) % 3 == 0).Where(x => x % 5 == 0).Subscribe(x => list.Add(x));
+
+                a.OnNext(3); // 3 + 0
+                a.OnNext(5); // 5 + 1
+                a.OnNext(7); // 7 + 2
+                a.OnNext(9); // 9 + 3
+                a.OnNext(300); // 300 + 4
+                a.OnCompleted();
+
+                list.Is(5);
+            }
+        }
     }
 }

@@ -204,6 +204,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Timer.cs">
       <Link>Operators\Timer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Where.cs">
+      <Link>Operators\Where.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs">
       <Link>Schedulers\CurrentThreadScheduler.cs</Link>
     </Compile>

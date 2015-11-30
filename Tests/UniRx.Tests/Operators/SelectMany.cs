@@ -80,6 +80,31 @@ namespace UniRx.Tests.Operators
                 // check
                 list.Is("OnNext(200)", "OnNext(300)", "OnError(System.Exception)");
             }
+            {
+                // OnCompleted Case2
+                var a = new Subject<int>();
+                var b = new Subject<int>();
+                var c = new Subject<int>();
+                var list = new List<string>();
+                a.SelectMany(x => (x == 10) ? b : c)
+                    .Materialize().Select(x => x.ToString()).Subscribe(x => list.Add(x));
+                a.OnNext(10);
+                a.OnNext(100);
+
+                // do
+
+                b.OnNext(200);
+                c.OnNext(300);
+                b.OnCompleted();
+                c.OnCompleted();
+
+                // check
+                list.Is("OnNext(200)", "OnNext(300)");
+
+                a.OnCompleted();
+
+                list.Is("OnNext(200)", "OnNext(300)", "OnCompleted()");
+            }
         }
 
         [TestMethod]

@@ -36,33 +36,19 @@ namespace UniRx
 
         public static IObservable<T> Where<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return Where(source, (x, i) => predicate(x));
+            // optimized path
+            var whereObservable = source as UniRx.Operators.Where<T>;
+            if (whereObservable != null)
+            {
+                return whereObservable.CombinePredicate(predicate);
+            }
+
+            return new Where<T>(source, predicate);
         }
 
         public static IObservable<T> Where<T>(this IObservable<T> source, Func<T, int, bool> predicate)
         {
-            return Observable.Create<T>(observer =>
-            {
-                var index = 0;
-                return source.Subscribe(Observer.Create<T, T>(x =>
-                 {
-                     var isBypass = default(bool);
-                     try
-                     {
-                         isBypass = predicate(x, index++);
-                     }
-                     catch (Exception ex)
-                     {
-                         observer.OnError(ex);
-                         return;
-                     }
-
-                     if (isBypass)
-                     {
-                         observer.OnNext(x);
-                     }
-                 }, observer));
-            }, isRequiredSubscribeOnCurrentThread: source.IsRequiredSubscribeOnCurrentThread());
+            return new Where<T>(source, predicate);
         }
 
         public static IObservable<TR> SelectMany<T, TR>(this IObservable<T> source, IObservable<TR> other)
@@ -102,7 +88,7 @@ namespace UniRx
 
         public static IObservable<TResult> SelectMany<TSource, TCollection, TResult>(this IObservable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
         {
-            return new SelectMany<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);   
+            return new SelectMany<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
         }
 
         public static IObservable<TResult> SelectMany<TSource, TCollection, TResult>(this IObservable<TSource> source, Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, int, TCollection, int, TResult> resultSelector)
