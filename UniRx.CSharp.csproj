@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Web v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebPlayer:6</UnityBuildTarget>
     <UnityVersion>5.3.0b1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -154,6 +156,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\RepeatSafe.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Return.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Scan.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Zip.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Select.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\SelectMany.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Single.cs" />

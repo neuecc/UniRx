@@ -102,6 +102,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="default.runsettings" />
     <Content Include="RxJS\HtmlPage1.html" />
     <Content Include="RxJS\rx.js" />
   </ItemGroup>

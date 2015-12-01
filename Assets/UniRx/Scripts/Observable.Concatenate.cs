@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq; // memo, remove LINQ(for avoid AOT)
 using System.Text;
+using System.Linq;
 using UniRx.Operators;
 
 namespace UniRx
@@ -104,75 +104,7 @@ namespace UniRx
 
         public static IObservable<TResult> Zip<TLeft, TRight, TResult>(this IObservable<TLeft> left, IObservable<TRight> right, Func<TLeft, TRight, TResult> selector)
         {
-            return Observable.Create<TResult>(observer =>
-            {
-                var gate = new object();
-                var leftQ = new Queue<TLeft>();
-                bool leftCompleted = false;
-                var rightQ = new Queue<TRight>();
-                var rightCompleted = false;
-
-                Action dequeue = () =>
-                {
-                    TLeft lv;
-                    TRight rv;
-                    TResult v;
-                    if (leftQ.Count != 0 && rightQ.Count != 0)
-                    {
-                        lv = leftQ.Dequeue();
-                        rv = rightQ.Dequeue();
-                    }
-                    else if (leftCompleted || rightCompleted)
-                    {
-                        observer.OnCompleted();
-                        return;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                    try
-                    {
-                        v = selector(lv, rv);
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-                    observer.OnNext(v);
-                };
-
-                var lsubscription = left.Synchronize(gate).Subscribe(x =>
-                {
-                    leftQ.Enqueue(x);
-                    dequeue();
-                }, observer.OnError, () =>
-                {
-                    leftCompleted = true;
-                    if (rightCompleted) observer.OnCompleted();
-                });
-
-
-                var rsubscription = right.Synchronize(gate).Subscribe(x =>
-                {
-                    rightQ.Enqueue(x);
-                    dequeue();
-                }, observer.OnError, () =>
-                {
-                    rightCompleted = true;
-                    if (leftCompleted) observer.OnCompleted();
-                });
-
-                return new CompositeDisposable { lsubscription, rsubscription, Disposable.Create(()=>
-                {
-                    lock(gate)
-                    {
-                        leftQ.Clear();
-                        rightQ.Clear();
-                    }
-                })};
-            });
+            return new ZipObservable<TLeft, TRight, TResult>(left, right, selector);
         }
 
         public static IObservable<IList<T>> Zip<T>(this IEnumerable<IObservable<T>> sources)
@@ -182,85 +114,7 @@ namespace UniRx
 
         public static IObservable<IList<T>> Zip<T>(params IObservable<T>[] sources)
         {
-            return Observable.Create<IList<T>>(observer =>
-            {
-                var gate = new object();
-                var length = sources.Length;
-                var queues = new Queue<T>[length];
-                for (int i = 0; i < length; i++)
-                {
-                    queues[i] = new Queue<T>();
-                }
-                var isDone = new bool[length];
-
-                Action<int> dequeue = index =>
-                {
-                    lock (gate)
-                    {
-                        if (queues.All(x => x.Count > 0))
-                        {
-                            var result = queues.Select(x => x.Dequeue()).ToList();
-                            observer.OnNext(result);
-                            return;
-                        }
-
-                        if (isDone.Where((x, i) => i != index).All(x => x))
-                        {
-                            observer.OnCompleted();
-                            return;
-                        }
-                    }
-                };
-
-                var subscriptions = sources
-                    .Select((source, index) =>
-                    {
-                        var d = new SingleAssignmentDisposable();
-
-                        d.Disposable = source.Subscribe(x =>
-                        {
-                            lock (gate)
-                            {
-                                queues[index].Enqueue(x);
-                                dequeue(index);
-                            }
-                        }, ex =>
-                        {
-                            lock (gate)
-                            {
-                                observer.OnError(ex);
-                            }
-                        }, () =>
-                        {
-                            lock (gate)
-                            {
-                                isDone[index] = true;
-                                if (isDone.All(x => x))
-                                {
-                                    observer.OnCompleted();
-                                }
-                                else
-                                {
-                                    d.Dispose();
-                                }
-                            }
-                        });
-
-                        return d;
-                    })
-                    .ToArray();
-
-                return new CompositeDisposable(subscriptions) { Disposable.Create(()=>
-                {
-                    lock(gate)
-                    {
-                        foreach(var item in queues)
-                        {
-                            item.Clear();
-                        }
-                    }
-                })};
-            });
+            return new ZipObservable<T>(sources);
         }
 
         public static IObservable<TResult> CombineLatest<TLeft, TRight, TResult>(this IObservable<TLeft> left, IObservable<TRight> right, Func<TLeft, TRight, TResult> selector)

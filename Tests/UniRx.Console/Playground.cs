@@ -11,19 +11,21 @@ namespace UniRx
     {
         public void Run()
         {
-            var rp1 = new ReactiveProperty<int>();
-            var rp2 = new ReactiveProperty<int>();
-            var rp3 = new ReactiveProperty<int>();
+            var a = new Subject<int>();
+            var b = new Subject<int>();
 
+            a.OnNext(10);
+            b.OnNext(20);
 
-            var xs = new[] {
-                rp1, rp2, rp3
-            }.Merge()
-            .Subscribe(x => ShowStackTrace());
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            a.Zip(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
 
+            a.OnNext(1000);
+            b.OnNext(2000);
 
-            rp1.Value = 1;
+            a.OnCompleted();
 
+            Console.WriteLine(l.Count);
 
         }
 
