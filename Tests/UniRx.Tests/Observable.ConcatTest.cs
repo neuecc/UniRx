@@ -126,6 +126,36 @@ namespace UniRx.Tests
         }
 
         [TestMethod]
+        public void ZipNth()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+            var c = new Subject<int>();
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0, z = 0 })).ToList();
+            var s = Observable.Zip(a, b, c, (x, y, z) => new { x, y, z }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+            c.OnNext(3000);
+
+            l.Count.Is(1); // OnNext
+
+            a.OnCompleted();
+            
+            b.OnNext(1001);
+            l.Count.Is(1);
+
+            b.OnCompleted();
+            l.Count.Is(1);
+
+            c.OnCompleted();
+            l.Count.Is(2); // Completed!
+
+            l[1].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
         public void WhenAll()
         {
             var a = new Subject<int>();

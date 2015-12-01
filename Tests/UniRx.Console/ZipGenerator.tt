@@ -1,0 +1,146 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".txt" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #> 
+<#
+   
+   
+   var endCount = 7;
+#>
+
+<# for(var i = 3; i <= endCount; i++) { #>
+public delegate TR ZipFunc<<# for(var j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TR>(<# for(var j = 1; j <= i; j++) { #>T<#= j #> arg<#= j #>, <# } #>);
+<# } #>
+
+
+
+<# for(var i = 3; i <= endCount; i++) { #>
+public static IObservable<TR> Zip<#= GetTRGeneric(i) #>(this <#= GetSources(i) #>, ZipFunc<#= GetTRGeneric(i) #> resultSelector)
+{
+    return new ZipObservable<#= GetTRGeneric(i) #>(<#= GetSources2(i) #>, resultSelector);
+}
+
+<# } #>
+
+
+
+
+
+
+
+<# for(var i = 3; i <= endCount; i++) { #>
+
+internal class ZipObservable<#= GetTRGeneric(i) #> : OperatorObservableBase<TR>
+{
+<# for(var j = 1; j <= i; j++) { #>
+    IObservable<T<#= j #>> source<#= j #>;
+<# } #>
+    ZipFunc<#= GetTRGeneric(i) #> resultSelector;
+
+    public ZipObservable(
+<# for(var j = 1; j <= i; j++) { #>
+        IObservable<T<#= j #>> source<#= j #>,
+<# } #>
+          ZipFunc<#= GetTRGeneric(i) #> resultSelector)
+        : base(
+<# for(var j = 1; j <= i; j++) { #>
+            source<#= j #>.IsRequiredSubscribeOnCurrentThread() || 
+<# } #>
+            false)
+    {
+<# for(var j = 1; j <= i; j++) { #>
+        this.source<#= j #> = source<#= j #>;
+<# } #>
+        this.resultSelector = resultSelector;
+    }
+
+    protected override IDisposable SubscribeCore(IObserver<TR> observer, IDisposable cancel)
+    {
+        return new Zip(this, observer, cancel).Run();
+    }
+
+    class Zip : NthZipObserverBase<TR>
+    {
+        readonly ZipObservable<#= GetTRGeneric(i) #> parent;
+        readonly object gate = new object();
+<# for(var j = 1; j <= i; j++) { #>
+        readonly Queue<T<#= j #>> q<#= j #> = new Queue<T<#= j #>>();
+<# } #>
+
+        public Zip(ZipObservable<#= GetTRGeneric(i) #> parent, IObserver<TR> observer, IDisposable cancel)
+            : base(observer, cancel)
+        {
+            this.parent = parent;
+        }
+
+        public IDisposable Run()
+        {
+            base.SetQueue(new System.Collections.ICollection[] { <#= GetQ("q", i) #> });
+<# for(var j = 1; j <= i; j++) { #>
+            var s<#= j #> = parent.source<#= j #>.Subscribe(new ZipObserver<T<#= j #>>(gate, this, <#= j - 1 #>, q<#= j #>));
+<# } #>
+
+            return StableCompositeDisposable.Create(<#= GetQ("s", i) #>, Disposable.Create(() =>
+            {
+                lock (gate)
+                {
+                    <#= GetClear(i) #>
+                }
+            }));
+        }
+
+        public override TR GetResult()
+        {
+            return parent.resultSelector(<#= GetDequeue(i) #>);
+        }
+
+        public override void OnNext(TR value)
+        {
+            base.observer.OnNext(value);
+        }
+    }
+}
+
+<# } #>
+
+<#+ 
+
+    string GetTRGeneric(int count)
+    {
+        return  "<" + string.Join(", ", Enumerable.Range(1, count).Select(x => "T" + x).ToArray()) + ", TR" + ">";
+    }
+    
+    string GetQ(string prefix, int count)
+    {
+        return  string.Join(", ", Enumerable.Range(1, count).Select(x => prefix + x).ToArray());
+    }
+    
+    string GetDequeue(int count)
+    {
+        return  string.Join(", ", Enumerable.Range(1, count).Select(x => "q" + x + ".Dequeue()").ToArray());
+    }
+    
+    string GetClear(int count)
+    {
+        return  string.Join(" ", Enumerable.Range(1, count).Select(x => "q" + x + ".Clear();").ToArray());
+    }
+    
+    string GetSources(int count)
+    {
+        return  string.Join(", ", Enumerable.Range(1, count).Select(x => string.Format("IObservable<T{0}> source{0}", x)).ToArray());
+    }
+    
+    string GetSources2(int count)
+    {
+        return  string.Join(", ", Enumerable.Range(1, count).Select(x => string.Format("source{0}", x)).ToArray());
+    }
+
+
+
+ #>
