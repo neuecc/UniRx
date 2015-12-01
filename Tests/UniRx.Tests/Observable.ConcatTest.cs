@@ -366,6 +366,7 @@ namespace UniRx.Tests
             var seq = Observable.Range(1, 5);
 
             seq.StartWith(100).ToArray().Wait().Is(100, 1, 2, 3, 4, 5);
+            seq.StartWith(() => 100).ToArray().Wait().Is(100, 1, 2, 3, 4, 5);
             seq.StartWith(100, 1000, 10000).ToArray().Wait().Is(100, 1000, 10000, 1, 2, 3, 4, 5);
             seq.StartWith(Enumerable.Range(100, 3)).ToArray().Wait().Is(100, 101, 102, 1, 2, 3, 4, 5);
 

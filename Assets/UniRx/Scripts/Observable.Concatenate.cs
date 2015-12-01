@@ -677,31 +677,12 @@ namespace UniRx
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, T value)
         {
-            // optimized path
-            return Observable.Create<T>(observer =>
-            {
-                observer.OnNext(value);
-                return source.Subscribe(observer);
-            });
+            return new StartWith<T>(source, value);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, Func<T> valueFactory)
         {
-            return Observable.Create<T>(observer =>
-            {
-                T value;
-                try
-                {
-                    value = valueFactory();
-                }
-                catch (Exception ex)
-                {
-                    observer.OnError(ex);
-                    return Disposable.Empty;
-                }
-                observer.OnNext(value);
-                return source.Subscribe(observer);
-            });
+            return new StartWith<T>(source, valueFactory);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, params T[] values)

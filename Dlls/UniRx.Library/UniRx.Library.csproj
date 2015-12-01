@@ -225,6 +225,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Single.cs">
       <Link>Operators\Single.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\StartWith.cs">
+      <Link>Operators\StartWith.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Take.cs">
       <Link>Operators\Take.cs</Link>
     </Compile>
