@@ -10,14 +10,14 @@ namespace UniRx.Operators
         private readonly IObservable<IObservable<T>> sources;
         private readonly int maxConcurrent;
 
-        public MergeObservable(IObservable<IObservable<T>> sources)
-            : base(false)
+        public MergeObservable(IObservable<IObservable<T>> sources, bool isRequiredSubscribeOnCurrentThread)
+            : base(isRequiredSubscribeOnCurrentThread)
         {
             this.sources = sources;
         }
 
-        public MergeObservable(IObservable<IObservable<T>> sources, int maxConcurrent)
-            : base(false)
+        public MergeObservable(IObservable<IObservable<T>> sources, int maxConcurrent, bool isRequiredSubscribeOnCurrentThread)
+            : base(isRequiredSubscribeOnCurrentThread)
         {
             this.sources = sources;
             this.maxConcurrent = maxConcurrent;
@@ -27,7 +27,7 @@ namespace UniRx.Operators
         {
             if (maxConcurrent > 0)
             {
-                throw new NotImplementedException();
+                return new MergeConcurrentObserver(this, observer, cancel).Run();
             }
             else
             {

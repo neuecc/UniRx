@@ -374,5 +374,66 @@ namespace UniRx.Tests
             seq.StartWith(Scheduler.ThreadPool, 100, 1000, 10000).ToArray().Wait().Is(100, 1000, 10000, 1, 2, 3, 4, 5);
             seq.StartWith(Scheduler.ThreadPool, Enumerable.Range(100, 3)).ToArray().Wait().Is(100, 101, 102, 1, 2, 3, 4, 5);
         }
+
+        [TestMethod]
+        public void Merge()
+        {
+            var s1 = new Subject<int>();
+            var s2 = new Subject<int>();
+            var s3 = new Subject<int>();
+
+            var list = new List<int>();
+            var complete = false;
+            Observable.Merge(s1, s2, s3).Subscribe(list.Add, () => complete = true);
+
+            s1.OnNext(10);
+            s1.OnNext(20);
+            s3.OnNext(100);
+            s2.OnNext(50);
+
+            list.Is(10, 20, 100, 50);
+
+            list.Clear();
+
+            s2.OnCompleted();
+
+            s3.OnNext(500);
+            complete.IsFalse();
+            s1.OnCompleted();
+            s3.OnCompleted();
+            complete.IsTrue();
+        }
+
+
+        [TestMethod]
+        public void MergeConcurrent()
+        {
+            var s1 = new Subject<int>();
+            var s2 = new Subject<int>();
+            var s3 = new Subject<int>();
+
+            var list = new List<int>();
+            var complete = false;
+            Observable.Merge(new[] { s1, s2, s3 }, maxConcurrent: 2).Subscribe(list.Add, () => complete = true);
+
+            s1.OnNext(10);
+            s1.OnNext(20);
+            s3.OnNext(100); // in queue
+            s2.OnNext(50);
+
+            list.Is(10, 20, 50);
+
+            list.Clear();
+
+            s2.OnCompleted();
+
+            s3.OnNext(500); // dequeued
+            list.Is(500);
+            complete.IsFalse();
+
+            s1.OnCompleted();
+            s3.OnCompleted();
+            complete.IsTrue();
+        }
     }
 }

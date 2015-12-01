@@ -10,6 +10,15 @@ namespace UniRx
     // merge, concat, zip...
     public static partial class Observable
     {
+        static IEnumerable<IObservable<T>> CombineSources<T>(IObservable<T> first, IObservable<T>[] seconds)
+        {
+            yield return first;
+            for (int i = 0; i < seconds.Length; i++)
+            {
+                yield return seconds[i];
+            }
+        }
+
         public static IObservable<TSource> Concat<TSource>(params IObservable<TSource>[] sources)
         {
             if (sources == null) throw new ArgumentNullException("sources");
@@ -43,15 +52,6 @@ namespace UniRx
             return Concat(CombineSources(first, seconds));
         }
 
-        static IEnumerable<IObservable<T>> CombineSources<T>(IObservable<T> first, IObservable<T>[] seconds)
-        {
-            yield return first;
-            for (int i = 0; i < seconds.Length; i++)
-            {
-                yield return seconds[i];
-            }
-        }
-
         public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources)
         {
             return Merge(sources, Scheduler.DefaultSchedulers.ConstantTimeOperations);
@@ -59,7 +59,7 @@ namespace UniRx
 
         public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources, IScheduler scheduler)
         {
-            return Merge(sources.ToObservable(scheduler));
+            return new MergeObservable<TSource>(sources.ToObservable(scheduler), scheduler == Scheduler.CurrentThread);
         }
 
         public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources, int maxConcurrent)
@@ -69,7 +69,7 @@ namespace UniRx
 
         public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources, int maxConcurrent, IScheduler scheduler)
         {
-            return Merge(sources.ToObservable(scheduler), maxConcurrent);
+            return new MergeObservable<TSource>(sources.ToObservable(scheduler), maxConcurrent, scheduler == Scheduler.CurrentThread);
         }
 
         public static IObservable<TSource> Merge<TSource>(params IObservable<TSource>[] sources)
@@ -79,12 +79,12 @@ namespace UniRx
 
         public static IObservable<TSource> Merge<TSource>(IScheduler scheduler, params IObservable<TSource>[] sources)
         {
-            return Merge(sources.ToObservable(scheduler));
+            return new MergeObservable<TSource>(sources.ToObservable(scheduler), scheduler == Scheduler.CurrentThread);
         }
 
-        public static IObservable<T> Merge<T>(this IObservable<T> first, IObservable<T> second)
+        public static IObservable<T> Merge<T>(this IObservable<T> first, params IObservable<T>[] seconds)
         {
-            return Merge(new[] { first, second });
+            return Merge(CombineSources(first, seconds));
         }
 
         public static IObservable<T> Merge<T>(this IObservable<T> first, IObservable<T> second, IScheduler scheduler)
@@ -94,133 +94,12 @@ namespace UniRx
 
         public static IObservable<T> Merge<T>(this IObservable<IObservable<T>> sources)
         {
-            // this code is borrwed from RxOfficial(rx.codeplex.com)
-            return Observable.Create<T>(observer =>
-            {
-                var gate = new object();
-                var isStopped = false;
-                var m = new SingleAssignmentDisposable();
-                var group = new CompositeDisposable() { m };
-
-                m.Disposable = sources.Subscribe(
-                    innerSource =>
-                    {
-                        var innerSubscription = new SingleAssignmentDisposable();
-                        group.Add(innerSubscription);
-                        innerSubscription.Disposable = innerSource.Subscribe(
-                            x =>
-                            {
-                                lock (gate)
-                                    observer.OnNext(x);
-                            },
-                            exception =>
-                            {
-                                lock (gate)
-                                    observer.OnError(exception);
-                            },
-                            () =>
-                            {
-                                group.Remove(innerSubscription);   // modification MUST occur before subsequent check
-                                if (isStopped && group.Count == 1) // isStopped must be checked before group Count to ensure outer is not creating more groups
-                                    lock (gate)
-                                        observer.OnCompleted();
-                            });
-                    },
-                    exception =>
-                    {
-                        lock (gate)
-                            observer.OnError(exception);
-                    },
-                    () =>
-                    {
-                        isStopped = true;     // modification MUST occur before subsequent check
-                        if (group.Count == 1)
-                            lock (gate)
-                                observer.OnCompleted();
-                    });
-
-                return group;
-            });
+            return new MergeObservable<T>(sources, false);
         }
 
         public static IObservable<T> Merge<T>(this IObservable<IObservable<T>> sources, int maxConcurrent)
         {
-            // this code is borrwed from RxOfficial(rx.codeplex.com)
-            return Observable.Create<T>(observer =>
-            {
-                var gate = new object();
-                var q = new Queue<IObservable<T>>();
-                var isStopped = false;
-                var group = new CompositeDisposable();
-                var activeCount = 0;
-
-                var subscribe = default(Action<IObservable<T>>);
-                subscribe = xs =>
-                {
-                    var subscription = new SingleAssignmentDisposable();
-                    group.Add(subscription);
-                    subscription.Disposable = xs.Subscribe(
-                        x =>
-                        {
-                            lock (gate)
-                                observer.OnNext(x);
-                        },
-                        exception =>
-                        {
-                            lock (gate)
-                                observer.OnError(exception);
-                        },
-                        () =>
-                        {
-                            group.Remove(subscription);
-                            lock (gate)
-                            {
-                                if (q.Count > 0)
-                                {
-                                    var s = q.Dequeue();
-                                    subscribe(s);
-                                }
-                                else
-                                {
-                                    activeCount--;
-                                    if (isStopped && activeCount == 0)
-                                        observer.OnCompleted();
-                                }
-                            }
-                        });
-                };
-
-                group.Add(sources.Subscribe(
-                    innerSource =>
-                    {
-                        lock (gate)
-                        {
-                            if (activeCount < maxConcurrent)
-                            {
-                                activeCount++;
-                                subscribe(innerSource);
-                            }
-                            else
-                                q.Enqueue(innerSource);
-                        }
-                    },
-                    exception =>
-                    {
-                        lock (gate)
-                            observer.OnError(exception);
-                    },
-                    () =>
-                    {
-                        lock (gate)
-                        {
-                            isStopped = true;
-                            if (activeCount == 0)
-                                observer.OnCompleted();
-                        }
-                    }));
-
-                return group;
-            });
+            return new MergeObservable<T>(sources, maxConcurrent, false);
         }
 
         public static IObservable<TResult> Zip<TLeft, TRight, TResult>(this IObservable<TLeft> left, IObservable<TRight> right, Func<TLeft, TRight, TResult> selector)

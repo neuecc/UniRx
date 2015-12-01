@@ -189,6 +189,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Last.cs">
       <Link>Operators\Last.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Merge.cs">
+      <Link>Operators\Merge.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Never.cs">
       <Link>Operators\Never.cs</Link>
     </Compile>
