@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace UniRx.Operators
 {
-    internal class ToObservable<T> : OperatorObservableBase<T>
+    internal class ToObservableObservable<T> : OperatorObservableBase<T>
     {
         readonly IEnumerable<T> source;
         readonly IScheduler scheduler;
 
-        public ToObservable(IEnumerable<T> source, IScheduler scheduler)
+        public ToObservableObservable(IEnumerable<T> source, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
             this.source = source;
@@ -17,14 +17,14 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            return new ToObservableObserver(this, observer, cancel).Run();
+            return new ToObservable(this, observer, cancel).Run();
         }
 
-        class ToObservableObserver : OperatorObserverBase<T, T>
+        class ToObservable : OperatorObserverBase<T, T>
         {
-            readonly ToObservable<T> parent;
+            readonly ToObservableObservable<T> parent;
 
-            public ToObservableObserver(ToObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public ToObservable(ToObservableObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
             }

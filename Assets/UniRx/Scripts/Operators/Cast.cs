@@ -2,11 +2,11 @@
 
 namespace UniRx.Operators
 {
-    internal class Cast<TSource, TResult> : OperatorObservableBase<TResult>
+    internal class CastObservable<TSource, TResult> : OperatorObservableBase<TResult>
     {
         readonly IObservable<TSource> source;
 
-        public Cast(IObservable<TSource> source)
+        public CastObservable(IObservable<TSource> source)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -14,14 +14,14 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<TResult> observer, IDisposable cancel)
         {
-            return source.Subscribe(new CastObserver(this, observer, cancel));
+            return source.Subscribe(new Cast(this, observer, cancel));
         }
 
-        class CastObserver : OperatorObserverBase<TSource, TResult>
+        class Cast : OperatorObserverBase<TSource, TResult>
         {
-            readonly Cast<TSource, TResult> parent;
+            readonly CastObservable<TSource, TResult> parent;
 
-            public CastObserver(Cast<TSource, TResult> parent, IObserver<TResult> observer, IDisposable cancel)
+            public Cast(CastObservable<TSource, TResult> parent, IObserver<TResult> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.parent = parent;

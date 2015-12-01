@@ -2,20 +2,20 @@
 
 namespace UniRx.Operators
 {
-    internal class StartWith<T> : OperatorObservableBase<T>
+    internal class StartWithObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly T value;
         readonly Func<T> valueFactory;
 
-        public StartWith(IObservable<T> source, T value)
+        public StartWithObservable(IObservable<T> source, T value)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.value = value;
         }
 
-        public StartWith(IObservable<T> source, Func<T> valueFactory)
+        public StartWithObservable(IObservable<T> source, Func<T> valueFactory)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -24,14 +24,14 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            return new StartWithObserver(this, observer, cancel).Run();
+            return new StartWith(this, observer, cancel).Run();
         }
 
-        class StartWithObserver : OperatorObserverBase<T, T>
+        class StartWith : OperatorObserverBase<T, T>
         {
-            readonly StartWith<T> parent;
+            readonly StartWithObservable<T> parent;
 
-            public StartWithObserver(StartWith<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public StartWith(StartWithObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
             }

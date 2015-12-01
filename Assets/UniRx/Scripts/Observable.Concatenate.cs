@@ -14,14 +14,14 @@ namespace UniRx
         {
             if (sources == null) throw new ArgumentNullException("sources");
 
-            return new Concat<TSource>(sources);
+            return new ConcatObservable<TSource>(sources);
         }
 
         public static IObservable<TSource> Concat<TSource>(this IEnumerable<IObservable<TSource>> sources)
         {
             if (sources == null) throw new ArgumentNullException("sources");
 
-            return new Concat<TSource>(sources);
+            return new ConcatObservable<TSource>(sources);
         }
 
         public static IObservable<TSource> Concat<TSource>(this IObservable<IObservable<TSource>> sources)
@@ -34,7 +34,7 @@ namespace UniRx
             if (first == null) throw new ArgumentNullException("first");
             if (seconds == null) throw new ArgumentNullException("seconds");
 
-            var concat = first as Concat<TSource>;
+            var concat = first as ConcatObservable<TSource>;
             if (concat != null)
             {
                 return concat.Combine(seconds);
@@ -607,7 +607,7 @@ namespace UniRx
         {
             if (sources.Length == 0) return Observable.Return(new T[0]);
 
-            return new WhenAll<T>(sources);
+            return new WhenAllObservable<T>(sources);
         }
 
         /// <summary>
@@ -619,17 +619,17 @@ namespace UniRx
             var array = sources as IObservable<T>[];
             if (array != null) return WhenAll(array);
 
-            return new WhenAll<T>(sources);
+            return new WhenAllObservable<T>(sources);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, T value)
         {
-            return new StartWith<T>(source, value);
+            return new StartWithObservable<T>(source, value);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, Func<T> valueFactory)
         {
-            return new StartWith<T>(source, valueFactory);
+            return new StartWithObservable<T>(source, valueFactory);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, params T[] values)

@@ -62,7 +62,7 @@ namespace UniRx
 
         public static IObservable<T> RefCount<T>(this IConnectableObservable<T> source)
         {
-            return new RefCount<T>(source);
+            return new RefCountObservable<T>(source);
         }
     }
 }

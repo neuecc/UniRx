@@ -2,11 +2,11 @@
 
 namespace UniRx.Operators
 {
-    internal class Defer<T> : OperatorObservableBase<T>
+    internal class DeferObservable<T> : OperatorObservableBase<T>
     {
         readonly Func<IObservable<T>> observableFactory;
 
-        public Defer(Func<IObservable<T>> observableFactory)
+        public DeferObservable(Func<IObservable<T>> observableFactory)
             : base(false)
         {
             this.observableFactory = observableFactory;
@@ -14,7 +14,7 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            observer = new DeferObserver(observer, cancel);
+            observer = new Defer(observer, cancel);
 
             IObservable<T> source;
             try
@@ -29,9 +29,9 @@ namespace UniRx.Operators
             return source.Subscribe(observer);
         }
 
-        class DeferObserver : AutoDetachOperatorObserverBase<T>
+        class Defer : AutoDetachOperatorObserverBase<T>
         {
-            public DeferObserver(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Defer(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
             }
 

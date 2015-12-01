@@ -2,20 +2,20 @@
 
 namespace UniRx.Operators
 {
-    internal class Where<T> : OperatorObservableBase<T>
+    internal class WhereObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly Func<T, bool> predicate;
         readonly Func<T, int, bool> predicateWithIndex;
 
-        public Where(IObservable<T> source, Func<T, bool> predicate)
+        public WhereObservable(IObservable<T> source, Func<T, bool> predicate)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.predicate = predicate;
         }
 
-        public Where(IObservable<T> source, Func<T, int, bool> predicateWithIndex)
+        public WhereObservable(IObservable<T> source, Func<T, int, bool> predicateWithIndex)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -28,11 +28,11 @@ namespace UniRx.Operators
         {
             if (this.predicate != null)
             {
-                return new Where<T>(source, x => this.predicate(x) && combinePredicate(x));
+                return new WhereObservable<T>(source, x => this.predicate(x) && combinePredicate(x));
             }
             else
             {
-                return new Where<T>(this, combinePredicate);
+                return new WhereObservable<T>(this, combinePredicate);
             }
         }
 
@@ -40,19 +40,19 @@ namespace UniRx.Operators
         {
             if (predicate != null)
             {
-                return source.Subscribe(new WhereObserver(this, observer, cancel));
+                return source.Subscribe(new Where(this, observer, cancel));
             }
             else
             {
-                return source.Subscribe(new WhereObserverWithIndex(this, observer, cancel));
+                return source.Subscribe(new Where_(this, observer, cancel));
             }
         }
 
-        class WhereObserver : OperatorObserverBase<T, T>
+        class Where : OperatorObserverBase<T, T>
         {
-            readonly Where<T> parent;
+            readonly WhereObservable<T> parent;
 
-            public WhereObserver(Where<T> parent, IObserver<T> observer, IDisposable cancel)
+            public Where(WhereObservable<T> parent, IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.parent = parent;
@@ -78,12 +78,12 @@ namespace UniRx.Operators
             }
         }
 
-        class WhereObserverWithIndex : OperatorObserverBase<T, T>
+        class Where_ : OperatorObserverBase<T, T>
         {
-            readonly Where<T> parent;
+            readonly WhereObservable<T> parent;
             int index;
 
-            public WhereObserverWithIndex(Where<T> parent, IObserver<T> observer, IDisposable cancel)
+            public Where_(WhereObservable<T> parent, IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.parent = parent;

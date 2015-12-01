@@ -2,13 +2,13 @@
 
 namespace UniRx.Operators
 {
-    internal class Repeat<T> : OperatorObservableBase<T>
+    internal class RepeatObservable<T> : OperatorObservableBase<T>
     {
         readonly T value;
         readonly int? repeatCount;
         readonly IScheduler scheduler;
 
-        public Repeat(T value, int? repeatCount, IScheduler scheduler)
+        public RepeatObservable(T value, int? repeatCount, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
             this.value = value;
@@ -18,7 +18,7 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            observer = new RepeatObserver(observer, cancel);
+            observer = new Repeat(observer, cancel);
 
             if (repeatCount == null)
             {
@@ -50,9 +50,9 @@ namespace UniRx.Operators
             }
         }
 
-        class RepeatObserver : AutoDetachOperatorObserverBase<T>
+        class Repeat : AutoDetachOperatorObserverBase<T>
         {
-            public RepeatObserver(IObserver<T> observer, IDisposable cancel)
+            public Repeat(IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
             }

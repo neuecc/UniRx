@@ -3,21 +3,21 @@ using UniRx.Operators;
 
 namespace UniRx.Operators
 {
-    internal class Take<T> : OperatorObservableBase<T>
+    internal class TakeObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly int count;
         readonly TimeSpan duration;
         internal readonly IScheduler scheduler; // public for optimization check
 
-        public Take(IObservable<T> source, int count)
+        public TakeObservable(IObservable<T> source, int count)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.count = count;
         }
 
-        public Take(IObservable<T> source, TimeSpan duration, IScheduler scheduler)
+        public TakeObservable(IObservable<T> source, TimeSpan duration, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -36,7 +36,7 @@ namespace UniRx.Operators
             // use minimum one
             return (this.count <= count)
                 ? this
-                : new Take<T>(source, count);
+                : new TakeObservable<T>(source, count);
         }
 
         public IObservable<T> Combine(TimeSpan duration)
@@ -48,27 +48,27 @@ namespace UniRx.Operators
             // use minimum one
             return (this.duration <= duration)
                 ? this
-                : new Take<T>(source, duration, scheduler);
+                : new TakeObservable<T>(source, duration, scheduler);
         }
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
             if (scheduler == null)
             {
-                return source.Subscribe(new TakeObserver(this, observer, cancel));
+                return source.Subscribe(new Take(this, observer, cancel));
             }
             else
             {
-                return new TakeDurationObserver(this, observer, cancel).Run();
+                return new Take_(this, observer, cancel).Run();
             }
         }
 
-        class TakeObserver : OperatorObserverBase<T, T>
+        class Take : OperatorObserverBase<T, T>
         {
-            readonly Take<T> parent;
+            readonly TakeObservable<T> parent;
             int rest;
 
-            public TakeObserver(Take<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Take(TakeObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.rest = parent.count;
@@ -88,12 +88,12 @@ namespace UniRx.Operators
             }
         }
 
-        class TakeDurationObserver : OperatorObserverBase<T, T>
+        class Take_ : OperatorObserverBase<T, T>
         {
-            readonly Take<T> parent;
+            readonly TakeObservable<T> parent;
             readonly object gate = new object();
 
-            public TakeDurationObserver(Take<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Take_(TakeObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
             }

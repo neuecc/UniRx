@@ -3,12 +3,12 @@ using UniRx.Operators;
 
 namespace UniRx.Operators
 {
-    internal class Scan<TSource> : OperatorObservableBase<TSource>
+    internal class ScanObservable<TSource> : OperatorObservableBase<TSource>
     {
         readonly IObservable<TSource> source;
         readonly Func<TSource, TSource, TSource> accumulator;
 
-        public Scan(IObservable<TSource> source, Func<TSource, TSource, TSource> accumulator)
+        public ScanObservable(IObservable<TSource> source, Func<TSource, TSource, TSource> accumulator)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -17,16 +17,16 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<TSource> observer, IDisposable cancel)
         {
-            return source.Subscribe(new ScanObserver(this, observer, cancel));
+            return source.Subscribe(new Scan(this, observer, cancel));
         }
 
-        class ScanObserver : OperatorObserverBase<TSource, TSource>
+        class Scan : OperatorObserverBase<TSource, TSource>
         {
-            readonly Scan<TSource> parent;
+            readonly ScanObservable<TSource> parent;
             TSource accumulation;
             bool isFirst;
 
-            public ScanObserver(Scan<TSource> parent, IObserver<TSource> observer, IDisposable cancel) : base(observer, cancel)
+            public Scan(ScanObservable<TSource> parent, IObserver<TSource> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.isFirst = true;
@@ -57,13 +57,13 @@ namespace UniRx.Operators
         }
     }
 
-    internal class Scan<TSource, TAccumulate> : OperatorObservableBase<TAccumulate>
+    internal class ScanObservable<TSource, TAccumulate> : OperatorObservableBase<TAccumulate>
     {
         readonly IObservable<TSource> source;
         readonly TAccumulate seed;
         readonly Func<TAccumulate, TSource, TAccumulate> accumulator;
 
-        public Scan(IObservable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator)
+        public ScanObservable(IObservable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -73,16 +73,16 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<TAccumulate> observer, IDisposable cancel)
         {
-            return source.Subscribe(new ScanObserver(this, observer, cancel));
+            return source.Subscribe(new Scan(this, observer, cancel));
         }
 
-        class ScanObserver : OperatorObserverBase<TSource, TAccumulate>
+        class Scan : OperatorObserverBase<TSource, TAccumulate>
         {
-            readonly Scan<TSource, TAccumulate> parent;
+            readonly ScanObservable<TSource, TAccumulate> parent;
             TAccumulate accumulation;
             bool isFirst;
 
-            public ScanObserver(Scan<TSource, TAccumulate> parent, IObserver<TAccumulate> observer, IDisposable cancel) : base(observer, cancel)
+            public Scan(ScanObservable<TSource, TAccumulate> parent, IObserver<TAccumulate> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.isFirst = true;

@@ -11,12 +11,12 @@ namespace UniRx
             if (source == null) throw new ArgumentNullException("source");
 
             // optimize, don't double wrap
-            if (source is UniRx.Operators.AsObservable<T>)
+            if (source is UniRx.Operators.AsObservableObservable<T>)
             {
                 return source;
             }
 
-            return new AsObservable<T>(source);
+            return new AsObservableObservable<T>(source);
         }
 
         public static IObservable<T> ToObservable<T>(this IEnumerable<T> source)
@@ -26,12 +26,12 @@ namespace UniRx
 
         public static IObservable<T> ToObservable<T>(this IEnumerable<T> source, IScheduler scheduler)
         {
-            return new ToObservable<T>(source, scheduler);
+            return new ToObservableObservable<T>(source, scheduler);
         }
 
         public static IObservable<TResult> Cast<TSource, TResult>(this IObservable<TSource> source)
         {
-            return new Cast<TSource, TResult>(source);
+            return new CastObservable<TSource, TResult>(source);
         }
 
         /// <summary>
@@ -39,12 +39,12 @@ namespace UniRx
         /// </summary>
         public static IObservable<TResult> Cast<TSource, TResult>(this IObservable<TSource> source, TResult witness)
         {
-            return new Cast<TSource, TResult>(source);
+            return new CastObservable<TSource, TResult>(source);
         }
 
         public static IObservable<TResult> OfType<TSource, TResult>(this IObservable<TSource> source)
         {
-            return new OfType<TSource, TResult>(source);
+            return new OfTypeObservable<TSource, TResult>(source);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<TResult> OfType<TSource, TResult>(this IObservable<TSource> source, TResult witness)
         {
-            return new OfType<TSource, TResult>(source);
+            return new OfTypeObservable<TSource, TResult>(source);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<Unit> AsUnitObservable<T>(this IObservable<T> source)
         {
-            return new AsUnitObservable<T>(source);
+            return new AsUnitObservableObservable<T>(source);
         }
     }
 }

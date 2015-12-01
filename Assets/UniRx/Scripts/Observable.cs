@@ -37,18 +37,18 @@ namespace UniRx
         public static IObservable<T> Where<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
             // optimized path
-            var whereObservable = source as UniRx.Operators.Where<T>;
+            var whereObservable = source as UniRx.Operators.WhereObservable<T>;
             if (whereObservable != null)
             {
                 return whereObservable.CombinePredicate(predicate);
             }
 
-            return new Where<T>(source, predicate);
+            return new WhereObservable<T>(source, predicate);
         }
 
         public static IObservable<T> Where<T>(this IObservable<T> source, Func<T, int, bool> predicate)
         {
-            return new Where<T>(source, predicate);
+            return new WhereObservable<T>(source, predicate);
         }
 
         public static IObservable<TR> SelectMany<T, TR>(this IObservable<T> source, IObservable<TR> other)

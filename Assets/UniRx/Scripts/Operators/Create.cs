@@ -2,17 +2,17 @@
 
 namespace UniRx.Operators
 {
-    internal class Create<T> : OperatorObservableBase<T>
+    internal class CreateObservable<T> : OperatorObservableBase<T>
     {
         readonly Func<IObserver<T>, IDisposable> subscribe;
 
-        public Create(Func<IObserver<T>, IDisposable> subscribe)
+        public CreateObservable(Func<IObserver<T>, IDisposable> subscribe)
             : base(true) // fail safe
         {
             this.subscribe = subscribe;
         }
 
-        public Create(Func<IObserver<T>, IDisposable> subscribe, bool isRequiredSubscribeOnCurrentThread)
+        public CreateObservable(Func<IObserver<T>, IDisposable> subscribe, bool isRequiredSubscribeOnCurrentThread)
             : base(isRequiredSubscribeOnCurrentThread)
         {
             this.subscribe = subscribe;
@@ -20,13 +20,13 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            observer = new CreateObserver(observer, cancel);
+            observer = new Create(observer, cancel);
             return subscribe(observer) ?? Disposable.Empty;
         }
 
-        class CreateObserver : AutoDetachOperatorObserverBase<T>
+        class Create : AutoDetachOperatorObserverBase<T>
         {
-            public CreateObserver(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Create(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
             }
 

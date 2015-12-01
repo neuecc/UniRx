@@ -3,11 +3,11 @@ using UniRx.Operators;
 
 namespace UniRx.Operators
 {
-    internal class AsObservable<T> : OperatorObservableBase<T>
+    internal class AsObservableObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
 
-        public AsObservable(IObservable<T> source)
+        public AsObservableObservable(IObservable<T> source)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -15,12 +15,12 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            return source.Subscribe(new AsObservableObserver(observer, cancel));
+            return source.Subscribe(new AsObservable(observer, cancel));
         }
 
-        class AsObservableObserver : OperatorObserverBase<T, T>
+        class AsObservable : OperatorObserverBase<T, T>
         {
-            public AsObservableObserver(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public AsObservable(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
             }
 

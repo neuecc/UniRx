@@ -16,13 +16,13 @@ namespace UniRx
             if (count == 0) return Empty<T>();
 
             // optimize .Take(count).Take(count)
-            var take = source as Take<T>;
+            var take = source as TakeObservable<T>;
             if (take != null && take.scheduler == null)
             {
                 return take.Combine(count);
             }
 
-            return new Take<T>(source, count);
+            return new TakeObservable<T>(source, count);
         }
 
         public static IObservable<T> Take<T>(this IObservable<T> source, TimeSpan duration)
@@ -36,13 +36,13 @@ namespace UniRx
             if (scheduler == null) throw new ArgumentNullException("scheduler");
 
             // optimize .Take(duration).Take(duration)
-            var take = source as Take<T>;
+            var take = source as TakeObservable<T>;
             if (take != null && take.scheduler == scheduler)
             {
                 return take.Combine(duration);
             }
 
-            return new Take<T>(source, duration, scheduler);
+            return new TakeObservable<T>(source, duration, scheduler);
         }
 
         public static IObservable<T> TakeWhile<T>(this IObservable<T> source, Func<T, bool> predicate)
@@ -614,59 +614,59 @@ namespace UniRx
 
         public static IObservable<T> Last<T>(this IObservable<T> source)
         {
-            return new Last<T>(source, false);
+            return new LastObservable<T>(source, false);
         }
         public static IObservable<T> Last<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return new Last<T>(source, predicate, false);
+            return new LastObservable<T>(source, predicate, false);
         }
 
         public static IObservable<T> LastOrDefault<T>(this IObservable<T> source)
         {
-            return new Last<T>(source, true);
+            return new LastObservable<T>(source, true);
         }
 
         public static IObservable<T> LastOrDefault<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return new Last<T>(source, predicate, true);
+            return new LastObservable<T>(source, predicate, true);
         }
 
         public static IObservable<T> First<T>(this IObservable<T> source)
         {
-            return new First<T>(source, false);
+            return new FirstObservable<T>(source, false);
         }
         public static IObservable<T> First<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return new First<T>(source, predicate, false);
+            return new FirstObservable<T>(source, predicate, false);
         }
 
         public static IObservable<T> FirstOrDefault<T>(this IObservable<T> source)
         {
-            return new First<T>(source, true);
+            return new FirstObservable<T>(source, true);
         }
 
         public static IObservable<T> FirstOrDefault<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return new First<T>(source, predicate, true);
+            return new FirstObservable<T>(source, predicate, true);
         }
 
         public static IObservable<T> Single<T>(this IObservable<T> source)
         {
-            return new Single<T>(source, false);
+            return new SingleObservable<T>(source, false);
         }
         public static IObservable<T> Single<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return new Single<T>(source, predicate, false);
+            return new SingleObservable<T>(source, predicate, false);
         }
 
         public static IObservable<T> SingleOrDefault<T>(this IObservable<T> source)
         {
-            return new Single<T>(source, true);
+            return new SingleObservable<T>(source, true);
         }
 
         public static IObservable<T> SingleOrDefault<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return new Single<T>(source, predicate, true);
+            return new SingleObservable<T>(source, predicate, true);
         }
     }
 }

@@ -15,11 +15,11 @@ namespace UniRx
             // need compare for avoid iOS AOT
             if (onNext == Stubs.Ignore<T>)
             {
-                return new SubscribeObserver_<T>(onError, onCompleted);
+                return new Subscribe_<T>(onError, onCompleted);
             }
             else
             {
-                return new SubscribeObserver<T>(onNext, onError, onCompleted);
+                return new Subscribe<T>(onNext, onError, onCompleted);
             }
         }
 
@@ -125,7 +125,7 @@ namespace UniRx
         }
 
         // same as AnonymousObserver...
-        class SubscribeObserver<T> : IObserver<T>, ISafeObserver
+        class Subscribe<T> : IObserver<T>, ISafeObserver
         {
             readonly Action<T> onNext;
             readonly Action<Exception> onError;
@@ -133,7 +133,7 @@ namespace UniRx
 
             int isStopped = 0;
 
-            public SubscribeObserver(Action<T> onNext, Action<Exception> onError, Action onCompleted)
+            public Subscribe(Action<T> onNext, Action<Exception> onError, Action onCompleted)
             {
                 this.onNext = onNext;
                 this.onError = onError;
@@ -167,14 +167,14 @@ namespace UniRx
         }
 
         // same as EmptyOnNextAnonymousObserver...
-        class SubscribeObserver_<T> : IObserver<T>, ISafeObserver
+        class Subscribe_<T> : IObserver<T>, ISafeObserver
         {
             readonly Action<Exception> onError;
             readonly Action onCompleted;
 
             int isStopped = 0;
 
-            public SubscribeObserver_(Action<Exception> onError, Action onCompleted)
+            public Subscribe_(Action<Exception> onError, Action onCompleted)
             {
                 this.onError = onError;
                 this.onCompleted = onCompleted;

@@ -2,9 +2,9 @@
 
 namespace UniRx.Operators
 {
-    internal class Never<T> : OperatorObservableBase<T>
+    internal class NeverObservable<T> : OperatorObservableBase<T>
     {
-        public Never()
+        public NeverObservable()
             : base(false)
         {
         }

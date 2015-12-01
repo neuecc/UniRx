@@ -2,14 +2,14 @@
 
 namespace UniRx.Operators
 {
-    internal class Timer : OperatorObservableBase<long>
+    internal class TimerObservable : OperatorObservableBase<long>
     {
         readonly DateTimeOffset? dueTimeA;
         readonly TimeSpan? dueTimeB;
         readonly TimeSpan? period;
         readonly IScheduler scheduler;
 
-        public Timer(DateTimeOffset dueTime, TimeSpan? period, IScheduler scheduler)
+        public TimerObservable(DateTimeOffset dueTime, TimeSpan? period, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
             this.dueTimeA = dueTime;
@@ -17,7 +17,7 @@ namespace UniRx.Operators
             this.scheduler = scheduler;
         }
 
-        public Timer(TimeSpan dueTime, TimeSpan? period, IScheduler scheduler)
+        public TimerObservable(TimeSpan dueTime, TimeSpan? period, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
             this.dueTimeB = dueTime;
@@ -27,7 +27,7 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<long> observer, IDisposable cancel)
         {
-            var timerObserver = new TimerObserver(observer, cancel);
+            var timerObserver = new Timer(observer, cancel);
 
             var dueTime = (dueTimeA != null)
                 ? dueTimeA.Value - scheduler.Now
@@ -81,11 +81,11 @@ namespace UniRx.Operators
             }
         }
 
-        class TimerObserver : AutoDetachOperatorObserverBase<long>
+        class Timer : AutoDetachOperatorObserverBase<long>
         {
             long index = 0;
 
-            public TimerObserver(IObserver<long> observer, IDisposable cancel)
+            public Timer(IObserver<long> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
             }

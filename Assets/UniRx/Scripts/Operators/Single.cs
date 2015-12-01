@@ -2,20 +2,20 @@
 
 namespace UniRx.Operators
 {
-    internal class Single<T> : OperatorObservableBase<T>
+    internal class SingleObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly bool useDefault;
         readonly Func<T, bool> predicate;
 
-        public Single(IObservable<T> source, bool useDefault)
+        public SingleObservable(IObservable<T> source, bool useDefault)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.useDefault = useDefault;
         }
 
-        public Single(IObservable<T> source, Func<T, bool> predicate, bool useDefault)
+        public SingleObservable(IObservable<T> source, Func<T, bool> predicate, bool useDefault)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -27,21 +27,21 @@ namespace UniRx.Operators
         {
             if (predicate == null)
             {
-                return source.Subscribe(new SingleObserver(this, observer, cancel));
+                return source.Subscribe(new Single(this, observer, cancel));
             }
             else
             {
-                return source.Subscribe(new SingleObserverWithPredicate(this, observer, cancel));
+                return source.Subscribe(new Single_(this, observer, cancel));
             }
         }
 
-        class SingleObserver : OperatorObserverBase<T, T>
+        class Single : OperatorObserverBase<T, T>
         {
-            readonly Single<T> parent;
+            readonly SingleObservable<T> parent;
             bool seenValue;
             T lastValue;
 
-            public SingleObserver(Single<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Single(SingleObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.seenValue = false;
@@ -89,13 +89,13 @@ namespace UniRx.Operators
             }
         }
 
-        class SingleObserverWithPredicate : OperatorObserverBase<T, T>
+        class Single_ : OperatorObserverBase<T, T>
         {
-            readonly Single<T> parent;
+            readonly SingleObservable<T> parent;
             bool seenValue;
             T lastValue;
 
-            public SingleObserverWithPredicate(Single<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Single_(SingleObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.seenValue = false;

@@ -2,13 +2,13 @@
 
 namespace UniRx.Operators
 {
-    internal class Range : OperatorObservableBase<int>
+    internal class RangeObservable : OperatorObservableBase<int>
     {
         readonly int start;
         readonly int count;
         readonly IScheduler scheduler;
 
-        public Range(int start, int count, IScheduler scheduler)
+        public RangeObservable(int start, int count, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
             if (count < 0) throw new ArgumentOutOfRangeException("count < 0");
@@ -20,7 +20,7 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<int> observer, IDisposable cancel)
         {
-            observer = new RangeObserver(observer, cancel);
+            observer = new Range(observer, cancel);
 
             var i = 0;
             return scheduler.Schedule((Action self) =>
@@ -39,9 +39,9 @@ namespace UniRx.Operators
             });
         }
 
-        class RangeObserver : AutoDetachOperatorObserverBase<int>
+        class Range : AutoDetachOperatorObserverBase<int>
         {
-            public RangeObserver(IObserver<int> observer, IDisposable cancel)
+            public Range(IObserver<int> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
             }

@@ -3,14 +3,14 @@ using UniRx.Operators;
 
 namespace UniRx.Operators
 {
-    internal class RefCount<T> : OperatorObservableBase<T>
+    internal class RefCountObservable<T> : OperatorObservableBase<T>
     {
         readonly IConnectableObservable<T> source;
         readonly object gate = new object();
         int refCount = 0;
         IDisposable connection;
 
-        public RefCount(IConnectableObservable<T> source)
+        public RefCountObservable(IConnectableObservable<T> source)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -18,14 +18,14 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            return new RefCountObserver(this, observer, cancel).Run();
+            return new RefCount(this, observer, cancel).Run();
         }
 
-        class RefCountObserver : OperatorObserverBase<T, T>
+        class RefCount : OperatorObserverBase<T, T>
         {
-            readonly RefCount<T> parent;
+            readonly RefCountObservable<T> parent;
 
-            public RefCountObserver(RefCount<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public RefCount(RefCountObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
             }

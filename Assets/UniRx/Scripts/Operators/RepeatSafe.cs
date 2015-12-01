@@ -4,29 +4,61 @@ using System.Collections.Generic;
 
 namespace UniRx.Operators
 {
-    internal class RepeatSafe<T> : OperatorObservableBase<T>
+    internal class RepeatSafeObservable<T> : OperatorObservableBase<T>
     {
         readonly IEnumerable<IObservable<T>> sources;
 
-        public RepeatSafe(IEnumerable<IObservable<T>> sources, bool isRequiredSubscribeOnCurrentThread)
+        public RepeatSafeObservable(IEnumerable<IObservable<T>> sources, bool isRequiredSubscribeOnCurrentThread)
             : base(isRequiredSubscribeOnCurrentThread)
         {
             this.sources = sources;
         }
 
-        // need to make RepeatSafeObserver but difficult...
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            var isDisposed = false;
-            var isRunNext = false;
-            var e = sources.AsSafeEnumerable().GetEnumerator();
-            var subscription = new SerialDisposable();
-            var gate = new object();
+            return new RepeatSafe(this, observer, cancel).Run();
+        }
 
-            var schedule = Scheduler.DefaultSchedulers.TailRecursion.Schedule(self =>
+        class RepeatSafe : OperatorObserverBase<T, T>
+        {
+            readonly RepeatSafeObservable<T> parent;
+            readonly object gate = new object();
+
+            IEnumerator<IObservable<T>> e;
+            SerialDisposable subscription;
+            Action nextSelf;
+            bool isDisposed;
+            bool isRunNext;
+
+            public RepeatSafe(RepeatSafeObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            {
+                this.parent = parent;
+            }
+
+            public IDisposable Run()
+            {
+                isDisposed = false;
+                isRunNext = false;
+                e = parent.sources.AsSafeEnumerable().GetEnumerator();
+                subscription = new SerialDisposable();
+
+                var schedule = Scheduler.DefaultSchedulers.TailRecursion.Schedule(RecursiveRun);
+
+                return StableCompositeDisposable.Create(schedule, subscription, Disposable.Create(() =>
+                {
+                    lock (gate)
+                    {
+                        isDisposed = true;
+                        e.Dispose();
+                    }
+                }));
+            }
+
+            void RecursiveRun(Action self)
             {
                 lock (gate)
                 {
+                    this.nextSelf = self;
                     if (isDisposed) return;
 
                     var current = default(IObservable<T>);
@@ -67,38 +99,32 @@ namespace UniRx.Operators
                     var source = e.Current;
                     var d = new SingleAssignmentDisposable();
                     subscription.Disposable = d;
-
-                    d.Disposable = source.Subscribe(x =>
-                    {
-                        isRunNext = true;
-                        observer.OnNext(x);
-                    }, observer.OnError, () =>
-                    {
-                        if (isRunNext && !isDisposed)
-                        {
-                            isRunNext = false;
-                            self();
-                        }
-                        else
-                        {
-                            e.Dispose();
-                            if (!isDisposed)
-                            {
-                                observer.OnCompleted();
-                            }
-                        }
-                    });
+                    d.Disposable = source.Subscribe(this);
                 }
-            });
+            }
 
-            return StableCompositeDisposable.Create(schedule, subscription, Disposable.Create(() =>
+            public override void OnNext(T value)
             {
-                lock (gate)
+                isRunNext = true;
+                base.observer.OnNext(value);
+            }
+
+            public override void OnCompleted()
+            {
+                if (isRunNext && !isDisposed)
                 {
-                    isDisposed = true;
-                    e.Dispose();
+                    isRunNext = false;
+                    this.nextSelf();
                 }
-            }));
+                else
+                {
+                    e.Dispose();
+                    if (!isDisposed)
+                    {
+                        observer.OnCompleted();
+                    }
+                }
+            }
         }
     }
 }

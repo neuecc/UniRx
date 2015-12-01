@@ -5,18 +5,18 @@ using System.Text;
 
 namespace UniRx.Operators
 {
-    public class Merge<T> : OperatorObservableBase<T>
+    public class MergeObservable<T> : OperatorObservableBase<T>
     {
         private readonly IObservable<IObservable<T>> sources;
         private readonly int maxConcurrent;
 
-        public Merge(IObservable<IObservable<T>> sources)
+        public MergeObservable(IObservable<IObservable<T>> sources)
             : base(false)
         {
             this.sources = sources;
         }
 
-        public Merge(IObservable<IObservable<T>> sources, int maxConcurrent)
+        public MergeObservable(IObservable<IObservable<T>> sources, int maxConcurrent)
             : base(false)
         {
             this.sources = sources;
@@ -37,14 +37,14 @@ namespace UniRx.Operators
 
         class MergeOuterObserver : OperatorObserverBase<IObservable<T>, T>
         {
-            readonly Merge<T> parent;
+            readonly MergeObservable<T> parent;
 
             CompositeDisposable collectionDisposable;
             SingleAssignmentDisposable sourceDisposable;
             object gate = new object();
             bool isStopped = false;
 
-            public MergeOuterObserver(Merge<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public MergeOuterObserver(MergeObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
             }
@@ -63,7 +63,7 @@ namespace UniRx.Operators
             {
                 var disposable = new SingleAssignmentDisposable();
                 collectionDisposable.Add(disposable);
-                var collectionObserver = new MergeObserver(this, disposable);
+                var collectionObserver = new Merge(this, disposable);
                 disposable.Disposable = value.Subscribe(collectionObserver);
             }
 
@@ -91,12 +91,12 @@ namespace UniRx.Operators
                 }
             }
 
-            class MergeObserver : OperatorObserverBase<T, T>
+            class Merge : OperatorObserverBase<T, T>
             {
                 readonly MergeOuterObserver parent;
                 readonly IDisposable cancel;
 
-                public MergeObserver(MergeOuterObserver parent, IDisposable cancel)
+                public Merge(MergeOuterObserver parent, IDisposable cancel)
                     : base(parent.observer, cancel)
                 {
                     this.parent = parent;
@@ -135,7 +135,7 @@ namespace UniRx.Operators
 
         class MergeConcurrentObserver : OperatorObserverBase<IObservable<T>, T>
         {
-            readonly Merge<T> parent;
+            readonly MergeObservable<T> parent;
 
             CompositeDisposable collectionDisposable;
             SingleAssignmentDisposable sourceDisposable;
@@ -146,7 +146,7 @@ namespace UniRx.Operators
             Queue<IObservable<T>> q;
             int activeCount;
 
-            public MergeConcurrentObserver(Merge<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public MergeConcurrentObserver(MergeObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
             }
@@ -208,16 +208,16 @@ namespace UniRx.Operators
             {
                 var disposable = new SingleAssignmentDisposable();
                 collectionDisposable.Add(disposable);
-                var collectionObserver = new MergeObserver(this, disposable);
+                var collectionObserver = new Merge(this, disposable);
                 disposable.Disposable = innerSource.Subscribe(collectionObserver);
             }
 
-            class MergeObserver : OperatorObserverBase<T, T>
+            class Merge : OperatorObserverBase<T, T>
             {
                 readonly MergeConcurrentObserver parent;
                 readonly IDisposable cancel;
 
-                public MergeObserver(MergeConcurrentObserver parent, IDisposable cancel)
+                public Merge(MergeConcurrentObserver parent, IDisposable cancel)
                     : base(parent.observer, cancel)
                 {
                     this.parent = parent;

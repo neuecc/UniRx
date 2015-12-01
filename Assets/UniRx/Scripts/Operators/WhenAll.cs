@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 namespace UniRx.Operators
 {
-    internal class WhenAll<T> : OperatorObservableBase<T[]>
+    internal class WhenAllObservable<T> : OperatorObservableBase<T[]>
     {
         readonly IObservable<T>[] sources;
         readonly IEnumerable<IObservable<T>> sourcesEnumerable;
 
-        public WhenAll(IObservable<T>[] sources)
+        public WhenAllObservable(IObservable<T>[] sources)
             : base(false)
         {
             this.sources = sources;
         }
 
-        public WhenAll(IEnumerable<IObservable<T>> sources)
+        public WhenAllObservable(IEnumerable<IObservable<T>> sources)
             : base(false)
         {
             this.sourcesEnumerable = sources;
@@ -24,7 +24,7 @@ namespace UniRx.Operators
         {
             if (sources != null)
             {
-                return new WhenAllObserver(this.sources, observer, cancel).Run();
+                return new WhenAll(this.sources, observer, cancel).Run();
             }
             else
             {
@@ -37,7 +37,7 @@ namespace UniRx.Operators
             }
         }
 
-        class WhenAllObserver : OperatorObserverBase<T[], T[]>
+        class WhenAll : OperatorObserverBase<T[], T[]>
         {
             readonly IObservable<T>[] sources;
             readonly object gate = new object();
@@ -45,7 +45,7 @@ namespace UniRx.Operators
             int length;
             T[] values;
 
-            public WhenAllObserver(IObservable<T>[] sources, IObserver<T[]> observer, IDisposable cancel)
+            public WhenAll(IObservable<T>[] sources, IObserver<T[]> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.sources = sources;
@@ -84,11 +84,11 @@ namespace UniRx.Operators
 
             class WhenAllCollectionObserver : IObserver<T>
             {
-                readonly WhenAllObserver parent;
+                readonly WhenAll parent;
                 readonly int index;
                 bool isCompleted = false;
 
-                public WhenAllCollectionObserver(WhenAllObserver parent, int index)
+                public WhenAllCollectionObserver(WhenAll parent, int index)
                 {
                     this.parent = parent;
                     this.index = index;

@@ -11,52 +11,52 @@ namespace UniRx
 
         public static IObservable<long> Interval(TimeSpan period)
         {
-            return new Timer(period, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new TimerObservable(period, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<long> Interval(TimeSpan period, IScheduler scheduler)
         {
-            return new Timer(period, period, scheduler);
+            return new TimerObservable(period, period, scheduler);
         }
 
         public static IObservable<long> Timer(TimeSpan dueTime)
         {
-            return new Timer(dueTime, null, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new TimerObservable(dueTime, null, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<long> Timer(DateTimeOffset dueTime)
         {
-            return new Timer(dueTime, null, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new TimerObservable(dueTime, null, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<long> Timer(TimeSpan dueTime, TimeSpan period)
         {
-            return new Timer(dueTime, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new TimerObservable(dueTime, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<long> Timer(DateTimeOffset dueTime, TimeSpan period)
         {
-            return new Timer(dueTime, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new TimerObservable(dueTime, period, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<long> Timer(TimeSpan dueTime, IScheduler scheduler)
         {
-            return new Timer(dueTime, null, scheduler);
+            return new TimerObservable(dueTime, null, scheduler);
         }
 
         public static IObservable<long> Timer(DateTimeOffset dueTime, IScheduler scheduler)
         {
-            return new Timer(dueTime, null, scheduler);
+            return new TimerObservable(dueTime, null, scheduler);
         }
 
         public static IObservable<long> Timer(TimeSpan dueTime, TimeSpan period, IScheduler scheduler)
         {
-            return new Timer(dueTime, period, scheduler);
+            return new TimerObservable(dueTime, period, scheduler);
         }
 
         public static IObservable<long> Timer(DateTimeOffset dueTime, TimeSpan period, IScheduler scheduler)
         {
-            return new Timer(dueTime, period, scheduler);
+            return new TimerObservable(dueTime, period, scheduler);
         }
 
         public static IObservable<Timestamped<TSource>> Timestamp<TSource>(this IObservable<TSource> source)
@@ -66,7 +66,7 @@ namespace UniRx
 
         public static IObservable<Timestamped<TSource>> Timestamp<TSource>(this IObservable<TSource> source, IScheduler scheduler)
         {
-            return new Timestamp<TSource>(source, scheduler);
+            return new TimestampObservable<TSource>(source, scheduler);
         }
 
         public static IObservable<UniRx.TimeInterval<TSource>> TimeInterval<TSource>(this IObservable<TSource> source)
@@ -76,7 +76,7 @@ namespace UniRx
 
         public static IObservable<UniRx.TimeInterval<TSource>> TimeInterval<TSource>(this IObservable<TSource> source, IScheduler scheduler)
         {
-            return new UniRx.Operators.TimeInterval<TSource>(source, scheduler);
+            return new UniRx.Operators.TimeIntervalObservable<TSource>(source, scheduler);
         }
 
         public static IObservable<T> Delay<T>(this IObservable<T> source, TimeSpan dueTime)

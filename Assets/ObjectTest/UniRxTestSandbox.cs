@@ -384,7 +384,14 @@ namespace UniRx.ObjectTest
 
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StackTraceCheck2"))
             {
-                
+                var rxProp = new ReactiveProperty<int>();
+                rxProp
+                .Where(x => x % 2 == 0)
+                .Select(x => x)
+                .Take(50)
+                .Subscribe(x => Debug.Log(x));
+
+                rxProp.Value = 100;
             }
             ypos += 100;
 

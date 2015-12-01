@@ -2,11 +2,11 @@
 
 namespace UniRx.Operators
 {
-    internal class Empty<T> : OperatorObservableBase<T>
+    internal class EmptyObservable<T> : OperatorObservableBase<T>
     {
         readonly IScheduler scheduler;
 
-        public Empty(IScheduler scheduler)
+        public EmptyObservable(IScheduler scheduler)
             : base(false)
         {
             this.scheduler = scheduler;
@@ -14,7 +14,7 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            observer = new EmptyObserver(observer, cancel);
+            observer = new Empty(observer, cancel);
 
             if (scheduler == Scheduler.Immediate)
             {
@@ -27,9 +27,9 @@ namespace UniRx.Operators
             }
         }
 
-        class EmptyObserver : AutoDetachOperatorObserverBase<T>
+        class Empty : AutoDetachOperatorObserverBase<T>
         {
-            public EmptyObserver(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Empty(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
             }
 

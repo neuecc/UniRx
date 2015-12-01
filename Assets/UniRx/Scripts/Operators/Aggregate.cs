@@ -3,12 +3,12 @@ using UniRx.Operators;
 
 namespace UniRx.Operators
 {
-    internal class Aggregate<TSource> : OperatorObservableBase<TSource>
+    internal class AggregateObservable<TSource> : OperatorObservableBase<TSource>
     {
         readonly IObservable<TSource> source;
         readonly Func<TSource, TSource, TSource> accumulator;
 
-        public Aggregate(IObservable<TSource> source, Func<TSource, TSource, TSource> accumulator)
+        public AggregateObservable(IObservable<TSource> source, Func<TSource, TSource, TSource> accumulator)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -17,16 +17,16 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<TSource> observer, IDisposable cancel)
         {
-            return source.Subscribe(new AggregateObserver(this, observer, cancel));
+            return source.Subscribe(new Aggregate(this, observer, cancel));
         }
 
-        class AggregateObserver : OperatorObserverBase<TSource, TSource>
+        class Aggregate : OperatorObserverBase<TSource, TSource>
         {
-            readonly Aggregate<TSource> parent;
+            readonly AggregateObservable<TSource> parent;
             TSource accumulation;
             bool seenValue;
 
-            public AggregateObserver(Aggregate<TSource> parent, IObserver<TSource> observer, IDisposable cancel) : base(observer, cancel)
+            public Aggregate(AggregateObservable<TSource> parent, IObserver<TSource> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.seenValue = false;
@@ -66,13 +66,13 @@ namespace UniRx.Operators
         }
     }
 
-    internal class Aggregate<TSource, TAccumulate> : OperatorObservableBase<TAccumulate>
+    internal class AggregateObservable<TSource, TAccumulate> : OperatorObservableBase<TAccumulate>
     {
         readonly IObservable<TSource> source;
         readonly TAccumulate seed;
         readonly Func<TAccumulate, TSource, TAccumulate> accumulator;
 
-        public Aggregate(IObservable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator)
+        public AggregateObservable(IObservable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -82,15 +82,15 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<TAccumulate> observer, IDisposable cancel)
         {
-            return source.Subscribe(new AggregateObserver(this, observer, cancel));
+            return source.Subscribe(new Aggregate(this, observer, cancel));
         }
 
-        class AggregateObserver : OperatorObserverBase<TSource, TAccumulate>
+        class Aggregate : OperatorObserverBase<TSource, TAccumulate>
         {
-            readonly Aggregate<TSource, TAccumulate> parent;
+            readonly AggregateObservable<TSource, TAccumulate> parent;
             TAccumulate accumulation;
 
-            public AggregateObserver(Aggregate<TSource, TAccumulate> parent, IObserver<TAccumulate> observer, IDisposable cancel) : base(observer, cancel)
+            public Aggregate(AggregateObservable<TSource, TAccumulate> parent, IObserver<TAccumulate> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.accumulation = parent.seed;
@@ -117,14 +117,14 @@ namespace UniRx.Operators
         }
     }
 
-    internal class Aggregate<TSource, TAccumulate, TResult> : OperatorObservableBase<TResult>
+    internal class AggregateObservable<TSource, TAccumulate, TResult> : OperatorObservableBase<TResult>
     {
         readonly IObservable<TSource> source;
         readonly TAccumulate seed;
         readonly Func<TAccumulate, TSource, TAccumulate> accumulator;
         readonly Func<TAccumulate, TResult> resultSelector;
 
-        public Aggregate(IObservable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator, Func<TAccumulate, TResult> resultSelector)
+        public AggregateObservable(IObservable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> accumulator, Func<TAccumulate, TResult> resultSelector)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -135,15 +135,15 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<TResult> observer, IDisposable cancel)
         {
-            return source.Subscribe(new AggregateObserver(this, observer, cancel));
+            return source.Subscribe(new Aggregate(this, observer, cancel));
         }
 
-        class AggregateObserver : OperatorObserverBase<TSource, TResult>
+        class Aggregate : OperatorObserverBase<TSource, TResult>
         {
-            readonly Aggregate<TSource, TAccumulate, TResult> parent;
+            readonly AggregateObservable<TSource, TAccumulate, TResult> parent;
             TAccumulate accumulation;
 
-            public AggregateObserver(Aggregate<TSource, TAccumulate, TResult> parent, IObserver<TResult> observer, IDisposable cancel) : base(observer, cancel)
+            public Aggregate(AggregateObservable<TSource, TAccumulate, TResult> parent, IObserver<TResult> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.accumulation = parent.seed;

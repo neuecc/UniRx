@@ -3,20 +3,20 @@ using UniRx.Operators;
 
 namespace UniRx.Operators
 {
-    internal class First<T> : OperatorObservableBase<T>
+    internal class FirstObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly bool useDefault;
         readonly Func<T, bool> predicate;
 
-        public First(IObservable<T> source, bool useDefault)
+        public FirstObservable(IObservable<T> source, bool useDefault)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.useDefault = useDefault;
         }
 
-        public First(IObservable<T> source, Func<T, bool> predicate, bool useDefault)
+        public FirstObservable(IObservable<T> source, Func<T, bool> predicate, bool useDefault)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -28,20 +28,20 @@ namespace UniRx.Operators
         {
             if (predicate == null)
             {
-                return source.Subscribe(new FirstObserver(this, observer, cancel));
+                return source.Subscribe(new First(this, observer, cancel));
             }
             else
             {
-                return source.Subscribe(new FirstObserverWithPredicate(this, observer, cancel));
+                return source.Subscribe(new First_(this, observer, cancel));
             }
         }
 
-        class FirstObserver : OperatorObserverBase<T, T>
+        class First : OperatorObserverBase<T, T>
         {
-            readonly First<T> parent;
+            readonly FirstObservable<T> parent;
             bool notPublished;
 
-            public FirstObserver(First<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public First(FirstObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.notPublished = true;
@@ -82,12 +82,13 @@ namespace UniRx.Operators
             }
         }
 
-        class FirstObserverWithPredicate : OperatorObserverBase<T, T>
+        // with predicate
+        class First_ : OperatorObserverBase<T, T>
         {
-            readonly First<T> parent;
+            readonly FirstObservable<T> parent;
             bool notPublished;
 
-            public FirstObserverWithPredicate(First<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public First_(FirstObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.notPublished = true;

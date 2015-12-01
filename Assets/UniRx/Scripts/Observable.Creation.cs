@@ -13,7 +13,7 @@ namespace UniRx
         {
             if (subscribe == null) throw new ArgumentNullException("subscribe");
 
-            return new Create<T>(subscribe);
+            return new CreateObservable<T>(subscribe);
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace UniRx
         {
             if (subscribe == null) throw new ArgumentNullException("subscribe");
 
-            return new Create<T>(subscribe, isRequiredSubscribeOnCurrentThread);
+            return new CreateObservable<T>(subscribe, isRequiredSubscribeOnCurrentThread);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Empty<T>(IScheduler scheduler)
         {
-            return new Empty<T>(scheduler);
+            return new EmptyObservable<T>(scheduler);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Never<T>()
         {
-            return new Never<T>();
+            return new NeverObservable<T>();
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Return<T>(T value, IScheduler scheduler)
         {
-            return new Return<T>(value, scheduler);
+            return new ReturnObservable<T>(value, scheduler);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Throw<T>(Exception error, IScheduler scheduler)
         {
-            return new Throw<T>(error, scheduler);
+            return new ThrowObservable<T>(error, scheduler);
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace UniRx
 
         public static IObservable<int> Range(int start, int count, IScheduler scheduler)
         {
-            return new Range(start, count, scheduler);
+            return new RangeObservable(start, count, scheduler);
         }
 
         public static IObservable<T> Repeat<T>(T value)
@@ -149,7 +149,7 @@ namespace UniRx
         {
             if (scheduler == null) throw new ArgumentNullException("scheduler");
 
-            return new Repeat<T>(value, null, scheduler);
+            return new RepeatObservable<T>(value, null, scheduler);
         }
 
         public static IObservable<T> Repeat<T>(T value, int repeatCount)
@@ -162,7 +162,7 @@ namespace UniRx
             if (repeatCount < 0) throw new ArgumentOutOfRangeException("repeatCount");
             if (scheduler == null) throw new ArgumentNullException("scheduler");
 
-            return new Repeat<T>(value, repeatCount, scheduler);
+            return new RepeatObservable<T>(value, repeatCount, scheduler);
         }
 
         public static IObservable<T> Repeat<T>(this IObservable<T> source)
@@ -183,12 +183,12 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> RepeatSafe<T>(this IObservable<T> source)
         {
-            return new RepeatSafe<T>(RepeatInfinite(source), source.IsRequiredSubscribeOnCurrentThread());
+            return new RepeatSafeObservable<T>(RepeatInfinite(source), source.IsRequiredSubscribeOnCurrentThread());
         }
 
         public static IObservable<T> Defer<T>(Func<IObservable<T>> observableFactory)
         {
-            return new Defer<T>(observableFactory);
+            return new DeferObservable<T>(observableFactory);
         }
 
         public static IObservable<T> Start<T>(Func<T> function)

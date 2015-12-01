@@ -2,12 +2,12 @@
 
 namespace UniRx.Operators
 {
-    internal class Return<T> : OperatorObservableBase<T>
+    internal class ReturnObservable<T> : OperatorObservableBase<T>
     {
         readonly T value;
         readonly IScheduler scheduler;
 
-        public Return(T value, IScheduler scheduler)
+        public ReturnObservable(T value, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
             this.value = value;
@@ -16,7 +16,7 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            observer = new ReturnObserver(observer, cancel);
+            observer = new Return(observer, cancel);
 
             if (scheduler == Scheduler.Immediate)
             {
@@ -34,9 +34,9 @@ namespace UniRx.Operators
             }
         }
 
-        class ReturnObserver : AutoDetachOperatorObserverBase<T>
+        class Return : AutoDetachOperatorObserverBase<T>
         {
-            public ReturnObserver(IObserver<T> observer, IDisposable cancel) 
+            public Return(IObserver<T> observer, IDisposable cancel) 
                 : base(observer, cancel)
             {
             }

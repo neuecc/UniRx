@@ -2,12 +2,12 @@
 
 namespace UniRx.Operators
 {
-    internal class Timestamp<T> : OperatorObservableBase<Timestamped<T>>
+    internal class TimestampObservable<T> : OperatorObservableBase<Timestamped<T>>
     {
         readonly IObservable<T> source;
         readonly IScheduler scheduler;
 
-        public Timestamp(IObservable<T> source, IScheduler scheduler)
+        public TimestampObservable(IObservable<T> source, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -16,14 +16,14 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<Timestamped<T>> observer, IDisposable cancel)
         {
-            return source.Subscribe(new TimestampObserver(this, observer, cancel));
+            return source.Subscribe(new Timestamp(this, observer, cancel));
         }
 
-        class TimestampObserver : OperatorObserverBase<T, Timestamped<T>>
+        class Timestamp : OperatorObserverBase<T, Timestamped<T>>
         {
-            readonly Timestamp<T> parent;
+            readonly TimestampObservable<T> parent;
 
-            public TimestampObserver(Timestamp<T> parent, IObserver<Timestamped<T>> observer, IDisposable cancel)
+            public Timestamp(TimestampObservable<T> parent, IObserver<Timestamped<T>> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.parent = parent;

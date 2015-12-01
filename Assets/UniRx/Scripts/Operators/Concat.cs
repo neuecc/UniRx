@@ -5,11 +5,11 @@ namespace UniRx.Operators
 {
     // needs to more improvement
 
-    public class Concat<T> : OperatorObservableBase<T>
+    public class ConcatObservable<T> : OperatorObservableBase<T>
     {
         readonly IEnumerable<IObservable<T>> sources;
 
-        public Concat(IEnumerable<IObservable<T>> sources)
+        public ConcatObservable(IEnumerable<IObservable<T>> sources)
             : base(true)
         {
             this.sources = sources;
@@ -17,7 +17,7 @@ namespace UniRx.Operators
 
         public IObservable<T> Combine(IEnumerable<IObservable<T>> combineSources)
         {
-            return new Concat<T>(CombineSources(this.sources, combineSources));
+            return new ConcatObservable<T>(CombineSources(this.sources, combineSources));
         }
 
         static IEnumerable<IObservable<T>> CombineSources(IEnumerable<IObservable<T>> first, IEnumerable<IObservable<T>> second)
@@ -34,12 +34,12 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            return new ConcatObserver(this, observer, cancel).Run();
+            return new Concat(this, observer, cancel).Run();
         }
 
-        class ConcatObserver : OperatorObserverBase<T, T>
+        class Concat : OperatorObserverBase<T, T>
         {
-            readonly Concat<T> parent;
+            readonly ConcatObservable<T> parent;
             readonly object gate = new object();
 
             bool isDisposed;
@@ -47,7 +47,7 @@ namespace UniRx.Operators
             SerialDisposable subscription;
             Action nextSelf;
 
-            public ConcatObserver(Concat<T> parent, IObserver<T> observer, IDisposable cancel)
+            public Concat(ConcatObservable<T> parent, IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.parent = parent;

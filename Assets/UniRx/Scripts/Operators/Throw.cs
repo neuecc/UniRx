@@ -2,12 +2,12 @@
 
 namespace UniRx.Operators
 {
-    internal class Throw<T> : OperatorObservableBase<T>
+    internal class ThrowObservable<T> : OperatorObservableBase<T>
     {
         readonly Exception error;
         readonly IScheduler scheduler;
 
-        public Throw(Exception error, IScheduler scheduler)
+        public ThrowObservable(Exception error, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
             this.error = error;
@@ -16,7 +16,7 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            observer = new ThrowObserver(observer, cancel);
+            observer = new Throw(observer, cancel);
 
             if (scheduler == Scheduler.Immediate)
             {
@@ -33,9 +33,9 @@ namespace UniRx.Operators
             }
         }
 
-        class ThrowObserver : AutoDetachOperatorObserverBase<T>
+        class Throw : AutoDetachOperatorObserverBase<T>
         {
-            public ThrowObserver(IObserver<T> observer, IDisposable cancel)
+            public Throw(IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
             }

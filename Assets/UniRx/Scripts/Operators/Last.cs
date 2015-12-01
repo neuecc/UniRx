@@ -2,20 +2,20 @@
 
 namespace UniRx.Operators
 {
-    internal class Last<T> : OperatorObservableBase<T>
+    internal class LastObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly bool useDefault;
         readonly Func<T, bool> predicate;
 
-        public Last(IObservable<T> source, bool useDefault)
+        public LastObservable(IObservable<T> source, bool useDefault)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.useDefault = useDefault;
         }
 
-        public Last(IObservable<T> source, Func<T, bool> predicate, bool useDefault)
+        public LastObservable(IObservable<T> source, Func<T, bool> predicate, bool useDefault)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -27,21 +27,21 @@ namespace UniRx.Operators
         {
             if (predicate == null)
             {
-                return source.Subscribe(new LastObserver(this, observer, cancel));
+                return source.Subscribe(new Last(this, observer, cancel));
             }
             else
             {
-                return source.Subscribe(new LastObserverWithPredicate(this, observer, cancel));
+                return source.Subscribe(new Last_(this, observer, cancel));
             }
         }
 
-        class LastObserver : OperatorObserverBase<T, T>
+        class Last : OperatorObserverBase<T, T>
         {
-            readonly Last<T> parent;
+            readonly LastObservable<T> parent;
             bool notPublished;
             T lastValue;
 
-            public LastObserver(Last<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Last(LastObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.notPublished = true;
@@ -82,13 +82,13 @@ namespace UniRx.Operators
             }
         }
 
-        class LastObserverWithPredicate : OperatorObserverBase<T, T>
+        class Last_ : OperatorObserverBase<T, T>
         {
-            readonly Last<T> parent;
+            readonly LastObservable<T> parent;
             bool notPublished;
             T lastValue;
 
-            public LastObserverWithPredicate(Last<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Last_(LastObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.notPublished = true;

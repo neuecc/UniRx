@@ -2,11 +2,11 @@
 
 namespace UniRx.Operators
 {
-    internal class OfType<TSource, TResult> : OperatorObservableBase<TResult>
+    internal class OfTypeObservable<TSource, TResult> : OperatorObservableBase<TResult>
     {
         readonly IObservable<TSource> source;
 
-        public OfType(IObservable<TSource> source)
+        public OfTypeObservable(IObservable<TSource> source)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -14,14 +14,14 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<TResult> observer, IDisposable cancel)
         {
-            return source.Subscribe(new OfTypeObserver(this, observer, cancel));
+            return source.Subscribe(new OfType(this, observer, cancel));
         }
 
-        class OfTypeObserver : OperatorObserverBase<TSource, TResult>
+        class OfType : OperatorObserverBase<TSource, TResult>
         {
-            readonly OfType<TSource, TResult> parent;
+            readonly OfTypeObservable<TSource, TResult> parent;
 
-            public OfTypeObserver(OfType<TSource, TResult> parent, IObserver<TResult> observer, IDisposable cancel)
+            public OfType(OfTypeObservable<TSource, TResult> parent, IObserver<TResult> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.parent = parent;
