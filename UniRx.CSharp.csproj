@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Web v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebPlayer:6</UnityBuildTarget>
     <UnityVersion>5.3.0b1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,12 +54,6 @@
     </Reference>
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
@@ -141,37 +133,38 @@
     <Compile Include="Assets\UniRx\Scripts\Observable.Time.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observer.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Aggregate.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsObservable.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Operators\Concat.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Operators\StartWith.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Operators\RefCount.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Operators\WhenAll.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Operators\TimeInterval.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Operators\Timestamp.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsUnitObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Cast.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Concat.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Create.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Defer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Empty.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Operators\Aggregate.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Operators\Scan.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Operators\Single.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\First.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Last.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Merge.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Never.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OfType.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObservableBase.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Range.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\RefCount.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Repeat.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\RepeatSafe.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Return.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Scan.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Select.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\SelectMany.cs" />
-    <Compile Include="Assets\UniRx\Scripts\Operators\First.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Single.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\StartWith.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Take.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Throw.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\TimeInterval.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Timer.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Timestamp.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\ToObservable.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\WhenAll.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Where.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\IScheduler.cs" />

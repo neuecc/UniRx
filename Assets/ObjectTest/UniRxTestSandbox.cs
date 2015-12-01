@@ -367,21 +367,24 @@ namespace UniRx.ObjectTest
 
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StackTraceCheck"))
             {
-                Observable.Return(1000)
-                    .Take(50)
-                    .Select(x => x)
-                    .Subscribe(x => Debug.Log(x));
+                var subject = new Subject<int>();
+                var b = new Subject<int>();
+
+                subject.SelectMany(_ => b).Subscribe(x =>
+                {
+                    Debug.Log(x);
+                });
+
+                subject.OnNext(1);
+                subject.OnNext(2);
+
+                b.OnNext(100);
             }
             ypos += 100;
 
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StackTraceCheck2"))
             {
-                Observable.EveryUpdate()
-                    .Where(x => x % 2 == 0)
-                    .Where(x => x % 3 == 0)
-                    .Select(x => x * x)
-                    .Take(100)
-                    .Subscribe(x => Debug.Log(x));
+                
             }
             ypos += 100;
 

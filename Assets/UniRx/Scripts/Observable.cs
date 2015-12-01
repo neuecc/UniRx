@@ -26,12 +26,12 @@ namespace UniRx
             //    return select.CombineSelector(selector);
             //}
 
-            return new Select<T, TR>(source, selector);
+            return new SelectObservable<T, TR>(source, selector);
         }
 
         public static IObservable<TR> Select<T, TR>(this IObservable<T> source, Func<T, int, TR> selector)
         {
-            return new Select<T, TR>(source, selector);
+            return new SelectObservable<T, TR>(source, selector);
         }
 
         public static IObservable<T> Where<T>(this IObservable<T> source, Func<T, bool> predicate)
@@ -58,42 +58,42 @@ namespace UniRx
 
         public static IObservable<TR> SelectMany<T, TR>(this IObservable<T> source, Func<T, IObservable<TR>> selector)
         {
-            return new SelectMany<T, TR>(source, selector);
+            return new SelectManyObservable<T, TR>(source, selector);
         }
 
         public static IObservable<TResult> SelectMany<TSource, TResult>(this IObservable<TSource> source, Func<TSource, int, IObservable<TResult>> selector)
         {
-            return new SelectMany<TSource, TResult>(source, selector);
+            return new SelectManyObservable<TSource, TResult>(source, selector);
         }
 
         public static IObservable<TR> SelectMany<T, TC, TR>(this IObservable<T> source, Func<T, IObservable<TC>> collectionSelector, Func<T, TC, TR> resultSelector)
         {
-            return new SelectMany<T, TC, TR>(source, collectionSelector, resultSelector);
+            return new SelectManyObservable<T, TC, TR>(source, collectionSelector, resultSelector);
         }
 
         public static IObservable<TResult> SelectMany<TSource, TCollection, TResult>(this IObservable<TSource> source, Func<TSource, int, IObservable<TCollection>> collectionSelector, Func<TSource, int, TCollection, int, TResult> resultSelector)
         {
-            return new SelectMany<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
+            return new SelectManyObservable<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
         }
 
         public static IObservable<TResult> SelectMany<TSource, TResult>(this IObservable<TSource> source, Func<TSource, IEnumerable<TResult>> selector)
         {
-            return new SelectMany<TSource, TResult>(source, selector);
+            return new SelectManyObservable<TSource, TResult>(source, selector);
         }
 
         public static IObservable<TResult> SelectMany<TSource, TResult>(this IObservable<TSource> source, Func<TSource, int, IEnumerable<TResult>> selector)
         {
-            return new SelectMany<TSource, TResult>(source, selector);
+            return new SelectManyObservable<TSource, TResult>(source, selector);
         }
 
         public static IObservable<TResult> SelectMany<TSource, TCollection, TResult>(this IObservable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
         {
-            return new SelectMany<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
+            return new SelectManyObservable<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
         }
 
         public static IObservable<TResult> SelectMany<TSource, TCollection, TResult>(this IObservable<TSource> source, Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, int, TCollection, int, TResult> resultSelector)
         {
-            return new SelectMany<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
+            return new SelectManyObservable<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
         }
 
         public static IObservable<T[]> ToArray<T>(this IObservable<T> source)

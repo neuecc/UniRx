@@ -7,20 +7,20 @@ namespace UniRx.Operators
         // IObservable<TR2> CombineSelector<TR2>(Func<TR, TR2> selector);
     }
 
-    internal class Select<T, TR> : OperatorObservableBase<TR>, ISelect<TR>
+    internal class SelectObservable<T, TR> : OperatorObservableBase<TR>, ISelect<TR>
     {
         readonly IObservable<T> source;
         readonly Func<T, TR> selector;
         readonly Func<T, int, TR> selectorWithIndex;
 
-        public Select(IObservable<T> source, Func<T, TR> selector)
+        public SelectObservable(IObservable<T> source, Func<T, TR> selector)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.selector = selector;
         }
 
-        public Select(IObservable<T> source, Func<T, int, TR> selector)
+        public SelectObservable(IObservable<T> source, Func<T, int, TR> selector)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -45,19 +45,19 @@ namespace UniRx.Operators
         {
             if (selector != null)
             {
-                return source.Subscribe(new SelectObserver(this, observer, cancel));
+                return source.Subscribe(new Select(this, observer, cancel));
             }
             else
             {
-                return source.Subscribe(new SelectObserverWithIndex(this, observer, cancel));
+                return source.Subscribe(new Select_(this, observer, cancel));
             }
         }
 
-        class SelectObserver : OperatorObserverBase<T, TR>
+        class Select : OperatorObserverBase<T, TR>
         {
-            readonly Select<T, TR> parent;
+            readonly SelectObservable<T, TR> parent;
 
-            public SelectObserver(Select<T, TR> parent, IObserver<TR> observer, IDisposable cancel)
+            public Select(SelectObservable<T, TR> parent, IObserver<TR> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.parent = parent;
@@ -80,12 +80,13 @@ namespace UniRx.Operators
             }
         }
 
-        class SelectObserverWithIndex : OperatorObserverBase<T, TR>
+        // with Index
+        class Select_ : OperatorObserverBase<T, TR>
         {
-            readonly Select<T, TR> parent;
+            readonly SelectObservable<T, TR> parent;
             int index;
 
-            public SelectObserverWithIndex(Select<T, TR> parent, IObserver<TR> observer, IDisposable cancel)
+            public Select_(SelectObservable<T, TR> parent, IObserver<TR> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.parent = parent;

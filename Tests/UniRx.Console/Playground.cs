@@ -13,22 +13,29 @@ namespace UniRx
         {
 
 
-            var a = Observable.Range(1, 5, Scheduler.ThreadPool);
-            var b = Observable.Range(10, 3, Scheduler.ThreadPool);
-            var c = Observable.Return(300, Scheduler.ThreadPool);
+
+            new Aiueo.Kakikukeko.Sasisuseso.HogeHoge.HugaHuga.TakoTako().Hoge();
 
 
-            Observable.Concat(a).Concat(b).Concat(c).Subscribe
-                (
-                x => {
-                    var s = new StackTrace().ToString();
-                    Console.WriteLine(s);
-
-                    Console.WriteLine("---------");
-                });
+        }
+    }
+}
 
 
-            Console.ReadLine();
+namespace Aiueo.Kakikukeko.Sasisuseso
+{
+    public class HogeHoge
+    {
+        public class HugaHuga
+        {
+            public class TakoTako
+            {
+                public void Hoge()
+                {
+                    Console.WriteLine(new StackTrace(true).ToString());
+                    // Debug.Log("hogehoge");
+                }
+            }
         }
     }
 }
