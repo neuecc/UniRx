@@ -444,7 +444,7 @@ namespace UniRx
                     totalTime = newTotalTime;
 
                     if (isSpan)
-                        nextSpan += timeShift;
+                        nextSpan += timeSpan;
                     if (isShift)
                         nextShift += timeShift;
 
