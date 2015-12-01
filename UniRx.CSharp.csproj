@@ -142,6 +142,7 @@
     <Compile Include="Assets\UniRx\Scripts\Observable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsObservable.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Concat.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\StartWith.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\RefCount.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\WhenAll.cs" />

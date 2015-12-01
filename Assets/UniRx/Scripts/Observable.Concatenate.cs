@@ -14,14 +14,14 @@ namespace UniRx
         {
             if (sources == null) throw new ArgumentNullException("sources");
 
-            return ConcatCore(sources);
+            return new Concat<TSource>(sources);
         }
 
         public static IObservable<TSource> Concat<TSource>(this IEnumerable<IObservable<TSource>> sources)
         {
             if (sources == null) throw new ArgumentNullException("sources");
 
-            return ConcatCore(sources);
+            return new Concat<TSource>(sources);
         }
 
         public static IObservable<TSource> Concat<TSource>(this IObservable<IObservable<TSource>> sources)
@@ -29,80 +29,27 @@ namespace UniRx
             return sources.Merge(maxConcurrent: 1);
         }
 
-        public static IObservable<TSource> Concat<TSource>(this IObservable<TSource> first, IObservable<TSource> second)
+        public static IObservable<TSource> Concat<TSource>(this IObservable<TSource> first, params IObservable<TSource>[] seconds)
         {
             if (first == null) throw new ArgumentNullException("first");
-            if (second == null) throw new ArgumentNullException("second");
+            if (seconds == null) throw new ArgumentNullException("seconds");
 
-            return ConcatCore(new[] { first, second });
+            var concat = first as Concat<TSource>;
+            if (concat != null)
+            {
+                return concat.Combine(seconds);
+            }
+
+            return Concat(CombineSources(first, seconds));
         }
 
-        static IObservable<T> ConcatCore<T>(IEnumerable<IObservable<T>> sources)
+        static IEnumerable<IObservable<T>> CombineSources<T>(IObservable<T> first, IObservable<T>[] seconds)
         {
-            return Observable.Create<T>(observer =>
+            yield return first;
+            for (int i = 0; i < seconds.Length; i++)
             {
-                var isDisposed = false;
-                var e = sources.AsSafeEnumerable().GetEnumerator();
-                var subscription = new SerialDisposable();
-                var gate = new object();
-
-                var schedule = Scheduler.DefaultSchedulers.TailRecursion.Schedule(self =>
-                {
-                    lock (gate)
-                    {
-                        if (isDisposed) return;
-
-                        var current = default(IObservable<T>);
-                        var hasNext = false;
-                        var ex = default(Exception);
-
-                        try
-                        {
-                            hasNext = e.MoveNext();
-                            if (hasNext)
-                            {
-                                current = e.Current;
-                                if (current == null) throw new InvalidOperationException("sequence is null.");
-                            }
-                            else
-                            {
-                                e.Dispose();
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            ex = exception;
-                            e.Dispose();
-                        }
-
-                        if (ex != null)
-                        {
-                            observer.OnError(ex);
-                            return;
-                        }
-
-                        if (!hasNext)
-                        {
-                            observer.OnCompleted();
-                            return;
-                        }
-
-                        var source = e.Current;
-                        var d = new SingleAssignmentDisposable();
-                        subscription.Disposable = d;
-                        d.Disposable = source.Subscribe(observer.OnNext, observer.OnError, self); // OnCompleted, run self
-                    }
-                });
-
-                return new CompositeDisposable(schedule, subscription, Disposable.Create(() =>
-                {
-                    lock (gate)
-                    {
-                        isDisposed = true;
-                        e.Dispose();
-                    }
-                }));
-            });
+                yield return seconds[i];
+            }
         }
 
         public static IObservable<TSource> Merge<TSource>(this IEnumerable<IObservable<TSource>> sources)
