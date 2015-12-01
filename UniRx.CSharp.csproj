@@ -143,6 +143,7 @@
     <Compile Include="Assets\UniRx\Scripts\Observer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\RefCount.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\WhenAll.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\TimeInterval.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Timestamp.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsUnitObservable.cs" />

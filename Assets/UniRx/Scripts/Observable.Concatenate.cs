@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq; // memo, remove LINQ(for avoid AOT)
 using System.Text;
+using UniRx.Operators;
 
 namespace UniRx
 {
@@ -659,48 +660,7 @@ namespace UniRx
         {
             if (sources.Length == 0) return Observable.Return(new T[0]);
 
-            return Observable.Create<T[]>(observer =>
-            {
-                var gate = new object();
-                var length = sources.Length;
-                var completedCount = 0;
-                var values = new T[length];
-
-                var subscriptions = new IDisposable[length];
-                for (int index = 0; index < length; index++)
-                {
-                    var source = sources[index];
-                    var capturedIndex = index;
-                    var d = new SingleAssignmentDisposable();
-                    d.Disposable = source.Subscribe(x =>
-                    {
-                        lock (gate)
-                        {
-                            values[capturedIndex] = x;
-                        }
-                    }, ex =>
-                    {
-                        lock (gate)
-                        {
-                            observer.OnError(ex);
-                        }
-                    }, () =>
-                    {
-                        lock (gate)
-                        {
-                            completedCount++;
-                            if (completedCount == length)
-                            {
-                                observer.OnNext(values);
-                                observer.OnCompleted();
-                            }
-                        }
-                    });
-                    subscriptions[index] = d;
-                }
-
-                return new CompositeDisposable(subscriptions);
-            });
+            return new WhenAll<T>(sources);
         }
 
         /// <summary>
@@ -712,66 +672,7 @@ namespace UniRx
             var array = sources as IObservable<T>[];
             if (array != null) return WhenAll(array);
 
-            return Observable.Create<T[]>(observer =>
-            {
-                var _sources = sources as IList<IObservable<T>>;
-                if (_sources == null)
-                {
-                    _sources = new List<IObservable<T>>();
-                    foreach (var item in sources)
-                    {
-                        _sources.Add(item);
-                    }
-                }
-
-                var gate = new object();
-                var length = _sources.Count;
-                var completedCount = 0;
-                var values = new T[length];
-
-                if (length == 0)
-                {
-                    observer.OnNext(values);
-                    observer.OnCompleted();
-                    return Disposable.Empty;
-                }
-
-                var subscriptions = new IDisposable[length];
-                for (int index = 0; index < length; index++)
-                {
-                    var source = _sources[index];
-                    var capturedIndex = index;
-                    var d = new SingleAssignmentDisposable();
-                    d.Disposable = source.Subscribe(x =>
-                    {
-                        lock (gate)
-                        {
-                            values[capturedIndex] = x;
-                        }
-                    }, ex =>
-                    {
-                        lock (gate)
-                        {
-                            observer.OnError(ex);
-                        }
-                    }, () =>
-                    {
-                        lock (gate)
-                        {
-                            completedCount++;
-                            if (completedCount == length)
-                            {
-                                observer.OnNext(values);
-                                observer.OnCompleted();
-                            }
-                        }
-                    });
-                    subscriptions[index] = d;
-                }
-
-                return new CompositeDisposable(subscriptions);
-            });
-
+            return new WhenAll<T>(sources);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, T value)

@@ -70,6 +70,16 @@ namespace UniRx
         }
 
         /// <summary>
+        /// Creates a new group of disposable resources that are disposed together. Array is not copied, it's unsafe but optimized.
+        /// </summary>
+        /// <param name="disposables">Disposable resources to add to the group.</param>
+        /// <returns>Group of disposable resources that are disposed together.</returns>
+        public static ICancelable CreateUnsafe(IDisposable[] disposables)
+        {
+            return new NAryUnsafe(disposables);
+        }
+
+        /// <summary>
         /// Creates a new group of disposable resources that are disposed together.
         /// </summary>
         /// <param name="disposables">Disposable resources to add to the group.</param>
@@ -228,6 +238,37 @@ namespace UniRx
                     foreach (var d in _disposables)
                     {
                         d.Dispose();
+                    }
+                }
+            }
+        }
+
+        class NAryUnsafe : StableCompositeDisposable
+        {
+            int disposedCallCount = -1;
+            private volatile IDisposable[] _disposables;
+
+            public NAryUnsafe(IDisposable[] disposables)
+            {
+                _disposables = disposables;
+            }
+
+            public override bool IsDisposed
+            {
+                get
+                {
+                    return disposedCallCount != -1;
+                }
+            }
+
+            public override void Dispose()
+            {
+                if (Interlocked.Increment(ref disposedCallCount) == 0)
+                {
+                    var len = _disposables.Length;
+                    for (int i = 0; i < len; i++)
+                    {
+                        _disposables[i].Dispose();
                     }
                 }
             }

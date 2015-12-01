@@ -70,6 +70,7 @@
     <Compile Include="Observable.ConcurrencyTest.cs" />
     <Compile Include="OfficialRx\Observable.ConcurrencyTestCopy.cs" />
     <Compile Include="Operators\ConversionTest.cs" />
+    <Compile Include="Operators\WhenAllTest.cs" />
     <Compile Include="Operators\SelectMany.cs" />
     <Compile Include="Operators\AggregateTest.cs" />
     <Compile Include="Operators\TakeTest.cs" />

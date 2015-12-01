@@ -3,7 +3,7 @@
 namespace UniRx.Operators
 {
     // implements note : all field must be readonly.
-    internal abstract class OperatorObservableBase<T> : IObservable<T>, IOptimizedObservable<T>
+    public abstract class OperatorObservableBase<T> : IObservable<T>, IOptimizedObservable<T>
     {
         readonly bool isRequiredSubscribeOnCurrentThread;
 
