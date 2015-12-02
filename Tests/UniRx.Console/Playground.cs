@@ -13,19 +13,25 @@ namespace UniRx
         {
             var a = new Subject<int>();
             var b = new Subject<int>();
+            var c = new Subject<int>();
 
-            a.OnNext(10);
-            b.OnNext(20);
+            Observable.CombineLatest(a, b, c, (x, y, z) => new { x, y, z })
+                //.Materialize().Select(x => x.ToString())
+                .Subscribe(Console.WriteLine);
 
-            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
-            a.Zip(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
 
-            a.OnNext(1000);
+            a.OnNext(100);
             b.OnNext(2000);
+            c.OnNext(50);
+
 
             a.OnCompleted();
+            b.OnCompleted();
 
-            Console.WriteLine(l.Count);
+
+            c.OnNext(90);
+
+
 
         }
 

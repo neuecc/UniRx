@@ -1,0 +1,143 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".txt" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #> 
+<#
+   
+   
+   var endCount = 7;
+#>
+
+<# for(var i = 3; i <= endCount; i++) { #>
+public delegate TR CombineLatestFunc<<# for(var j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TR>(<# for(var j = 1; j <= i; j++) { #>T<#= j #> arg<#= j #>, <# } #>);
+<# } #>
+
+
+
+<# for(var i = 3; i <= endCount; i++) { #>
+public static IObservable<TR> CombineLatest<#= GetTRGeneric(i) #>(this <#= GetSources(i) #>, CombineLatestFunc<#= GetTRGeneric(i) #> resultSelector)
+{
+    return new CombineLatestObservable<#= GetTRGeneric(i) #>(<#= GetSources2(i) #>, resultSelector);
+}
+
+<# } #>
+
+
+
+
+
+
+
+<# for(var i = 3; i <= endCount; i++) { #>
+
+internal class CombineLatestObservable<#= GetTRGeneric(i) #> : OperatorObservableBase<TR>
+{
+<# for(var j = 1; j <= i; j++) { #>
+    IObservable<T<#= j #>> source<#= j #>;
+<# } #>
+    CombineLatestFunc<#= GetTRGeneric(i) #> resultSelector;
+
+    public CombineLatestObservable(
+<# for(var j = 1; j <= i; j++) { #>
+        IObservable<T<#= j #>> source<#= j #>,
+<# } #>
+          CombineLatestFunc<#= GetTRGeneric(i) #> resultSelector)
+        : base(
+<# for(var j = 1; j <= i; j++) { #>
+            source<#= j #>.IsRequiredSubscribeOnCurrentThread() || 
+<# } #>
+            false)
+    {
+<# for(var j = 1; j <= i; j++) { #>
+        this.source<#= j #> = source<#= j #>;
+<# } #>
+        this.resultSelector = resultSelector;
+    }
+
+    protected override IDisposable SubscribeCore(IObserver<TR> observer, IDisposable cancel)
+    {
+        return new CombineLatest(<#= i #>, this, observer, cancel).Run();
+    }
+
+    class CombineLatest : NthCombineLatestObserverBase<TR>
+    {
+        readonly CombineLatestObservable<#= GetTRGeneric(i) #> parent;
+        readonly object gate = new object();
+<# for(var j = 1; j <= i; j++) { #>
+        CombineLatestObserver<T<#= j #>> c<#= j #>;
+<# } #>
+
+        public CombineLatest(int length, CombineLatestObservable<#= GetTRGeneric(i) #> parent, IObserver<TR> observer, IDisposable cancel)
+            : base(length, observer, cancel)
+        {
+            this.parent = parent;
+        }
+
+        public IDisposable Run()
+        {
+<# for(var j = 1; j <= i; j++) { #>
+            c<#= j #> = new CombineLatestObserver<T<#= j #>>(gate, this, <#= j - 1 #>);
+<# } #>
+            
+<# for(var j = 1; j <= i; j++) { #>
+            var s<#= j #> = parent.source<#= j #>.Subscribe(c<#= j #>);
+<# } #>
+
+            return StableCompositeDisposable.Create(<#= GetQ("s", i) #>);
+        }
+
+        public override TR GetResult()
+        {
+            return parent.resultSelector(<#= GetValue(i) #>);
+        }
+
+        public override void OnNext(TR value)
+        {
+            base.observer.OnNext(value);
+        }
+    }
+}
+
+<# } #>
+
+<#+ 
+
+    string GetTRGeneric(int count)
+    {
+        return  "<" + string.Join(", ", Enumerable.Range(1, count).Select(x => "T" + x).ToArray()) + ", TR" + ">";
+    }
+    
+    string GetQ(string prefix, int count)
+    {
+        return  string.Join(", ", Enumerable.Range(1, count).Select(x => prefix + x).ToArray());
+    }
+    
+    string GetValue(int count)
+    {
+        return  string.Join(", ", Enumerable.Range(1, count).Select(x => "c" + x + ".Value").ToArray());
+    }
+    
+    string GetClear(int count)
+    {
+        return  string.Join(" ", Enumerable.Range(1, count).Select(x => "q" + x + ".Clear();").ToArray());
+    }
+    
+    string GetSources(int count)
+    {
+        return  string.Join(", ", Enumerable.Range(1, count).Select(x => string.Format("IObservable<T{0}> source{0}", x)).ToArray());
+    }
+    
+    string GetSources2(int count)
+    {
+        return  string.Join(", ", Enumerable.Range(1, count).Select(x => string.Format("source{0}", x)).ToArray());
+    }
+
+
+
+ #>

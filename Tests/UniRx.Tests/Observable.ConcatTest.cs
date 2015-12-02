@@ -332,9 +332,6 @@ namespace UniRx.Tests
             var a = new Subject<int>();
             var b = new Subject<int>();
 
-            a.OnNext(10);
-            b.OnNext(20);
-
             var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
             Observable.CombineLatest(a, b).Select((xs) => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
 

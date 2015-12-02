@@ -341,6 +341,7 @@ namespace UniRx.Operators
         }
     }
 
+    // Generated from UniRx.Console.ZipGenerator.tt
     #region NTH
 
     internal class ZipObservable<T1, T2, T3, TR> : OperatorObservableBase<TR>
@@ -773,7 +774,7 @@ namespace UniRx.Operators
         void Done(int index);
     }
 
-    abstract class NthZipObserverBase<T> : OperatorObserverBase<T, T>, IZipObservable
+    internal abstract class NthZipObserverBase<T> : OperatorObserverBase<T, T>, IZipObservable
     {
         readonly object gate = new object();
         System.Collections.ICollection[] queues;
@@ -830,7 +831,17 @@ namespace UniRx.Operators
                 }
             }
 
-            OnNext(GetResult());
+            var result = default(T);
+            try
+            {
+                result = GetResult();
+            }
+            catch (Exception ex)
+            {
+                base.OnError(ex);
+                return;
+            }
+            OnNext(result);
         }
 
         public void Done(int index)

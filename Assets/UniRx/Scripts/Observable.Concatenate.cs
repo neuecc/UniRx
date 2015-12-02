@@ -144,67 +144,7 @@ namespace UniRx
 
         public static IObservable<TResult> CombineLatest<TLeft, TRight, TResult>(this IObservable<TLeft> left, IObservable<TRight> right, Func<TLeft, TRight, TResult> selector)
         {
-            return Observable.Create<TResult>(observer =>
-            {
-                var gate = new object();
-
-                var leftValue = default(TLeft);
-                var leftStarted = false;
-                bool leftCompleted = false;
-
-                var rightValue = default(TRight);
-                var rightStarted = false;
-                var rightCompleted = false;
-
-                Action run = () =>
-                {
-                    if ((leftCompleted && !leftStarted) || (rightCompleted && !rightStarted))
-                    {
-                        observer.OnCompleted();
-                        return;
-                    }
-                    else if (!(leftStarted && rightStarted))
-                    {
-                        return;
-                    }
-
-                    TResult v;
-                    try
-                    {
-                        v = selector(leftValue, rightValue);
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-                    observer.OnNext(v);
-                };
-
-                var lsubscription = left.Synchronize(gate).Subscribe(x =>
-                {
-                    leftStarted = true;
-                    leftValue = x;
-                    run();
-                }, observer.OnError, () =>
-                {
-                    leftCompleted = true;
-                    if (rightCompleted) observer.OnCompleted();
-                });
-
-                var rsubscription = right.Synchronize(gate).Subscribe(x =>
-                {
-                    rightStarted = true;
-                    rightValue = x;
-                    run();
-                }, observer.OnError, () =>
-                {
-                    rightCompleted = true;
-                    if (leftCompleted) observer.OnCompleted();
-                });
-
-                return new CompositeDisposable { lsubscription, rsubscription };
-            }, isRequiredSubscribeOnCurrentThread: left.IsRequiredSubscribeOnCurrentThread() && right.IsRequiredSubscribeOnCurrentThread());
+            return new CombineLatestObservable<TLeft, TRight, TResult>(left, right, selector);
         }
 
         public static IObservable<IList<T>> CombineLatest<T>(this IEnumerable<IObservable<T>> sources)
@@ -214,75 +154,32 @@ namespace UniRx
 
         public static IObservable<IList<TSource>> CombineLatest<TSource>(params IObservable<TSource>[] sources)
         {
-            // this code is borrwed from RxOfficial(rx.codeplex.com)
-            return Observable.Create<IList<TSource>>(observer =>
-            {
-                var srcs = sources.ToArray();
+            return new CombineLatestObservable<TSource>(sources);
+        }
 
-                var N = srcs.Length;
+        public static IObservable<TR> CombineLatest<T1, T2, T3, TR>(this IObservable<T1> source1, IObservable<T2> source2, IObservable<T3> source3, CombineLatestFunc<T1, T2, T3, TR> resultSelector)
+        {
+            return new CombineLatestObservable<T1, T2, T3, TR>(source1, source2, source3, resultSelector);
+        }
 
-                var hasValue = new bool[N];
-                var hasValueAll = false;
+        public static IObservable<TR> CombineLatest<T1, T2, T3, T4, TR>(this IObservable<T1> source1, IObservable<T2> source2, IObservable<T3> source3, IObservable<T4> source4, CombineLatestFunc<T1, T2, T3, T4, TR> resultSelector)
+        {
+            return new CombineLatestObservable<T1, T2, T3, T4, TR>(source1, source2, source3, source4, resultSelector);
+        }
 
-                var values = new List<TSource>(N);
-                for (int i = 0; i < N; i++)
-                    values.Add(default(TSource));
+        public static IObservable<TR> CombineLatest<T1, T2, T3, T4, T5, TR>(this IObservable<T1> source1, IObservable<T2> source2, IObservable<T3> source3, IObservable<T4> source4, IObservable<T5> source5, CombineLatestFunc<T1, T2, T3, T4, T5, TR> resultSelector)
+        {
+            return new CombineLatestObservable<T1, T2, T3, T4, T5, TR>(source1, source2, source3, source4, source5, resultSelector);
+        }
 
-                var isDone = new bool[N];
+        public static IObservable<TR> CombineLatest<T1, T2, T3, T4, T5, T6, TR>(this IObservable<T1> source1, IObservable<T2> source2, IObservable<T3> source3, IObservable<T4> source4, IObservable<T5> source5, IObservable<T6> source6, CombineLatestFunc<T1, T2, T3, T4, T5, T6, TR> resultSelector)
+        {
+            return new CombineLatestObservable<T1, T2, T3, T4, T5, T6, TR>(source1, source2, source3, source4, source5, source6, resultSelector);
+        }
 
-                var next = new Action<int>(i =>
-                {
-                    hasValue[i] = true;
-
-                    if (hasValueAll || (hasValueAll = hasValue.All(x => x)))
-                    {
-                        var res = values.ToList();
-                        observer.OnNext(res);
-                    }
-                    else if (isDone.Where((x, j) => j != i).All(x => x))
-                    {
-                        observer.OnCompleted();
-                        return;
-                    }
-                });
-
-                var done = new Action<int>(i =>
-                {
-                    isDone[i] = true;
-
-                    if (isDone.All(x => x))
-                    {
-                        observer.OnCompleted();
-                        return;
-                    }
-                });
-
-                var subscriptions = new SingleAssignmentDisposable[N];
-
-                var gate = new object();
-
-                for (int i = 0; i < N; i++)
-                {
-                    var j = i;
-                    subscriptions[j] = new SingleAssignmentDisposable
-                    {
-                        Disposable = srcs[j].Synchronize(gate).Subscribe(
-                            x =>
-                            {
-                                values[j] = x;
-                                next(j);
-                            },
-                            observer.OnError,
-                            () =>
-                            {
-                                done(j);
-                            }
-                        )
-                    };
-                }
-
-                return new CompositeDisposable(subscriptions);
-            });
+        public static IObservable<TR> CombineLatest<T1, T2, T3, T4, T5, T6, T7, TR>(this IObservable<T1> source1, IObservable<T2> source2, IObservable<T3> source3, IObservable<T4> source4, IObservable<T5> source5, IObservable<T6> source6, IObservable<T7> source7, CombineLatestFunc<T1, T2, T3, T4, T5, T6, T7, TR> resultSelector)
+        {
+            return new CombineLatestObservable<T1, T2, T3, T4, T5, T6, T7, TR>(source1, source2, source3, source4, source5, source6, source7, resultSelector);
         }
 
         public static IObservable<T> Switch<T>(this IObservable<IObservable<T>> sources)

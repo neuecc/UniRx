@@ -1,0 +1,458 @@
+﻿ 
+
+public delegate TR CombineLatestFunc<T1, T2, T3, TR>(T1 arg1, T2 arg2, T3 arg3, );
+public delegate TR CombineLatestFunc<T1, T2, T3, T4, TR>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, );
+public delegate TR CombineLatestFunc<T1, T2, T3, T4, T5, TR>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, );
+public delegate TR CombineLatestFunc<T1, T2, T3, T4, T5, T6, TR>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, );
+public delegate TR CombineLatestFunc<T1, T2, T3, T4, T5, T6, T7, TR>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, );
+
+
+
+public static IObservable<TR> CombineLatest<T1, T2, T3, TR>(this IObservable<T1> source1, IObservable<T2> source2, IObservable<T3> source3, CombineLatestFunc<T1, T2, T3, TR> resultSelector)
+{
+    return new CombineLatestObservable<T1, T2, T3, TR>(source1, source2, source3, resultSelector);
+}
+
+public static IObservable<TR> CombineLatest<T1, T2, T3, T4, TR>(this IObservable<T1> source1, IObservable<T2> source2, IObservable<T3> source3, IObservable<T4> source4, CombineLatestFunc<T1, T2, T3, T4, TR> resultSelector)
+{
+    return new CombineLatestObservable<T1, T2, T3, T4, TR>(source1, source2, source3, source4, resultSelector);
+}
+
+public static IObservable<TR> CombineLatest<T1, T2, T3, T4, T5, TR>(this IObservable<T1> source1, IObservable<T2> source2, IObservable<T3> source3, IObservable<T4> source4, IObservable<T5> source5, CombineLatestFunc<T1, T2, T3, T4, T5, TR> resultSelector)
+{
+    return new CombineLatestObservable<T1, T2, T3, T4, T5, TR>(source1, source2, source3, source4, source5, resultSelector);
+}
+
+public static IObservable<TR> CombineLatest<T1, T2, T3, T4, T5, T6, TR>(this IObservable<T1> source1, IObservable<T2> source2, IObservable<T3> source3, IObservable<T4> source4, IObservable<T5> source5, IObservable<T6> source6, CombineLatestFunc<T1, T2, T3, T4, T5, T6, TR> resultSelector)
+{
+    return new CombineLatestObservable<T1, T2, T3, T4, T5, T6, TR>(source1, source2, source3, source4, source5, source6, resultSelector);
+}
+
+public static IObservable<TR> CombineLatest<T1, T2, T3, T4, T5, T6, T7, TR>(this IObservable<T1> source1, IObservable<T2> source2, IObservable<T3> source3, IObservable<T4> source4, IObservable<T5> source5, IObservable<T6> source6, IObservable<T7> source7, CombineLatestFunc<T1, T2, T3, T4, T5, T6, T7, TR> resultSelector)
+{
+    return new CombineLatestObservable<T1, T2, T3, T4, T5, T6, T7, TR>(source1, source2, source3, source4, source5, source6, source7, resultSelector);
+}
+
+
+
+
+
+
+
+
+
+internal class CombineLatestObservable<T1, T2, T3, TR> : OperatorObservableBase<TR>
+{
+    IObservable<T1> source1;
+    IObservable<T2> source2;
+    IObservable<T3> source3;
+    CombineLatestFunc<T1, T2, T3, TR> resultSelector;
+
+    public CombineLatestObservable(
+        IObservable<T1> source1,
+        IObservable<T2> source2,
+        IObservable<T3> source3,
+          CombineLatestFunc<T1, T2, T3, TR> resultSelector)
+        : base(
+            source1.IsRequiredSubscribeOnCurrentThread() || 
+            source2.IsRequiredSubscribeOnCurrentThread() || 
+            source3.IsRequiredSubscribeOnCurrentThread() || 
+            false)
+    {
+        this.source1 = source1;
+        this.source2 = source2;
+        this.source3 = source3;
+        this.resultSelector = resultSelector;
+    }
+
+    protected override IDisposable SubscribeCore(IObserver<TR> observer, IDisposable cancel)
+    {
+        return new CombineLatest(3, this, observer, cancel).Run();
+    }
+
+    class CombineLatest : NthCombineLatestObserverBase<TR>
+    {
+        readonly CombineLatestObservable<T1, T2, T3, TR> parent;
+        readonly object gate = new object();
+        CombineLatestObserver<T1> c1;
+        CombineLatestObserver<T2> c2;
+        CombineLatestObserver<T3> c3;
+
+        public CombineLatest(int length, CombineLatestObservable<T1, T2, T3, TR> parent, IObserver<TR> observer, IDisposable cancel)
+            : base(length, observer, cancel)
+        {
+            this.parent = parent;
+        }
+
+        public IDisposable Run()
+        {
+            c1 = new CombineLatestObserver<T1>(gate, this, 0);
+            c2 = new CombineLatestObserver<T2>(gate, this, 1);
+            c3 = new CombineLatestObserver<T3>(gate, this, 2);
+            
+            var s1 = parent.source1.Subscribe(c1);
+            var s2 = parent.source2.Subscribe(c2);
+            var s3 = parent.source3.Subscribe(c3);
+
+            return StableCompositeDisposable.Create(s1, s2, s3);
+        }
+
+        public override TR GetResult()
+        {
+            return parent.resultSelector(c1.Value, c2.Value, c3.Value);
+        }
+
+        public override void OnNext(TR value)
+        {
+            base.observer.OnNext(value);
+        }
+    }
+}
+
+
+internal class CombineLatestObservable<T1, T2, T3, T4, TR> : OperatorObservableBase<TR>
+{
+    IObservable<T1> source1;
+    IObservable<T2> source2;
+    IObservable<T3> source3;
+    IObservable<T4> source4;
+    CombineLatestFunc<T1, T2, T3, T4, TR> resultSelector;
+
+    public CombineLatestObservable(
+        IObservable<T1> source1,
+        IObservable<T2> source2,
+        IObservable<T3> source3,
+        IObservable<T4> source4,
+          CombineLatestFunc<T1, T2, T3, T4, TR> resultSelector)
+        : base(
+            source1.IsRequiredSubscribeOnCurrentThread() || 
+            source2.IsRequiredSubscribeOnCurrentThread() || 
+            source3.IsRequiredSubscribeOnCurrentThread() || 
+            source4.IsRequiredSubscribeOnCurrentThread() || 
+            false)
+    {
+        this.source1 = source1;
+        this.source2 = source2;
+        this.source3 = source3;
+        this.source4 = source4;
+        this.resultSelector = resultSelector;
+    }
+
+    protected override IDisposable SubscribeCore(IObserver<TR> observer, IDisposable cancel)
+    {
+        return new CombineLatest(4, this, observer, cancel).Run();
+    }
+
+    class CombineLatest : NthCombineLatestObserverBase<TR>
+    {
+        readonly CombineLatestObservable<T1, T2, T3, T4, TR> parent;
+        readonly object gate = new object();
+        CombineLatestObserver<T1> c1;
+        CombineLatestObserver<T2> c2;
+        CombineLatestObserver<T3> c3;
+        CombineLatestObserver<T4> c4;
+
+        public CombineLatest(int length, CombineLatestObservable<T1, T2, T3, T4, TR> parent, IObserver<TR> observer, IDisposable cancel)
+            : base(length, observer, cancel)
+        {
+            this.parent = parent;
+        }
+
+        public IDisposable Run()
+        {
+            c1 = new CombineLatestObserver<T1>(gate, this, 0);
+            c2 = new CombineLatestObserver<T2>(gate, this, 1);
+            c3 = new CombineLatestObserver<T3>(gate, this, 2);
+            c4 = new CombineLatestObserver<T4>(gate, this, 3);
+            
+            var s1 = parent.source1.Subscribe(c1);
+            var s2 = parent.source2.Subscribe(c2);
+            var s3 = parent.source3.Subscribe(c3);
+            var s4 = parent.source4.Subscribe(c4);
+
+            return StableCompositeDisposable.Create(s1, s2, s3, s4);
+        }
+
+        public override TR GetResult()
+        {
+            return parent.resultSelector(c1.Value, c2.Value, c3.Value, c4.Value);
+        }
+
+        public override void OnNext(TR value)
+        {
+            base.observer.OnNext(value);
+        }
+    }
+}
+
+
+internal class CombineLatestObservable<T1, T2, T3, T4, T5, TR> : OperatorObservableBase<TR>
+{
+    IObservable<T1> source1;
+    IObservable<T2> source2;
+    IObservable<T3> source3;
+    IObservable<T4> source4;
+    IObservable<T5> source5;
+    CombineLatestFunc<T1, T2, T3, T4, T5, TR> resultSelector;
+
+    public CombineLatestObservable(
+        IObservable<T1> source1,
+        IObservable<T2> source2,
+        IObservable<T3> source3,
+        IObservable<T4> source4,
+        IObservable<T5> source5,
+          CombineLatestFunc<T1, T2, T3, T4, T5, TR> resultSelector)
+        : base(
+            source1.IsRequiredSubscribeOnCurrentThread() || 
+            source2.IsRequiredSubscribeOnCurrentThread() || 
+            source3.IsRequiredSubscribeOnCurrentThread() || 
+            source4.IsRequiredSubscribeOnCurrentThread() || 
+            source5.IsRequiredSubscribeOnCurrentThread() || 
+            false)
+    {
+        this.source1 = source1;
+        this.source2 = source2;
+        this.source3 = source3;
+        this.source4 = source4;
+        this.source5 = source5;
+        this.resultSelector = resultSelector;
+    }
+
+    protected override IDisposable SubscribeCore(IObserver<TR> observer, IDisposable cancel)
+    {
+        return new CombineLatest(5, this, observer, cancel).Run();
+    }
+
+    class CombineLatest : NthCombineLatestObserverBase<TR>
+    {
+        readonly CombineLatestObservable<T1, T2, T3, T4, T5, TR> parent;
+        readonly object gate = new object();
+        CombineLatestObserver<T1> c1;
+        CombineLatestObserver<T2> c2;
+        CombineLatestObserver<T3> c3;
+        CombineLatestObserver<T4> c4;
+        CombineLatestObserver<T5> c5;
+
+        public CombineLatest(int length, CombineLatestObservable<T1, T2, T3, T4, T5, TR> parent, IObserver<TR> observer, IDisposable cancel)
+            : base(length, observer, cancel)
+        {
+            this.parent = parent;
+        }
+
+        public IDisposable Run()
+        {
+            c1 = new CombineLatestObserver<T1>(gate, this, 0);
+            c2 = new CombineLatestObserver<T2>(gate, this, 1);
+            c3 = new CombineLatestObserver<T3>(gate, this, 2);
+            c4 = new CombineLatestObserver<T4>(gate, this, 3);
+            c5 = new CombineLatestObserver<T5>(gate, this, 4);
+            
+            var s1 = parent.source1.Subscribe(c1);
+            var s2 = parent.source2.Subscribe(c2);
+            var s3 = parent.source3.Subscribe(c3);
+            var s4 = parent.source4.Subscribe(c4);
+            var s5 = parent.source5.Subscribe(c5);
+
+            return StableCompositeDisposable.Create(s1, s2, s3, s4, s5);
+        }
+
+        public override TR GetResult()
+        {
+            return parent.resultSelector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value);
+        }
+
+        public override void OnNext(TR value)
+        {
+            base.observer.OnNext(value);
+        }
+    }
+}
+
+
+internal class CombineLatestObservable<T1, T2, T3, T4, T5, T6, TR> : OperatorObservableBase<TR>
+{
+    IObservable<T1> source1;
+    IObservable<T2> source2;
+    IObservable<T3> source3;
+    IObservable<T4> source4;
+    IObservable<T5> source5;
+    IObservable<T6> source6;
+    CombineLatestFunc<T1, T2, T3, T4, T5, T6, TR> resultSelector;
+
+    public CombineLatestObservable(
+        IObservable<T1> source1,
+        IObservable<T2> source2,
+        IObservable<T3> source3,
+        IObservable<T4> source4,
+        IObservable<T5> source5,
+        IObservable<T6> source6,
+          CombineLatestFunc<T1, T2, T3, T4, T5, T6, TR> resultSelector)
+        : base(
+            source1.IsRequiredSubscribeOnCurrentThread() || 
+            source2.IsRequiredSubscribeOnCurrentThread() || 
+            source3.IsRequiredSubscribeOnCurrentThread() || 
+            source4.IsRequiredSubscribeOnCurrentThread() || 
+            source5.IsRequiredSubscribeOnCurrentThread() || 
+            source6.IsRequiredSubscribeOnCurrentThread() || 
+            false)
+    {
+        this.source1 = source1;
+        this.source2 = source2;
+        this.source3 = source3;
+        this.source4 = source4;
+        this.source5 = source5;
+        this.source6 = source6;
+        this.resultSelector = resultSelector;
+    }
+
+    protected override IDisposable SubscribeCore(IObserver<TR> observer, IDisposable cancel)
+    {
+        return new CombineLatest(6, this, observer, cancel).Run();
+    }
+
+    class CombineLatest : NthCombineLatestObserverBase<TR>
+    {
+        readonly CombineLatestObservable<T1, T2, T3, T4, T5, T6, TR> parent;
+        readonly object gate = new object();
+        CombineLatestObserver<T1> c1;
+        CombineLatestObserver<T2> c2;
+        CombineLatestObserver<T3> c3;
+        CombineLatestObserver<T4> c4;
+        CombineLatestObserver<T5> c5;
+        CombineLatestObserver<T6> c6;
+
+        public CombineLatest(int length, CombineLatestObservable<T1, T2, T3, T4, T5, T6, TR> parent, IObserver<TR> observer, IDisposable cancel)
+            : base(length, observer, cancel)
+        {
+            this.parent = parent;
+        }
+
+        public IDisposable Run()
+        {
+            c1 = new CombineLatestObserver<T1>(gate, this, 0);
+            c2 = new CombineLatestObserver<T2>(gate, this, 1);
+            c3 = new CombineLatestObserver<T3>(gate, this, 2);
+            c4 = new CombineLatestObserver<T4>(gate, this, 3);
+            c5 = new CombineLatestObserver<T5>(gate, this, 4);
+            c6 = new CombineLatestObserver<T6>(gate, this, 5);
+            
+            var s1 = parent.source1.Subscribe(c1);
+            var s2 = parent.source2.Subscribe(c2);
+            var s3 = parent.source3.Subscribe(c3);
+            var s4 = parent.source4.Subscribe(c4);
+            var s5 = parent.source5.Subscribe(c5);
+            var s6 = parent.source6.Subscribe(c6);
+
+            return StableCompositeDisposable.Create(s1, s2, s3, s4, s5, s6);
+        }
+
+        public override TR GetResult()
+        {
+            return parent.resultSelector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value);
+        }
+
+        public override void OnNext(TR value)
+        {
+            base.observer.OnNext(value);
+        }
+    }
+}
+
+
+internal class CombineLatestObservable<T1, T2, T3, T4, T5, T6, T7, TR> : OperatorObservableBase<TR>
+{
+    IObservable<T1> source1;
+    IObservable<T2> source2;
+    IObservable<T3> source3;
+    IObservable<T4> source4;
+    IObservable<T5> source5;
+    IObservable<T6> source6;
+    IObservable<T7> source7;
+    CombineLatestFunc<T1, T2, T3, T4, T5, T6, T7, TR> resultSelector;
+
+    public CombineLatestObservable(
+        IObservable<T1> source1,
+        IObservable<T2> source2,
+        IObservable<T3> source3,
+        IObservable<T4> source4,
+        IObservable<T5> source5,
+        IObservable<T6> source6,
+        IObservable<T7> source7,
+          CombineLatestFunc<T1, T2, T3, T4, T5, T6, T7, TR> resultSelector)
+        : base(
+            source1.IsRequiredSubscribeOnCurrentThread() || 
+            source2.IsRequiredSubscribeOnCurrentThread() || 
+            source3.IsRequiredSubscribeOnCurrentThread() || 
+            source4.IsRequiredSubscribeOnCurrentThread() || 
+            source5.IsRequiredSubscribeOnCurrentThread() || 
+            source6.IsRequiredSubscribeOnCurrentThread() || 
+            source7.IsRequiredSubscribeOnCurrentThread() || 
+            false)
+    {
+        this.source1 = source1;
+        this.source2 = source2;
+        this.source3 = source3;
+        this.source4 = source4;
+        this.source5 = source5;
+        this.source6 = source6;
+        this.source7 = source7;
+        this.resultSelector = resultSelector;
+    }
+
+    protected override IDisposable SubscribeCore(IObserver<TR> observer, IDisposable cancel)
+    {
+        return new CombineLatest(7, this, observer, cancel).Run();
+    }
+
+    class CombineLatest : NthCombineLatestObserverBase<TR>
+    {
+        readonly CombineLatestObservable<T1, T2, T3, T4, T5, T6, T7, TR> parent;
+        readonly object gate = new object();
+        CombineLatestObserver<T1> c1;
+        CombineLatestObserver<T2> c2;
+        CombineLatestObserver<T3> c3;
+        CombineLatestObserver<T4> c4;
+        CombineLatestObserver<T5> c5;
+        CombineLatestObserver<T6> c6;
+        CombineLatestObserver<T7> c7;
+
+        public CombineLatest(int length, CombineLatestObservable<T1, T2, T3, T4, T5, T6, T7, TR> parent, IObserver<TR> observer, IDisposable cancel)
+            : base(length, observer, cancel)
+        {
+            this.parent = parent;
+        }
+
+        public IDisposable Run()
+        {
+            c1 = new CombineLatestObserver<T1>(gate, this, 0);
+            c2 = new CombineLatestObserver<T2>(gate, this, 1);
+            c3 = new CombineLatestObserver<T3>(gate, this, 2);
+            c4 = new CombineLatestObserver<T4>(gate, this, 3);
+            c5 = new CombineLatestObserver<T5>(gate, this, 4);
+            c6 = new CombineLatestObserver<T6>(gate, this, 5);
+            c7 = new CombineLatestObserver<T7>(gate, this, 6);
+            
+            var s1 = parent.source1.Subscribe(c1);
+            var s2 = parent.source2.Subscribe(c2);
+            var s3 = parent.source3.Subscribe(c3);
+            var s4 = parent.source4.Subscribe(c4);
+            var s5 = parent.source5.Subscribe(c5);
+            var s6 = parent.source6.Subscribe(c6);
+            var s7 = parent.source7.Subscribe(c7);
+
+            return StableCompositeDisposable.Create(s1, s2, s3, s4, s5, s6, s7);
+        }
+
+        public override TR GetResult()
+        {
+            return parent.resultSelector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value);
+        }
+
+        public override void OnNext(TR value)
+        {
+            base.observer.OnNext(value);
+        }
+    }
+}
+
+
