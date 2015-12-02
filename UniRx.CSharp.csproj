@@ -157,6 +157,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\RepeatSafe.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Return.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Scan.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Switch.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Zip.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Select.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\SelectMany.cs" />

@@ -14,17 +14,14 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<TResult> observer, IDisposable cancel)
         {
-            return source.Subscribe(new Cast(this, observer, cancel));
+            return source.Subscribe(new Cast(observer, cancel));
         }
 
         class Cast : OperatorObserverBase<TSource, TResult>
         {
-            readonly CastObservable<TSource, TResult> parent;
-
-            public Cast(CastObservable<TSource, TResult> parent, IObserver<TResult> observer, IDisposable cancel)
+            public Cast(IObserver<TResult> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
-                this.parent = parent;
             }
 
             public override void OnNext(TSource value)

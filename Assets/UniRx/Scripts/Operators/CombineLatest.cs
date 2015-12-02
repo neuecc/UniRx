@@ -759,8 +759,6 @@ namespace UniRx.Operators
 
     internal abstract class NthCombineLatestObserverBase<T> : OperatorObserverBase<T, T>, ICombineLatestObservable
     {
-        readonly object gate = new object();
-
         readonly int length;
         bool isAllValueStarted;
         readonly bool[] isStarted;

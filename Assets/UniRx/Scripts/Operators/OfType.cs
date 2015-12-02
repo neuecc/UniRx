@@ -14,17 +14,14 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<TResult> observer, IDisposable cancel)
         {
-            return source.Subscribe(new OfType(this, observer, cancel));
+            return source.Subscribe(new OfType(observer, cancel));
         }
 
         class OfType : OperatorObserverBase<TSource, TResult>
         {
-            readonly OfTypeObservable<TSource, TResult> parent;
-
-            public OfType(OfTypeObservable<TSource, TResult> parent, IObserver<TResult> observer, IDisposable cancel)
+            public OfType(IObserver<TResult> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
-                this.parent = parent;
             }
 
             public override void OnNext(TSource value)

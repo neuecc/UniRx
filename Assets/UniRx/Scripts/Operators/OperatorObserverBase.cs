@@ -18,14 +18,26 @@ namespace UniRx.Operators
 
         public virtual void OnError(Exception error)
         {
-            observer.OnError(error);
-            Dispose();
+            try
+            {
+                observer.OnError(error);
+            }
+            finally
+            {
+                Dispose();
+            }
         }
 
         public virtual void OnCompleted()
         {
-            observer.OnCompleted();
-            Dispose();
+            try
+            {
+                observer.OnCompleted();
+            }
+            finally
+            {
+                Dispose();
+            }
         }
 
         public virtual void Dispose()

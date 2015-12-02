@@ -65,12 +65,10 @@ namespace UniRx.Operators
 
         class Take : OperatorObserverBase<T, T>
         {
-            readonly TakeObservable<T> parent;
             int rest;
 
             public Take(TakeObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
-                this.parent = parent;
                 this.rest = parent.count;
             }
 

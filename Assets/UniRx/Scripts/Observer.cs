@@ -3,6 +3,8 @@ using System.Threading;
 
 namespace UniRx
 {
+    // safe does not means auto detachable(it's different with Rx.Net)
+    // safe = save OnNext* (OnError|OnCompleted)? rule.
     internal interface ISafeObserver
     {
 

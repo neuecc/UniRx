@@ -11,25 +11,30 @@ namespace UniRx
     {
         public void Run()
         {
-            var a = new Subject<int>();
-            var b = new Subject<int>();
-            var c = new Subject<int>();
+            var subject = new Subject<int>();
 
-            Observable.CombineLatest(a, b, c, (x, y, z) => new { x, y, z })
-                //.Materialize().Select(x => x.ToString())
-                .Subscribe(Console.WriteLine);
+            subject.Select(x => x).Subscribe(x => { Console.WriteLine(x); throw new Exception(); }, ex =>
+            {
+                ShowStackTrace();
+                Console.WriteLine("called ex 1");
+                //throw ex;
+            });
 
+            try
+            {
+                subject.OnNext(2);
+            }
+            catch
+            {
+            }
 
-            a.OnNext(100);
-            b.OnNext(2000);
-            c.OnNext(50);
-
-
-            a.OnCompleted();
-            b.OnCompleted();
-
-
-            c.OnNext(90);
+            try
+            {
+                subject.OnNext(1);
+            }
+            catch
+            {
+            }
 
 
 

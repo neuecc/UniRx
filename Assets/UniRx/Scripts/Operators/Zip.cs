@@ -776,7 +776,6 @@ namespace UniRx.Operators
 
     internal abstract class NthZipObserverBase<T> : OperatorObserverBase<T, T>, IZipObservable
     {
-        readonly object gate = new object();
         System.Collections.ICollection[] queues;
         bool[] isDone;
         int length;

@@ -102,7 +102,7 @@ namespace UniRx.Operators
 
                 var disposable = new SingleAssignmentDisposable();
                 collectionDisposable.Add(disposable);
-                var collectionObserver = new SelectMany(this, value, disposable);
+                var collectionObserver = new SelectMany(this, disposable);
                 disposable.Disposable = nextObservable.Subscribe(collectionObserver);
             }
 
@@ -133,14 +133,12 @@ namespace UniRx.Operators
             class SelectMany : OperatorObserverBase<TResult, TResult>
             {
                 readonly SelectManyOuterObserver parent;
-                readonly TSource sourceValue;
                 readonly IDisposable cancel;
 
-                public SelectMany(SelectManyOuterObserver parent, TSource value, IDisposable cancel)
+                public SelectMany(SelectManyOuterObserver parent, IDisposable cancel)
                     : base(parent.observer, cancel)
                 {
                     this.parent = parent;
-                    this.sourceValue = value;
                     this.cancel = cancel;
                 }
 
@@ -214,7 +212,7 @@ namespace UniRx.Operators
 
                 var disposable = new SingleAssignmentDisposable();
                 collectionDisposable.Add(disposable);
-                var collectionObserver = new SelectMany(this, value, disposable);
+                var collectionObserver = new SelectMany(this, disposable);
                 disposable.Disposable = nextObservable.Subscribe(collectionObserver);
             }
 
@@ -245,14 +243,12 @@ namespace UniRx.Operators
             class SelectMany : OperatorObserverBase<TResult, TResult>
             {
                 readonly SelectManyObserverWithIndex parent;
-                readonly TSource sourceValue;
                 readonly IDisposable cancel;
 
-                public SelectMany(SelectManyObserverWithIndex parent, TSource value, IDisposable cancel)
+                public SelectMany(SelectManyObserverWithIndex parent, IDisposable cancel)
                     : base(parent.observer, cancel)
                 {
                     this.parent = parent;
-                    this.sourceValue = value;
                     this.cancel = cancel;
                 }
 
