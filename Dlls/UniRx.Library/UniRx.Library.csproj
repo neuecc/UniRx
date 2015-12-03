@@ -183,6 +183,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Defer.cs">
       <Link>Operators\Defer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\DelaySubscription.cs">
+      <Link>Operators\DelaySubscription.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Empty.cs">
       <Link>Operators\Empty.cs</Link>
     </Compile>
@@ -197,6 +200,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Never.cs">
       <Link>Operators\Never.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\ObserveOn.cs">
+      <Link>Operators\ObserveOn.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OfType.cs">
       <Link>Operators\OfType.cs</Link>
@@ -237,8 +243,14 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\StartWith.cs">
       <Link>Operators\StartWith.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\SubscribeOn.cs">
+      <Link>Operators\SubscribeOn.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Switch.cs">
       <Link>Operators\Switch.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Synchronize.cs">
+      <Link>Operators\Synchronize.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Take.cs">
       <Link>Operators\Take.cs</Link>

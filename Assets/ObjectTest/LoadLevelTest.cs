@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // Disable warning, LoadLevel
 using System;
 using System.Collections;
 using UnityEngine;
@@ -18,9 +19,12 @@ namespace UniRx.ObjectTest
             var lla = GameObject.Find("LoadLevelAdditive");
             var llacolor = lla.GetComponent<GUIText>().color;
             var clla = lla.AddComponent<Clicker>();
+
             clla.OnClicked += () => Application.LoadLevelAdditive("LoadLevelTestAdditive");
             clla.OnEntered += () => clla.GetComponent<GUIText>().color = Color.blue;
             clla.OnExited += () => clla.GetComponent<GUIText>().color = llacolor;
         }
     }
 }
+
+#pragma warning restore CS0618

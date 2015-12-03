@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UniRx.Operators;
 
 namespace UniRx
 {
@@ -8,102 +9,42 @@ namespace UniRx
     {
         public static IObservable<T> Synchronize<T>(this IObservable<T> source)
         {
-            return source.Synchronize(new object());
+            return new SynchronizeObservable<T>(source, new object());
         }
 
         public static IObservable<T> Synchronize<T>(this IObservable<T> source, object gate)
         {
-            return Observable.Create<T>(observer =>
-            {
-                return source.Subscribe(
-                    x => { lock (gate) observer.OnNext(x); },
-                    x => { lock (gate) observer.OnError(x); },
-                    () => { lock (gate) observer.OnCompleted(); });
-            });
+            return new SynchronizeObservable<T>(source, gate);
         }
 
         public static IObservable<T> ObserveOn<T>(this IObservable<T> source, IScheduler scheduler)
         {
-            return Observable.Create<T>(observer =>
-            {
-                var group = new CompositeDisposable();
-
-                var first = source.Subscribe(x =>
-                {
-                    var d = scheduler.Schedule(() => observer.OnNext(x));
-                    group.Add(d);
-                }, ex =>
-                {
-                    var d = scheduler.Schedule(() => observer.OnError(ex));
-                    group.Add(d);
-                }, () =>
-                {
-                    var d = scheduler.Schedule(() => observer.OnCompleted());
-                    group.Add(d);
-                });
-
-                group.Add(first);
-
-                return group;
-            });
+            return new ObserveOnObservable<T>(source, scheduler);
         }
 
         public static IObservable<T> SubscribeOn<T>(this IObservable<T> source, IScheduler scheduler)
         {
-            return Observable.Create<T>(observer =>
-            {
-                var m = new SingleAssignmentDisposable();
-                var d = new SerialDisposable();
-                d.Disposable = m;
-
-                m.Disposable = scheduler.Schedule(() =>
-                {
-                    d.Disposable = new ScheduledDisposable(scheduler, source.Subscribe(observer));
-                });
-
-                return d;
-            });
+            return new SubscribeOnObservable<T>(source, scheduler);
         }
 
         public static IObservable<T> DelaySubscription<T>(this IObservable<T> source, TimeSpan dueTime)
         {
-            return source.DelaySubscription(dueTime, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new DelaySubscriptionObservable<T>(source, dueTime, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<T> DelaySubscription<T>(this IObservable<T> source, TimeSpan dueTime, IScheduler scheduler)
         {
-            return Observable.Create<T>(observer =>
-            {
-                var d = new MultipleAssignmentDisposable();
-                var dt = Scheduler.Normalize(dueTime);
-
-                d.Disposable = scheduler.Schedule(dt, () =>
-                {
-                    d.Disposable = source.Subscribe(observer);
-                });
-
-                return d;
-            });
+            return new DelaySubscriptionObservable<T>(source, dueTime, scheduler);
         }
 
         public static IObservable<T> DelaySubscription<T>(this IObservable<T> source, DateTimeOffset dueTime)
         {
-            return source.DelaySubscription(dueTime, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return new DelaySubscriptionObservable<T>(source, dueTime, Scheduler.DefaultSchedulers.TimeBasedOperations);
         }
 
         public static IObservable<T> DelaySubscription<T>(this IObservable<T> source, DateTimeOffset dueTime, IScheduler scheduler)
         {
-            return Observable.Create<T>(observer =>
-            {
-                var d = new MultipleAssignmentDisposable();
-
-                d.Disposable = scheduler.Schedule(dueTime, () =>
-                {
-                    d.Disposable = source.Subscribe(observer);
-                });
-
-                return d;
-            });
+            return new DelaySubscriptionObservable<T>(source, dueTime, scheduler);
         }
 
         public static IObservable<T> Amb<T>(params IObservable<T>[] sources)

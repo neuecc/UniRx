@@ -11,8 +11,15 @@ namespace UniRx
     {
         public void Run()
         {
-         
 
+            var xs = Observable.Range(1, 100)
+                .ObserveOn(Scheduler.ThreadPool)
+                .Subscribe(x => Console.WriteLine(x));
+
+
+            //xs.Dispose();
+
+            Console.ReadLine();
 
 
         }

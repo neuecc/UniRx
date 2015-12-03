@@ -180,6 +180,12 @@ namespace UniRx.ObjectTest
 
 #endif
 
+
+    [Serializable]
+    public class StringReactiveCollection : ReactiveCollection<string>
+    {
+    }
+
     // test sandbox
     [Serializable]
     public class UniRxTestSandbox : MonoBehaviour
@@ -200,6 +206,9 @@ namespace UniRx.ObjectTest
 
         public DateTime DateTimeSonomono;
 
+        public List<string> arrayC;
+
+        public StringReactiveCollection SerializableRxc;
 
         public IntReactiveProperty Intxxx;
         public LongReactiveProperty LongxXXX;

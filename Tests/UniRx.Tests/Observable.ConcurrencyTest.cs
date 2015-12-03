@@ -2,12 +2,38 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace UniRx.Tests
 {
     [TestClass]
     public class ObservableConcurrencyTest
     {
+        [TestMethod]
+        public void ObserveOnTest()
+        {
+            var xs = Observable.Range(1, 10)
+                .ObserveOn(Scheduler.ThreadPool)
+                .ToArrayWait();
+
+            xs.OrderBy(x => x).Is(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+            var s = new Subject<int>();
+
+            var list = new List<Notification<int>>();
+            s.ObserveOn(Scheduler.Immediate).Materialize().Subscribe(list.Add);
+
+            s.OnError(new Exception());
+
+            list[0].Kind.Is(NotificationKind.OnError);
+
+            s = new Subject<int>();
+            s.ObserveOn(Scheduler.Immediate).Materialize().Subscribe(list.Add);
+
+            s.OnCompleted();
+            list[1].Kind.Is(NotificationKind.OnCompleted);
+        }
+
         [TestMethod]
         public void AmbTest()
         {
