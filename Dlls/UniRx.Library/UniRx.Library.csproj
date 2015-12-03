@@ -258,6 +258,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\ToObservable.cs">
       <Link>Operators\ToObservable.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Wait.cs">
+      <Link>Operators\Wait.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\WhenAll.cs">
       <Link>Operators\WhenAll.cs</Link>
     </Compile>

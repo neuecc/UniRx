@@ -136,6 +136,7 @@
     <Compile Include="Assets\UniRx\Scripts\Observable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Aggregate.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Wait.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsUnitObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Cast.cs" />
