@@ -288,7 +288,7 @@ namespace UniRx.Operators
                 base.observer.OnNext(value);
             }
 
-            class ZipObserver : IObserver<T>
+            class ZipObserver : IObserver<T>, ISafeObserver
             {
                 readonly Zip parent;
                 readonly int index;
@@ -870,7 +870,7 @@ namespace UniRx.Operators
 
 
     // nth
-    internal class ZipObserver<T> : IObserver<T>
+    internal class ZipObserver<T> : IObserver<T>, ISafeObserver
     {
         readonly object gate;
         readonly IZipObservable parent;

@@ -142,7 +142,7 @@ namespace UniRx.Tests
             l.Count.Is(1); // OnNext
 
             a.OnCompleted();
-            
+
             b.OnNext(1001);
             l.Count.Is(1);
 
@@ -461,6 +461,36 @@ namespace UniRx.Tests
             s1.OnCompleted();
             s3.OnCompleted();
             complete.IsTrue();
+        }
+
+        [TestMethod]
+        public void Switch()
+        {
+            var source = new Subject<IObservable<int>>();
+
+            var list = new List<int>();
+            source.Switch().Subscribe(list.Add);
+
+            var s1 = new Subject<int>();
+            source.OnNext(s1);
+
+            s1.OnNext(100);
+            s1.OnNext(2000);
+
+            var s2 = new Subject<int>();
+            s1.HasObservers.IsTrue();
+            source.OnNext(s2);
+            s1.OnNext(3000); // do nothing
+            s1.HasObservers.IsFalse();
+
+            s2.OnNext(5000);
+
+            source.OnCompleted();
+
+            s2.OnNext(900000);
+
+            list.Is(100, 2000, 5000, 900000);
+            s2.OnCompleted();
         }
     }
 }

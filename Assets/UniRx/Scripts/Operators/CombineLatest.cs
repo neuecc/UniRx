@@ -275,7 +275,7 @@ namespace UniRx.Operators
                 base.observer.OnNext(value);
             }
 
-            class CombineLatestObserver : IObserver<T>
+            class CombineLatestObserver : IObserver<T>, ISafeObserver
             {
                 readonly CombineLatest parent;
                 readonly int index;
@@ -874,7 +874,7 @@ namespace UniRx.Operators
     }
 
     // Nth
-    internal class CombineLatestObserver<T> : IObserver<T>
+    internal class CombineLatestObserver<T> : IObserver<T>, ISafeObserver
     {
         readonly object gate;
         readonly ICombineLatestObservable parent;

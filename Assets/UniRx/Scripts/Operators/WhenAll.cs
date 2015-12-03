@@ -82,7 +82,7 @@ namespace UniRx.Operators
                 base.observer.OnNext(value);
             }
 
-            class WhenAllCollectionObserver : IObserver<T>
+            class WhenAllCollectionObserver : IObserver<T>, ISafeObserver
             {
                 readonly WhenAll parent;
                 readonly int index;
@@ -180,7 +180,7 @@ namespace UniRx.Operators
                 base.observer.OnNext(value);
             }
 
-            class WhenAllCollectionObserver : IObserver<T>
+            class WhenAllCollectionObserver : IObserver<T>, ISafeObserver
             {
                 readonly WhenAllObserver_ parent;
                 readonly int index;
