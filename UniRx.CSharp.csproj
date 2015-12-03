@@ -178,6 +178,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Wait.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\WhenAll.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Where.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Amb.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Zip.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs" />
     <Compile Include="Assets\UniRx\Scripts\Schedulers\IScheduler.cs" />
