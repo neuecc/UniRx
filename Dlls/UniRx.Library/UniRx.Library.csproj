@@ -243,6 +243,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Single.cs">
       <Link>Operators\Single.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Start.cs">
+      <Link>Operators\Start.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\StartWith.cs">
       <Link>Operators\StartWith.cs</Link>
     </Compile>

@@ -193,22 +193,42 @@ namespace UniRx
 
         public static IObservable<T> Start<T>(Func<T> function)
         {
-            return Start(function, Scheduler.DefaultSchedulers.AsyncConversions);
+            return new StartObservable<T>(function, null, Scheduler.DefaultSchedulers.AsyncConversions);
+        }
+
+        public static IObservable<T> Start<T>(Func<T> function, TimeSpan timeSpan)
+        {
+            return new StartObservable<T>(function, timeSpan, Scheduler.DefaultSchedulers.AsyncConversions);
         }
 
         public static IObservable<T> Start<T>(Func<T> function, IScheduler scheduler)
         {
-            return ToAsync(function, scheduler)();
+            return new StartObservable<T>(function, null, scheduler);
+        }
+
+        public static IObservable<T> Start<T>(Func<T> function, TimeSpan timeSpan, IScheduler scheduler)
+        {
+            return new StartObservable<T>(function, timeSpan, scheduler);
         }
 
         public static IObservable<Unit> Start(Action action)
         {
-            return Start(action, Scheduler.DefaultSchedulers.AsyncConversions);
+            return new StartObservable<Unit>(action, null, Scheduler.DefaultSchedulers.AsyncConversions);
+        }
+
+        public static IObservable<Unit> Start(Action action, TimeSpan timeSpan)
+        {
+            return new StartObservable<Unit>(action, timeSpan, Scheduler.DefaultSchedulers.AsyncConversions);
         }
 
         public static IObservable<Unit> Start(Action action, IScheduler scheduler)
         {
-            return ToAsync(action, scheduler)();
+            return new StartObservable<Unit>(action, null, scheduler);
+        }
+
+        public static IObservable<Unit> Start(Action action, TimeSpan timeSpan, IScheduler scheduler)
+        {
+            return new StartObservable<Unit>(action, timeSpan, scheduler);
         }
 
         public static Func<IObservable<T>> ToAsync<T>(Func<T> function)
