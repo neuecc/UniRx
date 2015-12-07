@@ -270,5 +270,40 @@ namespace UniRx.Tests
                 list.Is(5);
             }
         }
+
+        [TestMethod]
+        public void Materialize()
+        {
+            var m = Observable.Empty<int>().Materialize().ToArrayWait();
+            m[0].Kind.Is(NotificationKind.OnCompleted);
+
+            m = Observable.Range(1, 3).Materialize().ToArrayWait();
+            m[0].Value.Is(1);
+            m[1].Value.Is(2);
+            m[2].Value.Is(3);
+            m[3].Kind.Is(NotificationKind.OnCompleted);
+
+            m = Observable.Range(1, 3).Concat(Observable.Throw<int>(new Exception())).Materialize().ToArrayWait();
+            m[0].Value.Is(1);
+            m[1].Value.Is(2);
+            m[2].Value.Is(3);
+            m[3].Kind.Is(NotificationKind.OnError);
+        }
+
+        [TestMethod]
+        public void Dematerialize()
+        {
+            var m = Observable.Empty<int>().Materialize().Dematerialize().ToArrayWait();
+            m.Is();
+
+            m = Observable.Range(1, 3).Materialize().Dematerialize().ToArrayWait();
+            m.Is(1, 2, 3);
+
+            var l = new List<int>();
+            Observable.Range(1, 3).Concat(Observable.Throw<int>(new Exception())).Materialize()
+                .Dematerialize()
+                .Subscribe(x => l.Add(x), ex => l.Add(1000), () => l.Add(10000));
+            l.Is(1, 2, 3, 1000);
+        }
     }
 }

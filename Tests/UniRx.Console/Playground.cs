@@ -20,6 +20,16 @@ namespace UniRx
 
             subject.OnNext(200);
 
+
+            Console.WriteLine("---");
+
+            
+            Observable.Return(10)
+                .Select<int, int>(x => { throw new Exception(); })
+                .Where(x => x % 2 == 0)
+                .Take(10)
+                .Subscribe(_ => ShowStackTrace(), ex => ShowStackTrace(), () => ShowStackTrace());
+
         }
 
         static void ShowStackTrace()

@@ -158,43 +158,12 @@ namespace UniRx
 
         public static IObservable<Notification<T>> Materialize<T>(this IObservable<T> source)
         {
-            return Observable.Create<Notification<T>>(observer =>
-            {
-                return source.Subscribe(
-                    x => observer.OnNext(Notification.CreateOnNext(x)),
-                    x =>
-                    {
-                        observer.OnNext(Notification.CreateOnError<T>(x));
-                        observer.OnCompleted();
-                    },
-                    () =>
-                    {
-                        observer.OnNext(Notification.CreateOnCompleted<T>());
-                        observer.OnCompleted();
-                    });
-            });
+            return new MaterializeObservable<T>(source);
         }
 
         public static IObservable<T> Dematerialize<T>(this IObservable<Notification<T>> source)
         {
-            return Observable.Create<T>(observer =>
-            {
-                return source.Subscribe(x =>
-                {
-                    if (x.Kind == NotificationKind.OnNext)
-                    {
-                        observer.OnNext(x.Value);
-                    }
-                    else if (x.Kind == NotificationKind.OnError)
-                    {
-                        observer.OnError(x.Exception);
-                    }
-                    else if (x.Kind == NotificationKind.OnCompleted)
-                    {
-                        observer.OnCompleted();
-                    }
-                }, observer.OnError, observer.OnCompleted);
-            });
+            return new DematerializeObservable<T>(source);
         }
 
         public static IObservable<T> DefaultIfEmpty<T>(this IObservable<T> source)
