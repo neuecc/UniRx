@@ -108,70 +108,52 @@ namespace UniRx
 
         public static IObservable<T> Do<T>(this IObservable<T> source, IObserver<T> observer)
         {
-            return Do(source, observer.OnNext, observer.OnError, observer.OnCompleted);
+            return new DoObserverObservable<T>(source, observer);
         }
-
 
         public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext)
         {
-            return Do(source, onNext, Stubs.Throw, Stubs.Nop);
+            return new DoObservable<T>(source, onNext, Stubs.Throw, Stubs.Nop);
         }
 
         public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError)
         {
-            return Do(source, onNext, onError, Stubs.Nop);
+            return new DoObservable<T>(source, onNext, onError, Stubs.Nop);
         }
 
         public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted)
         {
-            return Do(source, onNext, Stubs.Throw, onCompleted);
+            return new DoObservable<T>(source, onNext, Stubs.Throw, onCompleted);
         }
 
         public static IObservable<T> Do<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted)
         {
-            return Observable.Create<T>(observer =>
-            {
-                return source.Subscribe(x =>
-                {
-                    try
-                    {
-                        if (onNext != Stubs.Ignore<T>)
-                        {
-                            onNext(x);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-                    observer.OnNext(x);
-                }, ex =>
-                {
-                    try
-                    {
-                        onError(ex);
-                    }
-                    catch (Exception ex2)
-                    {
-                        observer.OnError(ex2);
-                        return;
-                    }
-                    observer.OnError(ex);
-                }, () =>
-                {
-                    try
-                    {
-                        onCompleted();
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-                    observer.OnCompleted();
-                });
-            });
+            return new DoObservable<T>(source, onNext, onError, onCompleted);
+        }
+
+        public static IObservable<T> DoOnError<T>(this IObservable<T> source, Action<Exception> onError)
+        {
+            return new DoOnErrorObservable<T>(source, onError);
+        }
+
+        public static IObservable<T> DoOnCompleted<T>(this IObservable<T> source, Action onCompleted)
+        {
+            return new DoOnCompletedObservable<T>(source, onCompleted);
+        }
+
+        public static IObservable<T> DoOnTerminate<T>(this IObservable<T> source, Action onTerminate)
+        {
+            return new DoOnTerminateObservable<T>(source, onTerminate);
+        }
+
+        public static IObservable<T> DoOnSubscribe<T>(this IObservable<T> source, Action onSubscribe)
+        {
+            return new DoOnSubscribeObservable<T>(source, onSubscribe);
+        }
+
+        public static IObservable<T> DoOnCancel<T>(this IObservable<T> source, Action onCancel)
+        {
+            return new DoOnCancelObservable<T>(source, onCancel);
         }
 
         public static IObservable<Notification<T>> Materialize<T>(this IObservable<T> source)

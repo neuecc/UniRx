@@ -189,6 +189,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\DelaySubscription.cs">
       <Link>Operators\DelaySubscription.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Do.cs">
+      <Link>Operators\Do.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Empty.cs">
       <Link>Operators\Empty.cs</Link>
     </Compile>

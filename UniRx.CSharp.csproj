@@ -141,6 +141,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Aggregate.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsUnitObservable.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Do.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\ToList.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\ToArray.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Cast.cs" />
