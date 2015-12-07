@@ -47,7 +47,7 @@ namespace UniRx
 
         public static IObservable<T> TakeWhile<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return TakeWhile(source, (x, i) => predicate(x));
+            return new TakeWhileObservable<T>(source, predicate);
         }
 
         public static IObservable<T> TakeWhile<T>(this IObservable<T> source, Func<T, int, bool> predicate)
@@ -55,32 +55,7 @@ namespace UniRx
             if (source == null) throw new ArgumentNullException("source");
             if (predicate == null) throw new ArgumentNullException("predicate");
 
-            return Observable.Create<T>(observer =>
-            {
-                var i = 0;
-                var running = true;
-
-                return source.Subscribe(x =>
-                {
-                    try
-                    {
-                        running = predicate(x, i++);
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-                    if (running)
-                    {
-                        observer.OnNext(x);
-                    }
-                    else
-                    {
-                        observer.OnCompleted();
-                    }
-                }, observer.OnError, observer.OnCompleted);
-            });
+            return new TakeWhileObservable<T>(source, predicate);
         }
 
         public static IObservable<T> TakeUntil<T, TOther>(this IObservable<T> source, IObservable<TOther> other)
@@ -88,15 +63,7 @@ namespace UniRx
             if (source == null) throw new ArgumentNullException("source");
             if (other == null) throw new ArgumentNullException("other");
 
-            return Observable.Create<T>(observer =>
-            {
-                var gate = new object();
-
-                var stopper = other.Synchronize(gate).Subscribe(_ => observer.OnCompleted(), observer.OnError);
-                var subscription = source.Synchronize(gate).Finally(stopper.Dispose).Subscribe(observer);
-
-                return new CompositeDisposable { stopper, subscription };
-            });
+            return new TakeUntilObservable<T, TOther>(source, other);
         }
 
         public static IObservable<T> Skip<T>(this IObservable<T> source, int count)

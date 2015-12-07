@@ -151,6 +151,8 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Dematerialize.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\DefaultIfEmpty.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Materialize.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\TakeUntil.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\TakeWhile.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\ToList.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\ToArray.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Cast.cs" />

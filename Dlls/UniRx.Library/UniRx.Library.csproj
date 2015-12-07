@@ -294,6 +294,12 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Take.cs">
       <Link>Operators\Take.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\TakeUntil.cs">
+      <Link>Operators\TakeUntil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\TakeWhile.cs">
+      <Link>Operators\TakeWhile.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Throw.cs">
       <Link>Operators\Throw.cs</Link>
     </Compile>

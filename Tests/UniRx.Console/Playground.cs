@@ -11,20 +11,14 @@ namespace UniRx
     {
         public void Run()
         {
-            var s = new Subject<int>();
+            var a = Observable.Interval(TimeSpan.FromMilliseconds(300))
+                   .DoOnCancel(() => Console.WriteLine("end1"))
+                   .TakeUntil(Observable.Timer(TimeSpan.FromSeconds(2))
+                   .SelectMany(_ => Observable.Throw<long>(new Exception()))
+                   .DoOnCancel(() => Console.WriteLine("end2")))
+                   .Subscribe(x => Console.WriteLine(x), ex => Console.WriteLine(ex), () => Console.WriteLine("end3"));
 
-            Hoge(s).Subscribe(x =>
-            {
-                Console.WriteLine("B:" + x);
-                if (x == 1000) throw new Exception();
-                Console.WriteLine("F:" + x);
-            });
-
-            try { s.OnNext(100); }catch{ }
-            try { s.OnNext(200); } catch { }
-            try { s.OnNext(300); } catch { }
-
-
+            Console.ReadLine();
         }
 
         static IObservable<int> Hoge(Subject<int> subject)
