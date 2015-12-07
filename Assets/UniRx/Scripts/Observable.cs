@@ -222,57 +222,17 @@ namespace UniRx
 
         public static IObservable<T> IgnoreElements<T>(this IObservable<T> source)
         {
-            return Observable.Create<T>(observer =>
-            {
-                return source.Subscribe(Stubs.Ignore<T>, observer.OnError, observer.OnCompleted);
-            });
+            return new IgnoreElementsObservable<T>(source);
         }
 
         public static IObservable<Unit> ForEachAsync<T>(this IObservable<T> source, Action<T> onNext)
         {
-            return Observable.Create<Unit>(observer =>
-            {
-                return source.Subscribe(x =>
-                {
-                    try
-                    {
-                        onNext(x);
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-                }, observer.OnError, () =>
-                {
-                    observer.OnNext(Unit.Default);
-                    observer.OnCompleted();
-                });
-            });
+            return new ForEachAsyncObservable<T>(source, onNext);
         }
 
         public static IObservable<Unit> ForEachAsync<T>(this IObservable<T> source, Action<T, int> onNext)
         {
-            return Observable.Create<Unit>(observer =>
-            {
-                var index = 0;
-                return source.Subscribe(x =>
-                {
-                    try
-                    {
-                        onNext(x, index++);
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-                }, observer.OnError, () =>
-                {
-                    observer.OnNext(Unit.Default);
-                    observer.OnCompleted();
-                });
-            });
+            return new ForEachAsyncObservable<T>(source, onNext);
         }
     }
 }

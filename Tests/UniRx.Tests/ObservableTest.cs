@@ -312,5 +312,38 @@ namespace UniRx.Tests
             Observable.Range(1, 3).DefaultIfEmpty(-1).ToArrayWait().Is(1, 2, 3);
             Observable.Empty<int>().DefaultIfEmpty(-1).ToArrayWait().Is(-1);
         }
+
+        [TestMethod]
+        public void IgnoreElements()
+        {
+            var xs = Observable.Range(1, 10).IgnoreElements().Materialize().ToArrayWait();
+            xs[0].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void ForEachAsync()
+        {
+            {
+                var list = new List<int>();
+                var xs = Observable.Range(1, 10).ForEachAsync(x => list.Add(x)).ToArray().Wait();
+                list.Is(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+                xs.Length.Is(1);
+                xs[0].Is(Unit.Default);
+            }
+
+            {
+                var list = new List<int>();
+                var listI = new List<int>();
+                var xs = Observable.Range(1, 10).ForEachAsync((x, i) =>
+                {
+                    list.Add(x);
+                    listI.Add(i);
+                }).ToArray().Wait();
+                list.Is(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+                listI.Is(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+                xs.Length.Is(1);
+                xs[0].Is(Unit.Default);
+            }
+        }
     }
 }

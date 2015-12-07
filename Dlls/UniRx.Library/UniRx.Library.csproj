@@ -210,6 +210,12 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\First.cs">
       <Link>Operators\First.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\ForEachAsync.cs">
+      <Link>Operators\ForEachAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\IgnoreElements.cs">
+      <Link>Operators\IgnoreElements.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Last.cs">
       <Link>Operators\Last.cs</Link>
     </Compile>

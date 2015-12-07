@@ -139,6 +139,8 @@
     <Compile Include="Assets\UniRx\Scripts\Observable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Observer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Aggregate.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\ForEachAsync.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\IgnoreElements.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsUnitObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\DistinctUntilChanged.cs" />
