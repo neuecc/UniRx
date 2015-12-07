@@ -142,6 +142,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Catch.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Finally.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\ForEachAsync.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\FromEvent.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\IgnoreElements.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsUnitObservable.cs" />

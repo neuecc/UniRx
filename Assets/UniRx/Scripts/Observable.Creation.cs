@@ -23,6 +23,26 @@ namespace UniRx
         {
             if (subscribe == null) throw new ArgumentNullException("subscribe");
 
+            return new CreateDurableObservable<T>(subscribe, isRequiredSubscribeOnCurrentThread);
+        }
+
+        /// <summary>
+        /// Create anonymous observable. Observer does "not" auto detach when error raised in onNext pipeline.
+        /// </summary>
+        public static IObservable<T> CreateDurable<T>(Func<IObserver<T>, IDisposable> subscribe)
+        {
+            if (subscribe == null) throw new ArgumentNullException("subscribe");
+
+            return new CreateDurableObservable<T>(subscribe);
+        }
+
+        /// <summary>
+        /// Create anonymous observable. Observer does "not" auto detach when error raised in onNext pipeline.
+        /// </summary>
+        public static IObservable<T> CreateDurable<T>(Func<IObserver<T>, IDisposable> subscribe, bool isRequiredSubscribeOnCurrentThread)
+        {
+            if (subscribe == null) throw new ArgumentNullException("subscribe");
+
             return new CreateObservable<T>(subscribe, isRequiredSubscribeOnCurrentThread);
         }
 

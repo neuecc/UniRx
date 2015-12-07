@@ -11,25 +11,35 @@ namespace UniRx
     {
         public void Run()
         {
-            var subject = new Subject<int>();
-            subject
-                .Select<int, int>(x => { throw new Exception(); })
-                .Where(x => x % 2 == 0)
-                .Take(10)
-                .Subscribe(_ => ShowStackTrace(), ex => ShowStackTrace(), () => ShowStackTrace());
+            var myE = new MyEvent();
 
-            subject.OnNext(200);
+            var ev = Observable.FromEvent<int>(h => myE.action += h, h =>
+            {
+                Console.WriteLine("DISPOSED");
+                myE.action -= h;
+            });
 
+            ev.Subscribe(xx =>
+            {
+                ShowStackTrace();
+                Console.WriteLine("COME:" + xx);
+                // Subscribe in Subscribe
+                Observable.Return(xx)
+                    .Do(x => { if (x == 1) throw new Exception(); })
+                    .Subscribe(x => ShowStackTrace());
+            });
 
-            Console.WriteLine("---");
+            try { myE.Fire(1); }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Here:" + ex);
+            }
 
-            
-            Observable.Return(10)
-                .Select<int, int>(x => { throw new Exception(); })
-                .Where(x => x % 2 == 0)
-                .Take(10)
-                .Subscribe(_ => ShowStackTrace(), ex => ShowStackTrace(), () => ShowStackTrace());
-
+            try { myE.Fire(10); }
+            catch (Exception ex)
+            {
+                //Console.WriteLine(ex);
+            }
         }
 
         static void ShowStackTrace()
@@ -44,6 +54,16 @@ namespace UniRx
         public static void Is<T>(this T t, T t2)
         {
             Console.WriteLine("T:" + t + " T2:" + t2);
+        }
+    }
+
+    class MyEvent
+    {
+        public Action<int> action;
+
+        public void Fire(int x)
+        {
+            action.Invoke(x);
         }
     }
 }

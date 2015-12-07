@@ -219,6 +219,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\ForEachAsync.cs">
       <Link>Operators\ForEachAsync.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\FromEvent.cs">
+      <Link>Operators\FromEvent.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\IgnoreElements.cs">
       <Link>Operators\IgnoreElements.cs</Link>
     </Compile>
