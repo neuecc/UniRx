@@ -33,7 +33,7 @@ namespace UniRx.Operators
             }
         }
 
-        class Throw : AutoDetachOperatorObserverBase<T>
+        class Throw : OperatorObserverBase<T, T>
         {
             public Throw(IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
@@ -51,6 +51,18 @@ namespace UniRx.Operators
                     Dispose();
                     throw;
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }

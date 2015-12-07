@@ -225,9 +225,21 @@ namespace UniRx
                     throw;
                 }
             }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
+            }
         }
 
-        class AutoDetachObserver<T> : UniRx.Operators.AutoDetachOperatorObserverBase<T>
+        class AutoDetachObserver<T> : UniRx.Operators.OperatorObserverBase<T, T>
         {
             public AutoDetachObserver(IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
@@ -246,6 +258,18 @@ namespace UniRx
                     Dispose();
                     throw;
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }

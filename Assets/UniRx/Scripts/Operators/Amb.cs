@@ -64,6 +64,16 @@ namespace UniRx.Operators
                 // no use
             }
 
+            public override void OnError(Exception error)
+            {
+                // no use
+            }
+
+            public override void OnCompleted()
+            {
+                // no use
+            }
+
             class Amb : IObserver<T>
             {
                 public IObserver<T> targetObserver;

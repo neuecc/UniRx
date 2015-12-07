@@ -96,7 +96,7 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); } finally { Dispose(); };
                     return;
                 }
 
@@ -110,7 +110,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    base.OnError(error);
+                    try { observer.OnError(error); } finally { Dispose(); };
                 }
             }
 
@@ -121,7 +121,7 @@ namespace UniRx.Operators
                 {
                     lock (gate)
                     {
-                        base.OnCompleted();
+                        try { observer.OnCompleted(); } finally { Dispose(); };
                     }
                 }
                 else
@@ -154,7 +154,7 @@ namespace UniRx.Operators
                 {
                     lock (parent.gate)
                     {
-                        base.OnError(error);
+                        try { observer.OnError(error); } finally { Dispose(); };
                     }
                 }
 
@@ -165,7 +165,7 @@ namespace UniRx.Operators
                     {
                         lock (parent.gate)
                         {
-                            base.OnCompleted();
+                            try { observer.OnCompleted(); } finally { Dispose(); };
                         }
                     }
                 }
@@ -206,7 +206,7 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); } finally { Dispose(); };
                     return;
                 }
 
@@ -220,7 +220,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    base.OnError(error);
+                    try { observer.OnError(error); } finally { Dispose(); };
                 }
             }
 
@@ -231,7 +231,7 @@ namespace UniRx.Operators
                 {
                     lock (gate)
                     {
-                        base.OnCompleted();
+                        try { observer.OnCompleted(); } finally { Dispose(); };
                     }
                 }
                 else
@@ -264,7 +264,7 @@ namespace UniRx.Operators
                 {
                     lock (parent.gate)
                     {
-                        base.OnError(error);
+                        try { observer.OnError(error); } finally { Dispose(); };
                     }
                 }
 
@@ -275,7 +275,7 @@ namespace UniRx.Operators
                     {
                         lock (parent.gate)
                         {
-                            base.OnCompleted();
+                            try { observer.OnCompleted(); } finally { Dispose(); };
                         }
                     }
                 }
@@ -305,7 +305,7 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); } finally { Dispose(); };
                     return;
                 }
 
@@ -328,7 +328,7 @@ namespace UniRx.Operators
                         }
                         catch (Exception exception)
                         {
-                            OnError(exception);
+                            try { observer.OnError(exception); } finally { Dispose(); }
                             return;
                         }
 
@@ -345,6 +345,16 @@ namespace UniRx.Operators
                         e.Dispose();
                     }
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); } finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); } finally { Dispose(); }
             }
         }
 
@@ -395,7 +405,7 @@ namespace UniRx.Operators
                         }
                         catch (Exception exception)
                         {
-                            OnError(exception);
+                            try { observer.OnError(exception); } finally { Dispose(); }
                             return;
                         }
 
@@ -412,6 +422,16 @@ namespace UniRx.Operators
                         e.Dispose();
                     }
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); } finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); } finally { Dispose(); }
             }
         }
     }
@@ -530,7 +550,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    base.OnError(error);
+                    try { observer.OnError(error); } finally { Dispose(); };
                 }
             }
 
@@ -541,7 +561,7 @@ namespace UniRx.Operators
                 {
                     lock (gate)
                     {
-                        base.OnCompleted();
+                        try { observer.OnCompleted(); } finally { Dispose(); };
                     }
                 }
                 else
@@ -587,7 +607,7 @@ namespace UniRx.Operators
                 {
                     lock (parent.gate)
                     {
-                        base.OnError(error);
+                        try { observer.OnError(error); } finally { Dispose(); };
                     }
                 }
 
@@ -598,7 +618,7 @@ namespace UniRx.Operators
                     {
                         lock (parent.gate)
                         {
-                            base.OnCompleted();
+                            try { observer.OnCompleted(); } finally { Dispose(); };
                         }
                     }
                 }
@@ -654,7 +674,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    base.OnError(error);
+                    try { observer.OnError(error); } finally { Dispose(); };
                 }
             }
 
@@ -665,7 +685,7 @@ namespace UniRx.Operators
                 {
                     lock (gate)
                     {
-                        base.OnCompleted();
+                        try { observer.OnCompleted(); } finally { Dispose(); };
                     }
                 }
                 else
@@ -700,7 +720,7 @@ namespace UniRx.Operators
                     }
                     catch (Exception ex)
                     {
-                        OnError(ex);
+                        try { observer.OnError(ex); } finally { Dispose(); };
                         return;
                     }
 
@@ -714,7 +734,7 @@ namespace UniRx.Operators
                 {
                     lock (parent.gate)
                     {
-                        base.OnError(error);
+                        try { observer.OnError(error); } finally { Dispose(); };
                     }
                 }
 
@@ -725,7 +745,7 @@ namespace UniRx.Operators
                     {
                         lock (parent.gate)
                         {
-                            base.OnCompleted();
+                            try { observer.OnCompleted(); } finally { Dispose(); };
                         }
                     }
                 }
@@ -755,7 +775,7 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); } finally { Dispose(); };
                     return;
                 }
 
@@ -778,7 +798,7 @@ namespace UniRx.Operators
                         }
                         catch (Exception exception)
                         {
-                            OnError(exception);
+                            try { observer.OnError(exception); } finally { Dispose(); }
                             return;
                         }
 
@@ -795,6 +815,16 @@ namespace UniRx.Operators
                         e.Dispose();
                     }
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); } finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); } finally { Dispose(); }
             }
         }
 
@@ -823,7 +853,7 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); } finally { Dispose(); };
                     return;
                 }
 
@@ -847,7 +877,7 @@ namespace UniRx.Operators
                         }
                         catch (Exception exception)
                         {
-                            OnError(exception);
+                            try { observer.OnError(exception); } finally { Dispose(); }
                             return;
                         }
 
@@ -864,6 +894,16 @@ namespace UniRx.Operators
                         e.Dispose();
                     }
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); } finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); } finally { Dispose(); }
             }
         }
     }

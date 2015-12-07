@@ -59,7 +59,8 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    OnError(error);
+                    try { observer.OnError(error); }
+                    finally { Dispose(); }
                 }
             }
 
@@ -70,7 +71,8 @@ namespace UniRx.Operators
                     isStopped = true;
                     if (!hasLatest)
                     {
-                        OnCompleted();
+                        try { observer.OnCompleted(); }
+                        finally { Dispose(); }
                     }
                 }
             }

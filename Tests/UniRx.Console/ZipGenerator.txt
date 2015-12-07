@@ -109,6 +109,18 @@ internal class ZipObservable<T1, T2, T3, TR> : OperatorObservableBase<TR>
         {
             base.observer.OnNext(value);
         }
+
+        public override void OnError(Exception error)
+        {
+            try { observer.OnError(error); }
+            finally { Dispose(); }
+        }
+
+        public override void OnCompleted()
+        {
+            try { observer.OnCompleted(); }
+            finally { Dispose(); }
+        }
     }
 }
 
@@ -186,6 +198,18 @@ internal class ZipObservable<T1, T2, T3, T4, TR> : OperatorObservableBase<TR>
         public override void OnNext(TR value)
         {
             base.observer.OnNext(value);
+        }
+
+        public override void OnError(Exception error)
+        {
+            try { observer.OnError(error); }
+            finally { Dispose(); }
+        }
+
+        public override void OnCompleted()
+        {
+            try { observer.OnCompleted(); }
+            finally { Dispose(); }
         }
     }
 }
@@ -270,6 +294,18 @@ internal class ZipObservable<T1, T2, T3, T4, T5, TR> : OperatorObservableBase<TR
         public override void OnNext(TR value)
         {
             base.observer.OnNext(value);
+        }
+
+        public override void OnError(Exception error)
+        {
+            try { observer.OnError(error); }
+            finally { Dispose(); }
+        }
+
+        public override void OnCompleted()
+        {
+            try { observer.OnCompleted(); }
+            finally { Dispose(); }
         }
     }
 }
@@ -360,6 +396,18 @@ internal class ZipObservable<T1, T2, T3, T4, T5, T6, TR> : OperatorObservableBas
         public override void OnNext(TR value)
         {
             base.observer.OnNext(value);
+        }
+
+        public override void OnError(Exception error)
+        {
+            try { observer.OnError(error); }
+            finally { Dispose(); }
+        }
+
+        public override void OnCompleted()
+        {
+            try { observer.OnCompleted(); }
+            finally { Dispose(); }
         }
     }
 }
@@ -456,6 +504,18 @@ internal class ZipObservable<T1, T2, T3, T4, T5, T6, T7, TR> : OperatorObservabl
         public override void OnNext(TR value)
         {
             base.observer.OnNext(value);
+        }
+
+        public override void OnError(Exception error)
+        {
+            try { observer.OnError(error); }
+            finally { Dispose(); }
+        }
+
+        public override void OnCompleted()
+        {
+            try { observer.OnCompleted(); }
+            finally { Dispose(); }
         }
     }
 }

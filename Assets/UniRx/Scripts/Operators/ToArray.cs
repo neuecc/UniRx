@@ -35,9 +35,14 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); } finally { Dispose(); }
                     return;
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); } finally { Dispose(); }
             }
 
             public override void OnCompleted()
@@ -49,12 +54,12 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex) 
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); } finally { Dispose(); }
                     return;
                 }
 
                 base.observer.OnNext(result);
-                base.OnCompleted();
+                try { observer.OnCompleted(); } finally { Dispose(); };
             }
         }
     }

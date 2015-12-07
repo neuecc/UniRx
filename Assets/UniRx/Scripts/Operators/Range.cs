@@ -39,7 +39,7 @@ namespace UniRx.Operators
             });
         }
 
-        class Range : AutoDetachOperatorObserverBase<int>
+        class Range : OperatorObserverBase<int, int>
         {
             public Range(IObserver<int> observer, IDisposable cancel)
                 : base(observer, cancel)
@@ -57,6 +57,18 @@ namespace UniRx.Operators
                     Dispose();
                     throw;
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }

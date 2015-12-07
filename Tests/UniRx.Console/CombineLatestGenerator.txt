@@ -106,6 +106,18 @@ internal class CombineLatestObservable<T1, T2, T3, TR> : OperatorObservableBase<
         {
             base.observer.OnNext(value);
         }
+
+        public override void OnError(Exception error)
+        {
+            try { observer.OnError(error); }
+            finally { Dispose(); }
+        }
+
+        public override void OnCompleted()
+        {
+            try { observer.OnCompleted(); }
+            finally { Dispose(); }
+        }
     }
 }
 
@@ -181,6 +193,18 @@ internal class CombineLatestObservable<T1, T2, T3, T4, TR> : OperatorObservableB
         public override void OnNext(TR value)
         {
             base.observer.OnNext(value);
+        }
+
+        public override void OnError(Exception error)
+        {
+            try { observer.OnError(error); }
+            finally { Dispose(); }
+        }
+
+        public override void OnCompleted()
+        {
+            try { observer.OnCompleted(); }
+            finally { Dispose(); }
         }
     }
 }
@@ -264,6 +288,18 @@ internal class CombineLatestObservable<T1, T2, T3, T4, T5, TR> : OperatorObserva
         public override void OnNext(TR value)
         {
             base.observer.OnNext(value);
+        }
+
+        public override void OnError(Exception error)
+        {
+            try { observer.OnError(error); }
+            finally { Dispose(); }
+        }
+
+        public override void OnCompleted()
+        {
+            try { observer.OnCompleted(); }
+            finally { Dispose(); }
         }
     }
 }
@@ -354,6 +390,18 @@ internal class CombineLatestObservable<T1, T2, T3, T4, T5, T6, TR> : OperatorObs
         public override void OnNext(TR value)
         {
             base.observer.OnNext(value);
+        }
+
+        public override void OnError(Exception error)
+        {
+            try { observer.OnError(error); }
+            finally { Dispose(); }
+        }
+
+        public override void OnCompleted()
+        {
+            try { observer.OnCompleted(); }
+            finally { Dispose(); }
         }
     }
 }
@@ -451,6 +499,18 @@ internal class CombineLatestObservable<T1, T2, T3, T4, T5, T6, T7, TR> : Operato
         public override void OnNext(TR value)
         {
             base.observer.OnNext(value);
+        }
+
+        public override void OnError(Exception error)
+        {
+            try { observer.OnError(error); }
+            finally { Dispose(); }
+        }
+
+        public override void OnCompleted()
+        {
+            try { observer.OnCompleted(); }
+            finally { Dispose(); }
         }
     }
 }

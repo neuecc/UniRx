@@ -96,7 +96,7 @@ namespace UniRx.Operators
                             node.List.Remove(node);
                         }
                     }
-                    base.OnError(error);
+                    try { observer.OnError(error); } finally { Dispose(); };
                 });
             }
 
@@ -120,7 +120,7 @@ namespace UniRx.Operators
                             node.List.Remove(node);
                         }
                     }
-                    base.OnCompleted();
+                    try { observer.OnCompleted(); } finally { Dispose(); };
                 });
             }
         }

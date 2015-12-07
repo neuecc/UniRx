@@ -103,14 +103,15 @@ namespace UniRx.Operators
 
                     if (ex != null)
                     {
-                        OnError(ex);
+                        try { observer.OnError(ex); }
+                        finally { Dispose(); }
                         return;
                     }
 
                     if (!hasNext)
                     {
-                        base.OnCompleted();
-                        base.Dispose();
+                        try { observer.OnCompleted(); }
+                        finally { Dispose(); }
                         return;
                     }
 
@@ -124,6 +125,12 @@ namespace UniRx.Operators
             public override void OnNext(T value)
             {
                 base.observer.OnNext(value);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
             }
 
             public override void OnCompleted()

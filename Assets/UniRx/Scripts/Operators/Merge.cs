@@ -69,7 +69,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    base.OnError(error);
+                    try { observer.OnError(error); } finally { Dispose(); };
                 }
             }
 
@@ -80,7 +80,7 @@ namespace UniRx.Operators
                 {
                     lock (gate)
                     {
-                        base.OnCompleted();
+                        try { observer.OnCompleted(); } finally { Dispose(); };
                     }
                 }
                 else
@@ -113,7 +113,7 @@ namespace UniRx.Operators
                 {
                     lock (parent.gate)
                     {
-                        base.OnError(error);
+                        try { observer.OnError(error); } finally { Dispose(); };
                     }
                 }
 
@@ -124,7 +124,7 @@ namespace UniRx.Operators
                     {
                         lock (parent.gate)
                         {
-                            base.OnCompleted();
+                            try { observer.OnCompleted(); } finally { Dispose(); };
                         }
                     }
                 }
@@ -182,7 +182,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    base.OnError(error);
+                    try { observer.OnError(error); } finally { Dispose(); };
                 }
             }
 
@@ -193,7 +193,7 @@ namespace UniRx.Operators
                     isStopped = true;
                     if (activeCount == 0)
                     {
-                        base.OnCompleted();
+                        try { observer.OnCompleted(); } finally { Dispose(); };
                     }
                     else
                     {
@@ -234,7 +234,7 @@ namespace UniRx.Operators
                 {
                     lock (parent.gate)
                     {
-                        base.OnError(error);
+                        try { observer.OnError(error); } finally { Dispose(); };
                     }
                 }
 
@@ -253,7 +253,7 @@ namespace UniRx.Operators
                             parent.activeCount--;
                             if (parent.isStopped && parent.activeCount == 0)
                             {
-                                base.OnCompleted();
+                                try { observer.OnCompleted(); } finally { Dispose(); };
                             }
                         }
                     }

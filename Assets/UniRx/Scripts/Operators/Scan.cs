@@ -47,12 +47,25 @@ namespace UniRx.Operators
                     }
                     catch (Exception ex)
                     {
-                        OnError(ex);
+                        try { observer.OnError(ex); }
+                        finally { Dispose(); }
                         return;
                     }
                 }
 
                 observer.OnNext(accumulation);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }
@@ -102,11 +115,24 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); }
+                    finally { Dispose(); }
                     return;
                 }
 
                 observer.OnNext(accumulation);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }

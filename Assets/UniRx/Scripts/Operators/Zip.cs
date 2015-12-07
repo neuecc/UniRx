@@ -74,7 +74,8 @@ namespace UniRx.Operators
                 }
                 else if (leftCompleted || rightCompleted)
                 {
-                    OnCompleted();
+                    try { observer.OnCompleted(); }
+                    finally { Dispose(); }
                     return;
                 }
                 else
@@ -88,7 +89,8 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); }
+                    finally { Dispose(); }
                     return;
                 }
 
@@ -98,6 +100,18 @@ namespace UniRx.Operators
             public override void OnNext(TResult value)
             {
                 base.observer.OnNext(value);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
 
             class LeftZipObserver : IObserver<TLeft>
@@ -265,7 +279,8 @@ namespace UniRx.Operators
 
                     if (allCompletedWithoutSelf)
                     {
-                        OnCompleted();
+                        try { observer.OnCompleted(); }
+                        finally { Dispose(); }
                         return;
                     }
                     else
@@ -286,6 +301,18 @@ namespace UniRx.Operators
             public override void OnNext(IList<T> value)
             {
                 base.observer.OnNext(value);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
 
             class ZipObserver : IObserver<T>, ISafeObserver
@@ -412,6 +439,18 @@ namespace UniRx.Operators
             {
                 base.observer.OnNext(value);
             }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
+            }
         }
     }
 
@@ -489,6 +528,18 @@ namespace UniRx.Operators
             public override void OnNext(TR value)
             {
                 base.observer.OnNext(value);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }
@@ -573,6 +624,18 @@ namespace UniRx.Operators
             public override void OnNext(TR value)
             {
                 base.observer.OnNext(value);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }
@@ -663,6 +726,18 @@ namespace UniRx.Operators
             public override void OnNext(TR value)
             {
                 base.observer.OnNext(value);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }
@@ -760,6 +835,18 @@ namespace UniRx.Operators
             {
                 base.observer.OnNext(value);
             }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
+            }
         }
     }
 
@@ -821,7 +908,8 @@ namespace UniRx.Operators
 
                 if (allCompletedWithoutSelf)
                 {
-                    OnCompleted();
+                    try { observer.OnCompleted(); }
+                    finally { Dispose(); }
                     return;
                 }
                 else
@@ -837,7 +925,8 @@ namespace UniRx.Operators
             }
             catch (Exception ex)
             {
-                base.OnError(ex);
+                try { observer.OnError(ex); }
+                finally { Dispose(); }
                 return;
             }
             OnNext(result);
@@ -858,13 +947,15 @@ namespace UniRx.Operators
 
             if (allTrue)
             {
-                base.OnCompleted();
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
 
         public void Fail(Exception error)
         {
-            base.OnError(error);
+            try { observer.OnError(error); }
+            finally { Dispose(); }
         }
     }
 

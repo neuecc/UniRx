@@ -33,6 +33,18 @@ namespace UniRx.Operators
             {
                 base.observer.OnNext(new Timestamped<T>(value, parent.scheduler.Now));
             }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
+            }
         }
     }
 }

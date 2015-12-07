@@ -11,7 +11,15 @@ namespace UniRx
     {
         public void Run()
         {
-            Console.ReadLine();
+            var subject = new Subject<int>();
+            subject
+                .Select<int, int>(x => { throw new Exception(); })
+                .Where(x => x % 2 == 0)
+                .Take(10)
+                .Subscribe(_ => ShowStackTrace(), ex => ShowStackTrace(), () => ShowStackTrace());
+
+            subject.OnNext(200);
+
         }
 
         static void ShowStackTrace()

@@ -86,13 +86,15 @@ namespace UniRx.Operators
 
                     if (ex != null)
                     {
-                        observer.OnError(ex);
+                        try { observer.OnError(ex); }
+                        finally { Dispose(); }
                         return;
                     }
 
                     if (!hasNext)
                     {
-                        observer.OnCompleted();
+                        try { observer.OnCompleted(); }
+                        finally { Dispose(); }
                         return;
                     }
 
@@ -108,6 +110,11 @@ namespace UniRx.Operators
                 isRunNext = true;
                 base.observer.OnNext(value);
             }
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
 
             public override void OnCompleted()
             {
@@ -121,7 +128,8 @@ namespace UniRx.Operators
                     e.Dispose();
                     if (!isDisposed)
                     {
-                        observer.OnCompleted();
+                        try { observer.OnCompleted(); }
+                        finally { Dispose(); }
                     }
                 }
             }

@@ -37,7 +37,7 @@ namespace UniRx.Operators
             }
         }
 
-        class StartObserver : AutoDetachOperatorObserverBase<T>
+        class StartObserver : OperatorObserverBase<T, T>
         {
             readonly StartObservable<T> parent;
 
@@ -67,12 +67,14 @@ namespace UniRx.Operators
                 }
                 catch (Exception exception)
                 {
-                    OnError(exception);
+                    try { observer.OnError(exception); }
+                    finally { Dispose(); }
                     return;
                 }
 
                 OnNext(result);
-                OnCompleted();
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
 
             public override void OnNext(T value)
@@ -86,6 +88,18 @@ namespace UniRx.Operators
                     Dispose();
                     throw;
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }

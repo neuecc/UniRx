@@ -50,7 +50,7 @@ namespace UniRx.Operators
             }
         }
 
-        class Repeat : AutoDetachOperatorObserverBase<T>
+        class Repeat : OperatorObserverBase<T, T>
         {
             public Repeat(IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
@@ -68,6 +68,18 @@ namespace UniRx.Operators
                     Dispose();
                     throw;
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }

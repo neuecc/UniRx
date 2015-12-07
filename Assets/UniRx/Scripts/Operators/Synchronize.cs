@@ -41,7 +41,7 @@ namespace UniRx.Operators
             {
                 lock (parent.gate)
                 {
-                    base.OnError(error);
+                    try { observer.OnError(error); } finally { Dispose(); };
                 }
             }
 
@@ -49,7 +49,7 @@ namespace UniRx.Operators
             {
                 lock (parent.gate)
                 {
-                    base.OnCompleted();
+                    try { observer.OnCompleted(); } finally { Dispose(); };
                 }
             }
         }

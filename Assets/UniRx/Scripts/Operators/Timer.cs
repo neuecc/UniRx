@@ -81,7 +81,7 @@ namespace UniRx.Operators
             }
         }
 
-        class Timer : AutoDetachOperatorObserverBase<long>
+        class Timer : OperatorObserverBase<long, long>
         {
             long index = 0;
 
@@ -106,6 +106,18 @@ namespace UniRx.Operators
             public override void OnNext(long value)
             {
                 // no use.
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }

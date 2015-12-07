@@ -80,9 +80,19 @@ namespace UniRx.Operators
                     base.observer.OnNext(value);
                     if (rest == 0)
                     {
-                        base.OnCompleted();
+                        try { observer.OnCompleted(); } finally { Dispose(); };
                     }
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); } finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); } finally { Dispose(); }
             }
         }
 
@@ -108,7 +118,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    base.OnCompleted();
+                    try { observer.OnCompleted(); } finally { Dispose(); };
                 }
             }
 
@@ -124,7 +134,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    base.OnError(error);
+                    try { observer.OnError(error); } finally { Dispose(); };
                 }
             }
 
@@ -132,7 +142,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    base.OnCompleted();
+                    try { observer.OnCompleted(); } finally { Dispose(); };
                 }
             }
         }

@@ -51,13 +51,20 @@ namespace UniRx.Operators
             {
                 if (seenValue)
                 {
-                    OnError(new InvalidOperationException("sequence is not single"));
+                    try { observer.OnError(new InvalidOperationException("sequence is not single")); }
+                    finally { Dispose(); }
                 }
                 else
                 {
                     seenValue = true;
                     lastValue = value;
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
             }
 
             public override void OnCompleted()
@@ -72,18 +79,21 @@ namespace UniRx.Operators
                     {
                         observer.OnNext(lastValue);
                     }
-                    base.OnCompleted();
+                    try { observer.OnCompleted(); }
+                    finally { Dispose(); }
                 }
                 else
                 {
                     if (!seenValue)
                     {
-                        base.OnError(new InvalidOperationException("sequence is empty"));
+                        try { observer.OnError(new InvalidOperationException("sequence is empty")); }
+                        finally { Dispose(); }
                     }
                     else
                     {
                         observer.OnNext(lastValue);
-                        base.OnCompleted();
+                        try { observer.OnCompleted(); }
+                        finally { Dispose(); }
                     }
                 }
             }
@@ -110,7 +120,8 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); }
+                    finally { Dispose(); }
                     return;
                 }
 
@@ -118,7 +129,8 @@ namespace UniRx.Operators
                 {
                     if (seenValue)
                     {
-                        OnError(new InvalidOperationException("sequence is not single"));
+                        try { observer.OnError(new InvalidOperationException("sequence is not single")); }
+                        finally { Dispose(); }
                         return;
                     }
                     else
@@ -127,6 +139,12 @@ namespace UniRx.Operators
                         lastValue = value;
                     }
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
             }
 
             public override void OnCompleted()
@@ -141,18 +159,21 @@ namespace UniRx.Operators
                     {
                         observer.OnNext(lastValue);
                     }
-                    base.OnCompleted();
+                    try { observer.OnCompleted(); }
+                    finally { Dispose(); }
                 }
                 else
                 {
                     if (!seenValue)
                     {
-                        base.OnError(new InvalidOperationException("sequence is empty"));
+                        try { observer.OnError(new InvalidOperationException("sequence is empty")); }
+                        finally { Dispose(); }
                     }
                     else
                     {
                         observer.OnNext(lastValue);
-                        base.OnCompleted();
+                        try { observer.OnCompleted(); }
+                        finally { Dispose(); }
                     }
                 }
             }

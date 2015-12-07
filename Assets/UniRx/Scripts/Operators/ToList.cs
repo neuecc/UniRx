@@ -35,15 +35,20 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    OnError(ex);
+                    try { observer.OnError(ex); } finally { Dispose(); }
                     return;
                 }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); } finally { Dispose(); }
             }
 
             public override void OnCompleted()
             {
                 base.observer.OnNext(list);
-                base.OnCompleted();
+                try { observer.OnCompleted(); } finally { Dispose(); };
             }
         }
     }

@@ -56,7 +56,8 @@ namespace UniRx.Operators
                         catch (Exception ex)
                         {
                             e.Dispose();
-                            base.OnError(ex);
+                            try { observer.OnError(ex); }
+                            finally { Dispose(); }
                             break;
                         }
 
@@ -67,7 +68,8 @@ namespace UniRx.Operators
                         else
                         {
                             e.Dispose();
-                            base.OnCompleted();
+                            try { observer.OnCompleted(); }
+                            finally { Dispose(); }
                             break;
                         }
                     }
@@ -94,7 +96,8 @@ namespace UniRx.Operators
                     catch (Exception ex)
                     {
                         e.Dispose();
-                        base.OnError(ex);
+                        try { observer.OnError(ex); }
+                        finally { Dispose(); }
                         return;
                     }
 
@@ -106,7 +109,8 @@ namespace UniRx.Operators
                     else
                     {
                         e.Dispose();
-                        base.OnCompleted();
+                        try { observer.OnCompleted(); }
+                        finally { Dispose(); }
                     }
                 });
 
@@ -116,6 +120,18 @@ namespace UniRx.Operators
             public override void OnNext(T value)
             {
                 // do nothing
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
             }
         }
     }
