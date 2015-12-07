@@ -799,6 +799,47 @@ namespace UniRx.Tests
                 .ToArray()
                 .Wait()
                 .Is(4, 5, 6, 7, 8, 9, 10);
+
+            {
+                var range = Observable.Range(1, 10);
+
+                AssertEx.Throws<ArgumentOutOfRangeException>(() => range.Skip(-1));
+
+                range.Skip(10).ToArray().Wait().Length.Is(0);
+
+                range.Skip(3).ToArrayWait().Is(4, 5, 6, 7, 8, 9, 10);
+                range.Skip(3).Skip(2).ToArrayWait().Is(6, 7, 8, 9, 10);
+            }
+        }
+
+        [TestMethod]
+        public void SkipTime()
+        {
+            {
+                var now = DateTime.Now;
+                var timer = Observable.Timer(TimeSpan.FromSeconds(0), TimeSpan.FromMilliseconds(10))
+                    .Timestamp();
+
+                var v = timer.Skip(TimeSpan.FromMilliseconds(300))
+                    .First()
+                    .Wait();
+
+                (v.Timestamp - now).Is(x => (TimeSpan.FromMilliseconds(250) <= x && x <= TimeSpan.FromMilliseconds(350)));
+            }
+
+            {
+                var now = DateTime.Now;
+                var timer = Observable.Timer(TimeSpan.FromSeconds(0), TimeSpan.FromMilliseconds(10))
+                    .Timestamp();
+
+                var v = timer
+                    .Skip(TimeSpan.FromMilliseconds(100))
+                    .Skip(TimeSpan.FromMilliseconds(300))
+                    .First()
+                    .Wait();
+
+                (v.Timestamp - now).Is(x => (TimeSpan.FromMilliseconds(250) <= x && x <= TimeSpan.FromMilliseconds(350)));
+            }
         }
 
         [TestMethod]
@@ -809,6 +850,61 @@ namespace UniRx.Tests
                 .ToArray()
                 .Wait()
                 .Is(6, 7, 8, 9, 10);
+        }
+
+        [TestMethod]
+        public void SkipWhileIndex()
+        {
+            Observable.Range(1, 10)
+                .SkipWhile((x, i) => i <= 5)
+                .ToArray()
+                .Wait()
+                .Is(7, 8, 9, 10);
+        }
+
+
+        [TestMethod]
+        public void SkipUntil()
+        {
+            {
+                var a = new Subject<int>();
+                var b = new Subject<int>();
+
+                var l = new List<Notification<int>>();
+
+                a.SkipUntil(b).Materialize().Subscribe(l.Add);
+
+                a.OnNext(1);
+                a.OnNext(10);
+                b.OnNext(1000);
+
+                l.Count.Is(0);
+
+                b.OnNext(99999);
+                b.HasObservers.IsFalse();
+
+                a.OnNext(1);
+                a.OnNext(10);
+
+                l[0].Value.Is(1);
+                l[1].Value.Is(10);
+            }
+            {
+                var a = new Subject<int>();
+                var b = new Subject<int>();
+
+                var l = new List<Notification<int>>();
+
+                a.SkipUntil(b).Materialize().Subscribe(l.Add);
+
+                a.OnNext(1);
+                a.OnNext(10);
+                b.OnCompleted();
+                l.Count.Is(0);
+
+                a.OnNext(100);
+                l.Count.Is(0);
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ namespace UniRx
                    .TakeUntil(Observable.Timer(TimeSpan.FromSeconds(2))
                    .SelectMany(_ => Observable.Throw<long>(new Exception()))
                    .DoOnCancel(() => Console.WriteLine("end2")))
-                   .Subscribe(x => Console.WriteLine(x), ex => Console.WriteLine(ex), () => Console.WriteLine("end3"));
+                   .Subscribe(x => Console.WriteLine(x),_=> ShowStackTrace(), () => Console.WriteLine("end3"));
 
             Console.ReadLine();
         }

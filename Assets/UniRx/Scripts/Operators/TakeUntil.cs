@@ -33,7 +33,7 @@ namespace UniRx.Operators
             public IDisposable Run()
             {
                 var otherSubscription = new SingleAssignmentDisposable();
-                var otherObserver = new OtherObserver(this, otherSubscription);
+                var otherObserver = new TakeUntilOther(this, otherSubscription);
                 otherSubscription.Disposable = parent.other.Subscribe(otherObserver);
 
                 var sourceSubscription = parent.source.Subscribe(this);
@@ -72,12 +72,12 @@ namespace UniRx.Operators
                 }
             }
 
-            class OtherObserver : IObserver<TOther>, ISafeObserver
+            class TakeUntilOther : IObserver<TOther>, ISafeObserver
             {
                 readonly TakeUntil sourceObserver;
                 readonly IDisposable subscription;
 
-                public OtherObserver(TakeUntil sourceObserver, IDisposable subscription)
+                public TakeUntilOther(TakeUntil sourceObserver, IDisposable subscription)
                 {
                     this.sourceObserver = sourceObserver;
                     this.subscription = subscription;

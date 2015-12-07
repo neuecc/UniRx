@@ -71,23 +71,39 @@ namespace UniRx
             if (source == null) throw new ArgumentNullException("source");
             if (count < 0) throw new ArgumentOutOfRangeException("count");
 
-            return Observable.Create<T>(observer =>
+            // optimize .Skip(count).Skip(count)
+            var skip = source as SkipObservable<T>;
+            if (skip != null && skip.scheduler == null)
             {
-                var index = 0;
+                return skip.Combine(count);
+            }
 
-                return source.Subscribe(x =>
-                {
-                    if (index++ >= count)
-                    {
-                        observer.OnNext(x);
-                    }
-                }, observer.OnError, observer.OnCompleted);
-            });
+            return new SkipObservable<T>(source, count);
+        }
+
+        public static IObservable<T> Skip<T>(this IObservable<T> source, TimeSpan duration)
+        {
+            return Skip(source, duration, Scheduler.DefaultSchedulers.TimeBasedOperations);
+        }
+
+        public static IObservable<T> Skip<T>(this IObservable<T> source, TimeSpan duration, IScheduler scheduler)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (scheduler == null) throw new ArgumentNullException("scheduler");
+
+            // optimize .Skip(duration).Skip(duration)
+            var skip = source as SkipObservable<T>;
+            if (skip != null && skip.scheduler == scheduler)
+            {
+                return skip.Combine(duration);
+            }
+
+            return new SkipObservable<T>(source, duration, scheduler);
         }
 
         public static IObservable<T> SkipWhile<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return SkipWhile(source, (x, i) => predicate(x));
+            return new SkipWhileObservable<T>(source, predicate);
         }
 
         public static IObservable<T> SkipWhile<T>(this IObservable<T> source, Func<T, int, bool> predicate)
@@ -95,36 +111,7 @@ namespace UniRx
             if (source == null) throw new ArgumentNullException("source");
             if (predicate == null) throw new ArgumentNullException("predicate");
 
-            return Observable.Create<T>(observer =>
-            {
-                var i = 0;
-                var skipEnd = false;
-
-                return source.Subscribe(x =>
-                {
-                    if (!skipEnd)
-                    {
-                        try
-                        {
-                            if (!predicate(x, i++))
-                            {
-                                skipEnd = true;
-                            }
-                            else
-                            {
-                                return;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            observer.OnError(ex);
-                            return;
-                        }
-                    }
-
-                    observer.OnNext(x);
-                }, observer.OnError, observer.OnCompleted);
-            });
+            return new SkipWhileObservable<T>(source, predicate);
         }
 
         public static IObservable<T> SkipUntil<T, TOther>(this IObservable<T> source, IObservable<TOther> other)

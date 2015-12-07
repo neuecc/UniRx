@@ -276,6 +276,12 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Single.cs">
       <Link>Operators\Single.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Skip.cs">
+      <Link>Operators\Skip.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\SkipWhile.cs">
+      <Link>Operators\SkipWhile.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Start.cs">
       <Link>Operators\Start.cs</Link>
     </Compile>
