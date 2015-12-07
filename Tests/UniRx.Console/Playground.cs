@@ -11,35 +11,29 @@ namespace UniRx
     {
         public void Run()
         {
-            var myE = new MyEvent();
+            var s = new Subject<int>();
 
-            var ev = Observable.FromEvent<int>(h => myE.action += h, h =>
+            Hoge(s).Subscribe(x =>
             {
-                Console.WriteLine("DISPOSED");
-                myE.action -= h;
+                Console.WriteLine("B:" + x);
+                if (x == 1000) throw new Exception();
+                Console.WriteLine("F:" + x);
             });
 
-            ev.Subscribe(xx =>
+            try { s.OnNext(100); }catch{ }
+            try { s.OnNext(200); } catch { }
+            try { s.OnNext(300); } catch { }
+
+
+        }
+
+        static IObservable<int> Hoge(Subject<int> subject)
+        {
+            return Observable.CreateDurable<int>(observer =>
             {
-                ShowStackTrace();
-                Console.WriteLine("COME:" + xx);
-                // Subscribe in Subscribe
-                Observable.Return(xx)
-                    .Do(x => { if (x == 1) throw new Exception(); })
-                    .Subscribe(x => ShowStackTrace());
+                observer.OnNext(1000);
+                return subject.Subscribe(observer);
             });
-
-            try { myE.Fire(1); }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Here:" + ex);
-            }
-
-            try { myE.Fire(10); }
-            catch (Exception ex)
-            {
-                //Console.WriteLine(ex);
-            }
         }
 
         static void ShowStackTrace()

@@ -11,7 +11,7 @@ namespace UniRx
     {
         public static IObservable<Unit> DirtyLayoutCallbackAsObservable(this Graphic graphic)
         {
-            return Observable.Create<Unit>(observer =>
+            return Observable.CreateDurable<Unit>(observer =>
             {
                 UnityAction registerHandler = () => observer.OnNext(Unit.Default);
                 graphic.RegisterDirtyLayoutCallback(registerHandler);
@@ -21,7 +21,7 @@ namespace UniRx
 
         public static IObservable<Unit> DirtyMaterialCallbackAsObservable(this Graphic graphic)
         {
-            return Observable.Create<Unit>(observer =>
+            return Observable.CreateDurable<Unit>(observer =>
             {
                 UnityAction registerHandler = () => observer.OnNext(Unit.Default);
                 graphic.RegisterDirtyMaterialCallback(registerHandler);
@@ -31,7 +31,7 @@ namespace UniRx
 
         public static IObservable<Unit> DirtyVerticesCallbackAsObservable(this Graphic graphic)
         {
-            return Observable.Create<Unit>(observer =>
+            return Observable.CreateDurable<Unit>(observer =>
             {
                 UnityAction registerHandler = () => observer.OnNext(Unit.Default);
                 graphic.RegisterDirtyVerticesCallback(registerHandler);
