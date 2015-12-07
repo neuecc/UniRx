@@ -115,7 +115,7 @@ namespace UniRx.Operators
                         return;
                     }
 
-                    var source = e.Current;
+                    var source = current;
                     var d = new SingleAssignmentDisposable();
                     subscription.Disposable = d;
                     d.Disposable = source.Subscribe(this);

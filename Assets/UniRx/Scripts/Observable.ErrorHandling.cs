@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UniRx.Operators;
 
 namespace UniRx
 {
@@ -8,154 +9,18 @@ namespace UniRx
     {
         public static IObservable<T> Finally<T>(this IObservable<T> source, Action finallyAction)
         {
-            return Observable.Create<T>(observer =>
-            {
-                IDisposable subscription;
-                try
-                {
-                    subscription = source.Subscribe(observer);
-                }
-                catch
-                {
-                    // This behaviour is not same as .NET Official Rx
-                    finallyAction();
-                    throw;
-                }
-
-                return Disposable.Create(() =>
-                {
-                    try
-                    {
-                        subscription.Dispose();
-                    }
-                    finally
-                    {
-                        finallyAction();
-                    }
-                });
-            });
+            return new FinallyObservable<T>(source, finallyAction);
         }
 
         public static IObservable<T> Catch<T, TException>(this IObservable<T> source, Func<TException, IObservable<T>> errorHandler)
             where TException : Exception
         {
-            return Observable.Create<T>(observer =>
-            {
-                var serialDisposable = new SerialDisposable();
-
-                var rootDisposable = new SingleAssignmentDisposable();
-                serialDisposable.Disposable = rootDisposable;
-
-                rootDisposable.Disposable = source.Subscribe(observer.OnNext,
-                    exception =>
-                    {
-                        var e = exception as TException;
-                        if (e != null)
-                        {
-                            IObservable<T> next;
-                            try
-                            {
-                                if (errorHandler == Stubs.CatchIgnore<T>)
-                                {
-                                    next = Observable.Empty<T>(); // for avoid iOS AOT
-                                }
-                                else
-                                {
-                                    next = errorHandler(e);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                observer.OnError(ex);
-                                return;
-                            }
-
-                            var d = new SingleAssignmentDisposable();
-                            serialDisposable.Disposable = d;
-                            d.Disposable = next.Subscribe(observer);
-                        }
-                        else
-                        {
-                            observer.OnError(exception);
-                        }
-                    }, observer.OnCompleted);
-
-                return serialDisposable;
-            });
+            return new CatchObservable<T, TException>(source, errorHandler);
         }
 
         public static IObservable<TSource> Catch<TSource>(this IEnumerable<IObservable<TSource>> sources)
         {
-            // this code is borrowed from RxOfficial(rx.codeplex.com) and modified
-            return Observable.Create<TSource>(observer =>
-            {
-                var gate = new object();
-                var isDisposed = false;
-                var e = sources.AsSafeEnumerable().GetEnumerator();
-                var subscription = new SerialDisposable();
-                var lastException = default(Exception);
-
-                var cancelable = Scheduler.DefaultSchedulers.TailRecursion.Schedule(self =>
-                {
-                    lock (gate)
-                    {
-                        var current = default(IObservable<TSource>);
-                        var hasNext = false;
-                        var ex = default(Exception);
-
-                        if (!isDisposed)
-                        {
-                            try
-                            {
-                                hasNext = e.MoveNext();
-                                if (hasNext)
-                                    current = e.Current;
-                                else
-                                    e.Dispose();
-                            }
-                            catch (Exception exception)
-                            {
-                                ex = exception;
-                                e.Dispose();
-                            }
-                        }
-                        else
-                            return;
-
-                        if (ex != null)
-                        {
-                            observer.OnError(ex);
-                            return;
-                        }
-
-                        if (!hasNext)
-                        {
-                            if (lastException != null)
-                                observer.OnError(lastException);
-                            else
-                                observer.OnCompleted();
-                            return;
-                        }
-
-                        var d = new SingleAssignmentDisposable();
-                        subscription.Disposable = d;
-                        d.Disposable = current.Subscribe(observer.OnNext, exception =>
-                        {
-                            lastException = exception;
-                            self();
-                        }, observer.OnCompleted);
-                    }
-                });
-
-                return new CompositeDisposable(subscription, cancelable, Disposable.Create(() =>
-                {
-                    lock (gate)
-                    {
-                        e.Dispose();
-                        isDisposed = true;
-                    }
-                }));
-            });
+            return new CatchObservable<TSource>(sources);
         }
 
         /// <summary>Catch exception and return Observable.Empty.</summary>
