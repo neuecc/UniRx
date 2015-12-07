@@ -83,14 +83,33 @@ namespace UniRx
         }
 
         /// <summary>Observe onValueChange with current `text` value on subscribe.</summary>
+#if (UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
+        [Obsolete("onValueChange has been renamed to onValueChanged")]
+#endif
         public static IObservable<string> OnValueChangeAsObservable(this InputField inputField)
         {
             return Observable.Create<string>(observer =>
             {
                 observer.OnNext(inputField.text);
+#if (UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
                 return inputField.onValueChange.AsObservable().Subscribe(observer);
+#else
+                return inputField.onValueChanged.AsObservable().Subscribe(observer);
+#endif
             });
         }
+
+#if !(UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
+        /// <summary>Observe onValueChanged with current `text` value on subscribe.</summary>
+        public static IObservable<string> OnValueChangedAsObservable(this InputField inputField)
+        {
+            return Observable.Create<string>(observer =>
+            {
+                observer.OnNext(inputField.text);
+                return inputField.onValueChanged.AsObservable().Subscribe(observer);
+            });
+        }
+#endif
     }
 }
 
