@@ -171,6 +171,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\AsUnitObservable.cs">
       <Link>Operators\AsUnitObservable.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Buffer.cs">
+      <Link>Operators\Buffer.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Cast.cs">
       <Link>Operators\Cast.cs</Link>
     </Compile>

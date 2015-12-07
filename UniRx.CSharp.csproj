@@ -154,6 +154,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Pairwise.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Skip.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\SkipUntil.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Buffer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\TakeUntil.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\SkipWhile.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\TakeWhile.cs" />
