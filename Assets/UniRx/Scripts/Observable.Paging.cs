@@ -116,39 +116,7 @@ namespace UniRx
 
         public static IObservable<T> SkipUntil<T, TOther>(this IObservable<T> source, IObservable<TOther> other)
         {
-            return Observable.Create<T>(observer =>
-            {
-                var sourceSubscription = new SingleAssignmentDisposable();
-                var otherSubscription = new SingleAssignmentDisposable();
-
-                var open = false;
-
-                var gate = new object();
-
-                sourceSubscription.Disposable = source.Synchronize(gate).Subscribe(
-                    x =>
-                    {
-                        if (open) observer.OnNext(x);
-                    },
-                    observer.OnError,
-                    () =>
-                    {
-                        if (open)
-                            observer.OnCompleted();
-                    }
-                );
-
-                otherSubscription.Disposable = other.Synchronize(gate).Subscribe(
-                    x =>
-                    {
-                        open = true;
-                        otherSubscription.Dispose();
-                    },
-                    observer.OnError
-                );
-
-                return new CompositeDisposable(sourceSubscription, otherSubscription);
-            });
+            return new SkipUntilObservable<T, TOther>(source, other);
         }
 
         public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, int count)
@@ -531,37 +499,7 @@ namespace UniRx
         /// <summary>Projects old and new element of a sequence into a new form.</summary>
         public static IObservable<TR> Pairwise<T, TR>(this IObservable<T> source, Func<T, T, TR> selector)
         {
-            var result = Observable.Create<TR>(observer =>
-            {
-                T prev = default(T);
-                var isFirst = true;
-
-                return source.Subscribe(x =>
-                {
-                    if (isFirst)
-                    {
-                        isFirst = false;
-                        prev = x;
-                        return;
-                    }
-
-                    TR value;
-                    try
-                    {
-                        value = selector(prev, x);
-                        prev = x;
-                    }
-                    catch (Exception ex)
-                    {
-                        observer.OnError(ex);
-                        return;
-                    }
-
-                    observer.OnNext(value);
-                }, observer.OnError, observer.OnCompleted);
-            });
-
-            return result;
+            return new PairwiseObservable<T, TR>(source, selector);
         }
 
         // first, last, single

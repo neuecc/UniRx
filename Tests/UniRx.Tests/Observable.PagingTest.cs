@@ -906,5 +906,12 @@ namespace UniRx.Tests
                 l.Count.Is(0);
             }
         }
+
+        [TestMethod]
+        public void Pairwise()
+        {
+            var xs = Observable.Range(1, 5).Pairwise((x, y) => x + ":" + y).ToArrayWait();
+            xs.Is("1:2", "2:3", "3:4", "4:5");
+        }
     }
 }

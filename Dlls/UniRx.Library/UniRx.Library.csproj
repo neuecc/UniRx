@@ -249,6 +249,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\OperatorObserverBase.cs">
       <Link>Operators\OperatorObserverBase.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\PairWise.cs">
+      <Link>Operators\PairWise.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Range.cs">
       <Link>Operators\Range.cs</Link>
     </Compile>
@@ -278,6 +281,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Skip.cs">
       <Link>Operators\Skip.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\SkipUntil.cs">
+      <Link>Operators\SkipUntil.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\SkipWhile.cs">
       <Link>Operators\SkipWhile.cs</Link>
