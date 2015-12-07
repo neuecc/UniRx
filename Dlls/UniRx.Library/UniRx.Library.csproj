@@ -273,6 +273,12 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Timestamp.cs">
       <Link>Operators\Timestamp.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\ToArray.cs">
+      <Link>Operators\ToArray.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\ToList.cs">
+      <Link>Operators\ToList.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\ToObservable.cs">
       <Link>Operators\ToObservable.cs</Link>
     </Compile>

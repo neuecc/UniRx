@@ -98,15 +98,12 @@ namespace UniRx
 
         public static IObservable<T[]> ToArray<T>(this IObservable<T> source)
         {
-            return Observable.Create<T[]>(observer =>
-            {
-                var list = new List<T>();
-                return source.Subscribe(x => list.Add(x), observer.OnError, () =>
-                {
-                    observer.OnNext(list.ToArray());
-                    observer.OnCompleted();
-                });
-            });
+            return new ToArrayObservable<T>(source);
+        }
+
+        public static IObservable<IList<T>> ToList<T>(this IObservable<T> source)
+        {
+            return new ToListObservable<T>(source);
         }
 
         public static IObservable<T> Do<T>(this IObservable<T> source, IObserver<T> observer)
