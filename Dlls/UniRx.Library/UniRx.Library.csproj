@@ -183,6 +183,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Create.cs">
       <Link>Operators\Create.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\DefaultIfEmpty.cs">
+      <Link>Operators\DefaultIfEmpty.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Defer.cs">
       <Link>Operators\Defer.cs</Link>
     </Compile>

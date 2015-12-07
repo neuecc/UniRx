@@ -305,5 +305,12 @@ namespace UniRx.Tests
                 .Subscribe(x => l.Add(x), ex => l.Add(1000), () => l.Add(10000));
             l.Is(1, 2, 3, 1000);
         }
+
+        [TestMethod]
+        public void DefaultIfEmpty()
+        {
+            Observable.Range(1, 3).DefaultIfEmpty(-1).ToArrayWait().Is(1, 2, 3);
+            Observable.Empty<int>().DefaultIfEmpty(-1).ToArrayWait().Is(-1);
+        }
     }
 }

@@ -168,24 +168,12 @@ namespace UniRx
 
         public static IObservable<T> DefaultIfEmpty<T>(this IObservable<T> source)
         {
-            return DefaultIfEmpty(source, default(T));
+            return new DefaultIfEmptyObservable<T>(source, default(T));
         }
 
         public static IObservable<T> DefaultIfEmpty<T>(this IObservable<T> source, T defaultValue)
         {
-            return Observable.Create<T>(observer =>
-            {
-                var hasValue = false;
-
-                return source.Subscribe(x => { hasValue = true; observer.OnNext(x); }, observer.OnError, () =>
-                {
-                    if (!hasValue)
-                    {
-                        observer.OnNext(defaultValue);
-                    }
-                    observer.OnCompleted();
-                });
-            });
+            return new DefaultIfEmptyObservable<T>(source, defaultValue);
         }
 
         public static IObservable<TSource> Distinct<TSource>(this IObservable<TSource> source)
