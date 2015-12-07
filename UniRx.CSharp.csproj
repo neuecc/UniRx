@@ -141,6 +141,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Aggregate.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\AsUnitObservable.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\DistinctUntilChanged.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Do.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Dematerialize.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\DefaultIfEmpty.cs" />
@@ -184,6 +185,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\ToObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Wait.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\WhenAll.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Distinct.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Where.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Amb.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Zip.cs" />

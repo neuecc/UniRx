@@ -195,6 +195,12 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Dematerialize.cs">
       <Link>Operators\Dematerialize.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Distinct.cs">
+      <Link>Operators\Distinct.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\DistinctUntilChanged.cs">
+      <Link>Operators\DistinctUntilChanged.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Do.cs">
       <Link>Operators\Do.cs</Link>
     </Compile>
