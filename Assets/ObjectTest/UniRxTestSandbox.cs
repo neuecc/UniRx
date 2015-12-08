@@ -374,33 +374,54 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StackTraceCheck"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Subscribe Perf:"))
             {
-                var subject = new Subject<int>();
-                var b = new Subject<int>();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                var sw = System.Diagnostics.Stopwatch.StartNew();
 
-                subject.SelectMany(_ => b).Subscribe(x =>
+                var list = Enumerable.Range(1, 10000).Select(x => new Subject<int>()).ToArray();
+                foreach (var item in list)
                 {
-                    Debug.Log(x);
-                });
+                    item.Where(x => x % 2 == 0).Select(x => x * x).Take(10).Subscribe();
+                }
 
-                subject.OnNext(1);
-                subject.OnNext(2);
-
-                b.OnNext(100);
+                sw.Stop();
+                logger.Debug("Subscribe Perf:" + sw.Elapsed.TotalMilliseconds + "ms");
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StackTraceCheck2"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "OnNext Perf"))
             {
-                var rxProp = new ReactiveProperty<int>();
-                rxProp
-                .Where(x => x % 2 == 0)
-                .Select(x => x)
-                .Take(50)
-                .Subscribe(x => Debug.Log(x));
+                var list = Enumerable.Range(1, 10000).Select(x => new ReactiveProperty<int>(0)).ToArray();
 
-                rxProp.Value = 100;
+                {
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    foreach (var item in list)
+                    {
+                        item.Where(x => x % 2 == 0).Select(x => x * x).Take(10).Subscribe();
+                    }
+                    sw.Stop();
+                    logger.Debug("Subscribe + OnNext Perf:" + sw.Elapsed.TotalMilliseconds + "ms");
+                }
+
+                {
+                    var r = UnityEngine.Random.Range(1, 100);
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    foreach (var item in list)
+                    {
+                        item.Value = r;
+                    }
+                    sw.Stop();
+                    logger.Debug("OnNext Perf:" + sw.Elapsed.TotalMilliseconds + "ms");
+                }
             }
             ypos += 100;
 
