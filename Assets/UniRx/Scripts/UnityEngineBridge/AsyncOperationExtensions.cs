@@ -28,9 +28,9 @@ namespace UniRx
         static IEnumerator AsObservableCore<T>(T asyncOperation, IObserver<T> observer, IProgress<float> reportProgress, CancellationToken cancel)
             where T : AsyncOperation
         {
-            while (!asyncOperation.isDone && !cancel.IsCancellationRequested)
+            if (reportProgress != null)
             {
-                if (reportProgress != null)
+                while (!asyncOperation.isDone && !cancel.IsCancellationRequested)
                 {
                     try
                     {
@@ -41,8 +41,15 @@ namespace UniRx
                         observer.OnError(ex);
                         yield break;
                     }
+                    yield return null;
                 }
-                yield return null;
+            }
+            else
+            {
+                if (!asyncOperation.isDone)
+                {
+                    yield return asyncOperation;
+                }
             }
 
             if (cancel.IsCancellationRequested) yield break;

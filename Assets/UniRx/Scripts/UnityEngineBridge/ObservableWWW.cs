@@ -155,9 +155,9 @@ namespace UniRx
         {
             using (www)
             {
-                while (!www.isDone && !cancel.IsCancellationRequested)
+                if (reportProgress != null)
                 {
-                    if (reportProgress != null)
+                    while (!www.isDone && !cancel.IsCancellationRequested)
                     {
                         try
                         {
@@ -168,8 +168,15 @@ namespace UniRx
                             observer.OnError(ex);
                             yield break;
                         }
+                        yield return null;
                     }
-                    yield return null;
+                }
+                else
+                {
+                    if (!www.isDone)
+                    {
+                        yield return www;
+                    }
                 }
 
                 if (cancel.IsCancellationRequested) yield break;
@@ -203,9 +210,9 @@ namespace UniRx
         {
             using (www)
             {
-                while (!www.isDone && !cancel.IsCancellationRequested)
+                if (reportProgress != null)
                 {
-                    if (reportProgress != null)
+                    while (!www.isDone && !cancel.IsCancellationRequested)
                     {
                         try
                         {
@@ -216,8 +223,15 @@ namespace UniRx
                             observer.OnError(ex);
                             yield break;
                         }
+                        yield return null;
                     }
-                    yield return null;
+                }
+                else
+                {
+                    if (!www.isDone)
+                    {
+                        yield return www;
+                    }
                 }
 
                 if (cancel.IsCancellationRequested) yield break;
@@ -251,9 +265,9 @@ namespace UniRx
         {
             using (www)
             {
-                while (!www.isDone && !cancel.IsCancellationRequested)
+                if (reportProgress != null)
                 {
-                    if (reportProgress != null)
+                    while (!www.isDone && !cancel.IsCancellationRequested)
                     {
                         try
                         {
@@ -264,8 +278,15 @@ namespace UniRx
                             observer.OnError(ex);
                             yield break;
                         }
+                        yield return null;
                     }
-                    yield return null;
+                }
+                else
+                {
+                    if (!www.isDone)
+                    {
+                        yield return www;
+                    }
                 }
 
                 if (cancel.IsCancellationRequested) yield break;
@@ -299,9 +320,9 @@ namespace UniRx
         {
             using (www)
             {
-                while (!www.isDone && !cancel.IsCancellationRequested)
+                if (reportProgress != null)
                 {
-                    if (reportProgress != null)
+                    while (!www.isDone && !cancel.IsCancellationRequested)
                     {
                         try
                         {
@@ -312,8 +333,15 @@ namespace UniRx
                             observer.OnError(ex);
                             yield break;
                         }
+                        yield return null;
                     }
-                    yield return null;
+                }
+                else
+                {
+                    if (!www.isDone)
+                    {
+                        yield return www;
+                    }
                 }
 
                 if (cancel.IsCancellationRequested) yield break;
@@ -348,6 +376,7 @@ namespace UniRx
     {
         public string RawErrorMessage { get; private set; }
         public bool HasResponse { get; private set; }
+        public string Text { get; private set; }
         public System.Net.HttpStatusCode StatusCode { get; private set; }
         public System.Collections.Generic.Dictionary<string, string> ResponseHeaders { get; private set; }
         public WWW WWW { get; private set; }
@@ -358,6 +387,7 @@ namespace UniRx
             this.RawErrorMessage = www.error;
             this.ResponseHeaders = www.responseHeaders;
             this.HasResponse = false;
+            this.Text = www.text; // cache the text because if www was disposed, can't access it.
 
             var splitted = RawErrorMessage.Split(' ', ':');
             if (splitted.Length != 0)
@@ -373,7 +403,7 @@ namespace UniRx
 
         public override string ToString()
         {
-            var text = WWW.text;
+            var text = this.Text;
             if (string.IsNullOrEmpty(text))
             {
                 return RawErrorMessage;
