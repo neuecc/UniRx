@@ -195,6 +195,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Defer.cs">
       <Link>Operators\Defer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Delay.cs">
+      <Link>Operators\Delay.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\DelaySubscription.cs">
       <Link>Operators\DelaySubscription.cs</Link>
     </Compile>
