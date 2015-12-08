@@ -92,7 +92,7 @@ namespace UniRx.Operators
                 try { observer.OnCompleted(); } finally { Dispose(); }
             }
 
-            class WhenAllCollectionObserver : IObserver<T>, ISafeObserver
+            class WhenAllCollectionObserver : IObserver<T>
             {
                 readonly WhenAll parent;
                 readonly int index;
@@ -200,7 +200,7 @@ namespace UniRx.Operators
                 try { observer.OnCompleted(); } finally { Dispose(); }
             }
 
-            class WhenAllCollectionObserver : IObserver<T>, ISafeObserver
+            class WhenAllCollectionObserver : IObserver<T>
             {
                 readonly WhenAllObserver_ parent;
                 readonly int index;

@@ -302,7 +302,7 @@ namespace UniRx.Operators
                 finally { Dispose(); }
             }
 
-            class CombineLatestObserver : IObserver<T>, ISafeObserver
+            class CombineLatestObserver : IObserver<T>
             {
                 readonly CombineLatest parent;
                 readonly int index;
@@ -966,7 +966,7 @@ namespace UniRx.Operators
     }
 
     // Nth
-    internal class CombineLatestObserver<T> : IObserver<T>, ISafeObserver
+    internal class CombineLatestObserver<T> : IObserver<T>
     {
         readonly object gate;
         readonly ICombineLatestObservable parent;

@@ -39,7 +39,7 @@ namespace UniRx
         public static IObservable<bool> OnValueChangedAsObservable(this Toggle toggle)
         {
             // Optimized Defer + StartWith
-            return Observable.CreateDurable<bool>(observer =>
+            return Observable.Create<bool>(observer =>
             {
                 observer.OnNext(toggle.isOn);
                 return toggle.onValueChanged.AsObservable().Subscribe(observer);
@@ -49,7 +49,7 @@ namespace UniRx
         /// <summary>Observe onValueChanged with current `value` on subscribe.</summary>
         public static IObservable<float> OnValueChangedAsObservable(this Scrollbar scrollbar)
         {
-            return Observable.CreateDurable<float>(observer =>
+            return Observable.Create<float>(observer =>
             {
                 observer.OnNext(scrollbar.value);
                 return scrollbar.onValueChanged.AsObservable().Subscribe(observer);
@@ -59,7 +59,7 @@ namespace UniRx
         /// <summary>Observe onValueChanged with current `normalizedPosition` value on subscribe.</summary>
         public static IObservable<Vector2> OnValueChangedAsObservable(this ScrollRect scrollRect)
         {
-            return Observable.CreateDurable<Vector2>(observer =>
+            return Observable.Create<Vector2>(observer =>
             {
                 observer.OnNext(scrollRect.normalizedPosition);
                 return scrollRect.onValueChanged.AsObservable().Subscribe(observer);
@@ -69,7 +69,7 @@ namespace UniRx
         /// <summary>Observe onValueChanged with current `value` on subscribe.</summary>
         public static IObservable<float> OnValueChangedAsObservable(this Slider slider)
         {
-            return Observable.CreateDurable<float>(observer =>
+            return Observable.Create<float>(observer =>
             {
                 observer.OnNext(slider.value);
                 return slider.onValueChanged.AsObservable().Subscribe(observer);
@@ -88,7 +88,7 @@ namespace UniRx
 #endif
         public static IObservable<string> OnValueChangeAsObservable(this InputField inputField)
         {
-            return Observable.CreateDurable<string>(observer =>
+            return Observable.Create<string>(observer =>
             {
                 observer.OnNext(inputField.text);
 #if (UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
@@ -103,7 +103,7 @@ namespace UniRx
         /// <summary>Observe onValueChanged with current `text` value on subscribe.</summary>
         public static IObservable<string> OnValueChangedAsObservable(this InputField inputField)
         {
-            return Observable.CreateDurable<string>(observer =>
+            return Observable.Create<string>(observer =>
             {
                 observer.OnNext(inputField.text);
                 return inputField.onValueChanged.AsObservable().Subscribe(observer);

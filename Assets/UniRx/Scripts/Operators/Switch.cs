@@ -77,7 +77,7 @@ namespace UniRx.Operators
                 }
             }
 
-            class Switch : IObserver<T>, ISafeObserver
+            class Switch : IObserver<T>
             {
                 readonly SwitchObserver parent;
                 readonly ulong id;

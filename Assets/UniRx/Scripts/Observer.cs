@@ -3,13 +3,6 @@ using System.Threading;
 
 namespace UniRx
 {
-    // safe does not means auto detachable(it's different with Rx.Net)
-    // safe = save OnNext* (OnError|OnCompleted)? rule.
-    internal interface ISafeObserver
-    {
-
-    }
-
     public static class Observer
     {
         internal static IObserver<T> CreateSubscribeObserver<T>(Action<T> onNext, Action<Exception> onError, Action onCompleted)
@@ -38,20 +31,12 @@ namespace UniRx
             }
         }
 
-        /// <summary>
-        /// Create new onNext + rootObserver.OnError, rootObserver.OnCompleted observer.
-        /// </summary>
-        public static IObserver<T> Create<T, TRoot>(Action<T> onNext, IObserver<TRoot> rootObserver)
-        {
-            return new DelegatedOnNextObserver<T, TRoot>(onNext, rootObserver, Disposable.Empty);
-        }
-
         public static IObserver<T> CreateAutoDetachObserver<T>(IObserver<T> observer, IDisposable disposable)
         {
             return new AutoDetachObserver<T>(observer, disposable);
         }
 
-        class AnonymousObserver<T> : IObserver<T>, ISafeObserver
+        class AnonymousObserver<T> : IObserver<T>
         {
             readonly Action<T> onNext;
             readonly Action<Exception> onError;
@@ -92,7 +77,7 @@ namespace UniRx
             }
         }
 
-        class EmptyOnNextAnonymousObserver<T> : IObserver<T>, ISafeObserver
+        class EmptyOnNextAnonymousObserver<T> : IObserver<T>
         {
             readonly Action<Exception> onError;
             readonly Action onCompleted;
@@ -127,7 +112,7 @@ namespace UniRx
         }
 
         // same as AnonymousObserver...
-        class Subscribe<T> : IObserver<T>, ISafeObserver
+        class Subscribe<T> : IObserver<T>
         {
             readonly Action<T> onNext;
             readonly Action<Exception> onError;
@@ -169,7 +154,7 @@ namespace UniRx
         }
 
         // same as EmptyOnNextAnonymousObserver...
-        class Subscribe_<T> : IObserver<T>, ISafeObserver
+        class Subscribe_<T> : IObserver<T>
         {
             readonly Action<Exception> onError;
             readonly Action onCompleted;
@@ -200,42 +185,6 @@ namespace UniRx
                 {
                     onCompleted();
                 }
-            }
-        }
-
-        class DelegatedOnNextObserver<T, TRoot> : UniRx.Operators.OperatorObserverBase<T, TRoot>
-        {
-            readonly Action<T> onNext;
-
-            public DelegatedOnNextObserver(Action<T> onNext, IObserver<TRoot> observer, IDisposable cancel)
-                : base(observer, cancel)
-            {
-                this.onNext = onNext;
-            }
-
-            public override void OnNext(T value)
-            {
-                try
-                {
-                    this.onNext(value);
-                }
-                catch
-                {
-                    Dispose();
-                    throw;
-                }
-            }
-
-            public override void OnError(Exception error)
-            {
-                try { observer.OnError(error); }
-                finally { Dispose(); }
-            }
-
-            public override void OnCompleted()
-            {
-                try { observer.OnCompleted(); }
-                finally { Dispose(); }
             }
         }
 

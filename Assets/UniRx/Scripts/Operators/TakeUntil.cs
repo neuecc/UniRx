@@ -72,7 +72,7 @@ namespace UniRx.Operators
                 }
             }
 
-            class TakeUntilOther : IObserver<TOther>, ISafeObserver
+            class TakeUntilOther : IObserver<TOther>
             {
                 readonly TakeUntil sourceObserver;
                 readonly IDisposable subscription;

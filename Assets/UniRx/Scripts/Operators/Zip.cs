@@ -315,7 +315,7 @@ namespace UniRx.Operators
                 finally { Dispose(); }
             }
 
-            class ZipObserver : IObserver<T>, ISafeObserver
+            class ZipObserver : IObserver<T>
             {
                 readonly Zip parent;
                 readonly int index;
@@ -961,7 +961,7 @@ namespace UniRx.Operators
 
 
     // nth
-    internal class ZipObserver<T> : IObserver<T>, ISafeObserver
+    internal class ZipObserver<T> : IObserver<T>
     {
         readonly object gate;
         readonly IZipObservable parent;

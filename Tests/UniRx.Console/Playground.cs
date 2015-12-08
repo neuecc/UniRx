@@ -23,7 +23,7 @@ namespace UniRx
 
         static IObservable<int> Hoge(Subject<int> subject)
         {
-            return Observable.CreateDurable<int>(observer =>
+            return Observable.Create<int>(observer =>
             {
                 observer.OnNext(1000);
                 return subject.Subscribe(observer);

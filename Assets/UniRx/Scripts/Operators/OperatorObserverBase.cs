@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace UniRx.Operators
 {
-    public abstract class OperatorObserverBase<TSource, TResult> : IDisposable, IObserver<TSource>, ISafeObserver
+    public abstract class OperatorObserverBase<TSource, TResult> : IDisposable, IObserver<TSource>
     {
         protected internal volatile IObserver<TResult> observer;
         IDisposable cancel;

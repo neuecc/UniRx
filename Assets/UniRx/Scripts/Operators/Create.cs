@@ -32,15 +32,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                try
-                {
-                    base.observer.OnNext(value);
-                }
-                catch
-                {
-                    Dispose();
-                    throw;
-                }
+                base.observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -57,17 +49,17 @@ namespace UniRx.Operators
         }
     }
 
-    internal class CreateDurableObservable<T> : OperatorObservableBase<T>
+    internal class CreateSafeObservable<T> : OperatorObservableBase<T>
     {
         readonly Func<IObserver<T>, IDisposable> subscribe;
 
-        public CreateDurableObservable(Func<IObserver<T>, IDisposable> subscribe)
+        public CreateSafeObservable(Func<IObserver<T>, IDisposable> subscribe)
             : base(true) // fail safe
         {
             this.subscribe = subscribe;
         }
 
-        public CreateDurableObservable(Func<IObserver<T>, IDisposable> subscribe, bool isRequiredSubscribeOnCurrentThread)
+        public CreateSafeObservable(Func<IObserver<T>, IDisposable> subscribe, bool isRequiredSubscribeOnCurrentThread)
             : base(isRequiredSubscribeOnCurrentThread)
         {
             this.subscribe = subscribe;
@@ -75,19 +67,27 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            observer = new CreateDurable(observer, cancel);
+            observer = new CreateSafe(observer, cancel);
             return subscribe(observer) ?? Disposable.Empty;
         }
 
-        class CreateDurable : OperatorObserverBase<T, T>
+        class CreateSafe : OperatorObserverBase<T, T>
         {
-            public CreateDurable(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public CreateSafe(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
             }
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                try
+                {
+                    base.observer.OnNext(value);
+                }
+                catch
+                {
+                    Dispose(); // safe
+                    throw;
+                }
             }
 
             public override void OnError(Exception error)

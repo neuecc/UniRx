@@ -225,7 +225,7 @@ namespace UniRx.Operators
                 try { observer.OnCompleted(); } finally { Dispose(); }
             }
 
-            class Buffer : IObserver<long>, ISafeObserver
+            class Buffer : IObserver<long>
             {
                 BufferT parent;
 

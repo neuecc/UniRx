@@ -55,7 +55,7 @@ namespace UniRx.Operators
             {
             }
 
-            class SkipUntil : IObserver<T>, ISafeObserver
+            class SkipUntil : IObserver<T>
             {
                 public volatile IObserver<T> observer;
                 readonly SkipUntilOuterObserver parent;
@@ -86,7 +86,7 @@ namespace UniRx.Operators
                 }
             }
 
-            class SkipUntilOther : IObserver<TOther>, ISafeObserver
+            class SkipUntilOther : IObserver<TOther>
             {
                 readonly SkipUntilOuterObserver parent;
                 readonly SkipUntil sourceObserver;

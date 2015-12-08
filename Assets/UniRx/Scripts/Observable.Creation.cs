@@ -7,7 +7,7 @@ namespace UniRx
     public static partial class Observable
     {
         /// <summary>
-        /// Create anonymous observable. Observer is auto detach when error, completed.
+        /// Create anonymous observable. Observer has exception durability. This is recommended for make operator and event like generator. 
         /// </summary>
         public static IObservable<T> Create<T>(Func<IObserver<T>, IDisposable> subscribe)
         {
@@ -17,33 +17,33 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Create anonymous observable. Observer is auto detach when error, completed.
+        /// Create anonymous observable. Observer has exception durability. This is recommended for make operator and event like generator(HotObservable). 
         /// </summary>
         public static IObservable<T> Create<T>(Func<IObserver<T>, IDisposable> subscribe, bool isRequiredSubscribeOnCurrentThread)
         {
             if (subscribe == null) throw new ArgumentNullException("subscribe");
 
-            return new CreateDurableObservable<T>(subscribe, isRequiredSubscribeOnCurrentThread);
-        }
-
-        /// <summary>
-        /// Create anonymous observable. Observer does "not" auto detach when error raised in onNext pipeline.
-        /// </summary>
-        public static IObservable<T> CreateDurable<T>(Func<IObserver<T>, IDisposable> subscribe)
-        {
-            if (subscribe == null) throw new ArgumentNullException("subscribe");
-
-            return new CreateDurableObservable<T>(subscribe);
-        }
-
-        /// <summary>
-        /// Create anonymous observable. Observer does "not" auto detach when error raised in onNext pipeline.
-        /// </summary>
-        public static IObservable<T> CreateDurable<T>(Func<IObserver<T>, IDisposable> subscribe, bool isRequiredSubscribeOnCurrentThread)
-        {
-            if (subscribe == null) throw new ArgumentNullException("subscribe");
-
             return new CreateObservable<T>(subscribe, isRequiredSubscribeOnCurrentThread);
+        }
+
+        /// <summary>
+        /// Create anonymous observable. Safe means auto detach when error raised in onNext pipeline. This is recommended for make generator (ColdObservable).
+        /// </summary>
+        public static IObservable<T> CreateSafe<T>(Func<IObserver<T>, IDisposable> subscribe)
+        {
+            if (subscribe == null) throw new ArgumentNullException("subscribe");
+
+            return new CreateSafeObservable<T>(subscribe);
+        }
+
+        /// <summary>
+        /// Create anonymous observable. Safe means auto detach when error raised in onNext pipeline. This is recommended for make generator (ColdObservable).
+        /// </summary>
+        public static IObservable<T> CreateSafe<T>(Func<IObserver<T>, IDisposable> subscribe, bool isRequiredSubscribeOnCurrentThread)
+        {
+            if (subscribe == null) throw new ArgumentNullException("subscribe");
+
+            return new CreateSafeObservable<T>(subscribe, isRequiredSubscribeOnCurrentThread);
         }
 
         /// <summary>

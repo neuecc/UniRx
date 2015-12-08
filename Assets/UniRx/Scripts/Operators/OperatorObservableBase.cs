@@ -21,23 +21,17 @@ namespace UniRx.Operators
         {
             var subscription = new SingleAssignmentDisposable();
 
-            IObserver<T> safeObserver;
-            if (observer is ISafeObserver)
-            {
-                safeObserver = observer;
-            }
-            else
-            {
-                safeObserver = Observer.CreateAutoDetachObserver<T>(observer, subscription);
-            }
+            // note:
+            // does not make the safe observer, it breaks exception durability.
+            // var safeObserver = Observer.CreateAutoDetachObserver<T>(observer, subscription);
 
             if (isRequiredSubscribeOnCurrentThread && Scheduler.IsCurrentThreadSchedulerScheduleRequired)
             {
-                Scheduler.CurrentThread.Schedule(() => subscription.Disposable = SubscribeCore(safeObserver, subscription));
+                Scheduler.CurrentThread.Schedule(() => subscription.Disposable = SubscribeCore(observer, subscription));
             }
             else
             {
-                subscription.Disposable = SubscribeCore(safeObserver, subscription);
+                subscription.Disposable = SubscribeCore(observer, subscription);
             }
 
             return subscription;
