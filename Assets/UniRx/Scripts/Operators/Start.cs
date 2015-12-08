@@ -58,11 +58,6 @@ namespace UniRx.Operators
                     else
                     {
                         parent.action();
-                        // TODO:hack for Unit.Default as class, after changing unit as struct, remove this
-                        if (typeof(T) == typeof(Unit))
-                        {
-                            result = (T)(object)Unit.Default;
-                        }
                     }
                 }
                 catch (Exception exception)
