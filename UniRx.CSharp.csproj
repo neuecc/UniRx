@@ -140,6 +140,10 @@
     <Compile Include="Assets\UniRx\Scripts\Observer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Aggregate.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Catch.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Timeout.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\ThrottleFirst.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Throttle.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\Sample.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Delay.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Finally.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\ForEachAsync.cs" />

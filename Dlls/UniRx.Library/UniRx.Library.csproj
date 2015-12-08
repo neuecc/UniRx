@@ -273,6 +273,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Return.cs">
       <Link>Operators\Return.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Sample.cs">
+      <Link>Operators\Sample.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Scan.cs">
       <Link>Operators\Scan.cs</Link>
     </Compile>
@@ -318,11 +321,20 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\TakeWhile.cs">
       <Link>Operators\TakeWhile.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Throttle.cs">
+      <Link>Operators\Throttle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\ThrottleFirst.cs">
+      <Link>Operators\ThrottleFirst.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Throw.cs">
       <Link>Operators\Throw.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\TimeInterval.cs">
       <Link>Operators\TimeInterval.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Timeout.cs">
+      <Link>Operators\Timeout.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Timer.cs">
       <Link>Operators\Timer.cs</Link>

@@ -398,25 +398,56 @@ namespace UniRx.Operators
                 var currentTimerId = timerId;
                 var timerS = new SingleAssignmentDisposable();
                 timerD.Disposable = timerS; // restart timer(dispose before)
-                timerS.Disposable = parent.scheduler.Schedule(parent.timeSpan, self =>
-                {
-                    List<T> currentList;
-                    lock (gate)
-                    {
-                        if (currentTimerId != timerId) return;
 
-                        currentList = list;
-                        if (currentList.Count != 0)
-                        {
-                            list = new List<T>();
-                        }
-                    }
+
+                var periodicScheduler = parent.scheduler as ISchedulerPeriodic;
+                if (periodicScheduler != null)
+                {
+                    timerS.Disposable = periodicScheduler.SchedulePeriodic(parent.timeSpan, () => OnNextTick(currentTimerId));
+                }
+                else
+                {
+                    timerS.Disposable = parent.scheduler.Schedule(parent.timeSpan, self => OnNextRecursive(currentTimerId, self));
+                }
+            }
+
+            void OnNextTick(long currentTimerId)
+            {
+                List<T> currentList;
+                lock (gate)
+                {
+                    if (currentTimerId != timerId) return;
+
+                    currentList = list;
                     if (currentList.Count != 0)
                     {
-                        observer.OnNext(currentList);
+                        list = new List<T>();
                     }
-                    self(parent.timeSpan);
-                });
+                }
+                if (currentList.Count != 0)
+                {
+                    observer.OnNext(currentList);
+                }
+            }
+
+            void OnNextRecursive(long currentTimerId, Action<TimeSpan> self)
+            {
+                List<T> currentList;
+                lock (gate)
+                {
+                    if (currentTimerId != timerId) return;
+
+                    currentList = list;
+                    if (currentList.Count != 0)
+                    {
+                        list = new List<T>();
+                    }
+                }
+                if (currentList.Count != 0)
+                {
+                    observer.OnNext(currentList);
+                }
+                self(parent.timeSpan);
             }
 
             public override void OnNext(T value)
