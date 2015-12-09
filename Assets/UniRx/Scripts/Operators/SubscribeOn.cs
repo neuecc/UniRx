@@ -9,7 +9,7 @@ namespace UniRx.Operators
         readonly IScheduler scheduler;
 
         public SubscribeOnObservable(IObservable<T> source, IScheduler scheduler)
-            : base(source.IsRequiredSubscribeOnCurrentThread())
+            : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.scheduler = scheduler;

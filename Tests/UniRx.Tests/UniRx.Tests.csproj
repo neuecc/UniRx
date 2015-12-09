@@ -65,20 +65,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ChainingAssertion.MSTest.cs" />
-    <Compile Include="Init.cs" />
+    <Compile Include="Tools\ChainingAssertion.Unity.cs" />
+    <Compile Include="Tools\Init.cs" />
     <Compile Include="Observable.ConcurrencyTest.cs" />
-    <Compile Include="OfficialRx\Observable.ConcurrencyTestCopy.cs" />
-    <Compile Include="Operators\ConversionTest.cs" />
-    <Compile Include="Operators\DoTest.cs" />
-    <Compile Include="Operators\DurabilityTest.cs" />
-    <Compile Include="Operators\ToTest.cs" />
-    <Compile Include="Operators\WhenAllTest.cs" />
-    <Compile Include="Operators\SelectMany.cs" />
-    <Compile Include="Operators\AggregateTest.cs" />
-    <Compile Include="Operators\TakeTest.cs" />
-    <Compile Include="Operators\RangeTest.cs" />
-    <Compile Include="ReflectionAccessorTest.cs" />
+    <Compile Include="ConversionTest.cs" />
+    <Compile Include="DoTest.cs" />
+    <Compile Include="DurabilityTest.cs" />
+    <Compile Include="ToTest.cs" />
+    <Compile Include="WhenAllTest.cs" />
+    <Compile Include="SelectMany.cs" />
+    <Compile Include="AggregateTest.cs" />
+    <Compile Include="TakeTest.cs" />
+    <Compile Include="RangeTest.cs" />
     <Compile Include="QueueWorkerTest.cs" />
     <Compile Include="DisposableTest.cs" />
     <Compile Include="Observable.ErrorHandlingTest.cs" />
@@ -87,27 +85,15 @@
     <Compile Include="Observable.TimeTest.cs" />
     <Compile Include="Observable.ConcatTest.cs" />
     <Compile Include="ObservableTest.cs" />
-    <Compile Include="OfficialRx\DisposableTestCopy.cs" />
-    <Compile Include="OfficialRx\Observable.ErrorHandlingTestCopy.cs" />
-    <Compile Include="OfficialRx\Observable.PagingTestCopy.cs" />
-    <Compile Include="OfficialRx\ObservableConcatTestCopy.cs" />
-    <Compile Include="OfficialRx\ObservableTimeTestCopy.cs" />
-    <Compile Include="OfficialRx\ObservableGeneratorTestCopy.cs" />
-    <Compile Include="OfficialRx\SubjectTestCopy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchedulerTest.cs" />
     <Compile Include="ReactriveDictionaryTest.cs" />
     <Compile Include="SubjectTest.cs" />
     <Compile Include="Observable.GeneratorTest.cs" />
-    <Compile Include="TestUtil.cs" />
+    <Compile Include="Tools\TestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="default.runsettings" />
-    <Content Include="RxJS\HtmlPage1.html" />
-    <Content Include="RxJS\rx.js" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

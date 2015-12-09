@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Web v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebPlayer:6</UnityBuildTarget>
     <UnityVersion>5.3.0f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -292,9 +294,35 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\YieldInstructionCache.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityWinRTBridge\Thread.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityWinRTBridge\ThreadPoolScheduler_UnityWinRT.cs" />
+    <Compile Include="Assets\UnitTests\AggregateTest.cs" />
+    <Compile Include="Assets\UnitTests\ConversionTest.cs" />
+    <Compile Include="Assets\UnitTests\DisposableTest.cs" />
+    <Compile Include="Assets\UnitTests\DoTest.cs" />
+    <Compile Include="Assets\UnitTests\DurabilityTest.cs" />
+    <Compile Include="Assets\UnitTests\Observable.ConcatTest.cs" />
+    <Compile Include="Assets\UnitTests\Observable.ConcurrencyTest.cs" />
+    <Compile Include="Assets\UnitTests\Observable.ErrorHandlingTest.cs" />
+    <Compile Include="Assets\UnitTests\Observable.Events.cs" />
+    <Compile Include="Assets\UnitTests\Observable.GeneratorTest.cs" />
+    <Compile Include="Assets\UnitTests\Observable.PagingTest.cs" />
+    <Compile Include="Assets\UnitTests\Observable.TimeTest.cs" />
+    <Compile Include="Assets\UnitTests\ObservableTest.cs" />
+    <Compile Include="Assets\UnitTests\QueueWorkerTest.cs" />
+    <Compile Include="Assets\UnitTests\RangeTest.cs" />
+    <Compile Include="Assets\UnitTests\ReactriveDictionaryTest.cs" />
+    <Compile Include="Assets\UnitTests\SchedulerTest.cs" />
+    <Compile Include="Assets\UnitTests\SelectMany.cs" />
+    <Compile Include="Assets\UnitTests\SubjectTest.cs" />
+    <Compile Include="Assets\UnitTests\TakeTest.cs" />
+    <Compile Include="Assets\UnitTests\Tools\ChainingAssertion.Unity.cs" />
+    <Compile Include="Assets\UnitTests\Tools\Shim.cs" />
+    <Compile Include="Assets\UnitTests\Tools\TestUtil.cs" />
+    <Compile Include="Assets\UnitTests\ToTest.cs" />
+    <Compile Include="Assets\UnitTests\WhenAllTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UniRx\ReadMe.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

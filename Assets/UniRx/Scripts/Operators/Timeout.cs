@@ -9,14 +9,16 @@ namespace UniRx.Operators
         readonly DateTimeOffset? dueTimeDT;
         readonly IScheduler scheduler;
 
-        public TimeoutObservable(IObservable<T> source, TimeSpan dueTime, IScheduler scheduler) : base(source.IsRequiredSubscribeOnCurrentThread())
+        public TimeoutObservable(IObservable<T> source, TimeSpan dueTime, IScheduler scheduler) 
+            : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.dueTime = dueTime;
             this.scheduler = scheduler;
         }
 
-        public TimeoutObservable(IObservable<T> source, DateTimeOffset dueTime, IScheduler scheduler) : base(source.IsRequiredSubscribeOnCurrentThread())
+        public TimeoutObservable(IObservable<T> source, DateTimeOffset dueTime, IScheduler scheduler) 
+            : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.dueTimeDT = dueTime;

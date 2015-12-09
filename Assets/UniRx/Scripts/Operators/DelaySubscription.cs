@@ -11,7 +11,7 @@ namespace UniRx.Operators
         readonly DateTimeOffset? dueTimeD;
 
         public DelaySubscriptionObservable(IObservable<T> source,TimeSpan dueTime, IScheduler scheduler)
-            : base(source.IsRequiredSubscribeOnCurrentThread())
+            : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.scheduler = scheduler;
@@ -19,7 +19,7 @@ namespace UniRx.Operators
         }
 
         public DelaySubscriptionObservable(IObservable<T> source, DateTimeOffset dueTime, IScheduler scheduler)
-            : base(source.IsRequiredSubscribeOnCurrentThread())
+            : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.scheduler = scheduler;

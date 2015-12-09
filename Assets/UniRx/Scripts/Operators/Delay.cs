@@ -11,7 +11,8 @@ namespace UniRx.Operators
         readonly TimeSpan dueTime;
         readonly IScheduler scheduler;
 
-        public DelayObservable(IObservable<T> source, TimeSpan dueTime, IScheduler scheduler) : base(source.IsRequiredSubscribeOnCurrentThread())
+        public DelayObservable(IObservable<T> source, TimeSpan dueTime, IScheduler scheduler) 
+            : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.dueTime = dueTime;

@@ -8,7 +8,7 @@ namespace UniRx.Operators
         readonly IObservable<TOther> other;
 
         public SkipUntilObservable(IObservable<T> source, IObservable<TOther> other)
-            : base(source.IsRequiredSubscribeOnCurrentThread())
+            : base(source.IsRequiredSubscribeOnCurrentThread() || other.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.other = other;

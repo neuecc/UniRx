@@ -11,7 +11,8 @@ namespace UniRx.Operators
         readonly TimeSpan interval;
         readonly IScheduler scheduler;
 
-        public SampleObservable(IObservable<T> source, TimeSpan interval, IScheduler scheduler) : base(source.IsRequiredSubscribeOnCurrentThread())
+        public SampleObservable(IObservable<T> source, TimeSpan interval, IScheduler scheduler)
+            : base(source.IsRequiredSubscribeOnCurrentThread() || scheduler == Scheduler.CurrentThread)
         {
             this.source = source;
             this.interval = interval;
