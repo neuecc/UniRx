@@ -89,12 +89,6 @@ namespace UniRx
             }
         }
 
-
-        public static implicit operator T(ReactiveProperty<T> rp)
-        {
-            return rp.Value;
-        }
-
         public ReactiveProperty()
             : this(default(T))
         {
@@ -235,11 +229,6 @@ namespace UniRx
             {
                 return value;
             }
-        }
-
-        public static implicit operator T(ReadOnlyReactiveProperty<T> rp)
-        {
-            return rp.Value;
         }
 
         public ReadOnlyReactiveProperty(IObservable<T> source)
