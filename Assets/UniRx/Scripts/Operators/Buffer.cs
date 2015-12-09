@@ -503,7 +503,7 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<IList<TSource>> observer, IDisposable cancel)
         {
-            throw new NotImplementedException();
+            return new Buffer(this, observer, cancel).Run();
         }
 
         class Buffer : OperatorObserverBase<TSource, IList<TSource>>

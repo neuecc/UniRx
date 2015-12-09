@@ -33,7 +33,7 @@ namespace UniRx.Operators
                 {
                     xs = new List<IObservable<T>>(sourcesEnumerable); // materialize observables
                 }
-                return new WhenAllObserver_(xs, observer, cancel).Run();
+                return new WhenAll_(xs, observer, cancel).Run();
             }
         }
 
@@ -145,7 +145,7 @@ namespace UniRx.Operators
             }
         }
 
-        class WhenAllObserver_ : OperatorObserverBase<T[], T[]>
+        class WhenAll_ : OperatorObserverBase<T[], T[]>
         {
             readonly IList<IObservable<T>> sources;
             readonly object gate = new object();
@@ -153,7 +153,7 @@ namespace UniRx.Operators
             int length;
             T[] values;
 
-            public WhenAllObserver_(IList<IObservable<T>> sources, IObserver<T[]> observer, IDisposable cancel)
+            public WhenAll_(IList<IObservable<T>> sources, IObserver<T[]> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.sources = sources;
@@ -202,11 +202,11 @@ namespace UniRx.Operators
 
             class WhenAllCollectionObserver : IObserver<T>
             {
-                readonly WhenAllObserver_ parent;
+                readonly WhenAll_ parent;
                 readonly int index;
                 bool isCompleted = false;
 
-                public WhenAllCollectionObserver(WhenAllObserver_ parent, int index)
+                public WhenAllCollectionObserver(WhenAll_ parent, int index)
                 {
                     this.parent = parent;
                     this.index = index;
