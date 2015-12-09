@@ -98,8 +98,29 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ObserveExtensions.cs">
       <Link>UnityEngineBridge\ObserveExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\DelayFrame.cs">
+      <Link>UnityEngineBridge\Operators\DelayFrame.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\DelayFrameSubscription.cs">
+      <Link>UnityEngineBridge\Operators\DelayFrameSubscription.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\FromCoroutine.cs">
       <Link>UnityEngineBridge\Operators\FromCoroutine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\RepeatUntil.cs">
+      <Link>UnityEngineBridge\Operators\RepeatUntil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\SampleFrame.cs">
+      <Link>UnityEngineBridge\Operators\SampleFrame.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\ThrottleFirstFrame.cs">
+      <Link>UnityEngineBridge\Operators\ThrottleFirstFrame.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\ThrottleFrame.cs">
+      <Link>UnityEngineBridge\Operators\ThrottleFrame.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\TimeoutFrame.cs">
+      <Link>UnityEngineBridge\Operators\TimeoutFrame.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\PresenterBase.cs">
       <Link>UnityEngineBridge\PresenterBase.cs</Link>

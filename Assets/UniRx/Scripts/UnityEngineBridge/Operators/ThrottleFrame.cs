@@ -1,5 +1,11 @@
 ﻿using System;
 
+#if UniRxLibrary
+using UnityObservable = UniRx.ObservableUnity;
+#else
+using UnityObservable = UniRx.Observable;
+#endif
+
 namespace UniRx.Operators
 {
     internal class ThrottleFrameObservable<T> : OperatorObservableBase<T>
@@ -55,7 +61,7 @@ namespace UniRx.Operators
 
                 var d = new SingleAssignmentDisposable();
                 cancelable.Disposable = d;
-                d.Disposable = Observable.TimerFrame(parent.frameCount, parent.frameCountType)
+                d.Disposable = UnityObservable.TimerFrame(parent.frameCount, parent.frameCountType)
                     .Subscribe(new ThrottleFrameTick(this, currentid));
             }
 

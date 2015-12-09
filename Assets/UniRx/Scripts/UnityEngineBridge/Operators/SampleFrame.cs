@@ -1,5 +1,11 @@
 ﻿using System;
 
+#if UniRxLibrary
+using UnityObservable = UniRx.ObservableUnity;
+#else
+using UnityObservable = UniRx.Observable;
+#endif
+
 namespace UniRx.Operators
 {
     internal class SampleFrameObservable<T> : OperatorObservableBase<T>
@@ -38,8 +44,8 @@ namespace UniRx.Operators
             {
                 sourceSubscription = new SingleAssignmentDisposable();
                 sourceSubscription.Disposable = parent.source.Subscribe(this);
-
-                var scheduling = Observable.IntervalFrame(parent.frameCount, parent.frameCountType)
+                
+                var scheduling = UnityObservable.IntervalFrame(parent.frameCount, parent.frameCountType)
                     .Subscribe(new SampleFrameTick(this));
 
                 return StableCompositeDisposable.Create(sourceSubscription, scheduling);

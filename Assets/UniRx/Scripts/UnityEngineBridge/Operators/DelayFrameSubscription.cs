@@ -1,5 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+
+#if UniRxLibrary
+using UnityObservable = UniRx.ObservableUnity;
+#else
+using UnityObservable = UniRx.Observable;
+#endif
 
 namespace UniRx.Operators
 {
@@ -20,7 +25,7 @@ namespace UniRx.Operators
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
             var d = new MultipleAssignmentDisposable();
-            d.Disposable = Observable.TimerFrame(frameCount, frameCountType)
+            d.Disposable = UnityObservable.TimerFrame(frameCount, frameCountType)
                 .Subscribe(_ =>
                 {
                     d.Disposable = source.Subscribe(observer);

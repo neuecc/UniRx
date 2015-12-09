@@ -1,5 +1,11 @@
 ﻿using System;
 
+#if UniRxLibrary
+using UnityObservable = UniRx.ObservableUnity;
+#else
+using UnityObservable = UniRx.Observable;
+#endif
+
 namespace UniRx.Operators
 {
     internal class TimeoutFrameObservable<T> : OperatorObservableBase<T>
@@ -46,7 +52,7 @@ namespace UniRx.Operators
 
             IDisposable RunTimer(ulong timerId)
             {
-                return Observable.TimerFrame(parent.frameCount, parent.frameCountType)
+                return UnityObservable.TimerFrame(parent.frameCount, parent.frameCountType)
                     .Subscribe(new TimeoutFrameTick(this, timerId));
             }
 
