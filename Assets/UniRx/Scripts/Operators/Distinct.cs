@@ -22,13 +22,11 @@ namespace UniRx.Operators
 
         class Distinct : OperatorObserverBase<T, T>
         {
-            readonly DistinctObservable<T> parent;
             readonly HashSet<T> hashSet;
 
             public Distinct(DistinctObservable<T> parent, IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
-                this.parent = parent;
                 hashSet = (parent.comparer == null)
                     ? new HashSet<T>()
                     : new HashSet<T>(parent.comparer);

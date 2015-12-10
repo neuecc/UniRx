@@ -53,7 +53,7 @@ namespace UniRx.Operators
                 subscription = new SerialDisposable();
                 schedule = new SingleAssignmentDisposable();
 
-                var stopper = parent.trigger.Subscribe(_ =>
+                stopper = parent.trigger.Subscribe(_ =>
                 {
                     lock (gate)
                     {
