@@ -133,7 +133,7 @@ namespace UniRx.Tests
             var c = new Subject<int>();
 
             var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0, z = 0 })).ToList();
-            var s = Observable.Zip(a, b, c, (x, y, z) => new { x, y, z }).Materialize().Subscribe(x => l.Add(x));
+            Observable.Zip(a, b, c, (x, y, z) => new { x, y, z }).Materialize().Subscribe(x => l.Add(x));
 
             a.OnNext(1000);
             b.OnNext(2000);

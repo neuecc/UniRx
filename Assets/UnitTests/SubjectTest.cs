@@ -135,12 +135,12 @@ namespace UniRx.Tests
             var listD = new List<int>();
             var listE = new List<int>();
 
-            var listDSubscription = subject.Subscribe(x => listD.Add(x));
+            subject.Subscribe(x => listD.Add(x));
             subject.HasObservers.IsTrue();
             subject.OnNext(1);
             listD[0].Is(1);
 
-            var listESubscription = subject.Subscribe(x => listE.Add(x));
+            subject.Subscribe(x => listE.Add(x));
             subject.HasObservers.IsTrue();
             subject.OnNext(2);
             listD[1].Is(2);

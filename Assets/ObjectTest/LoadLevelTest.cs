@@ -1,4 +1,4 @@
-#pragma warning disable CS0618 // Disable warning, LoadLevel
+#if !UNITY_5_3
 using System;
 using System.Collections;
 using UnityEngine;
@@ -27,4 +27,4 @@ namespace UniRx.ObjectTest
     }
 }
 
-#pragma warning restore CS0618
+#endif

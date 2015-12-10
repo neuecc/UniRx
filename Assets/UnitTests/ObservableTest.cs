@@ -14,7 +14,7 @@ namespace UniRx.Tests
             var subject = new Subject<int>();
 
             int[] array = null;
-            var disp = subject.ToArray().Subscribe(xs => array = xs);
+            subject.ToArray().Subscribe(xs => array = xs);
 
             subject.OnNext(1);
             subject.OnNext(10);
@@ -65,7 +65,7 @@ namespace UniRx.Tests
                 var subject = new Subject<int>();
 
                 int[] array = null;
-                var disp = subject.DistinctUntilChanged().ToArray().Subscribe(xs => array = xs);
+                subject.DistinctUntilChanged().ToArray().Subscribe(xs => array = xs);
 
                 Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5 }, subject.OnNext);
                 subject.OnCompleted();
@@ -87,7 +87,7 @@ namespace UniRx.Tests
                 var subject = new Subject<int>();
 
                 int[] array = null;
-                var disp = subject.DistinctUntilChanged(x => x, EqualityComparer<int>.Default).ToArray().Subscribe(xs => array = xs);
+                subject.DistinctUntilChanged(x => x, EqualityComparer<int>.Default).ToArray().Subscribe(xs => array = xs);
 
                 Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5 }, subject.OnNext);
                 subject.OnCompleted();
@@ -103,7 +103,7 @@ namespace UniRx.Tests
                 var subject = new Subject<int>();
 
                 int[] array = null;
-                var disp = subject.Distinct().ToArray().Subscribe(xs => array = xs);
+                subject.Distinct().ToArray().Subscribe(xs => array = xs);
 
                 Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5, 70, 7 }, subject.OnNext);
                 subject.OnCompleted();
@@ -114,7 +114,7 @@ namespace UniRx.Tests
                 var subject = new Subject<int>();
 
                 int[] array = null;
-                var disp = subject.Distinct(x => x, EqualityComparer<int>.Default).ToArray().Subscribe(xs => array = xs);
+                subject.Distinct(x => x, EqualityComparer<int>.Default).ToArray().Subscribe(xs => array = xs);
 
                 Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5, 70, 7 }, subject.OnNext);
                 subject.OnCompleted();
