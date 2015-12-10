@@ -6,7 +6,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+// using UnityEngine.SceneManagement;
 
 public class MyEventClass
 {
@@ -48,20 +48,20 @@ public class Sandbox2 : MonoBehaviour
         
         button.OnClickAsObservable().Subscribe(_ =>
         {
-            if (clickCount++ == 0)
-            {
-                ao = SceneManager.LoadSceneAsync("TestSandbox");
-                // Debug.Log(ao.allowSceneActivation);
-                ao.allowSceneActivation = false;
-                ao.AsAsyncOperationObservable(new Progress<float>(x =>
-                {
-                    Debug.Log(x);
-                })).Subscribe();
-            }
-            else
-            {
-                ao.allowSceneActivation = true;
-            }
+            //if (clickCount++ == 0)
+            //{
+            //    ao = SceneManager.LoadSceneAsync("TestSandbox");
+            //    // Debug.Log(ao.allowSceneActivation);
+            //    ao.allowSceneActivation = false;
+            //    ao.AsAsyncOperationObservable(new Progress<float>(x =>
+            //    {
+            //        Debug.Log(x);
+            //    })).Subscribe();
+            //}
+            //else
+            //{
+            //    ao.allowSceneActivation = true;
+            //}
         });
     }
 }
