@@ -284,6 +284,8 @@ namespace UniRx.ObjectTest
 
         Action<long> action = _ => { };
 
+        Subject<long> subj;
+
         public void OnGUI()
         {
             var xpos = 0;
@@ -425,17 +427,38 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StackTrace"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Check Compare Perf"))
             {
-                var rp = new ReactiveProperty<int>();
-
                 {
-                    rp.Where(x => x % 2 == 0).Select(x => x * x).Take(10).Subscribe(x => Debug.Log(x));
-                    rp.Where(x => x % 2 == 0).Select(x => x * x).Take(10).ToReadOnlyReactiveProperty().Subscribe(x => Debug.Log(x));
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+
+                    for (int i = 0; i < 10000; i++)
+                    {
+                        var s = new Subject<long>();
+                        Interlocked.CompareExchange(ref subj, s, null);
+                    }
+
+                    logger.Debug("Interlocked:" + sw.Elapsed.TotalMilliseconds + "ms");
                 }
-
                 {
-                    rp.Value = 9998;
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+
+                    for (int i = 0; i < 10000; i++)
+                    {
+                        if (subj == null)
+                        {
+                            subj = new Subject<long>();
+                        }
+                        subj = null;
+                    }
+
+                    logger.Debug("Plain:" + sw.Elapsed.TotalMilliseconds + "ms");
                 }
             }
             ypos += 100;
