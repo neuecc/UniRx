@@ -285,6 +285,7 @@ namespace UniRx.ObjectTest
         Action<long> action = _ => { };
 
         Subject<long> subj;
+        object gate = new object();
 
         public void OnGUI()
         {
@@ -442,6 +443,26 @@ namespace UniRx.ObjectTest
                     }
 
                     logger.Debug("Interlocked:" + sw.Elapsed.TotalMilliseconds + "ms");
+                }
+                {
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+
+                    for (int i = 0; i < 10000; i++)
+                    {
+                        lock(gate)
+                        {
+                            if (subj == null)
+                            {
+                                subj = new Subject<long>();
+                            }
+                        }
+                        subj = null;
+                    }
+
+                    logger.Debug("Lock:" + sw.Elapsed.TotalMilliseconds + "ms");
                 }
                 {
                     GC.Collect();
