@@ -151,7 +151,9 @@ namespace UniRx
 
             if (publisher == null)
             {
-                System.Threading.Interlocked.CompareExchange(ref publisher, new Subject<T>(), null);
+                // Interlocked.CompareExchange is bit slower, guarantee threasafety is overkill.
+                // System.Threading.Interlocked.CompareExchange(ref publisher, new Subject<T>(), null);
+                publisher = new Subject<T>();
             }
 
             var p = publisher;
@@ -295,7 +297,9 @@ namespace UniRx
 
             if (publisher == null)
             {
-                System.Threading.Interlocked.CompareExchange(ref publisher, new Subject<T>(), null);
+                // Interlocked.CompareExchange is bit slower, guarantee threasafety is overkill.
+                // System.Threading.Interlocked.CompareExchange(ref publisher, new Subject<T>(), null);
+                publisher = new Subject<T>();
             }
 
             var p = publisher;
