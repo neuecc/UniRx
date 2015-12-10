@@ -92,7 +92,7 @@ namespace UniRx.Operators
                     }
                     finally
                     {
-                        targetObserver = new UniRx.InternalUtil.EmptyObserver<T>();
+                        targetObserver = UniRx.InternalUtil.EmptyObserver<T>.Instance;
                         targetDisposable.Dispose();
                     }
                 }
@@ -105,7 +105,7 @@ namespace UniRx.Operators
                     }
                     finally
                     {
-                        targetObserver = new UniRx.InternalUtil.EmptyObserver<T>();
+                        targetObserver = UniRx.InternalUtil.EmptyObserver<T>.Instance;
                         targetDisposable.Dispose();
                     }
                 }

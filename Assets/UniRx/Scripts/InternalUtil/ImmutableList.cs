@@ -13,7 +13,7 @@ namespace UniRx.InternalUtil
             get { return data; }
         }
 
-        public ImmutableList()
+        ImmutableList()
         {
             data = new T[0];
         }

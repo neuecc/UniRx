@@ -425,6 +425,21 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StackTrace"))
+            {
+                var rp = new ReactiveProperty<int>();
+
+                {
+                    rp.Where(x => x % 2 == 0).Select(x => x * x).Take(10).Subscribe(x => Debug.Log(x));
+                    rp.Where(x => x % 2 == 0).Select(x => x * x).Take(10).ToReadOnlyReactiveProperty().Subscribe(x => Debug.Log(x));
+                }
+
+                {
+                    rp.Value = 9998;
+                }
+            }
+            ypos += 100;
+
 
             //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "CurrentThreadScheduler"))
             //{

@@ -22,7 +22,7 @@ namespace UniRx.Operators
 
         public void Dispose()
         {
-            observer = new UniRx.InternalUtil.EmptyObserver<TResult>();
+            observer = UniRx.InternalUtil.EmptyObserver<TResult>.Instance;
             var target = System.Threading.Interlocked.Exchange(ref cancel, null);
             if (target != null)
             {

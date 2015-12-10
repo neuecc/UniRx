@@ -11,7 +11,7 @@ namespace UniRx
         bool isStopped;
         bool isDisposed;
         Exception lastError;
-        IObserver<T> outObserver = new EmptyObserver<T>();
+        IObserver<T> outObserver = EmptyObserver<T>.Instance;
 
         readonly int bufferSize;
         readonly TimeSpan window;
@@ -86,7 +86,7 @@ namespace UniRx
                 if (isStopped) return;
 
                 old = outObserver;
-                outObserver = new EmptyObserver<T>();
+                outObserver = EmptyObserver<T>.Instance;
                 isStopped = true;
                 Trim();
             }
@@ -105,7 +105,7 @@ namespace UniRx
                 if (isStopped) return;
 
                 old = outObserver;
-                outObserver = new EmptyObserver<T>();
+                outObserver = EmptyObserver<T>.Instance;
                 isStopped = true;
                 lastError = error;
                 Trim();
@@ -194,7 +194,7 @@ namespace UniRx
             lock (observerLock)
             {
                 isDisposed = true;
-                outObserver = new DisposedObserver<T>();
+                outObserver = DisposedObserver<T>.Instance;
                 lastError = null;
                 queue = null;
             }
@@ -237,7 +237,7 @@ namespace UniRx
                             }
                             else
                             {
-                                parent.outObserver = new EmptyObserver<T>();
+                                parent.outObserver = EmptyObserver<T>.Instance;
                             }
 
                             unsubscribeTarget = null;

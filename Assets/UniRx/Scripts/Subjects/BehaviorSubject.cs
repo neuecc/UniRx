@@ -11,7 +11,7 @@ namespace UniRx
         bool isDisposed;
         T lastValue;
         Exception lastError;
-        IObserver<T> outObserver = new EmptyObserver<T>();
+        IObserver<T> outObserver = EmptyObserver<T>.Instance;
 
         public BehaviorSubject(T defaultValue)
         {
@@ -45,7 +45,7 @@ namespace UniRx
                 if (isStopped) return;
 
                 old = outObserver;
-                outObserver = new EmptyObserver<T>();
+                outObserver = EmptyObserver<T>.Instance;
                 isStopped = true;
             }
 
@@ -63,7 +63,7 @@ namespace UniRx
                 if (isStopped) return;
 
                 old = outObserver;
-                outObserver = new EmptyObserver<T>();
+                outObserver = EmptyObserver<T>.Instance;
                 isStopped = true;
                 lastError = error;
             }
@@ -147,7 +147,7 @@ namespace UniRx
             lock (observerLock)
             {
                 isDisposed = true;
-                outObserver = new DisposedObserver<T>();
+                outObserver = DisposedObserver<T>.Instance;
                 lastError = null;
                 lastValue = default(T);
             }
@@ -190,7 +190,7 @@ namespace UniRx
                             }
                             else
                             {
-                                parent.outObserver = new EmptyObserver<T>();
+                                parent.outObserver = EmptyObserver<T>.Instance;
                             }
 
                             unsubscribeTarget = null;

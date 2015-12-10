@@ -11,13 +11,16 @@ namespace UniRx
     {
         public void Run()
         {
-            Observable.Return(1)
-                .Delay(TimeSpan.FromSeconds(4))
-                .Materialize()
-                .Subscribe(x => Console.WriteLine(x.ToString()));
+            var rp = new Subject<int>();
+
+            var rrp = rp.ToReadOnlyReactiveProperty();
+
+            rrp.Subscribe(x => ShowStackTrace());
+
+            rp.OnNext(5000);
 
 
-            Console.ReadLine();
+            rp.OnNext(9900);
 
         }
 

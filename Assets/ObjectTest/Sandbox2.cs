@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MyEventClass
 {
@@ -37,35 +38,27 @@ public class Sandbox2 : MonoBehaviour
     {
     }
 
+    int clickCount = 0;
+    AsyncOperation ao = null;
+
     void Start()
     {
+        
         button.OnClickAsObservable().Subscribe(_ =>
         {
-            var list = Enumerable.Range(1, 10000).Select(x => new ReactiveProperty<int>(x)).ToArray();
-
+            if (clickCount++ == 0)
             {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-                var sw = System.Diagnostics.Stopwatch.StartNew();
-                foreach (var item in list)
+                ao = SceneManager.LoadSceneAsync("TestSandbox");
+                // Debug.Log(ao.allowSceneActivation);
+                ao.allowSceneActivation = false;
+                ao.AsAsyncOperationObservable(new Progress<float>(x =>
                 {
-                    item.Select(x => x).Select(x => x).Select(x => x).Select(x => x).Subscribe();
-                }
-                sw.Stop();
-                Debug.Log(sw.Elapsed.TotalMilliseconds + "ms");
+                    Debug.Log(x);
+                })).Subscribe();
             }
+            else
             {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-                var sw = System.Diagnostics.Stopwatch.StartNew();
-                foreach (var item in list)
-                {
-                    item.Value = -10;
-                }
-                sw.Stop();
-                Debug.Log(sw.Elapsed.TotalMilliseconds + "ms");
+                ao.allowSceneActivation = true;
             }
         });
     }
