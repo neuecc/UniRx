@@ -32,7 +32,11 @@ namespace UniRx.Examples
             MyToggle.OnValueChangedAsObservable().SubscribeToInteractable(MyButton);
 
             // input shows delay after 1 second
+#if !(UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
+            MyInput.OnValueChangedAsObservable()
+#else
             MyInput.OnValueChangeAsObservable()
+#endif
                 .Where(x => x != null)
                 .Delay(TimeSpan.FromSeconds(1))
                 .SubscribeToText(MyText); // SubscribeToText is UniRx.UI Extension Method

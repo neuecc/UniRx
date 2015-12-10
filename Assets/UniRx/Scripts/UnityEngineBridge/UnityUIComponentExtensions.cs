@@ -83,7 +83,7 @@ namespace UniRx
         }
 
         /// <summary>Observe onValueChange with current `text` value on subscribe.</summary>
-#if (UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
+#if !(UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
         [Obsolete("onValueChange has been renamed to onValueChanged")]
 #endif
         public static IObservable<string> OnValueChangeAsObservable(this InputField inputField)
