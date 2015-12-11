@@ -282,10 +282,10 @@ namespace UniRx.ObjectTest
             }
         }
 
-        Action<long> action = _ => { };
 
         Subject<long> subj;
         object gate = new object();
+
 
         public void OnGUI()
         {
@@ -296,6 +296,12 @@ namespace UniRx.ObjectTest
             {
                 logtext.Length = 0;
                 disposables.Clear();
+            }
+            ypos += 100;
+
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "GC Count"))
+            {
+                logger.Debug("Generation0:" + GC.CollectionCount(0));
             }
             ypos += 100;
 

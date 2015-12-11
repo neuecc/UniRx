@@ -138,12 +138,14 @@ namespace UniRx.Operators
             readonly ObserveOnObservable<T> parent;
             readonly ISchedulerQueueing scheduler;
             readonly BooleanDisposable isDisposed;
+            readonly Action<T> onNext;
 
             public ObserveOn_(ObserveOnObservable<T> parent, ISchedulerQueueing scheduler, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.scheduler = scheduler;
                 this.isDisposed = new BooleanDisposable();
+                this.onNext = new Action<T>(OnNext_); // cache delegate
             }
 
             public IDisposable Run()
@@ -159,7 +161,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                scheduler.ScheduleQueueing(isDisposed, value, OnNext_);
+                scheduler.ScheduleQueueing(isDisposed, value, onNext);
             }
 
             public override void OnError(Exception error)

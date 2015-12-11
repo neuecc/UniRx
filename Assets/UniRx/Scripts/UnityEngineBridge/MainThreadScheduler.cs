@@ -50,9 +50,12 @@ namespace UniRx
 
         class MainThreadScheduler : IScheduler, ISchedulerPeriodic, ISchedulerQueueing
         {
+            readonly Action<object> scheduleAction;
+
             public MainThreadScheduler()
             {
                 MainThreadDispatcher.Initialize();
+                scheduleAction = new Action<object>(Schedule);
             }
 
             // delay action is run in StartCoroutine
@@ -106,17 +109,19 @@ namespace UniRx
                 get { return Scheduler.Now; }
             }
 
+            void Schedule(object state)
+            {
+                var t = (Tuple<BooleanDisposable, Action>)state;
+                if (!t.Item1.IsDisposed)
+                {
+                    t.Item2();
+                }
+            }
+
             public IDisposable Schedule(Action action)
             {
                 var d = new BooleanDisposable();
-                MainThreadDispatcher.Post(state =>
-                {
-                    var t = (Tuple<BooleanDisposable, Action>)state;
-                    if (!t.Item1.IsDisposed)
-                    {
-                        t.Item2();
-                    }
-                }, Tuple.Create(d, action));
+                MainThreadDispatcher.Post(scheduleAction, Tuple.Create(d, action));
                 return d;
             }
 
@@ -145,25 +150,44 @@ namespace UniRx
                 return d;
             }
 
+            void ScheduleQueueing<T>(object state)
+            {
+                var t = (Tuple<ICancelable, T, Action<T>>)state;
+                if (!t.Item1.IsDisposed)
+                {
+                    t.Item3(t.Item2);
+                }
+            }
+
             public void ScheduleQueueing<T>(ICancelable cancel, T state, Action<T> action)
             {
-                MainThreadDispatcher.Post(dState =>
+                MainThreadDispatcher.Post(QueuedAction<T>.Instance, Tuple.Create(cancel, state, action));
+            }
+
+            static class QueuedAction<T>
+            {
+                public static readonly Action<object> Instance = new Action<object>(Invoke);
+
+                public static void Invoke(object state)
                 {
-                    var t = (Tuple<ICancelable, T, Action<T>>)dState;
+                    var t = (Tuple<ICancelable, T, Action<T>>)state;
 
                     if (!t.Item1.IsDisposed)
                     {
                         t.Item3(t.Item2);
                     }
-                }, Tuple.Create(cancel, state, action));
+                }
             }
         }
 
         class IgnoreTimeScaleMainThreadScheduler : IScheduler, ISchedulerPeriodic, ISchedulerQueueing
         {
+            readonly Action<object> scheduleAction;
+
             public IgnoreTimeScaleMainThreadScheduler()
             {
                 MainThreadDispatcher.Initialize();
+                scheduleAction = new Action<object>(Schedule);
             }
 
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
@@ -231,17 +255,19 @@ namespace UniRx
                 get { return Scheduler.Now; }
             }
 
+            void Schedule(object state)
+            {
+                var t = (Tuple<BooleanDisposable, Action>)state;
+                if (!t.Item1.IsDisposed)
+                {
+                    t.Item2();
+                }
+            }
+
             public IDisposable Schedule(Action action)
             {
                 var d = new BooleanDisposable();
-                MainThreadDispatcher.Post(state =>
-                {
-                    var t = (Tuple<BooleanDisposable, Action>)state;
-                    if (!t.Item1.IsDisposed)
-                    {
-                        t.Item2();
-                    }
-                }, Tuple.Create(d, action));
+                MainThreadDispatcher.Post(scheduleAction, Tuple.Create(d, action));
                 return d;
             }
 
@@ -272,15 +298,22 @@ namespace UniRx
 
             public void ScheduleQueueing<T>(ICancelable cancel, T state, Action<T> action)
             {
-                MainThreadDispatcher.Post(dState =>
+                MainThreadDispatcher.Post(QueuedAction<T>.Instance, Tuple.Create(cancel, state, action));
+            }
+
+            static class QueuedAction<T>
+            {
+                public static readonly Action<object> Instance = new Action<object>(Invoke);
+
+                public static void Invoke(object state)
                 {
-                    var t = (Tuple<ICancelable, T, Action<T>>)dState;
+                    var t = (Tuple<ICancelable, T, Action<T>>)state;
 
                     if (!t.Item1.IsDisposed)
                     {
                         t.Item3(t.Item2);
                     }
-                }, Tuple.Create(cancel, state, action));
+                }
             }
         }
     }
