@@ -48,7 +48,7 @@ namespace UniRx
             }
         }
 
-        class MainThreadScheduler : IScheduler, ISchedulerPeriodic
+        class MainThreadScheduler : IScheduler, ISchedulerPeriodic, ISchedulerQueueing
         {
             public MainThreadScheduler()
             {
@@ -109,13 +109,14 @@ namespace UniRx
             public IDisposable Schedule(Action action)
             {
                 var d = new BooleanDisposable();
-                MainThreadDispatcher.Post(() =>
+                MainThreadDispatcher.Post(state =>
                 {
-                    if (!d.IsDisposed)
+                    var t = (Tuple<BooleanDisposable, Action>)state;
+                    if (!t.Item1.IsDisposed)
                     {
-                        action();
+                        t.Item2();
                     }
-                });
+                }, Tuple.Create(d, action));
                 return d;
             }
 
@@ -143,9 +144,22 @@ namespace UniRx
 
                 return d;
             }
+
+            public void ScheduleQueueing<T>(ICancelable cancel, T state, Action<T> action)
+            {
+                MainThreadDispatcher.Post(dState =>
+                {
+                    var t = (Tuple<ICancelable, T, Action<T>>)dState;
+
+                    if (!t.Item1.IsDisposed)
+                    {
+                        t.Item3(t.Item2);
+                    }
+                }, Tuple.Create(cancel, state, action));
+            }
         }
 
-        class IgnoreTimeScaleMainThreadScheduler : IScheduler, ISchedulerPeriodic
+        class IgnoreTimeScaleMainThreadScheduler : IScheduler, ISchedulerPeriodic, ISchedulerQueueing
         {
             public IgnoreTimeScaleMainThreadScheduler()
             {
@@ -220,13 +234,14 @@ namespace UniRx
             public IDisposable Schedule(Action action)
             {
                 var d = new BooleanDisposable();
-                MainThreadDispatcher.Post(() =>
+                MainThreadDispatcher.Post(state =>
                 {
-                    if (!d.IsDisposed)
+                    var t = (Tuple<BooleanDisposable, Action>)state;
+                    if (!t.Item1.IsDisposed)
                     {
-                        action();
+                        t.Item2();
                     }
-                });
+                }, Tuple.Create(d, action));
                 return d;
             }
 
@@ -253,6 +268,19 @@ namespace UniRx
                 MainThreadDispatcher.SendStartCoroutine(PeriodicAction(time, action, d));
 
                 return d;
+            }
+
+            public void ScheduleQueueing<T>(ICancelable cancel, T state, Action<T> action)
+            {
+                MainThreadDispatcher.Post(dState =>
+                {
+                    var t = (Tuple<ICancelable, T, Action<T>>)dState;
+
+                    if (!t.Item1.IsDisposed)
+                    {
+                        t.Item3(t.Item2);
+                    }
+                }, Tuple.Create(cancel, state, action));
             }
         }
     }

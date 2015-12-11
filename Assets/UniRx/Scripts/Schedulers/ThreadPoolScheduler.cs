@@ -12,7 +12,7 @@ namespace UniRx
     {
         public static readonly IScheduler ThreadPool = new ThreadPoolScheduler();
 
-        class ThreadPoolScheduler : IScheduler, ISchedulerPeriodic
+        class ThreadPoolScheduler : IScheduler, ISchedulerPeriodic, ISchedulerQueueing
         {
             public ThreadPoolScheduler()
             {
@@ -51,6 +51,17 @@ namespace UniRx
             public IDisposable SchedulePeriodic(TimeSpan period, Action action)
             {
                 return new PeriodicTimer(period, action);
+            }
+
+            public void ScheduleQueueing<T>(ICancelable cancel, T state, Action<T> action)
+            {
+                System.Threading.ThreadPool.QueueUserWorkItem(callBackState =>
+                {
+                    if (!cancel.IsDisposed)
+                    {
+                        action((T)callBackState);
+                    }
+                }, state);
             }
 
             // timer was borrwed from Rx Official

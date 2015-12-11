@@ -10,12 +10,14 @@ namespace UniRx.InternalUtil
         bool dequing = false;
 
         int actionListCount = 0;
-        Action[] actionList = new Action[InitialSize];
+        Action<object>[] actionList = new Action<object>[InitialSize];
+        object[] actionStates = new object[InitialSize];
 
         int waitingListCount = 0;
-        Action[] waitingList = new Action[InitialSize];
+        Action<object>[] waitingList = new Action<object>[InitialSize];
+        object[] waitingStates = new object[InitialSize];
 
-        public void Enqueue(Action action)
+        public void Enqueue(Action<object> action, object state)
         {
             lock (gate)
             {
@@ -23,21 +25,31 @@ namespace UniRx.InternalUtil
                 {
                     if (waitingList.Length == waitingListCount)
                     {
-                        var newArray = new Action[checked(waitingListCount * 2)];
+                        var newArray = new Action<object>[checked(waitingListCount * 2)];
+                        var newArrayState = new object[checked(waitingListCount * 2)];
                         Array.Copy(waitingList, newArray, waitingListCount);
+                        Array.Copy(waitingStates, newArrayState, waitingListCount);
                         waitingList = newArray;
+                        waitingStates = newArrayState;
                     }
-                    waitingList[waitingListCount++] = action;
+                    waitingList[waitingListCount] = action;
+                    waitingStates[waitingListCount] = state;
+                    waitingListCount++;
                 }
                 else
                 {
                     if (actionList.Length == actionListCount)
                     {
-                        var newArray = new Action[checked(actionListCount * 2)];
+                        var newArray = new Action<object>[checked(actionListCount * 2)];
+                        var newArrayState = new object[checked(actionListCount * 2)];
                         Array.Copy(actionList, newArray, actionListCount);
+                        Array.Copy(actionStates, newArrayState, actionListCount);
                         actionList = newArray;
+                        actionStates = newArrayState;
                     }
-                    actionList[actionListCount++] = action;
+                    actionList[actionListCount] = action;
+                    actionStates[actionListCount] = state;
+                    actionListCount++;
                 }
             }
         }
@@ -54,10 +66,10 @@ namespace UniRx.InternalUtil
             for (int i = 0; i < actionListCount; i++)
             {
                 var action = actionList[i];
-
+                var state = actionStates[i];
                 try
                 {
-                    action();
+                    action(state);
                 }
                 catch (Exception ex)
                 {
@@ -69,14 +81,18 @@ namespace UniRx.InternalUtil
             {
                 dequing = false;
                 Array.Clear(actionList, 0, actionListCount);
+                Array.Clear(actionStates, 0, actionListCount);
 
                 var swapTempActionList = actionList;
+                var swapTempActionStates = actionStates;
 
                 actionListCount = waitingListCount;
                 actionList = waitingList;
+                actionStates = waitingStates;
 
                 waitingListCount = 0;
                 waitingList = swapTempActionList;
+                waitingStates = swapTempActionStates;
             }
         }
     }

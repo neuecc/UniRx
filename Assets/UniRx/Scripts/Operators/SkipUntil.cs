@@ -22,7 +22,6 @@ namespace UniRx.Operators
         class SkipUntilOuterObserver : OperatorObserverBase<T, T>
         {
             readonly SkipUntilObservable<T, TOther> parent;
-            bool open;
 
             public SkipUntilOuterObserver(SkipUntilObservable<T, TOther> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {

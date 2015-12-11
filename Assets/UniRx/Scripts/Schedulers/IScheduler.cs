@@ -22,4 +22,9 @@ namespace UniRx
     {
         IDisposable ScheduleLongRunning(Action<ICancelable> action);
     }
+
+    public interface ISchedulerQueueing
+    {
+        void ScheduleQueueing<T>(ICancelable cancel, T state, Action<T> action);
+    }
 }

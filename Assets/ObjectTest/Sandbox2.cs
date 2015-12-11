@@ -41,8 +41,6 @@ public class Sandbox2 : MonoBehaviour
     //int clickCount = 0;
     //AsyncOperation ao = null;
 
-    int hogehoge;
-
     void Start()
     {
         

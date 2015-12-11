@@ -20,7 +20,7 @@ namespace UniRx.Examples
             Observable.FromCoroutine(TestAsync).Subscribe();
 
             // Add Action to MainThreadDispatcher. Action is saved queue, run on next update.
-            MainThreadDispatcher.Post(() => Debug.Log("test"));
+            MainThreadDispatcher.Post(_ => Debug.Log("test"), null);
 
             // Timebased operations is run on MainThread(as default)
             // All timebased operation(Interval, Timer, Delay, Buffer, etc...)is single thread, thread safe!

@@ -198,11 +198,11 @@ namespace UniRx.ObjectTest
 
         StringBuilder logtext = new StringBuilder();
 
-        GameObject cube;
-        Clicker clicker;
+        //GameObject cube;
+        //Clicker clicker;
 
         //[ThreadStatic]
-        static object threadstaticobj;
+        //static object threadstaticobj;
 
         public DateTime DateTimeSonomono;
 
@@ -452,7 +452,7 @@ namespace UniRx.ObjectTest
 
                     for (int i = 0; i < 10000; i++)
                     {
-                        lock(gate)
+                        lock (gate)
                         {
                             if (subj == null)
                             {
@@ -481,6 +481,24 @@ namespace UniRx.ObjectTest
 
                     logger.Debug("Plain:" + sw.Elapsed.TotalMilliseconds + "ms");
                 }
+            }
+            ypos += 100;
+
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ObserveOn Check:"))
+            {
+                var s = new Subject<int>();
+
+                Debug.Log("Before ObserveOn:" + Time.frameCount);
+                s.ObserveOnMainThread()
+                    .Subscribe(x =>
+                    {
+                        Debug.Log("Subscribe:" + Time.frameCount + "|" + x);
+                    });
+
+                s.OnNext(997);
+                s.OnNext(998);
+                s.OnNext(999);
+                Debug.Log("After OnNext:" + Time.frameCount);
             }
             ypos += 100;
 

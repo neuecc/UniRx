@@ -63,9 +63,9 @@ namespace UniRx
                 UnityEditor.EditorApplication.update += Update;
             }
 
-            public void Enqueue(Action action)
+            public void Enqueue(Action<object> action, object state)
             {
-                editorQueueWorker.Enqueue(action);
+                editorQueueWorker.Enqueue(action, state);
             }
 
             public void UnsafeInvoke(Action action)
@@ -80,9 +80,21 @@ namespace UniRx
                 }
             }
 
+            public void UnsafeInvoke(Action<object> action, object state)
+            {
+                try
+                {
+                    action(state);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogException(ex);
+                }
+            }
+
             public void PseudoStartCoroutine(IEnumerator routine)
             {
-                editorQueueWorker.Enqueue(() => ConsumeEnumerator(routine));
+                editorQueueWorker.Enqueue(_ => ConsumeEnumerator(routine), null);
             }
 
             void Update()
@@ -104,13 +116,13 @@ namespace UniRx
                     if (type == typeof(WWW))
                     {
                         var www = (WWW)current;
-                        editorQueueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitWWW(www, routine)));
+                        editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitWWW(www, routine)), null);
                         return;
                     }
                     else if (type == typeof(AsyncOperation))
                     {
                         var asyncOperation = (AsyncOperation)current;
-                        editorQueueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitAsyncOperation(asyncOperation, routine)));
+                        editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitAsyncOperation(asyncOperation, routine)), null);
                         return;
                     }
                     else if (type == typeof(WaitForSeconds))
@@ -118,7 +130,7 @@ namespace UniRx
                         var waitForSeconds = (WaitForSeconds)current;
                         var accessor = typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic);
                         var second = (float)accessor.GetValue(waitForSeconds);
-                        editorQueueWorker.Enqueue(() => ConsumeEnumerator(UnwrapWaitForSeconds(second, routine)));
+                        editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitForSeconds(second, routine)), null);
                         return;
                     }
                     else if (type == typeof(Coroutine))
@@ -128,7 +140,7 @@ namespace UniRx
                     }
 
                     ENQUEUE:
-                    editorQueueWorker.Enqueue(() => ConsumeEnumerator(routine)); // next update
+                    editorQueueWorker.Enqueue(_ => ConsumeEnumerator(routine), null); // next update
                 }
             }
 
@@ -170,32 +182,32 @@ namespace UniRx
 #endif
 
         /// <summary>Dispatch Asyncrhonous action.</summary>
-        public static void Post(Action action)
+        public static void Post(Action<object> action, object state)
         {
 #if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action, state); return; }
 
 #endif
 
             var dispatcher = Instance;
             if (!isQuitting && !object.ReferenceEquals(dispatcher, null))
             {
-                dispatcher.queueWorker.Enqueue(action);
+                dispatcher.queueWorker.Enqueue(action, state);
             }
         }
 
         /// <summary>Dispatch Synchronous action if possible.</summary>
-        public static void Send(Action action)
+        public static void Send(Action<object> action, object state)
         {
 #if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action, state); return; }
 #endif
 
             if (mainThreadToken != null)
             {
                 try
                 {
-                    action();
+                    action(state);
                 }
                 catch (Exception ex)
                 {
@@ -208,7 +220,7 @@ namespace UniRx
             }
             else
             {
-                Post(action);
+                Post(action, state);
             }
         }
 
@@ -222,6 +234,27 @@ namespace UniRx
             try
             {
                 action();
+            }
+            catch (Exception ex)
+            {
+                var dispatcher = MainThreadDispatcher.Instance;
+                if (dispatcher != null)
+                {
+                    dispatcher.unhandledExceptionCallback(ex);
+                }
+            }
+        }
+
+        /// <summary>Run Synchronous action.</summary>
+        public static void UnsafeSend(Action<object> action, object state)
+        {
+#if UNITY_EDITOR
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action, state); return; }
+#endif
+
+            try
+            {
+                action(state);
             }
             catch (Exception ex)
             {
@@ -250,14 +283,14 @@ namespace UniRx
                 var dispatcher = Instance;
                 if (!isQuitting && !object.ReferenceEquals(dispatcher, null))
                 {
-                    dispatcher.queueWorker.Enqueue(() =>
+                    dispatcher.queueWorker.Enqueue(_ =>
                     {
                         var distpacher2 = Instance;
                         if (distpacher2 != null)
                         {
                             distpacher2.StartCoroutine_Auto(routine);
                         }
-                    });
+                    }, null);
                 }
             }
         }
