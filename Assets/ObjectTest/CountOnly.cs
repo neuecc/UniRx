@@ -8,7 +8,7 @@ public class CountOnly : MonoBehaviour
 
     int count = 0;
 
-    void Update()
+    public void Update()
     {
         text.text = (count++).ToString();
     }

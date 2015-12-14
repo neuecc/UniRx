@@ -239,6 +239,7 @@ namespace UniRx.ObjectTest
         public RectReactiveProperty EEE;
 
         // public Slider MySlider;
+        public CountOnly only;
 
         public MySuperStructReactiveProperty SUPER_Rx;
 
@@ -305,9 +306,10 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "PushSource"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Count?"))
             {
-                Source.OnNext(UnityEngine.Random.Range(1, 100));
+                logger.Debug(only.text.text);
+                only.Update();
             }
             ypos += 100;
 

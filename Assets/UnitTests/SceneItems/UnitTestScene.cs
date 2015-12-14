@@ -20,6 +20,7 @@ namespace UniRx.Tests
 
         int counter;
 
+
         void Start()
         {
             try
