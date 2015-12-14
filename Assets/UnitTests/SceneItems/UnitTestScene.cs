@@ -28,10 +28,10 @@ namespace UniRx.Tests
                 //});
 
                 // UnitTest uses Wait, it can't run on MainThreadScheduler.
-                Scheduler.DefaultSchedulers.SetDotNetCompatible();
-                MainThreadDispatcher.Initialize();
+                //Scheduler.DefaultSchedulers.SetDotNetCompatible();
+                //MainThreadDispatcher.Initialize();
 
-                UnitTests.SetButtons(buttonPrefab, buttonVertical, resultPrefab, resultVertical);
+                //UnitTests.SetButtons(buttonPrefab, buttonVertical, resultPrefab, resultVertical);
             }
             catch (Exception ex)
             {
