@@ -7,6 +7,8 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/TestSandbox.unity
+  - enabled: 1
+    path: Assets/UnitTests/Components/UnitTestScene.unity
   - enabled: 0
     path: Assets/Scenes/LoadLevelTest.unity
   - enabled: 0
@@ -15,5 +17,3 @@ EditorBuildSettings:
     path: Assets/Scenes/LoadLevelTestNew.unity
   - enabled: 0
     path: Assets/Scenes/NextSandBox.unity
-  - enabled: 1
-    path: Assets/UnitTests/Components/UnitTestScene.unity
