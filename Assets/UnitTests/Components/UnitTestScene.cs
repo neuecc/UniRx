@@ -14,13 +14,22 @@ namespace UniRx.Tests
         public Result resultPrefab;
         public GameObject resultVertical;
 
+        public Text text;
+
         void Start()
         {
-            // UnitTest uses Wait, it can't run on MainThreadScheduler.
-            Scheduler.DefaultSchedulers.SetDotNetCompatible();
-            MainThreadDispatcher.Initialize();
-            
-            UnitTests.SetButtons(buttonPrefab, buttonVertical, resultPrefab, resultVertical);
+            try
+            {
+                // UnitTest uses Wait, it can't run on MainThreadScheduler.
+                Scheduler.DefaultSchedulers.SetDotNetCompatible();
+                MainThreadDispatcher.Initialize();
+
+                UnitTests.SetButtons(buttonPrefab, buttonVertical, resultPrefab, resultVertical);
+            }
+            catch (Exception ex)
+            {
+                text.text = ex.ToString();
+            }
         }
     }
 }
