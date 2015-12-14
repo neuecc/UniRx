@@ -1,17 +1,340 @@
 ﻿
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace UniRx.Tests
 {
 
+    public static class UnitTests
+    {
+        public static void Clear(GameObject resultVertical)
+        {
+            foreach (Transform child in resultVertical.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+
+        public static void SetButtons(Button buttonPrefab, GameObject buttonVertical, Result resultPrefab, GameObject resultVertical)
+        {
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ObservableConcurrencyTest(3)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ObservableConcurrencyTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ConversionTest(5)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ConversionTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "DoTest(7)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(DoTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "DurabilityTest(4)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(DurabilityTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ToTest(2)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ToTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "WhenAllTest(3)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(WhenAllTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "SelectMany(8)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(SelectMany.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "AggregateTest(2)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(AggregateTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "TakeTest(1)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(TakeTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "RangeTest(1)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(RangeTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "QueueWorkerTest(1)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(QueueWorkerTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "DisposableTest(4)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(DisposableTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ErrorHandlingTest(3)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ErrorHandlingTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ObservableEventsTest(2)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ObservableEventsTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ObservablePagingTest(24)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ObservablePagingTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ObservableTimeTest(9)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ObservableTimeTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ObservableConcatTest(19)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ObservableConcatTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ObservableTest(13)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ObservableTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "SchedulerTest(4)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(SchedulerTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ReactriveDictionaryTest(1)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ReactriveDictionaryTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "SubjectTests(6)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(SubjectTests.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ObservableGeneratorTest(8)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ObservableGeneratorTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+        }
+    }
+
+
 
     public partial class ObservableConcurrencyTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ObservableConcurrencyTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ObserveOnTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ObserveOnTest();
+                    r.Message.Value = "ObserveOnTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ObserveOnTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ObserveOnTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "AmbTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.AmbTest();
+                    r.Message.Value = "AmbTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "AmbTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "AmbTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "AmbMultiTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.AmbMultiTest();
+                    r.Message.Value = "AmbMultiTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "AmbMultiTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "AmbMultiTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void ObserveOnTest()
@@ -113,6 +436,142 @@ namespace UniRx.Tests
 
     public partial class ConversionTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ConversionTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "AsObservable";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.AsObservable();
+                    r.Message.Value = "AsObservable OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "AsObservable NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "AsObservable NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "AsUnitObservable";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.AsUnitObservable();
+                    r.Message.Value = "AsUnitObservable OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "AsUnitObservable NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "AsUnitObservable NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ToObservable";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ToObservable();
+                    r.Message.Value = "ToObservable OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ToObservable NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ToObservable NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Cast";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Cast();
+                    r.Message.Value = "Cast OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Cast NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Cast NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "OfType";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.OfType();
+                    r.Message.Value = "OfType OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "OfType NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "OfType NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void AsObservable()
@@ -175,6 +634,194 @@ namespace UniRx.Tests
 
     public partial class DoTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new DoTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Do";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Do();
+                    r.Message.Value = "Do OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Do NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Do NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "DoObserver";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.DoObserver();
+                    r.Message.Value = "DoObserver OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "DoObserver NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "DoObserver NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "DoOnError";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.DoOnError();
+                    r.Message.Value = "DoOnError OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "DoOnError NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "DoOnError NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "DoOnCompleted";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.DoOnCompleted();
+                    r.Message.Value = "DoOnCompleted OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "DoOnCompleted NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "DoOnCompleted NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "DoOnTerminate";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.DoOnTerminate();
+                    r.Message.Value = "DoOnTerminate OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "DoOnTerminate NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "DoOnTerminate NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "DoOnSubscribe";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.DoOnSubscribe();
+                    r.Message.Value = "DoOnSubscribe OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "DoOnSubscribe NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "DoOnSubscribe NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "DoOnCancel";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.DoOnCancel();
+                    r.Message.Value = "DoOnCancel OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "DoOnCancel NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "DoOnCancel NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
 
         [TestMethod]
@@ -335,6 +982,116 @@ namespace UniRx.Tests
 
     public partial class DurabilityTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new DurabilityTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "FromEventPattern";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.FromEventPattern();
+                    r.Message.Value = "FromEventPattern OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "FromEventPattern NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "FromEventPattern NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "FromEventUnityLike";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.FromEventUnityLike();
+                    r.Message.Value = "FromEventUnityLike OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "FromEventUnityLike NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "FromEventUnityLike NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "FromEventUnity";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.FromEventUnity();
+                    r.Message.Value = "FromEventUnity OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "FromEventUnity NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "FromEventUnity NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Durability";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Durability();
+                    r.Message.Value = "Durability OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Durability NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Durability NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
 
         [TestMethod]
@@ -525,6 +1282,64 @@ namespace UniRx.Tests
 
     public partial class ToTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ToTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ToArray";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ToArray();
+                    r.Message.Value = "ToArray OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ToArray NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ToArray NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ToList";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ToList();
+                    r.Message.Value = "ToList OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ToList NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ToList NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
 
         [TestMethod]
@@ -553,6 +1368,90 @@ namespace UniRx.Tests
 
     public partial class WhenAllTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new WhenAllTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "WhenAllEmpty";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.WhenAllEmpty();
+                    r.Message.Value = "WhenAllEmpty OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "WhenAllEmpty NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "WhenAllEmpty NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "WhenAll";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.WhenAll();
+                    r.Message.Value = "WhenAll OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "WhenAll NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "WhenAll NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "WhenAllEnumerable";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.WhenAllEnumerable();
+                    r.Message.Value = "WhenAllEnumerable OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "WhenAllEnumerable NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "WhenAllEnumerable NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void WhenAllEmpty()
@@ -601,6 +1500,220 @@ namespace UniRx.Tests
 
     public partial class SelectMany
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new SelectMany();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Selector";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Selector();
+                    r.Message.Value = "Selector OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Selector NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Selector NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SelectorWithIndex";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SelectorWithIndex();
+                    r.Message.Value = "SelectorWithIndex OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SelectorWithIndex NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SelectorWithIndex NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SelectorEnumerable";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SelectorEnumerable();
+                    r.Message.Value = "SelectorEnumerable OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SelectorEnumerable NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SelectorEnumerable NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SelectorEnumerableWithIndex";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SelectorEnumerableWithIndex();
+                    r.Message.Value = "SelectorEnumerableWithIndex OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SelectorEnumerableWithIndex NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SelectorEnumerableWithIndex NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ResultSelector";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ResultSelector();
+                    r.Message.Value = "ResultSelector OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ResultSelector NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ResultSelector NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ResultSelectorWithIndex";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ResultSelectorWithIndex();
+                    r.Message.Value = "ResultSelectorWithIndex OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ResultSelectorWithIndex NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ResultSelectorWithIndex NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ResultSelectorEnumerable";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ResultSelectorEnumerable();
+                    r.Message.Value = "ResultSelectorEnumerable OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ResultSelectorEnumerable NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ResultSelectorEnumerable NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ResultSelectorEnumerableWithIndex";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ResultSelectorEnumerableWithIndex();
+                    r.Message.Value = "ResultSelectorEnumerableWithIndex OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ResultSelectorEnumerableWithIndex NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ResultSelectorEnumerableWithIndex NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void Selector()
@@ -1093,6 +2206,64 @@ namespace UniRx.Tests
 
     public partial class AggregateTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new AggregateTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Scan";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Scan();
+                    r.Message.Value = "Scan OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Scan NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Scan NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Aggregate";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Aggregate();
+                    r.Message.Value = "Aggregate OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Aggregate NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Aggregate NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void Scan()
@@ -1129,6 +2300,38 @@ namespace UniRx.Tests
 
     public partial class TakeTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new TakeTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "TakeCount";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.TakeCount();
+                    r.Message.Value = "TakeCount OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "TakeCount NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "TakeCount NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void TakeCount()
@@ -1150,6 +2353,38 @@ namespace UniRx.Tests
 
     public partial class RangeTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new RangeTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Range";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Range();
+                    r.Message.Value = "Range OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Range NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Range NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void Range()
@@ -1167,6 +2402,38 @@ namespace UniRx.Tests
 
     public partial class QueueWorkerTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new QueueWorkerTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Enq";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Enq();
+                    r.Message.Value = "Enq OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Enq NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Enq NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void Enq()
@@ -1253,6 +2520,116 @@ namespace UniRx.Tests
 
     public partial class DisposableTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new DisposableTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SingleAssignment";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SingleAssignment();
+                    r.Message.Value = "SingleAssignment OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SingleAssignment NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SingleAssignment NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "MultipleAssignment";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.MultipleAssignment();
+                    r.Message.Value = "MultipleAssignment OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "MultipleAssignment NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "MultipleAssignment NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Serial";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Serial();
+                    r.Message.Value = "Serial OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Serial NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Serial NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Boolean";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Boolean();
+                    r.Message.Value = "Boolean OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Boolean NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Boolean NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void SingleAssignment()
@@ -1429,6 +2806,90 @@ namespace UniRx.Tests
 
     public partial class ErrorHandlingTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ErrorHandlingTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Finally";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Finally();
+                    r.Message.Value = "Finally OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Finally NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Finally NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Catch";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Catch();
+                    r.Message.Value = "Catch OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Catch NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Catch NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CatchEnumerable";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CatchEnumerable();
+                    r.Message.Value = "CatchEnumerable OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CatchEnumerable NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CatchEnumerable NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void Finally()
@@ -1512,6 +2973,64 @@ namespace UniRx.Tests
 
     public partial class ObservableEventsTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ObservableEventsTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "FromEventPattern";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.FromEventPattern();
+                    r.Message.Value = "FromEventPattern OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "FromEventPattern NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "FromEventPattern NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "FromEvent";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.FromEvent();
+                    r.Message.Value = "FromEvent OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "FromEvent NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "FromEvent NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
 
 
@@ -1691,6 +3210,636 @@ namespace UniRx.Tests
 
     public partial class ObservablePagingTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ObservablePagingTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Buffer";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Buffer();
+                    r.Message.Value = "Buffer OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Buffer NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Buffer NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "BufferTime";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BufferTime();
+                    r.Message.Value = "BufferTime OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BufferTime NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BufferTime NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "BufferTimeEmptyBuffer";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BufferTimeEmptyBuffer();
+                    r.Message.Value = "BufferTimeEmptyBuffer OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BufferTimeEmptyBuffer NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BufferTimeEmptyBuffer NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "BufferTimeComplete";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BufferTimeComplete();
+                    r.Message.Value = "BufferTimeComplete OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BufferTimeComplete NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BufferTimeComplete NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "BufferTimeEmptyComplete";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BufferTimeEmptyComplete();
+                    r.Message.Value = "BufferTimeEmptyComplete OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BufferTimeEmptyComplete NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BufferTimeEmptyComplete NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "BufferEmpty";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BufferEmpty();
+                    r.Message.Value = "BufferEmpty OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BufferEmpty NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BufferEmpty NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "BufferComplete2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BufferComplete2();
+                    r.Message.Value = "BufferComplete2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BufferComplete2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BufferComplete2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Buffer3";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Buffer3();
+                    r.Message.Value = "Buffer3 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Buffer3 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Buffer3 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "BufferSkip";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BufferSkip();
+                    r.Message.Value = "BufferSkip OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BufferSkip NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BufferSkip NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "BufferTimeAndCount";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BufferTimeAndCount();
+                    r.Message.Value = "BufferTimeAndCount OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BufferTimeAndCount NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BufferTimeAndCount NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "First";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.First();
+                    r.Message.Value = "First OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "First NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "First NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "FirstOrDefault";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.FirstOrDefault();
+                    r.Message.Value = "FirstOrDefault OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "FirstOrDefault NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "FirstOrDefault NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Last";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Last();
+                    r.Message.Value = "Last OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Last NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Last NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "LastOrDefault";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.LastOrDefault();
+                    r.Message.Value = "LastOrDefault OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "LastOrDefault NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "LastOrDefault NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Single";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Single();
+                    r.Message.Value = "Single OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Single NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Single NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SingleOrDefault";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SingleOrDefault();
+                    r.Message.Value = "SingleOrDefault OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SingleOrDefault NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SingleOrDefault NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "TakeWhile";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.TakeWhile();
+                    r.Message.Value = "TakeWhile OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "TakeWhile NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "TakeWhile NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "TakeUntil";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.TakeUntil();
+                    r.Message.Value = "TakeUntil OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "TakeUntil NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "TakeUntil NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Skip";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Skip();
+                    r.Message.Value = "Skip OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Skip NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Skip NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SkipTime";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SkipTime();
+                    r.Message.Value = "SkipTime OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SkipTime NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SkipTime NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SkipWhile";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SkipWhile();
+                    r.Message.Value = "SkipWhile OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SkipWhile NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SkipWhile NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SkipWhileIndex";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SkipWhileIndex();
+                    r.Message.Value = "SkipWhileIndex OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SkipWhileIndex NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SkipWhileIndex NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SkipUntil";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SkipUntil();
+                    r.Message.Value = "SkipUntil OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SkipUntil NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SkipUntil NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Pairwise";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Pairwise();
+                    r.Message.Value = "Pairwise OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Pairwise NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Pairwise NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void Buffer()
@@ -2674,6 +4823,246 @@ namespace UniRx.Tests
 
     public partial class ObservableTimeTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ObservableTimeTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "TimerTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.TimerTest();
+                    r.Message.Value = "TimerTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "TimerTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "TimerTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "DelayTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.DelayTest();
+                    r.Message.Value = "DelayTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "DelayTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "DelayTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SampleTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SampleTest();
+                    r.Message.Value = "SampleTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SampleTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SampleTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "TimeoutTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.TimeoutTest();
+                    r.Message.Value = "TimeoutTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "TimeoutTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "TimeoutTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "TimeoutTestOffset";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.TimeoutTestOffset();
+                    r.Message.Value = "TimeoutTestOffset OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "TimeoutTestOffset NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "TimeoutTestOffset NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ThrottleTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ThrottleTest();
+                    r.Message.Value = "ThrottleTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ThrottleTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ThrottleTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ThrottleFirstTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ThrottleFirstTest();
+                    r.Message.Value = "ThrottleFirstTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ThrottleFirstTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ThrottleFirstTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Timestamp";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Timestamp();
+                    r.Message.Value = "Timestamp OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Timestamp NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Timestamp NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "TimeInterval";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.TimeInterval();
+                    r.Message.Value = "TimeInterval OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "TimeInterval NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "TimeInterval NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void TimerTest()
@@ -2958,6 +5347,506 @@ namespace UniRx.Tests
 
     public partial class ObservableConcatTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ObservableConcatTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Concat";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Concat();
+                    r.Message.Value = "Concat OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Concat NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Concat NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Zip";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Zip();
+                    r.Message.Value = "Zip OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Zip NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Zip NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Zip2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Zip2();
+                    r.Message.Value = "Zip2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Zip2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Zip2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ZipMulti";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ZipMulti();
+                    r.Message.Value = "ZipMulti OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ZipMulti NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ZipMulti NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ZipMulti2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ZipMulti2();
+                    r.Message.Value = "ZipMulti2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ZipMulti2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ZipMulti2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ZipNth";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ZipNth();
+                    r.Message.Value = "ZipNth OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ZipNth NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ZipNth NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "WhenAll";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.WhenAll();
+                    r.Message.Value = "WhenAll OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "WhenAll NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "WhenAll NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CombineLatest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CombineLatest();
+                    r.Message.Value = "CombineLatest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CombineLatest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CombineLatest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CombineLatest2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CombineLatest2();
+                    r.Message.Value = "CombineLatest2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CombineLatest2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CombineLatest2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CombineLatest3";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CombineLatest3();
+                    r.Message.Value = "CombineLatest3 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CombineLatest3 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CombineLatest3 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CombineLatest4";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CombineLatest4();
+                    r.Message.Value = "CombineLatest4 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CombineLatest4 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CombineLatest4 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CombineLatestMulti";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CombineLatestMulti();
+                    r.Message.Value = "CombineLatestMulti OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CombineLatestMulti NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CombineLatestMulti NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CombineLatestMulti2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CombineLatestMulti2();
+                    r.Message.Value = "CombineLatestMulti2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CombineLatestMulti2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CombineLatestMulti2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CombineLatestMulti3";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CombineLatestMulti3();
+                    r.Message.Value = "CombineLatestMulti3 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CombineLatestMulti3 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CombineLatestMulti3 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CombineLatestMulti4";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CombineLatestMulti4();
+                    r.Message.Value = "CombineLatestMulti4 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CombineLatestMulti4 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CombineLatestMulti4 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "StartWith";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.StartWith();
+                    r.Message.Value = "StartWith OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "StartWith NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "StartWith NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Merge";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Merge();
+                    r.Message.Value = "Merge OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Merge NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Merge NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "MergeConcurrent";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.MergeConcurrent();
+                    r.Message.Value = "MergeConcurrent OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "MergeConcurrent NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "MergeConcurrent NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Switch";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Switch();
+                    r.Message.Value = "Switch OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Switch NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Switch NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void Concat()
@@ -3505,6 +6394,350 @@ namespace UniRx.Tests
 
     public partial class ObservableTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ObservableTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ToArray";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ToArray();
+                    r.Message.Value = "ToArray OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ToArray NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ToArray NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ToArray_Dispose";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ToArray_Dispose();
+                    r.Message.Value = "ToArray_Dispose OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ToArray_Dispose NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ToArray_Dispose NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Wait";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Wait();
+                    r.Message.Value = "Wait OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Wait NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Wait NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "DistinctUntilChanged";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.DistinctUntilChanged();
+                    r.Message.Value = "DistinctUntilChanged OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "DistinctUntilChanged NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "DistinctUntilChanged NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Distinct";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Distinct();
+                    r.Message.Value = "Distinct OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Distinct NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Distinct NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SelectMany";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SelectMany();
+                    r.Message.Value = "SelectMany OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SelectMany NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SelectMany NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Select";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Select();
+                    r.Message.Value = "Select OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Select NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Select NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Where";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Where();
+                    r.Message.Value = "Where OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Where NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Where NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Materialize";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Materialize();
+                    r.Message.Value = "Materialize OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Materialize NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Materialize NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Dematerialize";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Dematerialize();
+                    r.Message.Value = "Dematerialize OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Dematerialize NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Dematerialize NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "DefaultIfEmpty";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.DefaultIfEmpty();
+                    r.Message.Value = "DefaultIfEmpty OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "DefaultIfEmpty NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "DefaultIfEmpty NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "IgnoreElements";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.IgnoreElements();
+                    r.Message.Value = "IgnoreElements OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "IgnoreElements NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "IgnoreElements NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ForEachAsync";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ForEachAsync();
+                    r.Message.Value = "ForEachAsync OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ForEachAsync NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ForEachAsync NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void ToArray()
@@ -3884,6 +7117,116 @@ namespace UniRx.Tests
 
     public partial class SchedulerTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new SchedulerTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CurrentThread";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CurrentThread();
+                    r.Message.Value = "CurrentThread OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CurrentThread NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CurrentThread NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CurrentThread2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CurrentThread2();
+                    r.Message.Value = "CurrentThread2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CurrentThread2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CurrentThread2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "CurrentThread3";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.CurrentThread3();
+                    r.Message.Value = "CurrentThread3 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "CurrentThread3 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "CurrentThread3 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Immediate";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Immediate();
+                    r.Message.Value = "Immediate OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Immediate NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Immediate NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
 
         [TestMethod]
@@ -3964,6 +7307,38 @@ namespace UniRx.Tests
 
     public partial class ReactriveDictionaryTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ReactriveDictionaryTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "RxDictObserve";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.RxDictObserve();
+                    r.Message.Value = "RxDictObserve OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "RxDictObserve NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "RxDictObserve NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void RxDictObserve()
@@ -4027,6 +7402,168 @@ namespace UniRx.Tests
 
     public partial class SubjectTests
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new SubjectTests();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Subject";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Subject();
+                    r.Message.Value = "Subject OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Subject NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Subject NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "SubjectSubscribeTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SubjectSubscribeTest();
+                    r.Message.Value = "SubjectSubscribeTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SubjectSubscribeTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SubjectSubscribeTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "AsyncSubjectTest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.AsyncSubjectTest();
+                    r.Message.Value = "AsyncSubjectTest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "AsyncSubjectTest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "AsyncSubjectTest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "BehaviorSubject";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BehaviorSubject();
+                    r.Message.Value = "BehaviorSubject OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BehaviorSubject NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BehaviorSubject NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ReplaySubject";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ReplaySubject();
+                    r.Message.Value = "ReplaySubject OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ReplaySubject NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ReplaySubject NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ReplaySubjectWindowReplay";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ReplaySubjectWindowReplay();
+                    r.Message.Value = "ReplaySubjectWindowReplay OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ReplaySubjectWindowReplay NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ReplaySubjectWindowReplay NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void Subject()
@@ -4490,6 +8027,220 @@ namespace UniRx.Tests
 
     public partial class ObservableGeneratorTest
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ObservableGeneratorTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Empty";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Empty();
+                    r.Message.Value = "Empty OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Empty NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Empty NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Never";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Never();
+                    r.Message.Value = "Never OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Never NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Never NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Return";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Return();
+                    r.Message.Value = "Return OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Return NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Return NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Range";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Range();
+                    r.Message.Value = "Range OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Range NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Range NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Repeat";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Repeat();
+                    r.Message.Value = "Repeat OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Repeat NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Repeat NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "RepeatStatic";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.RepeatStatic();
+                    r.Message.Value = "RepeatStatic OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "RepeatStatic NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "RepeatStatic NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "ToObservable";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ToObservable();
+                    r.Message.Value = "ToObservable OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ToObservable NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ToObservable NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "Throw";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Throw();
+                    r.Message.Value = "Throw OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Throw NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Throw NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
 
         [TestMethod]
         public void Empty()

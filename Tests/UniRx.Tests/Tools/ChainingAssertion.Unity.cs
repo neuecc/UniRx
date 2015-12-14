@@ -22,7 +22,7 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
                 ((IEnumerable)actual).Cast<object>().Is(((IEnumerable)expected).Cast<object>(), message);
                 return;
             }
-
+            
             Assert.AreEqual(expected, actual, message);
         }
 

@@ -27,19 +27,84 @@
 #>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace UniRx.Tests
 {
+
+    public static class UnitTests
+    {
+        public static void Clear(GameObject resultVertical)
+        {
+            foreach (Transform child in resultVertical.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+
+        public static void SetButtons(Button buttonPrefab, GameObject buttonVertical, Result resultPrefab, GameObject resultVertical)
+        {
+<# foreach(var item in classNames.GroupBy(x => x.ClassName)) { #>
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "<#= item.Key #>(<#= item.Count() #>)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(<#= item.Key #>.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform);
+            }
+<# } #>
+        }
+    }
+
 
 <# foreach(var item in classNames.GroupBy(x => x.ClassName)) { #>
 
     public partial class <#= item.Key #>
     {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new <#= item.Key #>();
+<# foreach(var m in item) { #>
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.Message.Value = "<#= m.MethodName #>";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.<#= m.MethodName #>();
+                    r.Message.Value = "<#= m.MethodName #> OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "<#= m.MethodName #> NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "<#= m.MethodName #> NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+<# } #>
+        }
+
+
 <# foreach(var m in item) { #>
 
 <#= m.Code.ToString() #>

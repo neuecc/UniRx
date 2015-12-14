@@ -299,9 +299,13 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "GC Count"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "UnitTest"))
             {
-                logger.Debug("Generation0:" + GC.CollectionCount(0));
+#if UNITY_5_3
+                UnityEngine.SceneManagement.SceneManager.LoadScene("UnitTestScene");
+#else
+                Application.LoadLevel("UnitTestScene");
+#endif
             }
             ypos += 100;
 
