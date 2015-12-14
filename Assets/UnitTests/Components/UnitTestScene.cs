@@ -22,10 +22,10 @@ namespace UniRx.Tests
         {
             try
             {
-                sample.OnClickAsObservable().Subscribe(_ =>
-                {
-                    MainThreadDispatcher.StartCoroutine(ObservableConcurrencyTest.Run(resultPrefab, resultVertical));
-                });
+                //sample.OnClickAsObservable().Subscribe(_ =>
+                //{
+                //    MainThreadDispatcher.StartCoroutine(ObservableConcurrencyTest.Run(resultPrefab, resultVertical));
+                //});
 
                 // UnitTest uses Wait, it can't run on MainThreadScheduler.
                 Scheduler.DefaultSchedulers.SetDotNetCompatible();
