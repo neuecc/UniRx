@@ -18,10 +18,14 @@ namespace UniRx.Tests
 
         public Button sample;
 
+        int counter;
+
         void Start()
         {
             try
             {
+                text.text = "sample...";
+
                 sample.OnClickAsObservable().Subscribe(_ =>
                 {
                     text.text = "start...";
@@ -38,6 +42,19 @@ namespace UniRx.Tests
             {
                 text.text = ex.ToString();
             }
+        }
+
+        public void OnGUI()
+        {
+            if (GUI.Button(new Rect(0, 0, 100, 100), (counter++).ToString()))
+            {
+
+            }
+        }
+
+        public void Update()
+        {
+            text.text = (counter++).ToString();
         }
     }
 }
