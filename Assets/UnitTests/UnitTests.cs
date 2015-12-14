@@ -32,7 +32,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ObservableConcurrencyTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -42,7 +42,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ConversionTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -52,7 +52,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(DoTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -62,7 +62,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(DurabilityTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -72,7 +72,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ToTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -82,7 +82,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(WhenAllTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -92,7 +92,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(SelectMany.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -102,7 +102,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(AggregateTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -112,7 +112,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(TakeTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -122,7 +122,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(RangeTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -132,7 +132,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(QueueWorkerTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -142,7 +142,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(DisposableTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -152,7 +152,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ErrorHandlingTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -162,7 +162,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ObservableEventsTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -172,7 +172,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ObservablePagingTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -182,7 +182,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ObservableTimeTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -192,7 +192,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ObservableConcatTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -202,7 +202,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ObservableTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -212,7 +212,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(SchedulerTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -222,7 +222,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ReactriveDictionaryTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -232,7 +232,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(SubjectTests.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
@@ -242,7 +242,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(ObservableGeneratorTest.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
         }
     }
@@ -257,7 +257,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ObserveOnTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -283,7 +283,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AmbTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -309,7 +309,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AmbMultiTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -442,7 +442,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AsObservable";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -468,7 +468,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AsUnitObservable";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -494,7 +494,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToObservable";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -520,7 +520,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Cast";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -546,7 +546,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "OfType";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -640,7 +640,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Do";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -666,7 +666,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoObserver";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -692,7 +692,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoOnError";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -718,7 +718,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoOnCompleted";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -744,7 +744,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoOnTerminate";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -770,7 +770,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoOnSubscribe";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -796,7 +796,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoOnCancel";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -988,7 +988,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FromEventPattern";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1014,7 +1014,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FromEventUnityLike";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1040,7 +1040,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FromEventUnity";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1066,7 +1066,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Durability";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1288,7 +1288,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToArray";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1314,7 +1314,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToList";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1374,7 +1374,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "WhenAllEmpty";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1400,7 +1400,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "WhenAll";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1426,7 +1426,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "WhenAllEnumerable";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1506,7 +1506,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Selector";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1532,7 +1532,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SelectorWithIndex";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1558,7 +1558,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SelectorEnumerable";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1584,7 +1584,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SelectorEnumerableWithIndex";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1610,7 +1610,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ResultSelector";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1636,7 +1636,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ResultSelectorWithIndex";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1662,7 +1662,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ResultSelectorEnumerable";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -1688,7 +1688,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ResultSelectorEnumerableWithIndex";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2212,7 +2212,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Scan";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2238,7 +2238,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Aggregate";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2306,7 +2306,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TakeCount";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2359,7 +2359,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Range";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2408,7 +2408,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Enq";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2526,7 +2526,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SingleAssignment";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2552,7 +2552,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "MultipleAssignment";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2578,7 +2578,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Serial";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2604,7 +2604,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Boolean";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2812,7 +2812,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Finally";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2838,7 +2838,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Catch";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2864,7 +2864,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CatchEnumerable";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2979,7 +2979,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FromEventPattern";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3005,7 +3005,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FromEvent";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3216,7 +3216,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Buffer";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3242,7 +3242,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTime";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3268,7 +3268,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTimeEmptyBuffer";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3294,7 +3294,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTimeComplete";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3320,7 +3320,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTimeEmptyComplete";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3346,7 +3346,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferEmpty";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3372,7 +3372,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferComplete2";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3398,7 +3398,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Buffer3";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3424,7 +3424,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferSkip";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3450,7 +3450,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTimeAndCount";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3476,7 +3476,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "First";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3502,7 +3502,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FirstOrDefault";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3528,7 +3528,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Last";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3554,7 +3554,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "LastOrDefault";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3580,7 +3580,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Single";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3606,7 +3606,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SingleOrDefault";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3632,7 +3632,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TakeWhile";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3658,7 +3658,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TakeUntil";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3684,7 +3684,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Skip";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3710,7 +3710,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SkipTime";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3736,7 +3736,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SkipWhile";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3762,7 +3762,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SkipWhileIndex";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3788,7 +3788,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SkipUntil";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3814,7 +3814,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Pairwise";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -4829,7 +4829,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TimerTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -4855,7 +4855,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DelayTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -4881,7 +4881,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SampleTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -4907,7 +4907,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TimeoutTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -4933,7 +4933,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TimeoutTestOffset";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -4959,7 +4959,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ThrottleTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -4985,7 +4985,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ThrottleFirstTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5011,7 +5011,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Timestamp";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5037,7 +5037,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TimeInterval";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5353,7 +5353,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Concat";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5379,7 +5379,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Zip";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5405,7 +5405,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Zip2";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5431,7 +5431,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ZipMulti";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5457,7 +5457,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ZipMulti2";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5483,7 +5483,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ZipNth";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5509,7 +5509,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "WhenAll";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5535,7 +5535,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5561,7 +5561,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatest2";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5587,7 +5587,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatest3";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5613,7 +5613,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatest4";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5639,7 +5639,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatestMulti";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5665,7 +5665,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatestMulti2";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5691,7 +5691,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatestMulti3";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5717,7 +5717,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatestMulti4";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5743,7 +5743,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "StartWith";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5769,7 +5769,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Merge";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5795,7 +5795,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "MergeConcurrent";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -5821,7 +5821,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Switch";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6400,7 +6400,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToArray";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6426,7 +6426,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToArray_Dispose";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6452,7 +6452,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Wait";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6478,7 +6478,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DistinctUntilChanged";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6504,7 +6504,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Distinct";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6530,7 +6530,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SelectMany";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6556,7 +6556,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Select";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6582,7 +6582,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Where";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6608,7 +6608,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Materialize";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6634,7 +6634,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Dematerialize";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6660,7 +6660,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DefaultIfEmpty";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6686,7 +6686,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "IgnoreElements";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -6712,7 +6712,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ForEachAsync";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7123,7 +7123,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CurrentThread";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7149,7 +7149,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CurrentThread2";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7175,7 +7175,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CurrentThread3";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7201,7 +7201,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Immediate";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7313,7 +7313,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "RxDictObserve";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7408,7 +7408,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Subject";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7434,7 +7434,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SubjectSubscribeTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7460,7 +7460,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AsyncSubjectTest";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7486,7 +7486,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BehaviorSubject";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7512,7 +7512,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ReplaySubject";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -7538,7 +7538,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ReplaySubjectWindowReplay";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -8033,7 +8033,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Empty";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -8059,7 +8059,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Never";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -8085,7 +8085,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Return";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -8111,7 +8111,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Range";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -8137,7 +8137,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Repeat";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -8163,7 +8163,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "RepeatStatic";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -8189,7 +8189,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToObservable";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -8215,7 +8215,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Throw";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;

@@ -60,7 +60,7 @@ namespace UniRx.Tests
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(<#= item.Key #>.Run(resultPrefab, resultVertical));
                 });
-                button.transform.SetParent(buttonVertical.transform);
+                button.transform.SetParent(buttonVertical.transform, true);
             }
 <# } #>
         }
@@ -78,7 +78,7 @@ namespace UniRx.Tests
             {
                 var r = GameObject.Instantiate(resultPrefab);
                 r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform);
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "<#= m.MethodName #>";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
