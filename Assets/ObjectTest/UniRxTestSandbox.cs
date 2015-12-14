@@ -299,13 +299,9 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "UnitTest"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale"))
             {
-#if UNITY_5_3
-                UnityEngine.SceneManagement.SceneManager.LoadScene("UnitTestScene");
-#else
-                Application.LoadLevel("UnitTestScene");
-#endif
+                logger.Log(Time.timeScale);
             }
             ypos += 100;
 
