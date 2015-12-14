@@ -1,0 +1,165 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Runtime" #>
+<#@ assembly name="System.Threading.Tasks" #>
+<#@ assembly name="EnvDTE" #>
+<#@ assembly name="$(DevEnvDir)PrivateAssemblies\Microsoft.CodeAnalysis.dll" #>
+<#@ assembly name="$(DevEnvDir)PrivateAssemblies\Microsoft.CodeAnalysis.CSharp.dll" #>
+<#@ assembly name="$(DevEnvDir)PrivateAssemblies\Microsoft.CodeAnalysis.Workspaces.dll" #>
+<#@ assembly name="$(DevEnvDir)PrivateAssemblies\Microsoft.CodeAnalysis.Workspaces.Desktop.dll" #>
+<#@ assembly name="$(DevEnvDir)PrivateAssemblies\System.Collections.Immutable.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Threading.Tasks" #>
+<#@ import namespace="Microsoft.CodeAnalysis" #>
+<#@ import namespace="Microsoft.CodeAnalysis.CSharp" #>
+<#@ import namespace="Microsoft.CodeAnalysis.CSharp.Syntax" #>
+<#@ import namespace="Microsoft.CodeAnalysis.MSBuild" #>
+<#@ import namespace="EnvDTE" #>
+<#@ output extension=".cs" #>
+<#
+    var serviceProvider = this.Host as IServiceProvider;
+    var dte = serviceProvider.GetService(typeof(DTE)) as DTE;
+    var targetProj = dte.Solution.Projects.Cast<EnvDTE.Project>().First(x => x.Name == "UniRx.Tests");
+    var projPath = targetProj.FullName;
+    var classNames = GetClassNamesAsync(projPath).Result;
+#>
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace UniRx.Tests
+{
+
+    public static class UnitTests
+    {
+        public static void Clear(GameObject resultVertical)
+        {
+            foreach (Transform child in resultVertical.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+
+        public static void SetButtons(Button buttonPrefab, GameObject buttonVertical, Result resultPrefab, GameObject resultVertical)
+        {
+<# foreach(var item in classNames.GroupBy(x => x.ClassName)) { #>
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "<#= item.Key #>(<#= item.Count() #>)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(<#= item.Key #>.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform, true);
+            }
+<# } #>
+        }
+    }
+
+
+<# foreach(var item in classNames.GroupBy(x => x.ClassName)) { #>
+
+    public partial class <#= item.Key #>
+    {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new <#= item.Key #>();
+<# foreach(var m in item) { #>
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "<#= m.MethodName #>";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.<#= m.MethodName #>();
+                    r.Message.Value = "<#= m.MethodName #> OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "<#= m.MethodName #> NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "<#= m.MethodName #> NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+<# } #>
+        }
+
+
+<# foreach(var m in item) { #>
+
+<#= m.Code.ToString() #>
+
+<# } #>
+
+    }
+
+<# } #>
+
+}
+
+<#+
+    class UnitTestCode
+    {
+        public string ClassName { get; set; }
+        public string MethodName { get; set; }
+        public string Code { get; set; }
+
+        public override string ToString()
+        {
+            return ClassName + "." + MethodName;
+        }
+    }
+
+    async Task<List<UnitTestCode>> GetClassNamesAsync(string csprojPath)
+    {
+        var workspace = MSBuildWorkspace.Create();
+        var project = await workspace.OpenProjectAsync(csprojPath);
+
+        var compilation = await project.GetCompilationAsync();
+
+        var testCodes = new List<UnitTestCode>();
+
+        foreach (var syntaxTree in compilation.SyntaxTrees)
+        {
+            var semModel = compilation.GetSemanticModel(syntaxTree);
+
+            var testMethods = syntaxTree.GetRoot()
+                .DescendantNodes()
+                .OfType<ClassDeclarationSyntax>()
+                .Select(x => semModel.GetDeclaredSymbol(x))
+                .Where(x => x.GetAttributes().Any(y => y.ToString() == "Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute"))
+                .SelectMany(x => x.GetMembers(), (klass, member) => new { klass, member })
+                .Where(x => x.member.GetAttributes().Any(y => y.ToString() == "Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute"))
+                .Select(x => new UnitTestCode
+                {
+                    ClassName = x.klass.Name,
+                    MethodName = x.member.Name,
+                    Code = x.member.DeclaringSyntaxReferences[0].GetSyntax().ToFullString()
+                });
+
+            testCodes.AddRange(testMethods);
+        }
+
+        return testCodes;
+    }
+#>
