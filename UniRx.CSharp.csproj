@@ -17,7 +17,8 @@
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.3.0f4</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -298,23 +299,8 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\YieldInstructionCache.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityWinRTBridge\Thread.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityWinRTBridge\ThreadPoolScheduler_UnityWinRT.cs" />
-    <Compile Include="Assets\UnitTests\SceneItems\Result.cs" />
-    <Compile Include="Assets\UnitTests\SceneItems\UnitTestScene.cs" />
-    <Compile Include="Assets\UnitTests\Tools\ChainingAssertion.Unity.cs" />
-    <Compile Include="Assets\UnitTests\Tools\Container.cs" />
-    <Compile Include="Assets\UnitTests\Tools\Shim.cs" />
-    <Compile Include="Assets\UnitTests\Tools\TestUtil.cs" />
-    <Compile Include="Assets\UnitTests\UnitTests.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>UnitTests.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\UnitTests\UnitTests.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>UnitTests.cs</LastGenOutput>
-    </None>
     <None Include="Assets\UniRx\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
