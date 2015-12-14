@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UniRx.InternalUtil;
 
 namespace UniRx.Tests
 {
@@ -13,7 +12,7 @@ namespace UniRx.Tests
         [TestMethod]
         public void Enq()
         {
-            var q = new ThreadSafeQueueWorker();
+            var q = new UniRx.InternalUtil.ThreadSafeQueueWorker();
 
             var l = new List<int>();
             q.Enqueue(x => l.Add((int)x), 1);

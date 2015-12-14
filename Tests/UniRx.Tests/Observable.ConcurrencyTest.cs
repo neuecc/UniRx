@@ -40,9 +40,9 @@ namespace UniRx.Tests
             var xs = Observable.Return(10).Delay(TimeSpan.FromSeconds(1)).Concat(Observable.Range(1, 3));
 
             var xss = Observable.Return(10).Concat(Observable.Range(1, 3));
-            var a = xss.ToArray().Wait();
-            var b = xss.ToArray().Wait();
-            var c = xss.ToArray().Wait();
+            xss.ToArray().Wait();
+            xss.ToArray().Wait();
+            xss.ToArray().Wait();
 
 
             var ys = Observable.Return(30).Delay(TimeSpan.FromSeconds(2)).Concat(Observable.Range(5, 3));

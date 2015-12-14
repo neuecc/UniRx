@@ -57,12 +57,6 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -303,34 +297,25 @@
     <Compile Include="Assets\UniRx\Scripts\UnityEngineBridge\YieldInstructionCache.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityWinRTBridge\Thread.cs" />
     <Compile Include="Assets\UniRx\Scripts\UnityWinRTBridge\ThreadPoolScheduler_UnityWinRT.cs" />
-    <Compile Include="Assets\UnitTests\AggregateTest.cs" />
-    <Compile Include="Assets\UnitTests\ConversionTest.cs" />
-    <Compile Include="Assets\UnitTests\DisposableTest.cs" />
-    <Compile Include="Assets\UnitTests\DoTest.cs" />
-    <Compile Include="Assets\UnitTests\DurabilityTest.cs" />
-    <Compile Include="Assets\UnitTests\Observable.ConcatTest.cs" />
-    <Compile Include="Assets\UnitTests\Observable.ConcurrencyTest.cs" />
-    <Compile Include="Assets\UnitTests\Observable.ErrorHandlingTest.cs" />
-    <Compile Include="Assets\UnitTests\Observable.Events.cs" />
-    <Compile Include="Assets\UnitTests\Observable.GeneratorTest.cs" />
-    <Compile Include="Assets\UnitTests\Observable.PagingTest.cs" />
-    <Compile Include="Assets\UnitTests\Observable.TimeTest.cs" />
-    <Compile Include="Assets\UnitTests\ObservableTest.cs" />
-    <Compile Include="Assets\UnitTests\QueueWorkerTest.cs" />
-    <Compile Include="Assets\UnitTests\RangeTest.cs" />
-    <Compile Include="Assets\UnitTests\ReactriveDictionaryTest.cs" />
-    <Compile Include="Assets\UnitTests\SchedulerTest.cs" />
-    <Compile Include="Assets\UnitTests\SelectMany.cs" />
-    <Compile Include="Assets\UnitTests\SubjectTest.cs" />
-    <Compile Include="Assets\UnitTests\TakeTest.cs" />
-    <Compile Include="Assets\UnitTests\ToTest.cs" />
     <Compile Include="Assets\UnitTests\Tools\ChainingAssertion.Unity.cs" />
+    <Compile Include="Assets\UnitTests\Tools\Container.cs" />
     <Compile Include="Assets\UnitTests\Tools\Shim.cs" />
     <Compile Include="Assets\UnitTests\Tools\TestUtil.cs" />
-    <Compile Include="Assets\UnitTests\WhenAllTest.cs" />
+    <Compile Include="Assets\UnitTests\UnitTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UnitTests.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\UnitTests\UnitTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UnitTests.cs</LastGenOutput>
+    </None>
     <None Include="Assets\UniRx\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
