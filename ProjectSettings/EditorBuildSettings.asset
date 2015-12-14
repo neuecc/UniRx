@@ -7,9 +7,9 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 0
     path: Assets/Scenes/Clean.unity
-  - enabled: 0
-    path: Assets/Scenes/UnitAssertion.unity
   - enabled: 1
+    path: Assets/Scenes/UnitAssertion.unity
+  - enabled: 0
     path: Assets/Scenes/TestSandbox.unity
   - enabled: 0
     path: Assets/Scenes/LoadLevelTest.unity

@@ -423,7 +423,7 @@ PlayerSettings:
   - iOS::Architecture
   - iOS::EnableIncrementalBuildSupportForIl2cpp
   - iOS::ScriptingBackend
-  Android::ScriptingBackend: 0
+  Android::ScriptingBackend: 1
   Metro::ScriptingBackend: 2
   Standalone::ScriptingBackend: 0
   WP8::ScriptingBackend: 2
