@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\ObjectTest\Clicker.cs" />
+    <Compile Include="Assets\ObjectTest\CountOnly.cs" />
     <Compile Include="Assets\ObjectTest\DispatcherCullingTest.cs" />
     <Compile Include="Assets\ObjectTest\EditorBehaviourTest.cs" />
     <Compile Include="Assets\ObjectTest\GameObjectDisplacer.cs" />
