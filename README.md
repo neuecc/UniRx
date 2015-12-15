@@ -912,6 +912,14 @@ Windows Store/Phone App (NETFX_CORE)
 Some interfaces, such as  `UniRx.IObservable<T>` and `System.IObservable<T>`, cause conflicts when submitting to the Windows Store App.
 Therefore, when using NETFX_CORE, please refrain from using such constructs as `UniRx.IObservable<T>` and refer to the UniRx components by their short name, without adding the namespace. This solves the conflicts.
 
+DLL Separation
+---
+If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx.Library` and `UniRx.Library.Unity`. `UniRx.Library` can use both .NET 3.5 normal CLR application and Unity. `UniRx.Library.Unity` is for Unity project, you should define compile symbol like  `UniRxLibrary;UNITY;UNITY_5_3_0;UNITY_5_3;UNITY_5;UNITY_IPHONE;`. We can not provides binary because compile symbol is different each other.
+
+If needs `UniRx.Library` for minimal test, it avilable in NuGet.
+
+[Install-Package UniRx](https://www.nuget.org/packages/UniRx)
+
 Reference
 ---
 * [RxJava Wiki](https://github.com/Netflix/RxJava/wiki)

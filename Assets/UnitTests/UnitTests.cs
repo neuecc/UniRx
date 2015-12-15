@@ -6783,6 +6783,8 @@ namespace UniRx.Tests
         [TestMethod]
         public void Wait()
         {
+#if !UNITY_METRO
+
             var subject = new Subject<int>();
 
             ThreadPool.QueueUserWorkItem(_ =>
@@ -6793,6 +6795,8 @@ namespace UniRx.Tests
             });
 
             subject.Wait().Is(100);
+
+#endif
         }
 
 
@@ -6807,7 +6811,7 @@ namespace UniRx.Tests
                 int[] array = null;
                 subject.DistinctUntilChanged().ToArray().Subscribe(xs => array = xs);
 
-                Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5 }, subject.OnNext);
+                foreach (var item in new[] { 1, 10, 10, 1, 100, 100, 100, 5 }) { subject.OnNext(item); };
                 subject.OnCompleted();
 
                 array.IsCollection(1, 10, 1, 100, 5);
@@ -6829,7 +6833,7 @@ namespace UniRx.Tests
                 int[] array = null;
                 subject.DistinctUntilChanged(x => x, EqualityComparer<int>.Default).ToArray().Subscribe(xs => array = xs);
 
-                Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5 }, subject.OnNext);
+                foreach (var item in new[] { 1, 10, 10, 1, 100, 100, 100, 5 }) { subject.OnNext(item); };
                 subject.OnCompleted();
 
                 array.IsCollection(1, 10, 1, 100, 5);
@@ -6848,7 +6852,7 @@ namespace UniRx.Tests
                 int[] array = null;
                 subject.Distinct().ToArray().Subscribe(xs => array = xs);
 
-                Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5, 70, 7 }, subject.OnNext);
+                foreach (var item in new[] { 1, 10, 10, 1, 100, 100, 100, 5, 70, 7 }) { subject.OnNext(item); };
                 subject.OnCompleted();
 
                 array.IsCollection(1, 10, 100, 5, 70, 7);
@@ -6858,8 +6862,8 @@ namespace UniRx.Tests
 
                 int[] array = null;
                 subject.Distinct(x => x, EqualityComparer<int>.Default).ToArray().Subscribe(xs => array = xs);
-
-                Array.ForEach(new[] { 1, 10, 10, 1, 100, 100, 100, 5, 70, 7 }, subject.OnNext);
+                       
+                foreach (var item in new[] { 1, 10, 10, 1, 100, 100, 100, 5, 70, 7 }) { subject.OnNext(item); };
                 subject.OnCompleted();
 
                 array.IsCollection(1, 10, 100, 5, 70, 7);

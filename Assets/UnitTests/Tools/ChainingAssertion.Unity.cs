@@ -1,4 +1,5 @@
-﻿// modified for Unity
+﻿
+// modified for Unity
 
 using System;
 using System.Collections;
@@ -9,7 +10,7 @@ using System.Reflection;
 
 namespace Microsoft.VisualStudio.TestTools.UnitTesting
 {
-    #region Extensions
+#region Extensions
 
     [System.Diagnostics.DebuggerStepThroughAttribute]
     public static partial class AssertEx
@@ -17,7 +18,11 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
         /// <summary>Assert.AreEqual, if T is IEnumerable then CollectionAssert.AreEqual</summary>
         public static void Is<T>(this T actual, T expected, string message = "")
         {
-            if (typeof(T) != typeof(string) && typeof(IEnumerable).IsAssignableFrom(typeof(T)))
+            if (typeof(T) != typeof(string)
+#if !UNITY_METRO
+                && typeof(IEnumerable).IsAssignableFrom(typeof(T))
+#endif
+                )
             {
                 ((IEnumerable)actual).Cast<object>().Is(((IEnumerable)expected).Cast<object>(), message);
                 return;
@@ -59,7 +64,11 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
         /// <summary>Assert.AreNotEqual, if T is IEnumerable then CollectionAssert.AreNotEqual</summary>
         public static void IsNot<T>(this T actual, T notExpected, string message = "")
         {
-            if (typeof(T) != typeof(string) && typeof(IEnumerable).IsAssignableFrom(typeof(T)))
+            if (typeof(T) != typeof(string)
+#if !UNITY_METRO
+                && typeof(IEnumerable).IsAssignableFrom(typeof(T))
+#endif
+                )
             {
                 ((IEnumerable)actual).Cast<object>().IsNot(((IEnumerable)notExpected).Cast<object>(), message);
                 return;
@@ -153,11 +162,13 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
                 var formatted = headerMsg + " No exception was thrown" + additionalMsg;
                 Assert.Fail(formatted);
             }
+#if !UNITY_METRO
             else if (!typeof(T).IsInstanceOfType(exception))
             {
                 var formatted = string.Format("{0} Catched:{1}{2}", headerMsg, exception.GetType().Name, additionalMsg);
                 Assert.Fail(formatted);
             }
+#endif
 
             return (T)exception;
         }
@@ -221,34 +232,7 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
             }
         }
 
-        private class ReflectAccessor<T>
-        {
-            public Func<object> GetValue { get; private set; }
-            public Action<object> SetValue { get; private set; }
-
-            public ReflectAccessor(T target, string name)
-            {
-                var field = typeof(T).GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                if (field != null)
-                {
-                    GetValue = () => field.GetValue(target);
-                    SetValue = value => field.SetValue(target, value);
-                    return;
-                }
-
-                var prop = typeof(T).GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                if (prop != null)
-                {
-                    GetValue = () => prop.GetValue(target, null);
-                    SetValue = value => prop.SetValue(target, value, null);
-                    return;
-                }
-
-                throw new ArgumentException(string.Format("\"{0}\" not found : Type <{1}>", name, typeof(T).Name));
-            }
-        }
-
-        #region StructuralEqual
+#region StructuralEqual
 
         /// <summary>Assert by deep recursive value equality compare</summary>
         public static void IsStructuralEqual(this object actual, object expected, string message = "")
@@ -342,6 +326,7 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
 
         static EqualInfo StructuralEqual(object left, object right, IEnumerable<string> names)
         {
+#if !UNITY_METRO
             // type and basic checks
             if (object.ReferenceEquals(left, right)) return new EqualInfo { IsEquals = true, Left = left, Right = right, Names = names };
             if (left == null || right == null) return new EqualInfo { IsEquals = false, Left = left, Right = right, Names = names };
@@ -402,6 +387,9 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
             }
 
             return new EqualInfo { IsEquals = true, Left = left, Right = right, Names = names };
+#else
+            return null;
+#endif
         }
 
         private class EqualInfo
@@ -412,8 +400,9 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
             public IEnumerable<string> Names;
         }
 
-        #endregion
+#endregion
     }
 
-    #endregion
+#endregion
 }
+
