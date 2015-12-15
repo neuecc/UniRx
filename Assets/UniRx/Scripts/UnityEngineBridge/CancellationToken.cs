@@ -17,7 +17,7 @@ namespace UniRx
         {
             get
             {
-                return (source == null) ? true : source.IsDisposed;
+                return (source == null) ? false : source.IsDisposed;
             }
         }
 

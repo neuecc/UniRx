@@ -1,7 +1,10 @@
-﻿using System;
+﻿#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
+#define SupportCustomYieldInstruction
+#endif
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UniRx.Triggers;
 using UnityEngine;
 
@@ -31,6 +34,118 @@ namespace UniRx
                 case FrameCountType.Update:
                 default:
                     return null;
+            }
+        }
+    }
+
+    public class ObservableYieldInstruction<T> : IEnumerator<T>
+    {
+        readonly IDisposable subscription;
+        readonly bool reThrowOnError;
+        T current;
+        T result;
+        bool moveNext;
+        bool hasResult;
+        Exception error;
+
+        public ObservableYieldInstruction(IObservable<T> source, bool reThrowOnError)
+        {
+            this.moveNext = true;
+            this.reThrowOnError = reThrowOnError;
+            try
+            {
+                this.subscription = source.Subscribe(new ToYieldInstruction(this));
+            }
+            catch
+            {
+                moveNext = false;
+                throw;
+            }
+        }
+
+        public bool HasError
+        {
+            get { return error != null; }
+        }
+
+        public bool HasResult
+        {
+            get { return hasResult; }
+        }
+
+        public T Result
+        {
+            get { return result; }
+        }
+
+        T IEnumerator<T>.Current
+        {
+            get
+            {
+                return current;
+            }
+        }
+
+        object IEnumerator.Current
+        {
+            get
+            {
+                return current;
+            }
+        }
+
+        public Exception Error
+        {
+            get
+            {
+                return error;
+            }
+        }
+
+        bool IEnumerator.MoveNext()
+        {
+            return moveNext;
+        }
+
+        public void Dispose()
+        {
+            subscription.Dispose();
+        }
+
+        void IEnumerator.Reset()
+        {
+            throw new NotImplementedException();
+        }
+
+        class ToYieldInstruction : IObserver<T>
+        {
+            readonly ObservableYieldInstruction<T> parent;
+
+            public ToYieldInstruction(ObservableYieldInstruction<T> parent)
+            {
+                this.parent = parent;
+            }
+
+            public void OnNext(T value)
+            {
+                parent.current = value;
+            }
+
+            public void OnError(Exception error)
+            {
+                parent.moveNext = false;
+                parent.error = error;
+                if (parent.reThrowOnError)
+                {
+                    throw error;
+                }
+            }
+
+            public void OnCompleted()
+            {
+                parent.moveNext = false;
+                parent.hasResult = true;
+                parent.result = parent.current;
             }
         }
     }
@@ -166,6 +281,12 @@ namespace UniRx
                     {
                         yield return current;
                     }
+#if SupportCustomYieldInstruction
+                    else if (current is IEnumerator)
+                    {
+                        yield return current;
+                    }
+#endif
                     else if (current == null && nullAsNextUpdate)
                     {
                         yield return null;
@@ -424,50 +545,60 @@ namespace UniRx
 
         #endregion
 
-        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
+#if SupportCustomYieldInstruction
+
+        /// <summary>
+        /// Convert to yieldable IEnumerator. e.g. yield return source.ToYieldInstruction();.
+        /// If needs last result, you can take ObservableYieldInstruction.HasResult/Result property.
+        /// If throwOnError = false, you can take ObservableYieldInstruction.HasError/Error property.
+        /// </summary>
+        public static ObservableYieldInstruction<T> ToYieldInstruction<T>(this IObservable<T> source, bool throwOnError = true)
+        {
+            return new ObservableYieldInstruction<T>(source, throwOnError);
+        }
+
+#endif
+
+        /// <summary>Convert to awaitable IEnumerator.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, CancellationToken cancel = default(CancellationToken))
         {
             return ToAwaitableEnumerator<T>(source, Stubs.Ignore<T>, Stubs.Throw, cancel);
         }
 
-        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
+        /// <summary>Convert to awaitable IEnumerator.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onResult, CancellationToken cancel = default(CancellationToken))
         {
             return ToAwaitableEnumerator<T>(source, onResult, Stubs.Throw, cancel);
         }
 
-        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
+        /// <summary>Convert to awaitable IEnumerator.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
         {
             return ToAwaitableEnumerator<T>(source, Stubs.Ignore<T>, onError, cancel);
         }
 
-        /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
+        /// <summary>Convert to awaitable IEnumerator.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onResult, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
         {
-            var running = true;
-
-            var subscription = source
-                .LastOrDefault()
-                .ObserveOnMainThread()
-                .SubscribeOnMainThread()
-                .Finally(() =>
-                {
-                    running = false;
-                })
-                .Subscribe(t =>
-                {
-                    onResult(t);
-                }, onError, () => { });
-
-            while (running && !cancel.IsCancellationRequested)
+            var enumerator = new ObservableYieldInstruction<T>(source, false);
+            var e = (IEnumerator<T>)enumerator;
+            while (e.MoveNext() && !cancel.IsCancellationRequested)
             {
                 yield return null;
             }
 
             if (cancel.IsCancellationRequested)
             {
-                subscription.Dispose();
+                enumerator.Dispose();
+            }
+
+            if (enumerator.HasResult)
+            {
+                onResult(enumerator.Result);
+            }
+            else if (enumerator.HasError)
+            {
+                onError(enumerator.Error);
             }
         }
 
@@ -566,6 +697,7 @@ namespace UniRx
             return new UniRx.Operators.RepeatUntilObservable<T>(sources, trigger, lifeTimeChecker);
         }
 
+
 #if UniRxLibrary
 
         static IEnumerable<IObservable<T>> RepeatInfinite<T>(IObservable<T> source)
@@ -575,25 +707,23 @@ namespace UniRx
                 yield return source;
             }
         }
+
+        internal static class Stubs
+        {
+            public static readonly Action Nop = () => { };
+            public static readonly Action<Exception> Throw = ex => { throw ex; };
+
+            // Stubs<T>.Ignore can't avoid iOS AOT problem.
+            public static void Ignore<T>(T t)
+            {
+            }
+
+            // marker for CatchIgnore and Catch avoid iOS AOT problem.
+            public static IObservable<TSource> CatchIgnore<TSource>(Exception ex)
+            {
+                return Observable.Empty<TSource>();
+            }
+        }
 #endif
     }
-
-#if UniRxLibrary
-    internal static class Stubs
-    {
-        public static readonly Action Nop = () => { };
-        public static readonly Action<Exception> Throw = ex => { throw ex; };
-
-        // Stubs<T>.Ignore can't avoid iOS AOT problem.
-        public static void Ignore<T>(T t)
-        {
-        }
-
-        // marker for CatchIgnore and Catch avoid iOS AOT problem.
-        public static IObservable<TSource> CatchIgnore<TSource>(Exception ex)
-        {
-            return Observable.Empty<TSource>();
-        }
-    }
-#endif
 }

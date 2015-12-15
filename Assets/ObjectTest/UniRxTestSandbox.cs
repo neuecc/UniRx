@@ -186,10 +186,81 @@ namespace UniRx.ObjectTest
     {
     }
 
+#if UNITY_5_3
+
+    public class CustomYield : CustomYieldInstruction
+    {
+        public override bool keepWaiting
+        {
+            get
+            {
+                Debug.Log("FromCustomYield:" + Time.frameCount);
+                return (Time.frameCount >= 300) ? false : true;
+            }
+        }
+    }
+
+    public class TadanoIEnumerator : IEnumerator
+    {
+        public object Current
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        public bool MoveNext()
+        {
+            Debug.Log("TadanoIEnumerator:" + Time.frameCount);
+            return (Time.frameCount >= 300) ? false : true;
+        }
+
+        public void Reset()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+#endif
+
+
     // test sandbox
     [Serializable]
     public class UniRxTestSandbox : MonoBehaviour
     {
+#if UNITY_5_3
+
+        static IEnumerator Enumerate<T>(IObservable<T> source)
+        {
+            Debug.Log("Start:" + Time.frameCount);
+
+            var yi = source.ToYieldInstruction(false);
+            yield return yi;
+            if (yi.HasError)
+            {
+                Debug.Log(yi.Error);
+            }
+            else
+            {
+                Debug.Log(yi.Result);
+            }
+
+            Debug.Log("End:" + Time.frameCount);
+        }
+
+
+        static IEnumerator TestCoroutine()
+        {
+            Observable.Range(1, 10).ToYieldInstruction();
+
+            yield return ObservableWWW.GetWWW("http://unity3d.com/").ToYieldInstruction();
+
+        }
+
+#endif
+
+
         readonly static UniRx.Diagnostics.Logger logger = new UniRx.Diagnostics.Logger("UniRx.Test.NewBehaviour");
 
         // public UnityEvent<int> SimpleEvent;
@@ -308,8 +379,17 @@ namespace UniRx.ObjectTest
 
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Count?"))
             {
-                logger.Debug(only.text.text);
-                only.Update();
+
+#if UNITY_5_3
+
+                StartCoroutine(Enumerate(Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.MainThread)
+                    .Take(2)
+                    .Concat(Observable.Throw<long>(new Exception("hoge"))).Select(x => 1000)));
+
+#endif
+
+
+
             }
             ypos += 100;
 
