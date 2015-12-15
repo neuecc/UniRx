@@ -63,7 +63,7 @@ Network operations
 Use ObservableWWW for asynchronous network operations. Its Get/Post functions return subscribable IObservables:
 
 ```csharp
-ObservableWWW.Get("http://google.co.jp/")
+ObservableWWW.Get("http://www.google.co.jp/")
     .Subscribe(
         x => Debug.Log(x.Substring(0, 100)), // onSuccess
         ex => Debug.LogException(ex)); // onError
@@ -73,7 +73,7 @@ Rx is composable and cancelable. You can also query with LINQ expressions:
 
 ```csharp
 // composing asynchronous sequence with LINQ query expressions
-var query = from google in ObservableWWW.Get("http://google.com/")
+var query = from google in ObservableWWW.Get("http://www.google.com/")
             from bing in ObservableWWW.Get("http://bing.com/")
             from unknown in ObservableWWW.Get(google + bing)
             select new { google, bing, unknown };
@@ -914,7 +914,7 @@ Therefore, when using NETFX_CORE, please refrain from using such constructs as `
 
 Reference
 ---
-* [RxJava Wiki](https://github.com/Netflix/RxJava/wiki)
+* [RxJava Wiki](https://github.com/ReactiveX/RxJava/wiki)
  
 This wiki is a great way for learn Rx. All operators are illustrated with graphical marble diagrams, which makes them easy to understand.
 
@@ -930,7 +930,7 @@ A great online tutorial and eBook.
 
 The original project home page.
 
-* [Beginner's Guide to the Reactive Extensions](http://msdn.microsoft.com/en-us/data/gg577611)
+* [Beginner's Guide to the Reactive Extensions](https://msdn.microsoft.com/en-us/data/gg577611)
 
 Many videos, slides and documents.
 
