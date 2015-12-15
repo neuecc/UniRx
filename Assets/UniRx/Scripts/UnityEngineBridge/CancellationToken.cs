@@ -6,7 +6,7 @@ namespace UniRx
     {
         readonly ICancelable source;
 
-        public static CancellationToken Empty = new CancellationToken(null);
+        public static readonly CancellationToken Empty = new CancellationToken(null);
 
         public CancellationToken(ICancelable source)
         {
