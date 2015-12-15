@@ -114,7 +114,7 @@ namespace UniRx
 
         void IEnumerator.Reset()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         class ToYieldInstruction : IObserver<T>

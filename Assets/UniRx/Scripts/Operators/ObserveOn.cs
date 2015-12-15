@@ -159,6 +159,16 @@ namespace UniRx.Operators
                 base.observer.OnNext(value);
             }
 
+            void OnError_(Exception error)
+            {
+                try { observer.OnError(error); } finally { Dispose(); };
+            }
+
+            void OnCompleted_(Unit _)
+            {
+                try { observer.OnCompleted(); } finally { Dispose(); };
+            }
+
             public override void OnNext(T value)
             {
                 scheduler.ScheduleQueueing(isDisposed, value, onNext);
@@ -166,12 +176,12 @@ namespace UniRx.Operators
 
             public override void OnError(Exception error)
             {
-                try { observer.OnError(error); } finally { Dispose(); };
+                scheduler.ScheduleQueueing(isDisposed, error, OnError_);
             }
 
             public override void OnCompleted()
             {
-                try { observer.OnCompleted(); } finally { Dispose(); };
+                scheduler.ScheduleQueueing(isDisposed, Unit.Default, OnCompleted_);
             }
         }
     }

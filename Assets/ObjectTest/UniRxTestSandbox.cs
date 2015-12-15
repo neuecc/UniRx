@@ -250,12 +250,23 @@ namespace UniRx.ObjectTest
         }
 
 
-        static IEnumerator TestCoroutine()
+        IEnumerator TestNewCustomYieldInstruction()
         {
-            Observable.Range(1, 10).ToYieldInstruction();
+            // wait Rx Observable.
+            yield return Observable.Timer(TimeSpan.FromSeconds(1)).ToYieldInstruction();
 
-            yield return ObservableWWW.GetWWW("http://unity3d.com/").ToYieldInstruction();
+            // you can change the scheduler(this is ignore Time.scale)
+            yield return Observable.Timer(TimeSpan.FromSeconds(1), Scheduler.MainThreadIgnoreTimeScale).ToYieldInstruction();
 
+            // get return value from ObservableYieldInstruction
+            var o = ObservableWWW.Get("http://unity3d.com/").ToYieldInstruction(throwOnError: false);
+            yield return o;
+
+            if (o.HasError) { Debug.Log(o.Error.ToString()); }
+            if (o.HasResult) { Debug.Log(o.Result); }
+
+            // other sample(wait until transform.position.y >= 100) 
+            yield return this.ObserveEveryValueChanged(x => x.transform).FirstOrDefault(x => x.position.y >= 100).ToYieldInstruction();
         }
 
 #endif
@@ -322,16 +333,16 @@ namespace UniRx.ObjectTest
         {
             MainThreadDispatcher.Initialize();
 
-            LogHelper.LogCallbackAsObservable()
-                .ObserveOnMainThread()
-                .Where(x => x.LogType == LogType.Exception)
-                .Subscribe(x => logtext.AppendLine(x.ToString()));
+            //LogHelper.LogCallbackAsObservable()
+            //    .ObserveOnMainThread()
+            //    .Where(x => x.LogType == LogType.Exception)
+            //    .Subscribe(x => logtext.AppendLine(x.ToString()));
 
-            ObservableLogger.Listener.LogToUnityDebug();
-            ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
-            {
-                logtext.AppendLine(x.Message);
-            });
+            //ObservableLogger.Listener.LogToUnityDebug();
+            //ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
+            //{
+            //    logtext.AppendLine(x.Message);
+            //});
         }
 
         CompositeDisposable disposables = new CompositeDisposable();
@@ -371,9 +382,14 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "TimeScale"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Go"))
             {
-                logger.Log(Time.timeScale);
+                Observable.Range(1, 10)
+                    .ObserveOn(Scheduler.MainThread)
+                    .Subscribe(x =>
+                    {
+                        Debug.Log(x);
+                    });
             }
             ypos += 100;
 
@@ -382,14 +398,9 @@ namespace UniRx.ObjectTest
 
 #if UNITY_5_3
 
-                StartCoroutine(Enumerate(Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.MainThread)
-                    .Take(2)
-                    .Concat(Observable.Throw<long>(new Exception("hoge"))).Select(x => 1000)));
+                StartCoroutine(TestNewCustomYieldInstruction());
 
 #endif
-
-
-
             }
             ypos += 100;
 
