@@ -2,16 +2,14 @@
 
 namespace UniRx
 {
-    public class CancellationToken
+    public struct CancellationToken
     {
         readonly ICancelable source;
 
-        public static CancellationToken Empty = new CancellationToken(new BooleanDisposable());
+        public static CancellationToken Empty = new CancellationToken(null);
 
         public CancellationToken(ICancelable source)
         {
-            if (source == null) throw new ArgumentNullException("source");
-
             this.source = source;
         }
 
@@ -19,7 +17,7 @@ namespace UniRx
         {
             get
             {
-                return source.IsDisposed;
+                return (source == null) ? true : source.IsDisposed;
             }
         }
 

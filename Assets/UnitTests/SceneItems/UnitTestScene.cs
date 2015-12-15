@@ -47,10 +47,10 @@ namespace UniRx.Tests
 
         public void OnGUI()
         {
-            if (GUI.Button(new Rect(0, 0, 100, 100), (counter++).ToString()))
-            {
+            //if (GUI.Button(new Rect(0, 0, 100, 100), (counter++).ToString()))
+            //{
 
-            }
+            //}
         }
 
         public void Update()

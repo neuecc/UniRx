@@ -445,7 +445,6 @@ namespace UniRx
         /// <summary>Convert to awaitable IEnumerator. It's run on MainThread.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onResult, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
         {
-            if (cancel == null) cancel = CancellationToken.Empty;
             var running = true;
 
             var subscription = source
