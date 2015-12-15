@@ -39,7 +39,7 @@ namespace UniRx.Operators
             {
                 isDisposed = false;
                 isRunNext = false;
-                e = parent.sources.AsSafeEnumerable().GetEnumerator();
+                e = parent.sources.GetEnumerator();
                 subscription = new SerialDisposable();
 
                 var schedule = Scheduler.DefaultSchedulers.TailRecursion.Schedule(RecursiveRun);

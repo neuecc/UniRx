@@ -49,7 +49,7 @@ namespace UniRx.Operators
                 isFirstSubscribe = true;
                 isDisposed = false;
                 isStopped = false;
-                e = parent.sources.AsSafeEnumerable().GetEnumerator();
+                e = parent.sources.GetEnumerator();
                 subscription = new SerialDisposable();
                 schedule = new SingleAssignmentDisposable();
 

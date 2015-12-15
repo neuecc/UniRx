@@ -309,7 +309,7 @@ namespace UniRx.Operators
                     return;
                 }
 
-                var e = nextEnumerable.AsSafeEnumerable().GetEnumerator();
+                var e = nextEnumerable.GetEnumerator();
                 try
                 {
                     var hasNext = true;
@@ -386,7 +386,7 @@ namespace UniRx.Operators
                     return;
                 }
 
-                var e = nextEnumerable.AsSafeEnumerable().GetEnumerator();
+                var e = nextEnumerable.GetEnumerator();
                 try
                 {
                     var hasNext = true;
@@ -779,7 +779,7 @@ namespace UniRx.Operators
                     return;
                 }
 
-                var e = nextEnumerable.AsSafeEnumerable().GetEnumerator();
+                var e = nextEnumerable.GetEnumerator();
                 try
                 {
                     var hasNext = true;
@@ -857,7 +857,7 @@ namespace UniRx.Operators
                     return;
                 }
 
-                var e = nextEnumerable.AsSafeEnumerable().GetEnumerator();
+                var e = nextEnumerable.GetEnumerator();
                 try
                 {
                     var sequenceI = 0;

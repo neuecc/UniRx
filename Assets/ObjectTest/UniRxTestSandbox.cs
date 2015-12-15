@@ -365,6 +365,22 @@ namespace UniRx.ObjectTest
             }
         }
 
+        IEnumerator GetResult()
+        {
+            long xxx = -1;
+            yield return Observable.Timer(TimeSpan.FromSeconds(1)).Select(x => 999).StartAsCoroutine(x =>
+            {
+                xxx = x;
+            });
+
+            Debug.Log(xxx);
+
+            //var yi = Observable.Timer(TimeSpan.FromSeconds(1)).Select(x => 999).ToYieldInstruction();
+            //yield return yi;
+
+            //Debug.Log(yi.Result);
+        }
+
 
         Subject<long> subj;
         object gate = new object();
@@ -398,7 +414,9 @@ namespace UniRx.ObjectTest
 
 #if UNITY_5_3
 
-                StartCoroutine(TestNewCustomYieldInstruction());
+                StartCoroutine(GetResult());
+
+
 
 #endif
             }

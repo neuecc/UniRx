@@ -56,7 +56,7 @@ namespace UniRx.Operators
             public IDisposable Run()
             {
                 isDisposed = false;
-                e = parent.sources.AsSafeEnumerable().GetEnumerator();
+                e = parent.sources.GetEnumerator();
                 subscription = new SerialDisposable();
 
                 var schedule = Scheduler.DefaultSchedulers.TailRecursion.Schedule(RecursiveRun);
