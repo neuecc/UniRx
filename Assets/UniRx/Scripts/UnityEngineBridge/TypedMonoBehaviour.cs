@@ -8,6 +8,7 @@ namespace UniRx
     /// <para>I recommend use ObservableTriggers(UniRx.Triggers) instead.</para>
     /// <para>More information, see github page.</para>
     /// </summary>
+    [System.Obsolete("TypedMonoBehaviour is legacy component. use triggers instead")]
     public class TypedMonoBehaviour : MonoBehaviour
     {
         /// <summary>Awake is called when the script instance is being loaded.</summary>

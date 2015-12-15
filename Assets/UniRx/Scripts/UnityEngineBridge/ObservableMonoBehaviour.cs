@@ -3,15 +3,13 @@ using UnityEngine;
 
 namespace UniRx
 {
-    // not yet obsolete
-    // [Obsolete("ObservableMonoBehaviour is legacy component. use triggres instead")]
-
     /// <summary>
     /// <para>Note: TypedMonoBehaviour and ObservableMonoBehaviour cause some performance issues.</para>
     /// <para>This is legacy interface.</para>
     /// <para>I recommend use ObservableTriggers(UniRx.Triggers) instead.</para>
     /// <para>More information, see github page.</para>
     /// </summary>
+    [Obsolete("ObservableMonoBehaviour is legacy component. use triggers instead")]
     public class ObservableMonoBehaviour : TypedMonoBehaviour
     {
         bool calledAwake = false;
