@@ -550,9 +550,19 @@ namespace UniRx
         /// <summary>
         /// Convert to yieldable IEnumerator. e.g. yield return source.ToYieldInstruction();.
         /// If needs last result, you can take ObservableYieldInstruction.HasResult/Result property.
+        /// This overload throws exception if received OnError events(same as coroutine).
+        /// </summary>
+        public static ObservableYieldInstruction<T> ToYieldInstruction<T>(this IObservable<T> source)
+        {
+            return new ObservableYieldInstruction<T>(source, true);
+        }
+
+        /// <summary>
+        /// Convert to yieldable IEnumerator. e.g. yield return source.ToYieldInstruction();.
+        /// If needs last result, you can take ObservableYieldInstruction.HasResult/Result property.
         /// If throwOnError = false, you can take ObservableYieldInstruction.HasError/Error property.
         /// </summary>
-        public static ObservableYieldInstruction<T> ToYieldInstruction<T>(this IObservable<T> source, bool throwOnError = true)
+        public static ObservableYieldInstruction<T> ToYieldInstruction<T>(this IObservable<T> source, bool throwOnError)
         {
             return new ObservableYieldInstruction<T>(source, throwOnError);
         }
