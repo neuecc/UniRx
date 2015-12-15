@@ -37,5 +37,32 @@ namespace UniRx.Examples
 
             Debug.Log(task.Result); // or task.Exception
         }
+
+        // Note:ToAwaitableEnumerator/StartAsCoroutine/LazyTask are obsolete way on Unity 5.3
+        // You can use ToYieldInstruction.
+
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
+
+        IEnumerator TestNewCustomYieldInstruction()
+        {
+            // wait Rx Observable.
+            yield return Observable.Timer(TimeSpan.FromSeconds(1)).ToYieldInstruction();
+
+            // you can change the scheduler(this is ignore Time.scale)
+            yield return Observable.Timer(TimeSpan.FromSeconds(1), Scheduler.MainThreadIgnoreTimeScale).ToYieldInstruction();
+
+            // get return value from ObservableYieldInstruction
+            var o = ObservableWWW.Get("http://unity3d.com/").ToYieldInstruction(throwOnError: false);
+            yield return o;
+
+            if (o.HasError) { Debug.Log(o.Error.ToString()); }
+            if (o.HasResult) { Debug.Log(o.Result); }
+
+            // other sample(wait until transform.position.y >= 100) 
+            yield return this.ObserveEveryValueChanged(x => x.transform).FirstOrDefault(x => x.position.y >= 100).ToYieldInstruction();
+        }
+
+#endif
+
     }
 }

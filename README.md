@@ -6,7 +6,7 @@ Created by Yoshifumi Kawai(neuecc)
 
 What is UniRx?
 ---
-UniRx (Reactive Extensions for Unity) is a reimplementation of the .NET Reactive Extensions. The Official Rx implementation is great but doesn't work on Unity and has issues with iOS AOT compatibility. This library fixes those issues and adds some specific utilities for Unity. Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc and the library is fully supported on both Unity 5 and 4.6.   
+UniRx (Reactive Extensions for Unity) is a reimplementation of the .NET Reactive Extensions. The Official Rx implementation is great but doesn't work on Unity and has issues with iOS AOT/IL2CPP compatibility. This library fixes those issues and adds some specific utilities for Unity. Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc and the library is fully supported on both Unity 5 and 4.6.   
 
 UniRx is available on the Unity Asset Store (FREE) - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
 
@@ -105,7 +105,7 @@ parallel.Subscribe(xs =>
 Progress information is available:
 
 ```csharp
-// notifier for progress
+// notifier for progress use ScheudledNotifier or new Progress<float>(/* action */)
 var progressNotifier = new ScheduledNotifier<float>();
 progressNotifier.Subscribe(x => Debug.Log(x)); // write www.progress
 
@@ -169,6 +169,28 @@ var cancel = Observable.FromCoroutine(AsyncA)
 cancel.Dispose();
 ```
 
+If in Unity 5.3, you can use ToYieldInstruction for Observable to Coroutine.
+
+```csharp
+IEnumerator TestNewCustomYieldInstruction()
+{
+    // wait Rx Observable.
+    yield return Observable.Timer(TimeSpan.FromSeconds(1)).ToYieldInstruction();
+
+    // you can change the scheduler(this is ignore Time.scale)
+    yield return Observable.Timer(TimeSpan.FromSeconds(1), Scheduler.MainThreadIgnoreTimeScale).ToYieldInstruction();
+
+    // get return value from ObservableYieldInstruction
+    var o = ObservableWWW.Get("http://unity3d.com/").ToYieldInstruction(throwOnError: false);
+    yield return o;
+
+    if (o.HasError) { Debug.Log(o.Error.ToString()); }
+    if (o.HasResult) { Debug.Log(o.Result); }
+
+    // other sample(wait until transform.position.y >= 100) 
+    yield return this.ObserveEveryValueChanged(x => x.transform).FirstOrDefault(x => x.position.y >= 100).ToYieldInstruction();
+}
+```
 Normally, we have to use callbacks when we require a coroutine to return a value. Observable.FromCoroutine can convert coroutines to cancellable IObservable[T] instead.
 
 ```csharp
@@ -439,7 +461,7 @@ public class DangerousDragAndDrop : MonoBehaviour
 
 UniRx provides an additional safe Repeat method. `RepeatSafe`: if contiguous "OnComplete" are called repeat stops. `RepeatUntilDestroy(gameObject/component)`, `RepeatUntilDisable(gameObject/component)` allows to stop when a target GameObject has been destroyed:
 
-```
+```csharp
 this.gameObject.OnMouseDownAsObservable()
     .SelectMany(_ => this.gameObject.UpdateAsObservable())
     .TakeUntil(this.gameObject.OnMouseUpAsObservable())
@@ -447,6 +469,22 @@ this.gameObject.OnMouseDownAsObservable()
     .RepeatUntilDestroy(this) // safety way
     .Subscribe(x => Debug.Log(x));            
 ```
+
+UniRx gurantees hot observable(FromEvent/Subject/FromCoroutine/UnityUI.AsObservable..., there are like event) have unhandled exception durability. What is it? If subscribe in subcribe, does not detach event.
+
+```csharp
+button.OnClickAsObservable().Subscribe(_ =>
+{
+    // If throws error in inner subscribe, but doesn't detached OnClick event.
+    ObservableWWW.Get("htttp://error/").Subscribe(x =>
+    {
+        Debug.Log(x);
+    });
+});
+```
+
+This behaviour is sometimes useful such as user event handling.
+
 
 All class instances provide an `ObserveEveryValueChanged` method, which watches for changing values every frame:
 
@@ -617,7 +655,7 @@ void Start()
     MyToggle.OnValueChangedAsObservable().SubscribeToInteractable(MyButton);
     
     // Input is displayed after a 1 second delay
-    MyInput.OnValueChangeAsObservable()
+    MyInput.OnValueChangedAsObservable()
         .Where(x => x != null)
         .Delay(TimeSpan.FromSeconds(1))
         .SubscribeToText(MyText); // SubscribeToText is helper for subscribe to text
@@ -868,23 +906,6 @@ Samples
 See [UniRx/Examples](https://github.com/neuecc/UniRx/tree/master/Assets/UniRx/Examples)  
 
 The samples demonstrate how to do resource management (Sample09_EventHandling), what is the MainThreadDispatcher, among other things.
-
-iOS AOT
----
-UniRx provides AotSafe utilities:
-
-```csharp
-// create safety iterator
-Enumerable.Range(1, 10).AsSafeEnumerable().ToArray();
-
-// Wrap elements in a class
-Enumerable.Range(1, 10).WrapValueToClass(); // IEnumerable<Tuple<int>>
-Observable.Range(1, 10).WrapValueToClass(); // IObservable<Tuple<int>>
-```
-
-Please see [AOT Exception Patterns and Hacks](https://github.com/neuecc/UniRx/wiki/AOT-Exception-Patterns-and-Hacks).
-
-If you encounter the [Ran out of trampolines of type 2](http://developer.xamarin.com/guides/ios/troubleshooting/troubleshooting/) error, set the AOT compilation option `nimt-trampolines=2048`. If you encounter the Ran out of trampolines of type 0 error, set the AOT compilation options `ntrampolines=2048` as well. I recommend setting both when using UniRx.
 
 Windows Store/Phone App (NETFX_CORE)
 ---
