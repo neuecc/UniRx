@@ -188,7 +188,7 @@ IEnumerator TestNewCustomYieldInstruction()
     if (o.HasResult) { Debug.Log(o.Result); }
 
     // other sample(wait until transform.position.y >= 100) 
-    yield return this.ObserveEveryValueChanged(x => x.transform).FirstOrDefault(x => x.position.y >= 100).ToYieldInstruction();
+    yield return this.transform.ObserveEveryValueChanged(x => x.position).FirstOrDefault(p => p.y >= 100).ToYieldInstruction();
 }
 ```
 Normally, we have to use callbacks when we require a coroutine to return a value. Observable.FromCoroutine can convert coroutines to cancellable IObservable[T] instead.
@@ -914,7 +914,7 @@ Therefore, when using NETFX_CORE, please refrain from using such constructs as `
 
 DLL Separation
 ---
-If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx.Library` and `UniRx.Library.Unity`. `UniRx.Library` can use both .NET 3.5 normal CLR application and Unity. `UniRx.Library.Unity` is for Unity project, you should define compile symbol like  `UniRxLibrary;UNITY;UNITY_5_3_0;UNITY_5_3;UNITY_5;UNITY_IPHONE;`. We can not provides binary because compile symbol is different each other.
+If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx.Library` and `UniRx.Library.Unity`. `UniRx.Library` can use both .NET 3.5 normal CLR application and Unity. `UniRx.Library.Unity` is for Unity project. You should define compile symbol like  `UniRxLibrary;UNITY;UNITY_5_3_0;UNITY_5_3;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol to `UniRx.Library`, `UniRx.Library.Unity`. We can not provides binary because compile symbol is different each other.
 
 If needs `UniRx.Library` for minimal test, it avilable in NuGet.
 
