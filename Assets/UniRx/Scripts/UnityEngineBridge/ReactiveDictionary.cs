@@ -58,13 +58,23 @@ namespace UniRx
         }
     }
 
-    public interface IReactiveDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+    // IReadOnlyDictionary is from .NET 4.5
+    public interface IReadOnlyReactiveDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
+        int Count { get; }
+        TValue this[TKey index] { get; set; }
+        bool ContainsKey(TKey key);
+        bool TryGetValue(TKey key, out TValue value);
+
         IObservable<DictionaryAddEvent<TKey, TValue>> ObserveAdd();
         IObservable<int> ObserveCountChanged();
         IObservable<DictionaryRemoveEvent<TKey, TValue>> ObserveRemove();
         IObservable<DictionaryReplaceEvent<TKey, TValue>> ObserveReplace();
         IObservable<Unit> ObserveReset();
+    }
+
+    public interface IReactiveDictionary<TKey, TValue> : IReadOnlyReactiveDictionary<TKey, TValue>, IDictionary<TKey, TValue>
+    {
     }
 
     [Serializable]

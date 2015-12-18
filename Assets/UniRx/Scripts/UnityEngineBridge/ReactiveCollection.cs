@@ -53,7 +53,7 @@ namespace UniRx
 
         public override string ToString()
         {
-            return string.Format("OldIndex:{0} NewIndex:{1} Value:{2}", OldIndex,NewIndex, Value);
+            return string.Format("OldIndex:{0} NewIndex:{1} Value:{2}", OldIndex, NewIndex, Value);
         }
     }
 
@@ -76,15 +76,22 @@ namespace UniRx
         }
     }
 
-    public interface IReactiveCollection<T> : IList<T>
+    // IReadOnlyList<out T> is from .NET 4.5
+    public interface IReadOnlyReactiveCollection<T> : IEnumerable<T>
     {
-        void Move(int oldIndex, int newIndex);
+        int Count { get; }
+        T this[int index] { get; set; }
         IObservable<CollectionAddEvent<T>> ObserveAdd();
         IObservable<int> ObserveCountChanged(bool notifyCurrentCount = false);
         IObservable<CollectionMoveEvent<T>> ObserveMove();
         IObservable<CollectionRemoveEvent<T>> ObserveRemove();
         IObservable<CollectionReplaceEvent<T>> ObserveReplace();
         IObservable<Unit> ObserveReset();
+    }
+
+    public interface IReactiveCollection<T> : IList<T>, IReadOnlyReactiveCollection<T>
+    {
+        void Move(int oldIndex, int newIndex);
     }
 
     [Serializable]

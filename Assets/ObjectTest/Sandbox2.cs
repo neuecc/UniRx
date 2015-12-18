@@ -43,23 +43,27 @@ public class Sandbox2 : MonoBehaviour
 
     void Start()
     {
-        
+
         button.OnClickAsObservable().Subscribe(_ =>
         {
-            //if (clickCount++ == 0)
-            //{
-            //    ao = SceneManager.LoadSceneAsync("TestSandbox");
-            //    // Debug.Log(ao.allowSceneActivation);
-            //    ao.allowSceneActivation = false;
-            //    ao.AsAsyncOperationObservable(new Progress<float>(x =>
-            //    {
-            //        Debug.Log(x);
-            //    })).Subscribe();
-            //}
-            //else
-            //{
-            //    ao.allowSceneActivation = true;
-            //}
+
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+            cube.UpdateAsObservable()
+                .SampleFrame(30)
+                .TakeUntilDestroy(cube) // add line.
+                .Subscribe(
+                    __ =>
+                    {
+                        var p = cube.transform.position;
+                        cube.transform.position = new Vector3(p.x + 0.4f, p.y, p.z);
+                    },
+                    e => Debug.LogError("Error! " + e),
+                    () => Debug.Log("Completed!"));
+
+            GameObject.Destroy(cube, 3f);
+
+            Debug.Log(cube);
         });
     }
-}
+} 
