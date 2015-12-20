@@ -470,7 +470,7 @@ this.gameObject.OnMouseDownAsObservable()
     .Subscribe(x => Debug.Log(x));            
 ```
 
-UniRx gurantees hot observable(FromEvent/Subject/FromCoroutine/UnityUI.AsObservable..., there are like event) have unhandled exception durability. What is it? If subscribe in subcribe, does not detach event.
+UniRx gurantees hot observable(FromEvent/Subject/ReactiveProperty/UnityUI.AsObservable..., there are like event) have unhandled exception durability. What is it? If subscribe in subcribe, does not detach event.
 
 ```csharp
 button.OnClickAsObservable().Subscribe(_ =>
