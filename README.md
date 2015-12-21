@@ -963,10 +963,10 @@ Author's other Unity + LINQ Assets
 
 Author Info
 ---
-Yoshifumi Kawai(a.k.a. neuecc) is a software developer in Japan.
-He is the Director/CTO at Grani, Inc.
-Grani is a top social game developer in Japan. 
-He was awarded Microsoft MVP for Visual C# in 2011.
+Yoshifumi Kawai(a.k.a. neuecc) is a software developer in Japan.  
+He is the Director/CTO at Grani, Inc.  
+Grani is a top social game developer in Japan.  
+He is awarding Microsoft MVP for Visual C# since 2011.  
 He is known as the creator of [linq.js](http://linqjs.codeplex.com/)(LINQ to Objects for JavaScript)
 
 Blog: http://neue.cc/ (Japanese)  
