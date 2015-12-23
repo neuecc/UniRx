@@ -36,7 +36,7 @@ namespace UniRx
 
         static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
-            var comparer = EqualityComparer<TProperty>.Default;
+            var comparer = UnityEqualityComparer.GetDefault<TProperty>();
 
             var isFirst = true;
             var currentValue = default(TProperty);
@@ -82,7 +82,7 @@ namespace UniRx
 
         static IEnumerator PublishUnityObjectValueChanged<TSource, TProperty>(UnityEngine.Object unityObject, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
-            var comparer = EqualityComparer<TProperty>.Default;
+            var comparer = UnityEqualityComparer.GetDefault<TProperty>();
 
             var isFirst = true;
             var currentValue = default(TProperty);

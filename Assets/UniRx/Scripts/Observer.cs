@@ -227,7 +227,7 @@ namespace UniRx
     {
         public static IDisposable Subscribe<T>(this IObservable<T> source)
         {
-            return source.Subscribe(Observer.CreateSubscribeObserver<T>(Stubs.Ignore<T>, Stubs.Throw, Stubs.Nop));
+            return source.Subscribe(UniRx.InternalUtil.EmptyObserver<T>.Instance);
         }
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext)

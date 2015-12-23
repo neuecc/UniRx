@@ -22,7 +22,11 @@ namespace UniRx
     [Serializable]
     public class ReactiveProperty<T> : IReactiveProperty<T>, IDisposable, IOptimizedObservable<T>
     {
-        static readonly EqualityComparer<T> defaultEqualityComparer = EqualityComparer<T>.Default;
+#if !UniRxLibrary
+        static readonly IEqualityComparer<T> defaultEqualityComparer = UnityEqualityComparer.GetDefault<T>();
+#else
+        static readonly IEqualityComparer<T> defaultEqualityComparer = EqualityComparer<T>.Default;
+#endif
 
         [NonSerialized]
         bool canPublishValueOnSubscribe = false;

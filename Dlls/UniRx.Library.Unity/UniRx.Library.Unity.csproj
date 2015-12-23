@@ -242,6 +242,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\TypedMonoBehaviour.cs">
       <Link>UnityEngineBridge\TypedMonoBehaviour.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\UnityEqualityComparer.cs">
+      <Link>UnityEngineBridge\UnityEqualityComparer.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\UnityEventExtensions.cs">
       <Link>UnityEngineBridge\UnityEventExtensions.cs</Link>
     </Compile>

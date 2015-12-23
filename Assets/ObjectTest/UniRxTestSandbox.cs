@@ -224,11 +224,11 @@ namespace UniRx.ObjectTest
 
 #endif
 
-
     // test sandbox
     [Serializable]
     public class UniRxTestSandbox : MonoBehaviour
     {
+
 #if UNITY_5_3
 
         static IEnumerator Enumerate<T>(IObservable<T> source)
@@ -409,16 +409,13 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Count?"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "GC"))
             {
 
-#if UNITY_5_3
-
-                StartCoroutine(GetResult());
-
+                //this.transform.ObserveEveryValueChanged(x => x.position).Subscribe();
+                Debug.Log(EqualityComparer<int>.Default.GetType().Name);
 
 
-#endif
             }
             ypos += 100;
 

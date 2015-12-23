@@ -178,7 +178,13 @@ namespace UniRx
 
         public static IObservable<TSource> Distinct<TSource>(this IObservable<TSource> source)
         {
-            return new DistinctObservable<TSource>(source, null);
+#if !UniRxLibrary
+            var comparer = UnityEqualityComparer.GetDefault<TSource>();
+#else
+            var comparer = EqualityComparer<TSource>.Default;
+#endif
+
+            return new DistinctObservable<TSource>(source, comparer);
         }
 
         public static IObservable<TSource> Distinct<TSource>(this IObservable<TSource> source, IEqualityComparer<TSource> comparer)
@@ -188,7 +194,13 @@ namespace UniRx
 
         public static IObservable<TSource> Distinct<TSource, TKey>(this IObservable<TSource> source, Func<TSource, TKey> keySelector)
         {
-            return new DistinctObservable<TSource, TKey>(source, keySelector, null);
+#if !UniRxLibrary
+            var comparer = UnityEqualityComparer.GetDefault<TKey>();
+#else
+            var comparer = EqualityComparer<TKey>.Default;
+#endif
+
+            return new DistinctObservable<TSource, TKey>(source, keySelector, comparer);
         }
 
         public static IObservable<TSource> Distinct<TSource, TKey>(this IObservable<TSource> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
@@ -198,7 +210,13 @@ namespace UniRx
 
         public static IObservable<T> DistinctUntilChanged<T>(this IObservable<T> source)
         {
-            return new DistinctUntilChangedObservable<T>(source, EqualityComparer<T>.Default);
+#if !UniRxLibrary
+            var comparer = UnityEqualityComparer.GetDefault<T>();
+#else
+            var comparer = EqualityComparer<T>.Default;
+#endif
+
+            return new DistinctUntilChangedObservable<T>(source, comparer);
         }
 
         public static IObservable<T> DistinctUntilChanged<T>(this IObservable<T> source, IEqualityComparer<T> comparer)
@@ -210,7 +228,13 @@ namespace UniRx
 
         public static IObservable<T> DistinctUntilChanged<T, TKey>(this IObservable<T> source, Func<T, TKey> keySelector)
         {
-            return new DistinctUntilChangedObservable<T, TKey>(source, keySelector, null);
+#if !UniRxLibrary
+            var comparer = UnityEqualityComparer.GetDefault<TKey>();
+#else
+            var comparer = EqualityComparer<TKey>.Default;
+#endif
+
+            return new DistinctUntilChangedObservable<T, TKey>(source, keySelector, comparer);
         }
 
         public static IObservable<T> DistinctUntilChanged<T, TKey>(this IObservable<T> source, Func<T, TKey> keySelector, IEqualityComparer<TKey> comparer)
