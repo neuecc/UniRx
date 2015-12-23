@@ -54,21 +54,7 @@ namespace UniRx.Operators
                 {
                     try
                     {
-                        if (parent.comparer == null)
-                        {
-                            if (currentKey == null)
-                            {
-                                sameKey = (prevKey == null);
-                            }
-                            else
-                            {
-                                sameKey = currentKey.Equals(prevKey);
-                            }
-                        }
-                        else
-                        {
-                            sameKey = parent.comparer.Equals(currentKey, prevKey);
-                        }
+                        sameKey = parent.comparer.Equals(currentKey, prevKey);
                     }
                     catch (Exception ex)
                     {
@@ -149,21 +135,7 @@ namespace UniRx.Operators
                 {
                     try
                     {
-                        if (parent.comparer == null)
-                        {
-                            if (currentKey == null)
-                            {
-                                sameKey = (prevKey == null);
-                            }
-                            else
-                            {
-                                sameKey = currentKey.Equals(prevKey);
-                            }
-                        }
-                        else
-                        {
-                            sameKey = parent.comparer.Equals(currentKey, prevKey);
-                        }
+                        sameKey = parent.comparer.Equals(currentKey, prevKey);
                     }
                     catch (Exception ex)
                     {

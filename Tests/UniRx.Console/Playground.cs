@@ -22,9 +22,10 @@ namespace UniRx
             //var d = EqualityComparer<Tuple<int, int>>.Default;
             //Console.WriteLine(d.GetType().Name);
             dict[Tuple.Create(1, 1)] = 1;
-            for (int i = 0; i < 10000000; i++)
+            for (int i = 0; i < 100000000; i++)
             {
-                dict.ContainsKey(Tuple.Create(1, 1));
+                //dict.ContainsKey(Tuple.Create(1, 1));
+                new object();
                 //d.Equals(t, Tuple.Create(1, 1));
             }
 
@@ -59,7 +60,7 @@ namespace UniRx
 
     class MyEvent
     {
-        public Action<int> action;
+        public Action<int> action = null;
 
         public void Fire(int x)
         {

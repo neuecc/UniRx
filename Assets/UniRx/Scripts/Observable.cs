@@ -198,7 +198,7 @@ namespace UniRx
 
         public static IObservable<T> DistinctUntilChanged<T>(this IObservable<T> source)
         {
-            return new DistinctUntilChangedObservable<T>(source, null);
+            return new DistinctUntilChangedObservable<T>(source, EqualityComparer<T>.Default);
         }
 
         public static IObservable<T> DistinctUntilChanged<T>(this IObservable<T> source, IEqualityComparer<T> comparer)

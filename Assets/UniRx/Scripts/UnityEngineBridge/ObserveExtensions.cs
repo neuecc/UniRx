@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 #if !UniRxLibrary
 using ObservableUnity = UniRx.Observable;
@@ -35,6 +36,8 @@ namespace UniRx
 
         static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
+            var comparer = EqualityComparer<TProperty>.Default;
+
             var isFirst = true;
             var currentValue = default(TProperty);
             var prevValue = default(TProperty);
@@ -66,7 +69,7 @@ namespace UniRx
                 }
 
 
-                if (isFirst || !object.Equals(currentValue, prevValue))
+                if (isFirst || !comparer.Equals(currentValue, prevValue))
                 {
                     isFirst = false;
                     observer.OnNext(currentValue);
@@ -79,6 +82,8 @@ namespace UniRx
 
         static IEnumerator PublishUnityObjectValueChanged<TSource, TProperty>(UnityEngine.Object unityObject, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
+            var comparer = EqualityComparer<TProperty>.Default;
+
             var isFirst = true;
             var currentValue = default(TProperty);
             var prevValue = default(TProperty);
@@ -106,7 +111,7 @@ namespace UniRx
                     yield break;
                 }
 
-                if (isFirst || !object.Equals(currentValue, prevValue))
+                if (isFirst || !comparer.Equals(currentValue, prevValue))
                 {
                     isFirst = false;
                     observer.OnNext(currentValue);
