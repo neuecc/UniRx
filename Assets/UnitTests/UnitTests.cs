@@ -176,6 +176,16 @@ namespace UniRx.Tests
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab);
+                button.GetComponentInChildren<Text>().text = "ReactivePropertyTest(2)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ReactivePropertyTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform, true);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab);
                 button.GetComponentInChildren<Text>().text = "ReactriveDictionaryTest(1)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -6469,6 +6479,160 @@ namespace UniRx.Tests
 
             Observable.Range(1, 0).ToArray().Wait().Length.Is(0);
             Observable.Range(1, 10).ToArray().Wait().IsCollection(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        }
+
+
+
+    }
+
+
+    public partial class ReactivePropertyTest
+    {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ReactivePropertyTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "ClassType";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ClassType();
+                    r.Message.Value = "ClassType OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ClassType NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ClassType NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab);
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "ValueType";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ValueType();
+                    r.Message.Value = "ValueType OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ValueType NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ValueType NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
+
+
+        [TestMethod]
+        public void ClassType()
+        {
+            {
+                var rp = new ReactiveProperty<string>(); // null
+
+                var result = rp.Record();
+                result.Values.IsCollection((string)null);
+
+                rp.Value = null;
+                result.Values.IsCollection((string)null);
+
+                rp.Value = "a";
+                result.Values.IsCollection((string)null, "a");
+
+                rp.Value = "b";
+                result.Values.IsCollection((string)null, "a", "b");
+
+                rp.Value = "b";
+                result.Values.IsCollection((string)null, "a", "b");
+            }
+            {
+                var rp = new ReactiveProperty<string>("z");
+
+                var result = rp.Record();
+                result.Values.IsCollection("z");
+
+                rp.Value = "z";
+                result.Values.IsCollection("z");
+
+                rp.Value = "a";
+                result.Values.IsCollection("z", "a");
+
+                rp.Value = "b";
+                result.Values.IsCollection("z", "a", "b");
+
+                rp.Value = "b";
+                result.Values.IsCollection("z", "a", "b");
+
+                rp.Value = null;
+                result.Values.IsCollection("z", "a", "b", null);
+            }
+        }
+
+
+
+        [TestMethod]
+        public void ValueType()
+        {
+            {
+                var rp = new ReactiveProperty<int>(); // 0
+
+                var result = rp.Record();
+                result.Values.IsCollection(0);
+
+                rp.Value = 0;
+                result.Values.IsCollection(0);
+
+                rp.Value = 10;
+                result.Values.IsCollection(0, 10);
+
+                rp.Value = 100;
+                result.Values.IsCollection(0, 10, 100);
+
+                rp.Value = 100;
+                result.Values.IsCollection(0, 10, 100);
+            }
+            {
+                var rp = new ReactiveProperty<int>(20);
+
+                var result = rp.Record();
+                result.Values.IsCollection(20);
+
+                rp.Value = 0;
+                result.Values.IsCollection(20, 0);
+
+                rp.Value = 10;
+                result.Values.IsCollection(20, 0, 10);
+
+                rp.Value = 100;
+                result.Values.IsCollection(20, 0, 10, 100);
+
+                rp.Value = 100;
+                result.Values.IsCollection(20, 0, 10, 100);
+            }
         }
 
 
