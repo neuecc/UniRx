@@ -65,6 +65,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ReactivePropertyTest.cs" />
     <Compile Include="Tools\ChainingAssertion.Unity.cs" />
     <Compile Include="Tools\Init.cs" />
     <Compile Include="Observable.ConcurrencyTest.cs" />

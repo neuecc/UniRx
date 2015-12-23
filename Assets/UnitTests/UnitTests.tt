@@ -23,7 +23,7 @@
     var dte = serviceProvider.GetService(typeof(DTE)) as DTE;
     var targetProj = dte.Solution.Projects.Cast<EnvDTE.Project>().First(x => x.Name == "UniRx.Tests");
     var projPath = targetProj.FullName;
-    var classNames = GetClassNamesAsync(projPath).Result;
+    var classNames = GetClassNamesAsync(projPath).Result.OrderBy(x => x.ClassName).ThenBy(x => x.MethodName);
 #>
 
 using System;

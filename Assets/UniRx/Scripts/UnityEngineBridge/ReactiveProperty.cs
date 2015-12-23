@@ -22,6 +22,8 @@ namespace UniRx
     [Serializable]
     public class ReactiveProperty<T> : IReactiveProperty<T>, IDisposable, IOptimizedObservable<T>
     {
+        static readonly EqualityComparer<T> defaultEqualityComparer = EqualityComparer<T>.Default;
+
         [NonSerialized]
         bool canPublishValueOnSubscribe = false;
 
@@ -38,6 +40,14 @@ namespace UniRx
 
         [NonSerialized]
         IDisposable sourceConnection = null;
+
+        protected virtual IEqualityComparer<T> EqualityComparer
+        {
+            get
+            {
+                return defaultEqualityComparer;
+            }
+        }
 
         public T Value
         {
@@ -61,32 +71,15 @@ namespace UniRx
                     return;
                 }
 
-                if (value == null)
+                if (!EqualityComparer.Equals(this.value, value))
                 {
-                    if (this.value != null)
-                    {
-                        SetValue(value);
+                    SetValue(value);
 
-                        if (isDisposed) return; // don't notify but set value 
-                        var p = publisher;
-                        if (p != null)
-                        {
-                            p.OnNext(this.value);
-                        }
-                    }
-                }
-                else
-                {
-                    if (this.value == null || !this.value.Equals(value)) // don't use EqualityComparer<T>.Default
+                    if (isDisposed) return;
+                    var p = publisher;
+                    if (p != null)
                     {
-                        SetValue(value);
-
-                        if (isDisposed) return;
-                        var p = publisher;
-                        if (p != null)
-                        {
-                            p.OnNext(this.value);
-                        }
+                        p.OnNext(this.value);
                     }
                 }
             }
