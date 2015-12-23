@@ -11,17 +11,26 @@ namespace UniRx
     {
         public void Run()
         {
-            var rp = new Subject<int>();
+            GCCheck();
 
-            var rrp = rp.ToReadOnlyReactiveProperty();
+        }
 
-            rrp.Subscribe(x => ShowStackTrace());
+        void GCCheck()
+        {
+            var t = Tuple.Create(1, 1);
+            var dict = new Dictionary<Tuple<int, int>, int>();
+            //var d = EqualityComparer<Tuple<int, int>>.Default;
+            //Console.WriteLine(d.GetType().Name);
+            dict[Tuple.Create(1, 1)] = 1;
+            for (int i = 0; i < 10000000; i++)
+            {
+                dict.ContainsKey(Tuple.Create(1, 1));
+                //d.Equals(t, Tuple.Create(1, 1));
+            }
 
-            rp.OnNext(5000);
-
-
-            rp.OnNext(9900);
-
+            Console.WriteLine("0:" + GC.CollectionCount(0));
+            Console.WriteLine("1:" + GC.CollectionCount(1));
+            Console.WriteLine("2:" + GC.CollectionCount(2));
         }
 
         static IObservable<int> Hoge(Subject<int> subject)
