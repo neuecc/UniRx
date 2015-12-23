@@ -4,7 +4,8 @@ namespace UniRx.InternalUtil
 {
     public class ThreadSafeQueueWorker
     {
-        const int InitialSize = 20;
+        const int MaxArrayLength = 0X7FEFFFFF;
+        const int InitialSize = 16;
 
         object gate = new object();
         bool dequing = false;
@@ -23,10 +24,14 @@ namespace UniRx.InternalUtil
             {
                 if (dequing)
                 {
+                    // Ensure Capacity
                     if (waitingList.Length == waitingListCount)
                     {
-                        var newArray = new Action<object>[checked(waitingListCount * 2)];
-                        var newArrayState = new object[checked(waitingListCount * 2)];
+                        var newLength = waitingListCount * 2;
+                        if ((uint)newLength > MaxArrayLength) newLength = MaxArrayLength;
+
+                        var newArray = new Action<object>[newLength];
+                        var newArrayState = new object[newLength];
                         Array.Copy(waitingList, newArray, waitingListCount);
                         Array.Copy(waitingStates, newArrayState, waitingListCount);
                         waitingList = newArray;
@@ -38,10 +43,14 @@ namespace UniRx.InternalUtil
                 }
                 else
                 {
+                    // Ensure Capacity
                     if (actionList.Length == actionListCount)
                     {
-                        var newArray = new Action<object>[checked(actionListCount * 2)];
-                        var newArrayState = new object[checked(actionListCount * 2)];
+                        var newLength = actionListCount * 2;
+                        if ((uint)newLength > MaxArrayLength) newLength = MaxArrayLength;
+
+                        var newArray = new Action<object>[newLength];
+                        var newArrayState = new object[newLength];
                         Array.Copy(actionList, newArray, actionListCount);
                         Array.Copy(actionStates, newArrayState, actionListCount);
                         actionList = newArray;
