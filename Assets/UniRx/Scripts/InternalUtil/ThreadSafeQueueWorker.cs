@@ -4,7 +4,7 @@ namespace UniRx.InternalUtil
 {
     public class ThreadSafeQueueWorker
     {
-        const int InitialSize = 10;
+        const int InitialSize = 20;
 
         object gate = new object();
         bool dequing = false;
@@ -75,13 +75,17 @@ namespace UniRx.InternalUtil
                 {
                     unhandledExceptionCallback(ex);
                 }
+                finally
+                {
+                    // Clear
+                    actionList[i] = null;
+                    actionStates[i] = null;
+                }
             }
 
             lock (gate)
             {
                 dequing = false;
-                Array.Clear(actionList, 0, actionListCount);
-                Array.Clear(actionStates, 0, actionListCount);
 
                 var swapTempActionList = actionList;
                 var swapTempActionStates = actionStates;
