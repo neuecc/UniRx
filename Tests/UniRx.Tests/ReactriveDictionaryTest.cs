@@ -14,9 +14,9 @@ namespace UniRx.Tests
             var dict = new ReactiveDictionary<string, int>();
 
             var count = 0;
-            DictionaryAddEvent<string, int> addE = null;
-            DictionaryRemoveEvent<string, int> removeE = null;
-            DictionaryReplaceEvent<string, int> replaceE = null;
+            DictionaryAddEvent<string, int> addE = default(DictionaryAddEvent<string, int>);
+            DictionaryRemoveEvent<string, int> removeE = default(DictionaryRemoveEvent<string, int>);
+            DictionaryReplaceEvent<string, int> replaceE = default(DictionaryReplaceEvent<string, int>);
             var resetCount = 0;
 
             dict.ObserveCountChanged().Subscribe(x => count = x);

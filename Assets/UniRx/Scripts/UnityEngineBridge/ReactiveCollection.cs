@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace UniRx
 {
-    public class CollectionAddEvent<T>
+    public struct CollectionAddEvent<T> : IEquatable<CollectionAddEvent<T>>
     {
         public int Index { get; private set; }
         public T Value { get; private set; }
@@ -19,9 +19,19 @@ namespace UniRx
         {
             return string.Format("Index:{0} Value:{1}", Index, Value);
         }
+
+        public override int GetHashCode()
+        {
+            return Index.GetHashCode() ^ EqualityComparer<T>.Default.GetHashCode(Value) << 2;
+        }
+
+        public bool Equals(CollectionAddEvent<T> other)
+        {
+            return Index.Equals(other.Index) && EqualityComparer<T>.Default.Equals(Value, other.Value);
+        }
     }
 
-    public class CollectionRemoveEvent<T>
+    public struct CollectionRemoveEvent<T> : IEquatable<CollectionRemoveEvent<T>>
     {
         public int Index { get; private set; }
         public T Value { get; private set; }
@@ -36,9 +46,19 @@ namespace UniRx
         {
             return string.Format("Index:{0} Value:{1}", Index, Value);
         }
+
+        public override int GetHashCode()
+        {
+            return Index.GetHashCode() ^ EqualityComparer<T>.Default.GetHashCode(Value) << 2;
+        }
+
+        public bool Equals(CollectionRemoveEvent<T> other)
+        {
+            return Index.Equals(other.Index) && EqualityComparer<T>.Default.Equals(Value, other.Value);
+        }
     }
 
-    public class CollectionMoveEvent<T>
+    public struct CollectionMoveEvent<T> : IEquatable<CollectionMoveEvent<T>>
     {
         public int OldIndex { get; private set; }
         public int NewIndex { get; private set; }
@@ -55,9 +75,19 @@ namespace UniRx
         {
             return string.Format("OldIndex:{0} NewIndex:{1} Value:{2}", OldIndex, NewIndex, Value);
         }
+
+        public override int GetHashCode()
+        {
+            return OldIndex.GetHashCode() ^ NewIndex.GetHashCode() << 2 ^ EqualityComparer<T>.Default.GetHashCode(Value) >> 2;
+        }
+
+        public bool Equals(CollectionMoveEvent<T> other)
+        {
+            return OldIndex.Equals(other.OldIndex) && NewIndex.Equals(other.NewIndex) && EqualityComparer<T>.Default.Equals(Value, other.Value);
+        }
     }
 
-    public class CollectionReplaceEvent<T>
+    public struct CollectionReplaceEvent<T> : IEquatable<CollectionReplaceEvent<T>>
     {
         public int Index { get; private set; }
         public T OldValue { get; private set; }
@@ -73,6 +103,18 @@ namespace UniRx
         public override string ToString()
         {
             return string.Format("Index:{0} OldValue:{1} NewValue:{2}", Index, OldValue, NewValue);
+        }
+
+        public override int GetHashCode()
+        {
+            return Index.GetHashCode() ^ EqualityComparer<T>.Default.GetHashCode(OldValue) << 2 ^ EqualityComparer<T>.Default.GetHashCode(NewValue) >> 2;
+        }
+
+        public bool Equals(CollectionReplaceEvent<T> other)
+        {
+            return Index.Equals(other.Index)
+                && EqualityComparer<T>.Default.Equals(OldValue, other.OldValue)
+                && EqualityComparer<T>.Default.Equals(NewValue, other.NewValue);
         }
     }
 
