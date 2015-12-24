@@ -98,7 +98,7 @@ namespace UniRx
 
         public ReactiveProperty(T initialValue)
         {
-            value = initialValue;
+            SetValue(initialValue);
             canPublishValueOnSubscribe = true;
         }
 
