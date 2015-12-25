@@ -37,7 +37,6 @@ namespace UniRx.Operators
             bool isDisposed;
             bool isFirstSubscribe;
             IDisposable stopper;
-            bool isRunNext = true;
 
             public RepeatUntil(RepeatUntilObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
@@ -149,7 +148,6 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                isRunNext = true;
                 base.observer.OnNext(value);
             }
 
@@ -161,9 +159,8 @@ namespace UniRx.Operators
 
             public override void OnCompleted()
             {
-                if (isRunNext && !isDisposed)
+                if (!isDisposed)
                 {
-                    isRunNext = false;
                     this.nextSelf();
                 }
                 else
