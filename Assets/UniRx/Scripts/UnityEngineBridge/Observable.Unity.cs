@@ -166,6 +166,51 @@ namespace UniRx
             typeof(Coroutine)
         };
 
+#if SupportCustomYieldInstruction
+
+        class EveryAfterUpdateInvoker : IEnumerator
+        {
+            long count = 0;
+            readonly IObserver<long> observer;
+            readonly CancellationToken cancellationToken;
+
+            public EveryAfterUpdateInvoker(IObserver<long> observer, CancellationToken cancellationToken)
+            {
+                this.observer = observer;
+                this.cancellationToken = cancellationToken;
+            }
+
+            public bool MoveNext()
+            {
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    observer.OnNext(count++);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            public object Current
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
+            public void Reset()
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+#endif
+
+
+
         /// <summary>From has no callback coroutine to IObservable. If publishEveryYield = true then publish OnNext every yield return else return once on enumeration completed.</summary>
         public static IObservable<Unit> FromCoroutine(Func<IEnumerator> coroutine, bool publishEveryYield = false)
         {
@@ -362,6 +407,9 @@ namespace UniRx
 
         // variation of FromCoroutine
 
+        /// <summary>
+        /// EveryUpdate calls coroutine's yield return null timing. It is after all Update and before LateUpdate.
+        /// </summary>
         public static IObservable<long> EveryUpdate()
         {
             return FromCoroutine<long>((observer, cancellationToken) => EveryUpdateCore(observer, cancellationToken));
@@ -417,6 +465,26 @@ namespace UniRx
                 observer.OnNext(count++);
             }
         }
+
+        /// <summary>
+        /// EveryLateUpdate calls MainThreadDispatcher's OnLateUpdate.
+        /// </summary>
+        public static IObservable<long> EveryLateUpdate()
+        {
+            return MainThreadDispatcher.OnLateUpdateAsObservable().Scan(-1L, (x, y) => x + 1);
+        }
+
+#if SupportCustomYieldInstruction
+
+        /// <summary>
+        /// EveryAfterUpdate calls coroutine's keepWaiting timing. It is after all Update/YieldNull and before LateUpdate.
+        /// </summary>
+        public static IObservable<long> EveryAfterUpdate()
+        {
+            return FromCoroutine<long>((observer, cancellationToken) => new EveryAfterUpdateInvoker(observer, cancellationToken));
+        }
+
+#endif
 
         #region Observable.Time Frame Extensions
 

@@ -521,6 +521,18 @@ namespace UniRx
 
         // for Lifecycle Management
 
+        Subject<Unit> onLateUpdate;
+
+        void LateUpdate()
+        {
+            if (onLateUpdate != null) onLateUpdate.OnNext(Unit.Default);
+        }
+
+        public static IObservable<Unit> OnLateUpdateAsObservable()
+        {
+            return Instance.onLateUpdate ?? (Instance.onLateUpdate = new Subject<Unit>());
+        }
+
         Subject<bool> onApplicationFocus;
 
         void OnApplicationFocus(bool focus)

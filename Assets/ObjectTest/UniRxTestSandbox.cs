@@ -409,13 +409,12 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "GC"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Every"))
             {
-
-                //this.transform.ObserveEveryValueChanged(x => x.position).Subscribe();
-                Debug.Log(EqualityComparer<int>.Default.GetType().Name);
-
-
+                Observable.EveryUpdate().Subscribe(x => Debug.Log("EveryUpdate:" + x));
+                Observable.EveryAfterUpdate().Subscribe(x => Debug.Log("EveryAfterUpdate:" + x));
+                Observable.EveryLateUpdate().Subscribe(x => Debug.Log("EveryLateUpdate:" + x));
+                Observable.EveryEndOfFrame().Subscribe(x => Debug.Log("EveryEndOfFrame:" + x));
             }
             ypos += 100;
 

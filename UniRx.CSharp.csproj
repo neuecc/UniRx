@@ -73,6 +73,7 @@
     <Compile Include="Assets\ObjectTest\IntervalTest.cs" />
     <Compile Include="Assets\ObjectTest\LoadLevelTest.cs" />
     <Compile Include="Assets\ObjectTest\MyStateMachine.cs" />
+    <Compile Include="Assets\ObjectTest\Pop.cs" />
     <Compile Include="Assets\ObjectTest\RotateGameObject.cs" />
     <Compile Include="Assets\ObjectTest\Sandbox2.cs" />
     <Compile Include="Assets\ObjectTest\SimpleMultiline.cs" />
