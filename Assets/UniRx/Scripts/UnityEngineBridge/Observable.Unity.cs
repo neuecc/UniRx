@@ -747,16 +747,16 @@ namespace UniRx
                 // others, bit slower
 
                 case MainThreadDispatchType.FixedUpdate:
-                    return source.SelectMany(_ => Observable.EveryFixedUpdate().Take(1), (x, _) => x);
+                    return source.SelectMany(_ => EveryFixedUpdate().Take(1), (x, _) => x);
                 case MainThreadDispatchType.EndOfFrame:
-                    return source.SelectMany(_ => Observable.EveryEndOfFrame().Take(1), (x, _) => x);
+                    return source.SelectMany(_ => EveryEndOfFrame().Take(1), (x, _) => x);
                 case MainThreadDispatchType.GameObjectUpdate:
                     return source.SelectMany(_ => MainThreadDispatcher.UpdateAsObservable().Take(1), (x, _) => x);
                 case MainThreadDispatchType.LateUpdate:
                     return source.SelectMany(_ => MainThreadDispatcher.LateUpdateAsObservable().Take(1), (x, _) => x);
 #if SupportCustomYieldInstruction
                 case MainThreadDispatchType.AfterUpdate:
-                    return source.SelectMany(_ => Observable.EveryAfterUpdate().Take(1), (x, _) => x);
+                    return source.SelectMany(_ => EveryAfterUpdate().Take(1), (x, _) => x);
 #endif
                 default:
                     throw new ArgumentException("type is invalid");
@@ -778,16 +778,16 @@ namespace UniRx
                 // others, bit slower
 
                 case MainThreadDispatchType.FixedUpdate:
-                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, Observable.EveryFixedUpdate().Take(1));
+                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, EveryFixedUpdate().Take(1));
                 case MainThreadDispatchType.EndOfFrame:
-                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, Observable.EveryEndOfFrame().Take(1));
+                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, EveryEndOfFrame().Take(1));
                 case MainThreadDispatchType.GameObjectUpdate:
                     return new UniRx.Operators.SubscribeOnMainThreadObservable<T, Unit>(source, MainThreadDispatcher.UpdateAsObservable().Take(1));
                 case MainThreadDispatchType.LateUpdate:
                     return new UniRx.Operators.SubscribeOnMainThreadObservable<T, Unit>(source, MainThreadDispatcher.LateUpdateAsObservable().Take(1));
 #if SupportCustomYieldInstruction
                 case MainThreadDispatchType.AfterUpdate:
-                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, Observable.EveryAfterUpdate().Take(1));
+                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, EveryAfterUpdate().Take(1));
 #endif
                 default:
                     throw new ArgumentException("type is invalid");

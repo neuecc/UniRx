@@ -113,6 +113,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\SampleFrame.cs">
       <Link>UnityEngineBridge\Operators\SampleFrame.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\SubscribeOnMainThread.cs">
+      <Link>UnityEngineBridge\Operators\SubscribeOnMainThread.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\ThrottleFirstFrame.cs">
       <Link>UnityEngineBridge\Operators\ThrottleFirstFrame.cs</Link>
     </Compile>
@@ -124,6 +127,15 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\PresenterBase.cs">
       <Link>UnityEngineBridge\PresenterBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ReactiveCollection.cs">
+      <Link>UnityEngineBridge\ReactiveCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ReactiveDictionary.cs">
+      <Link>UnityEngineBridge\ReactiveDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs">
+      <Link>UnityEngineBridge\ReactiveProperty.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs">
       <Link>UnityEngineBridge\ScenePlaybackDetector.cs</Link>

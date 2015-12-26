@@ -7,92 +7,94 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UniRx.Tests
 {
-    [TestClass]
-    public class ReactivePropertyTest
-    {
-        [TestMethod]
-        public void ValueType()
-        {
-            {
-                var rp = new ReactiveProperty<int>(); // 0
+    // Move to Unity Tests...
 
-                var result = rp.Record();
-                result.Values.IsCollection(0);
+    //[TestClass]
+    //public class ReactivePropertyTest
+    //{
+    //    [TestMethod]
+    //    public void ValueType()
+    //    {
+    //        {
+    //            var rp = new ReactiveProperty<int>(); // 0
 
-                rp.Value = 0;
-                result.Values.IsCollection(0);
+    //            var result = rp.Record();
+    //            result.Values.IsCollection(0);
 
-                rp.Value = 10;
-                result.Values.IsCollection(0, 10);
+    //            rp.Value = 0;
+    //            result.Values.IsCollection(0);
 
-                rp.Value = 100;
-                result.Values.IsCollection(0, 10, 100);
+    //            rp.Value = 10;
+    //            result.Values.IsCollection(0, 10);
 
-                rp.Value = 100;
-                result.Values.IsCollection(0, 10, 100);
-            }
-            {
-                var rp = new ReactiveProperty<int>(20);
+    //            rp.Value = 100;
+    //            result.Values.IsCollection(0, 10, 100);
 
-                var result = rp.Record();
-                result.Values.IsCollection(20);
+    //            rp.Value = 100;
+    //            result.Values.IsCollection(0, 10, 100);
+    //        }
+    //        {
+    //            var rp = new ReactiveProperty<int>(20);
 
-                rp.Value = 0;
-                result.Values.IsCollection(20, 0);
+    //            var result = rp.Record();
+    //            result.Values.IsCollection(20);
 
-                rp.Value = 10;
-                result.Values.IsCollection(20, 0, 10);
+    //            rp.Value = 0;
+    //            result.Values.IsCollection(20, 0);
 
-                rp.Value = 100;
-                result.Values.IsCollection(20, 0, 10, 100);
+    //            rp.Value = 10;
+    //            result.Values.IsCollection(20, 0, 10);
 
-                rp.Value = 100;
-                result.Values.IsCollection(20, 0, 10, 100);
-            }
-        }
+    //            rp.Value = 100;
+    //            result.Values.IsCollection(20, 0, 10, 100);
 
-        [TestMethod]
-        public void ClassType()
-        {
-            {
-                var rp = new ReactiveProperty<string>(); // null
+    //            rp.Value = 100;
+    //            result.Values.IsCollection(20, 0, 10, 100);
+    //        }
+    //    }
 
-                var result = rp.Record();
-                result.Values.IsCollection((string)null);
+    //    [TestMethod]
+    //    public void ClassType()
+    //    {
+    //        {
+    //            var rp = new ReactiveProperty<string>(); // null
 
-                rp.Value = null;
-                result.Values.IsCollection((string)null);
+    //            var result = rp.Record();
+    //            result.Values.IsCollection((string)null);
 
-                rp.Value = "a";
-                result.Values.IsCollection((string)null, "a");
+    //            rp.Value = null;
+    //            result.Values.IsCollection((string)null);
 
-                rp.Value = "b";
-                result.Values.IsCollection((string)null, "a", "b");
+    //            rp.Value = "a";
+    //            result.Values.IsCollection((string)null, "a");
 
-                rp.Value = "b";
-                result.Values.IsCollection((string)null, "a", "b");
-            }
-            {
-                var rp = new ReactiveProperty<string>("z");
+    //            rp.Value = "b";
+    //            result.Values.IsCollection((string)null, "a", "b");
 
-                var result = rp.Record();
-                result.Values.IsCollection("z");
+    //            rp.Value = "b";
+    //            result.Values.IsCollection((string)null, "a", "b");
+    //        }
+    //        {
+    //            var rp = new ReactiveProperty<string>("z");
 
-                rp.Value = "z";
-                result.Values.IsCollection("z");
+    //            var result = rp.Record();
+    //            result.Values.IsCollection("z");
 
-                rp.Value = "a";
-                result.Values.IsCollection("z", "a");
+    //            rp.Value = "z";
+    //            result.Values.IsCollection("z");
 
-                rp.Value = "b";
-                result.Values.IsCollection("z", "a", "b");
+    //            rp.Value = "a";
+    //            result.Values.IsCollection("z", "a");
 
-                rp.Value = "b";
-                result.Values.IsCollection("z", "a", "b");
+    //            rp.Value = "b";
+    //            result.Values.IsCollection("z", "a", "b");
 
-                rp.Value = null;
-                result.Values.IsCollection("z", "a", "b", null);
-            }
-        }
-    }
+    //            rp.Value = "b";
+    //            result.Values.IsCollection("z", "a", "b");
+
+    //            rp.Value = null;
+    //            result.Values.IsCollection("z", "a", "b", null);
+    //        }
+    //    }
+    //}
 }

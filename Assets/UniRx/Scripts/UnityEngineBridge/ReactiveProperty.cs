@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-#if !UniRxLibrary
 using UnityEngine;
-#endif
 
 namespace UniRx
 {
@@ -22,11 +20,7 @@ namespace UniRx
     [Serializable]
     public class ReactiveProperty<T> : IReactiveProperty<T>, IDisposable, IOptimizedObservable<T>
     {
-#if !UniRxLibrary
         static readonly IEqualityComparer<T> defaultEqualityComparer = UnityEqualityComparer.GetDefault<T>();
-#else
-        static readonly IEqualityComparer<T> defaultEqualityComparer = EqualityComparer<T>.Default;
-#endif
 
         [NonSerialized]
         bool canPublishValueOnSubscribe = false;
@@ -34,9 +28,7 @@ namespace UniRx
         [NonSerialized]
         bool isDisposed = false;
 
-#if !UniRxLibrary
         [SerializeField]
-#endif
         T value = default(T);
 
         [NonSerialized]
