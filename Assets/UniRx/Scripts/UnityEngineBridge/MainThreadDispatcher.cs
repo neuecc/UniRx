@@ -510,27 +510,39 @@ namespace UniRx
 
         void Update()
         {
+            if (update != null)
+            {
+                try
+                {
+                    update.OnNext(Unit.Default);
+                }
+                catch (Exception ex)
+                {
+                    unhandledExceptionCallback(ex);
+                }
+            }
             queueWorker.ExecuteAll(unhandledExceptionCallback);
-        }
-
-        void OnLevelWasLoaded(int level)
-        {
-            // TODO clear queueWorker?
-            //queueWorker = new ThreadSafeQueueWorker();
         }
 
         // for Lifecycle Management
 
-        Subject<Unit> onLateUpdate;
+        Subject<Unit> update;
+
+        public static IObservable<Unit> UpdateAsObservable()
+        {
+            return Instance.update ?? (Instance.update = new Subject<Unit>());
+        }
+
+        Subject<Unit> lateUpdate;
 
         void LateUpdate()
         {
-            if (onLateUpdate != null) onLateUpdate.OnNext(Unit.Default);
+            if (lateUpdate != null) lateUpdate.OnNext(Unit.Default);
         }
 
-        public static IObservable<Unit> OnLateUpdateAsObservable()
+        public static IObservable<Unit> LateUpdateAsObservable()
         {
-            return Instance.onLateUpdate ?? (Instance.onLateUpdate = new Subject<Unit>());
+            return Instance.lateUpdate ?? (Instance.lateUpdate = new Subject<Unit>());
         }
 
         Subject<bool> onApplicationFocus;

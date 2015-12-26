@@ -398,21 +398,18 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Go"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Co"))
             {
-                Observable.Range(1, 10)
-                    .ObserveOn(Scheduler.MainThread)
-                    .Subscribe(x =>
-                    {
-                        Debug.Log(x);
-                    });
+
             }
             ypos += 100;
 
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Every"))
             {
+                Observable.EveryGameObjectUpdate().Subscribe(x => Debug.Log("EveryGameObjectUpdate" + x));
                 Observable.EveryUpdate().Subscribe(x => Debug.Log("EveryUpdate:" + x));
                 Observable.EveryAfterUpdate().Subscribe(x => Debug.Log("EveryAfterUpdate:" + x));
+                UnityEngine.Debug.Log("---");
                 Observable.EveryLateUpdate().Subscribe(x => Debug.Log("EveryLateUpdate:" + x));
                 Observable.EveryEndOfFrame().Subscribe(x => Debug.Log("EveryEndOfFrame:" + x));
             }

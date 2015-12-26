@@ -21,6 +21,19 @@ namespace UniRx
         EndOfFrame,
     }
 
+    public enum MainThreadDispatchType
+    {
+        /// <summary>yield return null</summary>
+        Update,
+        FixedUpdate,
+        EndOfFrame,
+        GameObjectUpdate,
+        LateUpdate,
+#if SupportCustomYieldInstruction
+        AfterUpdate
+#endif
+    }
+
     public static class FrameCountTypeExtensions
     {
         public static YieldInstruction GetYieldInstruction(this FrameCountType frameCountType)
@@ -170,7 +183,7 @@ namespace UniRx
 
         class EveryAfterUpdateInvoker : IEnumerator
         {
-            long count = 0;
+            long count = -1;
             readonly IObserver<long> observer;
             readonly CancellationToken cancellationToken;
 
@@ -184,7 +197,14 @@ namespace UniRx
             {
                 if (!cancellationToken.IsCancellationRequested)
                 {
-                    observer.OnNext(count++);
+                    if (count != -1) // ignore first/immediate invoke
+                    {
+                        observer.OnNext(count++);
+                    }
+                    else
+                    {
+                        count++;
+                    }
                     return true;
                 }
                 else
@@ -467,11 +487,19 @@ namespace UniRx
         }
 
         /// <summary>
-        /// EveryLateUpdate calls MainThreadDispatcher's OnLateUpdate.
+        /// EveryGameObjectUpdate calls from MainThreadDispatcher's Update.
+        /// </summary>
+        public static IObservable<long> EveryGameObjectUpdate()
+        {
+            return MainThreadDispatcher.UpdateAsObservable().Scan(-1L, (x, y) => x + 1);
+        }
+
+        /// <summary>
+        /// EveryLateUpdate calls from MainThreadDispatcher's OnLateUpdate.
         /// </summary>
         public static IObservable<long> EveryLateUpdate()
         {
-            return MainThreadDispatcher.OnLateUpdateAsObservable().Scan(-1L, (x, y) => x + 1);
+            return MainThreadDispatcher.LateUpdateAsObservable().Scan(-1L, (x, y) => x + 1);
         }
 
 #if SupportCustomYieldInstruction
@@ -709,9 +737,61 @@ namespace UniRx
             return source.ObserveOn(SchedulerUnity.MainThread);
         }
 
+        public static IObservable<T> ObserveOnMainThread<T>(this IObservable<T> source, MainThreadDispatchType dispatchType)
+        {
+            switch (dispatchType)
+            {
+                case MainThreadDispatchType.Update:
+                    return source.ObserveOnMainThread(); // faster path
+
+                // others, bit slower
+
+                case MainThreadDispatchType.FixedUpdate:
+                    return source.SelectMany(_ => Observable.EveryFixedUpdate().Take(1), (x, _) => x);
+                case MainThreadDispatchType.EndOfFrame:
+                    return source.SelectMany(_ => Observable.EveryEndOfFrame().Take(1), (x, _) => x);
+                case MainThreadDispatchType.GameObjectUpdate:
+                    return source.SelectMany(_ => MainThreadDispatcher.UpdateAsObservable().Take(1), (x, _) => x);
+                case MainThreadDispatchType.LateUpdate:
+                    return source.SelectMany(_ => MainThreadDispatcher.LateUpdateAsObservable().Take(1), (x, _) => x);
+#if SupportCustomYieldInstruction
+                case MainThreadDispatchType.AfterUpdate:
+                    return source.SelectMany(_ => Observable.EveryAfterUpdate().Take(1), (x, _) => x);
+#endif
+                default:
+                    throw new ArgumentException("type is invalid");
+            }
+        }
+
         public static IObservable<T> SubscribeOnMainThread<T>(this IObservable<T> source)
         {
             return source.SubscribeOn(SchedulerUnity.MainThread);
+        }
+
+        public static IObservable<T> SubscribeOnMainThread<T>(this IObservable<T> source, MainThreadDispatchType dispatchType)
+        {
+            switch (dispatchType)
+            {
+                case MainThreadDispatchType.Update:
+                    return source.SubscribeOnMainThread(); // faster path
+
+                // others, bit slower
+
+                case MainThreadDispatchType.FixedUpdate:
+                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, Observable.EveryFixedUpdate().Take(1));
+                case MainThreadDispatchType.EndOfFrame:
+                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, Observable.EveryEndOfFrame().Take(1));
+                case MainThreadDispatchType.GameObjectUpdate:
+                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, Unit>(source, MainThreadDispatcher.UpdateAsObservable().Take(1));
+                case MainThreadDispatchType.LateUpdate:
+                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, Unit>(source, MainThreadDispatcher.LateUpdateAsObservable().Take(1));
+#if SupportCustomYieldInstruction
+                case MainThreadDispatchType.AfterUpdate:
+                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, Observable.EveryAfterUpdate().Take(1));
+#endif
+                default:
+                    throw new ArgumentException("type is invalid");
+            }
         }
 
         public static IObservable<bool> EveryApplicationPause()
