@@ -768,31 +768,31 @@ namespace UniRx
             return source.SubscribeOn(SchedulerUnity.MainThread);
         }
 
-        public static IObservable<T> SubscribeOnMainThread<T>(this IObservable<T> source, MainThreadDispatchType dispatchType)
-        {
-            switch (dispatchType)
-            {
-                case MainThreadDispatchType.Update:
-                    return source.SubscribeOnMainThread(); // faster path
+        // I can't avoid Unity 5.3's uNET weaver bug, pending...
 
-                // others, bit slower
+        //public static IObservable<T> SubscribeOnMainThread<T>(this IObservable<T> source, MainThreadDispatchType dispatchType)
+        //{
+        //    switch (dispatchType)
+        //    {
+        //        case MainThreadDispatchType.Update:
+        //            return source.SubscribeOnMainThread(); // faster path
 
-                case MainThreadDispatchType.FixedUpdate:
-                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, EveryFixedUpdate().Take(1));
-                case MainThreadDispatchType.EndOfFrame:
-                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, EveryEndOfFrame().Take(1));
-                case MainThreadDispatchType.GameObjectUpdate:
-                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, Unit>(source, MainThreadDispatcher.UpdateAsObservable().Take(1));
-                case MainThreadDispatchType.LateUpdate:
-                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, Unit>(source, MainThreadDispatcher.LateUpdateAsObservable().Take(1));
-#if SupportCustomYieldInstruction
-                case MainThreadDispatchType.AfterUpdate:
-                    return new UniRx.Operators.SubscribeOnMainThreadObservable<T, long>(source, EveryAfterUpdate().Take(1));
-#endif
-                default:
-                    throw new ArgumentException("type is invalid");
-            }
-        }
+        //        // others, bit slower
+
+        //        case MainThreadDispatchType.FixedUpdate:
+        //            return new UniRx.Operators.SubscribeOnMainThreadObservable<T>(source, EveryFixedUpdate().Take(1));
+        //        case MainThreadDispatchType.EndOfFrame:
+        //            return new UniRx.Operators.SubscribeOnMainThreadObservable<T>(source, EveryEndOfFrame().Take(1));
+        //        case MainThreadDispatchType.GameObjectUpdate:
+        //            return new UniRx.Operators.SubscribeOnMainThreadObservable<T>(source, MainThreadDispatcher.UpdateAsObservable().Select(_ => 0L).Take(1));
+        //        case MainThreadDispatchType.LateUpdate:
+        //            return new UniRx.Operators.SubscribeOnMainThreadObservable<T>(source, MainThreadDispatcher.LateUpdateAsObservable().Select(_ => 0L).Take(1));
+        //        case MainThreadDispatchType.AfterUpdate:
+        //            return new UniRx.Operators.SubscribeOnMainThreadObservable<T>(source, EveryAfterUpdate().Take(1));
+        //        default:
+        //            throw new ArgumentException("type is invalid");
+        //    }
+        //}
 
         public static IObservable<bool> EveryApplicationPause()
         {
