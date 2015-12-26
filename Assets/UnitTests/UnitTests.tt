@@ -53,7 +53,7 @@ namespace UniRx.Tests
         {
 <# foreach(var item in classNames.GroupBy(x => x.ClassName)) { #>
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "<#= item.Key #>(<#= item.Count() #>)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -76,7 +76,7 @@ namespace UniRx.Tests
             var test = new <#= item.Key #>();
 <# foreach(var m in item) { #>
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "<#= m.MethodName #>";

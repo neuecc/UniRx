@@ -110,7 +110,7 @@ namespace UniRx
         }
 
         // over Unity5 supports Hash128
-#if !(UNITY_4_6 || UNITY_4_5 || UNITY_4_4 || UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
+#if !(UNITY_4_7 || UNITY_4_6 || UNITY_4_5 || UNITY_4_4 || UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
         public static IObservable<AssetBundle> LoadFromCacheOrDownload(string url, Hash128 hash128, IProgress<float> progress = null)
         {
             return ObservableUnity.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, hash128), observer, progress, cancellation));
@@ -126,7 +126,7 @@ namespace UniRx
         // below Unity 4.5, WWW only supports Hashtable.
         // Unity 4.5, 4.6 WWW supports Dictionary and [Obsolete]Hashtable but WWWForm.content is Hashtable.
         // Unity 5.0 WWW only supports Dictionary and WWWForm.content is also Dictionary.
-#if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_5 || UNITY_4_6)
+#if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_5 || UNITY_4_6 || UNITY_4_7)
         static Hash MergeHash(Hashtable wwwFormHeaders, Hash externalHeaders)
         {
             var newHeaders = new Hash();
