@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>UniRx</id>
-        <version>5.0.0</version>
+        <version>5.1.0</version>
         <title>UniRx</title>
         <authors>neuecc</authors>
         <owners>neuecc</owners>
@@ -10,7 +10,7 @@
         <description>Reactive Extensions for Unity. This is .NET 3.5 subset of UniRx.</description>
         <releaseNotes>
             <![CDATA[
-Initial Release.
+drop ReactiveProperty.
             ]]>
         </releaseNotes>
         <language>en-US</language>

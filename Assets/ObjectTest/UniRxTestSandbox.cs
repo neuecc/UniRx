@@ -231,6 +231,8 @@ namespace UniRx.ObjectTest
 
 #if UNITY_5_3
 
+        public UnityEngine.UI.Button button;
+
         static IEnumerator Enumerate<T>(IObservable<T> source)
         {
             Debug.Log("Start:" + Time.frameCount);
@@ -343,6 +345,20 @@ namespace UniRx.ObjectTest
             //{
             //    logtext.AppendLine(x.Message);
             //});
+
+#if UNITY_5_3
+
+            button.OnClickAsObservable().Subscribe(_ =>
+            {
+                UnityEngine.Debug.Log("---");
+                Observable.EveryGameObjectUpdate().Subscribe(x => Debug.Log("EveryGameObjectUpdate" + x));
+                Observable.EveryUpdate().Subscribe(x => Debug.Log("EveryUpdate:" + x));
+                Observable.EveryAfterUpdate().Subscribe(x => Debug.Log("EveryAfterUpdate:" + x));
+                Observable.EveryLateUpdate().Subscribe(x => Debug.Log("EveryLateUpdate:" + x));
+                Observable.EveryEndOfFrame().Subscribe(x => Debug.Log("EveryEndOfFrame:" + x));
+                UnityEngine.Debug.Log("---");
+            });
+#endif
         }
 
         CompositeDisposable disposables = new CompositeDisposable();

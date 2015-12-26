@@ -1,4 +1,4 @@
-UniRx - Reactive Extensions for Unity / ver.5.0.0
+UniRx - Reactive Extensions for Unity / ver.5.1.0
 ===
 Created by Yoshifumi Kawai(neuecc)
 
@@ -188,7 +188,7 @@ IEnumerator TestNewCustomYieldInstruction()
     if (o.HasResult) { Debug.Log(o.Result); }
 
     // other sample(wait until transform.position.y >= 100) 
-    yield return this.ObserveEveryValueChanged(x => x.transform).FirstOrDefault(x => x.position.y >= 100).ToYieldInstruction();
+    yield return this.transform.ObserveEveryValueChanged(x => x.position).FirstOrDefault(p => p.y >= 100).ToYieldInstruction();
 }
 ```
 Normally, we have to use callbacks when we require a coroutine to return a value. Observable.FromCoroutine can convert coroutines to cancellable IObservable[T] instead.
@@ -470,7 +470,7 @@ this.gameObject.OnMouseDownAsObservable()
     .Subscribe(x => Debug.Log(x));            
 ```
 
-UniRx gurantees hot observable(FromEvent/Subject/FromCoroutine/UnityUI.AsObservable..., there are like event) have unhandled exception durability. What is it? If subscribe in subcribe, does not detach event.
+UniRx gurantees hot observable(FromEvent/Subject/ReactiveProperty/UnityUI.AsObservable..., there are like event) have unhandled exception durability. What is it? If subscribe in subcribe, does not detach event.
 
 ```csharp
 button.OnClickAsObservable().Subscribe(_ =>
@@ -596,7 +596,7 @@ MainThreadDispatcher.StartCoroutine(enumerator)
 Observable.FromCoroutine((observer, token) => enumerator(observer, token)); 
 
 // convert IObservable to Coroutine
-yield return Observable.Range(1, 10).StartAsCoroutine();
+yield return Observable.Range(1, 10).ToYieldInstruction(); // after Unity 5.3, before can use StartAsCoroutine()
 
 // Lifetime hooks
 Observable.EveryApplicationPause();
@@ -613,6 +613,10 @@ Method |
 EveryUpdate|
 EveryFixedUpdate|
 EveryEndOfFrame|
+EveryGameObjectUpdate|
+EveryLateUpdate|
+EveryAfterUpdate|
+ObserveOnMainThread|
 NextFrame|
 IntervalFrame|
 TimerFrame|
@@ -628,6 +632,21 @@ For example, delayed invoke once:
 ```csharp
 Observable.TimerFrame(100).Subscribe(_ => Debug.Log("after 100 frame"));
 ```
+
+Every* Method's execution order is
+
+```
+EveryGameObjectUpdate(in MainThreadDispatcher's Execution Order) ->
+EveryUpdate -> 
+EveryAfterUpdate -> 
+EveryLateUpdate -> 
+EveryEndOfFrame
+```
+
+EveryGameObjectUpdate invoke from same frame if caller is called before MainThreadDispatcher.Update(I recommend MainThreadDispatcher called first than others(ScriptExecutionOrder makes -32000)      
+EveryLateUpdate, EveryEndOfFrame invoke from same frame.  
+EveryUpdate, EveryAfterUpdate invoke from next frame.  
+EveryAfterUpdate is only available in after Unity 5.3.
 
 uGUI Integration
 ---
@@ -914,7 +933,7 @@ Therefore, when using NETFX_CORE, please refrain from using such constructs as `
 
 DLL Separation
 ---
-If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx.Library` and `UniRx.Library.Unity`. `UniRx.Library` can use both .NET 3.5 normal CLR application and Unity. `UniRx.Library.Unity` is for Unity project, you should define compile symbol like  `UniRxLibrary;UNITY;UNITY_5_3_0;UNITY_5_3;UNITY_5;UNITY_IPHONE;`. We can not provides binary because compile symbol is different each other.
+If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx.Library` and `UniRx.Library.Unity`. `UniRx.Library` can use both .NET 3.5 normal CLR application and Unity. `UniRx.Library.Unity` is for Unity project. You should define compile symbol like  `UniRxLibrary;UNITY;UNITY_5_3_0;UNITY_5_3;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol to `UniRx.Library`, `UniRx.Library.Unity`. We can not provides binary because compile symbol is different each other.
 
 If needs `UniRx.Library` for minimal test, it avilable in NuGet.
 
@@ -963,10 +982,10 @@ Author's other Unity + LINQ Assets
 
 Author Info
 ---
-Yoshifumi Kawai(a.k.a. neuecc) is a software developer in Japan.
-He is the Director/CTO at Grani, Inc.
-Grani is a top social game developer in Japan. 
-He was awarded Microsoft MVP for Visual C# in 2011.
+Yoshifumi Kawai(a.k.a. neuecc) is a software developer in Japan.  
+He is the Director/CTO at Grani, Inc.  
+Grani is a top social game developer in Japan.  
+He is awarding Microsoft MVP for Visual C# since 2011.  
 He is known as the creator of [linq.js](http://linqjs.codeplex.com/)(LINQ to Objects for JavaScript)
 
 Blog: http://neue.cc/ (Japanese)  

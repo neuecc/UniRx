@@ -25,7 +25,7 @@ namespace UniRx.Tests
         public static void SetButtons(Button buttonPrefab, GameObject buttonVertical, Result resultPrefab, GameObject resultVertical)
         {
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "AggregateTest(2)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -35,7 +35,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ConversionTest(5)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -45,7 +45,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "DisposableTest(4)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -55,7 +55,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "DoTest(7)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -65,7 +65,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "DurabilityTest(4)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -75,7 +75,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ErrorHandlingTest(3)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -85,7 +85,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ObservableConcatTest(19)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -95,7 +95,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ObservableConcurrencyTest(3)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -105,7 +105,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ObservableEventsTest(2)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -115,7 +115,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ObservableGeneratorTest(8)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -125,7 +125,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ObservablePagingTest(24)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -135,7 +135,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ObservableTest(13)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -145,7 +145,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ObservableTimeTest(9)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -155,7 +155,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "QueueWorkerTest(1)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -165,7 +165,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "RangeTest(1)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -175,27 +175,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
-                button.GetComponentInChildren<Text>().text = "ReactivePropertyTest(2)";
-                button.OnClickAsObservable().Subscribe(_ =>
-                {
-                    Clear(resultVertical);
-                    MainThreadDispatcher.StartCoroutine(ReactivePropertyTest.Run(resultPrefab, resultVertical));
-                });
-                button.transform.SetParent(buttonVertical.transform, true);
-            }
-            {
-                var button = GameObject.Instantiate(buttonPrefab);
-                button.GetComponentInChildren<Text>().text = "ReactriveDictionaryTest(1)";
-                button.OnClickAsObservable().Subscribe(_ =>
-                {
-                    Clear(resultVertical);
-                    MainThreadDispatcher.StartCoroutine(ReactriveDictionaryTest.Run(resultPrefab, resultVertical));
-                });
-                button.transform.SetParent(buttonVertical.transform, true);
-            }
-            {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "SchedulerTest(4)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -205,7 +185,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "SelectMany(8)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -215,7 +195,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "SubjectTests(6)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -225,7 +205,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "TakeTest(1)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -235,7 +215,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ToTest(2)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -245,7 +225,7 @@ namespace UniRx.Tests
                 button.transform.SetParent(buttonVertical.transform, true);
             }
             {
-                var button = GameObject.Instantiate(buttonPrefab);
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "WhenAllTest(3)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -265,7 +245,7 @@ namespace UniRx.Tests
         {
             var test = new AggregateTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Aggregate";
@@ -291,7 +271,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Scan";
@@ -359,7 +339,7 @@ namespace UniRx.Tests
         {
             var test = new ConversionTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AsObservable";
@@ -385,7 +365,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AsUnitObservable";
@@ -411,7 +391,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Cast";
@@ -437,7 +417,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "OfType";
@@ -463,7 +443,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToObservable";
@@ -557,7 +537,7 @@ namespace UniRx.Tests
         {
             var test = new DisposableTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Boolean";
@@ -583,7 +563,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "MultipleAssignment";
@@ -609,7 +589,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Serial";
@@ -635,7 +615,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SingleAssignment";
@@ -843,7 +823,7 @@ namespace UniRx.Tests
         {
             var test = new DoTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Do";
@@ -869,7 +849,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoObserver";
@@ -895,7 +875,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoOnCancel";
@@ -921,7 +901,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoOnCompleted";
@@ -947,7 +927,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoOnError";
@@ -973,7 +953,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoOnSubscribe";
@@ -999,7 +979,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DoOnTerminate";
@@ -1191,7 +1171,7 @@ namespace UniRx.Tests
         {
             var test = new DurabilityTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Durability";
@@ -1217,7 +1197,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FromEventPattern";
@@ -1243,7 +1223,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FromEventUnity";
@@ -1269,7 +1249,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FromEventUnityLike";
@@ -1491,7 +1471,7 @@ namespace UniRx.Tests
         {
             var test = new ErrorHandlingTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Catch";
@@ -1517,7 +1497,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CatchEnumerable";
@@ -1543,7 +1523,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Finally";
@@ -1658,7 +1638,7 @@ namespace UniRx.Tests
         {
             var test = new ObservableConcatTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatest";
@@ -1684,7 +1664,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatest2";
@@ -1710,7 +1690,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatest3";
@@ -1736,7 +1716,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatest4";
@@ -1762,7 +1742,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatestMulti";
@@ -1788,7 +1768,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatestMulti2";
@@ -1814,7 +1794,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatestMulti3";
@@ -1840,7 +1820,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CombineLatestMulti4";
@@ -1866,7 +1846,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Concat";
@@ -1892,7 +1872,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Merge";
@@ -1918,7 +1898,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "MergeConcurrent";
@@ -1944,7 +1924,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "StartWith";
@@ -1970,7 +1950,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Switch";
@@ -1996,7 +1976,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "WhenAll";
@@ -2022,7 +2002,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Zip";
@@ -2048,7 +2028,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Zip2";
@@ -2074,7 +2054,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ZipMulti";
@@ -2100,7 +2080,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ZipMulti2";
@@ -2126,7 +2106,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ZipNth";
@@ -2705,7 +2685,7 @@ namespace UniRx.Tests
         {
             var test = new ObservableConcurrencyTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AmbMultiTest";
@@ -2731,7 +2711,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AmbTest";
@@ -2757,7 +2737,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ObserveOnTest";
@@ -2890,7 +2870,7 @@ namespace UniRx.Tests
         {
             var test = new ObservableEventsTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FromEvent";
@@ -2916,7 +2896,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FromEventPattern";
@@ -3127,7 +3107,7 @@ namespace UniRx.Tests
         {
             var test = new ObservableGeneratorTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Empty";
@@ -3153,7 +3133,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Never";
@@ -3179,7 +3159,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Range";
@@ -3205,7 +3185,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Repeat";
@@ -3231,7 +3211,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "RepeatStatic";
@@ -3257,7 +3237,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Return";
@@ -3283,7 +3263,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Throw";
@@ -3309,7 +3289,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToObservable";
@@ -3461,7 +3441,7 @@ namespace UniRx.Tests
         {
             var test = new ObservablePagingTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Buffer";
@@ -3487,7 +3467,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Buffer3";
@@ -3513,7 +3493,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferComplete2";
@@ -3539,7 +3519,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferEmpty";
@@ -3565,7 +3545,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferSkip";
@@ -3591,7 +3571,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTime";
@@ -3617,7 +3597,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTimeAndCount";
@@ -3643,7 +3623,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTimeComplete";
@@ -3669,7 +3649,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTimeEmptyBuffer";
@@ -3695,7 +3675,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTimeEmptyComplete";
@@ -3721,7 +3701,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "First";
@@ -3747,7 +3727,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "FirstOrDefault";
@@ -3773,7 +3753,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Last";
@@ -3799,7 +3779,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "LastOrDefault";
@@ -3825,7 +3805,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Pairwise";
@@ -3851,7 +3831,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Single";
@@ -3877,7 +3857,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SingleOrDefault";
@@ -3903,7 +3883,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Skip";
@@ -3929,7 +3909,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SkipTime";
@@ -3955,7 +3935,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SkipUntil";
@@ -3981,7 +3961,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SkipWhile";
@@ -4007,7 +3987,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SkipWhileIndex";
@@ -4033,7 +4013,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TakeUntil";
@@ -4059,7 +4039,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TakeWhile";
@@ -5074,7 +5054,7 @@ namespace UniRx.Tests
         {
             var test = new ObservableTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DefaultIfEmpty";
@@ -5100,7 +5080,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Dematerialize";
@@ -5126,7 +5106,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Distinct";
@@ -5152,7 +5132,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DistinctUntilChanged";
@@ -5178,7 +5158,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ForEachAsync";
@@ -5204,7 +5184,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "IgnoreElements";
@@ -5230,7 +5210,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Materialize";
@@ -5256,7 +5236,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Select";
@@ -5282,7 +5262,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SelectMany";
@@ -5308,7 +5288,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToArray";
@@ -5334,7 +5314,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToArray_Dispose";
@@ -5360,7 +5340,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Wait";
@@ -5386,7 +5366,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Where";
@@ -5801,7 +5781,7 @@ namespace UniRx.Tests
         {
             var test = new ObservableTimeTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "DelayTest";
@@ -5827,7 +5807,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SampleTest";
@@ -5853,7 +5833,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ThrottleFirstTest";
@@ -5879,7 +5859,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ThrottleTest";
@@ -5905,7 +5885,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TimeInterval";
@@ -5931,7 +5911,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TimeoutTest";
@@ -5957,7 +5937,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TimeoutTestOffset";
@@ -5983,7 +5963,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TimerTest";
@@ -6009,7 +5989,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Timestamp";
@@ -6325,7 +6305,7 @@ namespace UniRx.Tests
         {
             var test = new QueueWorkerTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Enq";
@@ -6443,7 +6423,7 @@ namespace UniRx.Tests
         {
             var test = new RangeTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Range";
@@ -6486,262 +6466,13 @@ namespace UniRx.Tests
     }
 
 
-    public partial class ReactivePropertyTest
-    {
-        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
-        {
-            var test = new ReactivePropertyTest();
-            {
-                var r = GameObject.Instantiate(resultPrefab);
-                r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform, true);
-                r.Message.Value = "ClassType";
-                r.Color.Value = UnityEngine.Color.gray;
-                yield return null;
-                try
-                {
-                    var sw = System.Diagnostics.Stopwatch.StartNew();
-                    test.ClassType();
-                    r.Message.Value = "ClassType OK " + sw.Elapsed.TotalMilliseconds + "ms";
-                    r.Color.Value = UnityEngine.Color.green;
-                }
-                catch (AssertFailedException ex)
-                {
-                    r.Message.Value = "ClassType NG\r\n" + ex.Message;
-                    r.Color.Value = UnityEngine.Color.red;
-                }
-                catch (Exception ex)
-                {
-                    r.Message.Value = "ClassType NG\r\n" + ex.ToString();
-                    r.Color.Value = UnityEngine.Color.red;
-                }
-            }
-            yield return null;
-            {
-                var r = GameObject.Instantiate(resultPrefab);
-                r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform, true);
-                r.Message.Value = "ValueType";
-                r.Color.Value = UnityEngine.Color.gray;
-                yield return null;
-                try
-                {
-                    var sw = System.Diagnostics.Stopwatch.StartNew();
-                    test.ValueType();
-                    r.Message.Value = "ValueType OK " + sw.Elapsed.TotalMilliseconds + "ms";
-                    r.Color.Value = UnityEngine.Color.green;
-                }
-                catch (AssertFailedException ex)
-                {
-                    r.Message.Value = "ValueType NG\r\n" + ex.Message;
-                    r.Color.Value = UnityEngine.Color.red;
-                }
-                catch (Exception ex)
-                {
-                    r.Message.Value = "ValueType NG\r\n" + ex.ToString();
-                    r.Color.Value = UnityEngine.Color.red;
-                }
-            }
-            yield return null;
-        }
-
-
-
-
-        [TestMethod]
-        public void ClassType()
-        {
-            {
-                var rp = new ReactiveProperty<string>(); // null
-
-                var result = rp.Record();
-                result.Values.IsCollection((string)null);
-
-                rp.Value = null;
-                result.Values.IsCollection((string)null);
-
-                rp.Value = "a";
-                result.Values.IsCollection((string)null, "a");
-
-                rp.Value = "b";
-                result.Values.IsCollection((string)null, "a", "b");
-
-                rp.Value = "b";
-                result.Values.IsCollection((string)null, "a", "b");
-            }
-            {
-                var rp = new ReactiveProperty<string>("z");
-
-                var result = rp.Record();
-                result.Values.IsCollection("z");
-
-                rp.Value = "z";
-                result.Values.IsCollection("z");
-
-                rp.Value = "a";
-                result.Values.IsCollection("z", "a");
-
-                rp.Value = "b";
-                result.Values.IsCollection("z", "a", "b");
-
-                rp.Value = "b";
-                result.Values.IsCollection("z", "a", "b");
-
-                rp.Value = null;
-                result.Values.IsCollection("z", "a", "b", null);
-            }
-        }
-
-
-
-        [TestMethod]
-        public void ValueType()
-        {
-            {
-                var rp = new ReactiveProperty<int>(); // 0
-
-                var result = rp.Record();
-                result.Values.IsCollection(0);
-
-                rp.Value = 0;
-                result.Values.IsCollection(0);
-
-                rp.Value = 10;
-                result.Values.IsCollection(0, 10);
-
-                rp.Value = 100;
-                result.Values.IsCollection(0, 10, 100);
-
-                rp.Value = 100;
-                result.Values.IsCollection(0, 10, 100);
-            }
-            {
-                var rp = new ReactiveProperty<int>(20);
-
-                var result = rp.Record();
-                result.Values.IsCollection(20);
-
-                rp.Value = 0;
-                result.Values.IsCollection(20, 0);
-
-                rp.Value = 10;
-                result.Values.IsCollection(20, 0, 10);
-
-                rp.Value = 100;
-                result.Values.IsCollection(20, 0, 10, 100);
-
-                rp.Value = 100;
-                result.Values.IsCollection(20, 0, 10, 100);
-            }
-        }
-
-
-
-    }
-
-
-    public partial class ReactriveDictionaryTest
-    {
-        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
-        {
-            var test = new ReactriveDictionaryTest();
-            {
-                var r = GameObject.Instantiate(resultPrefab);
-                r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform, true);
-                r.Message.Value = "RxDictObserve";
-                r.Color.Value = UnityEngine.Color.gray;
-                yield return null;
-                try
-                {
-                    var sw = System.Diagnostics.Stopwatch.StartNew();
-                    test.RxDictObserve();
-                    r.Message.Value = "RxDictObserve OK " + sw.Elapsed.TotalMilliseconds + "ms";
-                    r.Color.Value = UnityEngine.Color.green;
-                }
-                catch (AssertFailedException ex)
-                {
-                    r.Message.Value = "RxDictObserve NG\r\n" + ex.Message;
-                    r.Color.Value = UnityEngine.Color.red;
-                }
-                catch (Exception ex)
-                {
-                    r.Message.Value = "RxDictObserve NG\r\n" + ex.ToString();
-                    r.Color.Value = UnityEngine.Color.red;
-                }
-            }
-            yield return null;
-        }
-
-
-
-        [TestMethod]
-        public void RxDictObserve()
-        {
-            var dict = new ReactiveDictionary<string, int>();
-
-            var count = 0;
-            DictionaryAddEvent<string, int> addE = default(DictionaryAddEvent<string, int>);
-            DictionaryRemoveEvent<string, int> removeE = default(DictionaryRemoveEvent<string, int>);
-            DictionaryReplaceEvent<string, int> replaceE = default(DictionaryReplaceEvent<string, int>);
-            var resetCount = 0;
-
-            dict.ObserveCountChanged().Subscribe(x => count = x);
-            dict.ObserveAdd().Subscribe(x => addE = x);
-            dict.ObserveRemove().Subscribe(x => removeE = x);
-            dict.ObserveReplace().Subscribe(x => replaceE = x);
-            dict.ObserveReset().Subscribe(x => resetCount += 1);
-
-            dict.Add("a", 100);
-            count.Is(1);
-            addE.Key.Is("a"); addE.Value.Is(100);
-
-            dict.Add("b", 200);
-            count.Is(2);
-            addE.Key.Is("b"); addE.Value.Is(200);
-
-            count = -1;
-            dict["a"] = 300;
-            count.Is(-1); // not fired
-            addE.Key.Is("b"); // not fired
-            replaceE.Key.Is("a"); replaceE.OldValue.Is(100); replaceE.NewValue.Is(300);
-
-            dict["c"] = 400;
-            count.Is(3);
-            replaceE.Key.Is("a"); // not fired
-            addE.Key.Is("c"); addE.Value.Is(400);
-
-            dict.Remove("b");
-            count.Is(2);
-            removeE.Key.Is("b"); removeE.Value.Is(200);
-
-            count = -1;
-            dict.Remove("z");
-            count.Is(-1); // not fired
-            removeE.Key.Is("b"); // not fired
-
-            dict.Clear();
-            count.Is(0);
-            resetCount.Is(1);
-
-            count = -1;
-            dict.Clear();
-            resetCount.Is(2);
-            count.Is(-1); // not fired
-        }
-
-
-
-    }
-
-
     public partial class SchedulerTest
     {
         public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
         {
             var test = new SchedulerTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CurrentThread";
@@ -6767,7 +6498,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CurrentThread2";
@@ -6793,7 +6524,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "CurrentThread3";
@@ -6819,7 +6550,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Immediate";
@@ -6931,7 +6662,7 @@ namespace UniRx.Tests
         {
             var test = new SelectMany();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ResultSelector";
@@ -6957,7 +6688,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ResultSelectorEnumerable";
@@ -6983,7 +6714,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ResultSelectorEnumerableWithIndex";
@@ -7009,7 +6740,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ResultSelectorWithIndex";
@@ -7035,7 +6766,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Selector";
@@ -7061,7 +6792,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SelectorEnumerable";
@@ -7087,7 +6818,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SelectorEnumerableWithIndex";
@@ -7113,7 +6844,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SelectorWithIndex";
@@ -7637,7 +7368,7 @@ namespace UniRx.Tests
         {
             var test = new SubjectTests();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AsyncSubjectTest";
@@ -7663,7 +7394,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BehaviorSubject";
@@ -7689,7 +7420,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ReplaySubject";
@@ -7715,7 +7446,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ReplaySubjectWindowReplay";
@@ -7741,7 +7472,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Subject";
@@ -7767,7 +7498,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "SubjectSubscribeTest";
@@ -8262,7 +7993,7 @@ namespace UniRx.Tests
         {
             var test = new TakeTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TakeCount";
@@ -8315,7 +8046,7 @@ namespace UniRx.Tests
         {
             var test = new ToTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToArray";
@@ -8341,7 +8072,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "ToList";
@@ -8401,7 +8132,7 @@ namespace UniRx.Tests
         {
             var test = new WhenAllTest();
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "WhenAll";
@@ -8427,7 +8158,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "WhenAllEmpty";
@@ -8453,7 +8184,7 @@ namespace UniRx.Tests
             }
             yield return null;
             {
-                var r = GameObject.Instantiate(resultPrefab);
+                var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "WhenAllEnumerable";

@@ -596,7 +596,7 @@ MainThreadDispatcher.StartCoroutine(enumerator)
 Observable.FromCoroutine((observer, token) => enumerator(observer, token)); 
 
 // convert IObservable to Coroutine
-yield return Observable.Range(1, 10).StartAsCoroutine();
+yield return Observable.Range(1, 10).ToYieldInstruction(); // after Unity 5.3, before can use StartAsCoroutine()
 
 // Lifetime hooks
 Observable.EveryApplicationPause();
@@ -613,6 +613,10 @@ Method |
 EveryUpdate|
 EveryFixedUpdate|
 EveryEndOfFrame|
+EveryGameObjectUpdate|
+EveryLateUpdate|
+EveryAfterUpdate|
+ObserveOnMainThread|
 NextFrame|
 IntervalFrame|
 TimerFrame|
@@ -628,6 +632,21 @@ For example, delayed invoke once:
 ```csharp
 Observable.TimerFrame(100).Subscribe(_ => Debug.Log("after 100 frame"));
 ```
+
+Every* Method's execution order is
+
+```
+EveryGameObjectUpdate(in MainThreadDispatcher's Execution Order) ->
+EveryUpdate -> 
+EveryAfterUpdate -> 
+EveryLateUpdate -> 
+EveryEndOfFrame
+```
+
+EveryGameObjectUpdate invoke from same frame if caller is called before MainThreadDispatcher.Update(I recommend MainThreadDispatcher called first than others(ScriptExecutionOrder makes -32000)      
+EveryLateUpdate, EveryEndOfFrame invoke from same frame.  
+EveryUpdate, EveryAfterUpdate invoke from next frame.  
+EveryAfterUpdate is only available in after Unity 5.3.
 
 uGUI Integration
 ---
