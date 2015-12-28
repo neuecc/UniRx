@@ -367,6 +367,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Zip.cs">
       <Link>Operators\Zip.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Pair.cs">
+      <Link>Pair.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs">
       <Link>Schedulers\CurrentThreadScheduler.cs</Link>
     </Compile>

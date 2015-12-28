@@ -66,4 +66,55 @@ namespace UniRx.Operators
             }
         }
     }
+
+    internal class PairwiseObservable<T> : OperatorObservableBase<Pair<T>>
+    {
+        readonly IObservable<T> source;
+
+        public PairwiseObservable(IObservable<T> source)
+            : base(source.IsRequiredSubscribeOnCurrentThread())
+        {
+            this.source = source;
+        }
+
+        protected override IDisposable SubscribeCore(IObserver<Pair<T>> observer, IDisposable cancel)
+        {
+            return source.Subscribe(new Pairwise(observer, cancel));
+        }
+
+        class Pairwise : OperatorObserverBase<T, Pair<T>>
+        {
+            T prev = default(T);
+            bool isFirst = true;
+
+            public Pairwise(IObserver<Pair<T>> observer, IDisposable cancel)
+                : base(observer, cancel)
+            {
+            }
+
+            public override void OnNext(T value)
+            {
+                if (isFirst)
+                {
+                    isFirst = false;
+                    prev = value;
+                    return;
+                }
+
+                var pair = new Pair<T>(prev, value);
+                prev = value;
+                observer.OnNext(pair);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); } finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); } finally { Dispose(); }
+            }
+        }
+    }
 }

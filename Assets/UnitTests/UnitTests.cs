@@ -126,7 +126,7 @@ namespace UniRx.Tests
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab) as Button;
-                button.GetComponentInChildren<Text>().text = "ObservablePagingTest(24)";
+                button.GetComponentInChildren<Text>().text = "ObservablePagingTest(25)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
                     Clear(resultVertical);
@@ -3834,6 +3834,32 @@ namespace UniRx.Tests
                 var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "Pairwise2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Pairwise2();
+                    r.Message.Value = "Pairwise2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Pairwise2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Pairwise2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Single";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -4619,6 +4645,19 @@ namespace UniRx.Tests
         {
             var xs = Observable.Range(1, 5).Pairwise((x, y) => x + ":" + y).ToArrayWait();
             xs.IsCollection("1:2", "2:3", "3:4", "4:5");
+        }
+
+
+
+
+        [TestMethod]
+        public void Pairwise2()
+        {
+            var xs = Observable.Range(1, 5).Pairwise().ToArrayWait();
+            xs[0].Previous.Is(1); xs[0].Current.Is(2);
+            xs[1].Previous.Is(2); xs[1].Current.Is(3);
+            xs[2].Previous.Is(3); xs[2].Current.Is(4);
+            xs[3].Previous.Is(4); xs[3].Current.Is(5);
         }
 
 
