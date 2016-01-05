@@ -30,6 +30,8 @@ namespace UniRx
         GameObjectUpdate,
         LateUpdate,
 #if SupportCustomYieldInstruction
+        /// <summary>Same as Update</summary>
+        [Obsolete]
         AfterUpdate
 #endif
     }
@@ -505,8 +507,9 @@ namespace UniRx
 #if SupportCustomYieldInstruction
 
         /// <summary>
-        /// EveryAfterUpdate calls coroutine's keepWaiting timing. It is after all Update/YieldNull and before LateUpdate.
+        /// [Obsolete]Same as EveryUpdate.
         /// </summary>
+        [Obsolete]
         public static IObservable<long> EveryAfterUpdate()
         {
             return FromCoroutine<long>((observer, cancellationToken) => new EveryAfterUpdateInvoker(observer, cancellationToken));
@@ -755,8 +758,10 @@ namespace UniRx
                 case MainThreadDispatchType.LateUpdate:
                     return source.SelectMany(_ => MainThreadDispatcher.LateUpdateAsObservable().Take(1), (x, _) => x);
 #if SupportCustomYieldInstruction
+#pragma warning disable CS0612 // Type or member is obsolete
                 case MainThreadDispatchType.AfterUpdate:
                     return source.SelectMany(_ => EveryAfterUpdate().Take(1), (x, _) => x);
+#pragma warning restore CS0612 // Type or member is obsolete
 #endif
                 default:
                     throw new ArgumentException("type is invalid");
