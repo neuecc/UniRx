@@ -615,7 +615,6 @@ EveryFixedUpdate|
 EveryEndOfFrame|
 EveryGameObjectUpdate|
 EveryLateUpdate|
-EveryAfterUpdate|
 ObserveOnMainThread|
 NextFrame|
 IntervalFrame|
@@ -638,15 +637,13 @@ Every* Method's execution order is
 ```
 EveryGameObjectUpdate(in MainThreadDispatcher's Execution Order) ->
 EveryUpdate -> 
-EveryAfterUpdate -> 
 EveryLateUpdate -> 
 EveryEndOfFrame
 ```
 
 EveryGameObjectUpdate invoke from same frame if caller is called before MainThreadDispatcher.Update(I recommend MainThreadDispatcher called first than others(ScriptExecutionOrder makes -32000)      
 EveryLateUpdate, EveryEndOfFrame invoke from same frame.  
-EveryUpdate, EveryAfterUpdate invoke from next frame.  
-EveryAfterUpdate is only available in after Unity 5.3.
+EveryUpdate, invoke from next frame.  
 
 uGUI Integration
 ---
