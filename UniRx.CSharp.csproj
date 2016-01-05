@@ -17,7 +17,8 @@
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.3.0f4</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -177,6 +178,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Sample.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Scan.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Select.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\ContinueWith.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\SelectMany.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Single.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Skip.cs" />

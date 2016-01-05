@@ -51,6 +51,22 @@ namespace UniRx
             return new WhereObservable<T>(source, predicate);
         }
 
+        /// <summary>
+        /// Lightweight SelectMany for Single Async Operation.
+        /// </summary>
+        public static IObservable<TR> ContinueWith<T, TR>(this IObservable<T> source, IObservable<TR> other)
+        {
+            return ContinueWith(source, _ => other);
+        }
+
+        /// <summary>
+        /// Lightweight SelectMany for Single Async Operation.
+        /// </summary>
+        public static IObservable<TR> ContinueWith<T, TR>(this IObservable<T> source, Func<T, IObservable<TR>> selector)
+        {
+            return new ContinueWithObservable<T, TR>(source, selector);
+        }
+
         public static IObservable<TR> SelectMany<T, TR>(this IObservable<T> source, IObservable<TR> other)
         {
             return SelectMany(source, _ => other);
