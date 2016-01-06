@@ -179,7 +179,11 @@ namespace UniRx
                     }
                 }
 
-                if (cancel.IsCancellationRequested) yield break;
+                if (cancel.IsCancellationRequested)
+                {
+                    if (!www.isDone) yield return www; // workaround for freeze bug of dispose WWW when WWW is not completed
+                    yield break;
+                }
 
                 if (reportProgress != null)
                 {
@@ -234,7 +238,11 @@ namespace UniRx
                     }
                 }
 
-                if (cancel.IsCancellationRequested) yield break;
+                if (cancel.IsCancellationRequested)
+                {
+                    if (!www.isDone) yield return www; // workaround for freeze bug of dispose WWW when WWW is not completed
+                    yield break;
+                }
 
                 if (reportProgress != null)
                 {
@@ -289,7 +297,11 @@ namespace UniRx
                     }
                 }
 
-                if (cancel.IsCancellationRequested) yield break;
+                if (cancel.IsCancellationRequested)
+                {
+                    if (!www.isDone) yield return www; // workaround for freeze bug of dispose WWW when WWW is not completed
+                    yield break;
+                }
 
                 if (reportProgress != null)
                 {
@@ -344,7 +356,11 @@ namespace UniRx
                     }
                 }
 
-                if (cancel.IsCancellationRequested) yield break;
+                if (cancel.IsCancellationRequested)
+                {
+                    if (!www.isDone) yield return www; // workaround for freeze bug of dispose WWW when WWW is not completed
+                    yield break;
+                }
 
                 if (reportProgress != null)
                 {
