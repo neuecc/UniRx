@@ -353,7 +353,7 @@ namespace UniRx.ObjectTest
                 UnityEngine.Debug.Log("---");
                 Observable.EveryGameObjectUpdate().Subscribe(x => Debug.Log("EveryGameObjectUpdate" + x));
                 Observable.EveryUpdate().Subscribe(x => Debug.Log("EveryUpdate:" + x));
-                Observable.EveryAfterUpdate().Subscribe(x => Debug.Log("EveryAfterUpdate:" + x));
+                // Observable.EveryAfterUpdate().Subscribe(x => Debug.Log("EveryAfterUpdate:" + x));
                 Observable.EveryLateUpdate().Subscribe(x => Debug.Log("EveryLateUpdate:" + x));
                 Observable.EveryEndOfFrame().Subscribe(x => Debug.Log("EveryEndOfFrame:" + x));
                 UnityEngine.Debug.Log("---");
@@ -424,7 +424,7 @@ namespace UniRx.ObjectTest
             {
                 Observable.EveryGameObjectUpdate().Subscribe(x => Debug.Log("EveryGameObjectUpdate" + x));
                 Observable.EveryUpdate().Subscribe(x => Debug.Log("EveryUpdate:" + x));
-                Observable.EveryAfterUpdate().Subscribe(x => Debug.Log("EveryAfterUpdate:" + x));
+                // Observable.EveryAfterUpdate().Subscribe(x => Debug.Log("EveryAfterUpdate:" + x));
                 UnityEngine.Debug.Log("---");
                 Observable.EveryLateUpdate().Subscribe(x => Debug.Log("EveryLateUpdate:" + x));
                 Observable.EveryEndOfFrame().Subscribe(x => Debug.Log("EveryEndOfFrame:" + x));
