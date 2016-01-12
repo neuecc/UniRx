@@ -699,6 +699,7 @@ namespace UniRx
             if (cancel.IsCancellationRequested)
             {
                 enumerator.Dispose();
+                yield break;
             }
 
             if (enumerator.HasResult)
