@@ -64,5 +64,13 @@ namespace UniRx
         {
             return new RefCountObservable<T>(source);
         }
+
+        /// <summary>
+        /// same as Publish().RefCount()
+        /// </summary>
+        public static IObservable<T> Share<T>(this IObservable<T> source)
+        {
+            return source.Publish().RefCount();
+        }
     }
 }
