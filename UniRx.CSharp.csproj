@@ -189,6 +189,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\SubscribeOn.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Switch.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Synchronize.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\SynchronizedObserver.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Take.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\TakeUntil.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\TakeWhile.cs" />
@@ -217,7 +218,9 @@
     <Compile Include="Assets\UniRx\Scripts\Subjects\ConnectableObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\Subjects\ISubject.cs" />
     <Compile Include="Assets\UniRx\Scripts\Subjects\ReplaySubject.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Subjects\SerializedSubject.cs" />
     <Compile Include="Assets\UniRx\Scripts\Subjects\Subject.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Subjects\SubjectExtensions.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\IObservable.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\IObserver.cs" />
     <Compile Include="Assets\UniRx\Scripts\System\IOptimizedObservable.cs" />

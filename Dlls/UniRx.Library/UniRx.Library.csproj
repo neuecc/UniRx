@@ -319,6 +319,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Synchronize.cs">
       <Link>Operators\Synchronize.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\SynchronizedObserver.cs">
+      <Link>Operators\SynchronizedObserver.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Take.cs">
       <Link>Operators\Take.cs</Link>
     </Compile>
@@ -405,6 +408,9 @@
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Subjects\Subject.cs">
       <Link>Subjects\Subject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Subjects\SubjectExtensions.cs">
+      <Link>Subjects\SubjectExtensions.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\System\IObservable.cs">
       <Link>System\IObservable.cs</Link>

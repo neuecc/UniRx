@@ -223,6 +223,19 @@ namespace UniRx
         }
     }
 
+    public static partial class ObserverExtensions
+    {
+        public static IObserver<T> Synchronize<T>(this IObserver<T> observer)
+        {
+            return new UniRx.Operators.SynchronizedObserver<T>(observer, new object());
+        }
+
+        public static IObserver<T> Synchronize<T>(this IObserver<T> observer, object gate)
+        {
+            return new UniRx.Operators.SynchronizedObserver<T>(observer, gate);
+        }
+    }
+
     public static partial class ObservableExtensions
     {
         public static IDisposable Subscribe<T>(this IObservable<T> source)
