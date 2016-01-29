@@ -393,22 +393,22 @@ namespace UniRx
     /// </summary>
     public static class ReactivePropertyExtensions
     {
-        public static ReactiveProperty<T> ToReactiveProperty<T>(this IObservable<T> source)
+        public static IReactiveProperty<T> ToReactiveProperty<T>(this IObservable<T> source)
         {
             return new ReactiveProperty<T>(source);
         }
 
-        public static ReactiveProperty<T> ToReactiveProperty<T>(this IObservable<T> source, T initialValue)
+        public static IReactiveProperty<T> ToReactiveProperty<T>(this IObservable<T> source, T initialValue)
         {
             return new ReactiveProperty<T>(source, initialValue);
         }
 
-        public static ReadOnlyReactiveProperty<T> ToReadOnlyReactiveProperty<T>(this IObservable<T> source)
+        public static IReadOnlyReactiveProperty<T> ToReadOnlyReactiveProperty<T>(this IObservable<T> source)
         {
             return new ReadOnlyReactiveProperty<T>(source);
         }
 
-        public static ReadOnlyReactiveProperty<T> ToReadOnlyReactiveProperty<T>(this IObservable<T> source, T initialValue)
+        public static IReadOnlyReactiveProperty<T> ToReadOnlyReactiveProperty<T>(this IObservable<T> source, T initialValue)
         {
             return new ReadOnlyReactiveProperty<T>(source, initialValue);
         }
