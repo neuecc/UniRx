@@ -179,6 +179,8 @@ namespace UniRx.Operators
         // timespan = timeshift
         class BufferT : OperatorObserverBase<T, IList<T>>
         {
+            static readonly T[] EmptyArray = new T[0];
+
             readonly BufferObservable<T> parent;
             readonly object gate = new object();
 
@@ -236,14 +238,22 @@ namespace UniRx.Operators
 
                 public void OnNext(long value)
                 {
+                    var isZero = false;
                     List<T> currentList;
                     lock (parent.gate)
                     {
                         currentList = parent.list;
-                        parent.list = new List<T>();
+                        if (currentList.Count != 0)
+                        {
+                            parent.list = new List<T>();
+                        }
+                        else
+                        {
+                            isZero = true;
+                        }
                     }
 
-                    parent.observer.OnNext(currentList);
+                    parent.observer.OnNext((isZero) ? (IList<T>)EmptyArray : currentList);
                 }
 
                 public void OnError(Exception error)
@@ -369,6 +379,8 @@ namespace UniRx.Operators
         // timespan + count
         class BufferTC : OperatorObserverBase<T, IList<T>>
         {
+            static readonly T[] EmptyArray = new T[0]; // cache
+
             readonly BufferObservable<T> parent;
             readonly object gate = new object();
 
@@ -413,6 +425,7 @@ namespace UniRx.Operators
 
             void OnNextTick(long currentTimerId)
             {
+                var isZero = false;
                 List<T> currentList;
                 lock (gate)
                 {
@@ -423,15 +436,18 @@ namespace UniRx.Operators
                     {
                         list = new List<T>();
                     }
+                    else
+                    {
+                        isZero = true;
+                    }
                 }
-                if (currentList.Count != 0)
-                {
-                    observer.OnNext(currentList);
-                }
+
+                observer.OnNext((isZero) ? (IList<T>)EmptyArray : currentList);
             }
 
             void OnNextRecursive(long currentTimerId, Action<TimeSpan> self)
             {
+                var isZero = false;
                 List<T> currentList;
                 lock (gate)
                 {
@@ -442,11 +458,13 @@ namespace UniRx.Operators
                     {
                         list = new List<T>();
                     }
+                    else
+                    {
+                        isZero = true;
+                    }
                 }
-                if (currentList.Count != 0)
-                {
-                    observer.OnNext(currentList);
-                }
+
+                observer.OnNext((isZero) ? (IList<T>)EmptyArray : currentList);
                 self(parent.timeSpan);
             }
 
@@ -508,6 +526,8 @@ namespace UniRx.Operators
 
         class Buffer : OperatorObserverBase<TSource, IList<TSource>>
         {
+            static readonly TSource[] EmptyArray = new TSource[0]; // cache
+
             readonly BufferObservable<TSource, TWindowBoundary> parent;
             object gate = new object();
             List<TSource> list;
@@ -565,6 +585,7 @@ namespace UniRx.Operators
 
                 public void OnNext(TWindowBoundary value)
                 {
+                    var isZero = false;
                     List<TSource> currentList;
                     lock (parent.gate)
                     {
@@ -573,8 +594,16 @@ namespace UniRx.Operators
                         {
                             parent.list = new List<TSource>();
                         }
+                        else
+                        {
+                            isZero = true;
+                        }
                     }
-                    if (currentList.Count != 0)
+                    if (isZero)
+                    {
+                        parent.observer.OnNext(EmptyArray);
+                    }
+                    else
                     {
                         parent.observer.OnNext(currentList);
                     }

@@ -40,7 +40,7 @@ namespace UniRx.Tests
             subscription.Dispose();
         }
 
-        public void OnNext(T value)
+        void IObserver<T>.OnNext(T value)
         {
             lock (gate)
             {
@@ -49,14 +49,14 @@ namespace UniRx.Tests
             }
         }
 
-        public void OnError(Exception error)
+        void IObserver<T>.OnError(Exception error)
         {
             lock (gate)
             {
                 Notifications.Add(Notification.CreateOnError<T>(error));
             }
         }
-        public void OnCompleted()
+        void IObserver<T>.OnCompleted()
         {
             lock (gate)
             {

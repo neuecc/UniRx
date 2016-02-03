@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using UniRx;
+using System.Threading;
 
 namespace UniRx.Tests
 {
@@ -216,6 +217,38 @@ namespace UniRx.Tests
                 result[1].xs.IsCollection(1000);
                 result[1].currentSpan.Is(x => TimeSpan.FromMilliseconds(4800) <= x && x <= TimeSpan.FromMilliseconds(5200));
             }
+        }
+
+        [TestMethod]
+        public void BufferTimeAndCountTimeSide()
+        {
+            var subject = new Subject<int>();
+            var record = subject.Buffer(TimeSpan.FromMilliseconds(100), 100).Take(5).Record();
+
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+
+            record.Values.Count.Is(5);
+        }
+
+        [TestMethod]
+        public void BufferWindowBoundaries()
+        {
+            var subject = new Subject<int>();
+            var boundaries = new Subject<int>();
+
+            var record = subject.Buffer(boundaries).Record();
+
+            subject.OnNext(1);
+            subject.OnNext(2);
+            record.Values.Count.Is(0);
+
+            boundaries.OnNext(0);
+            record.Values.Count.Is(1);
+            record.Values[0].IsCollection(1, 2);
+
+            boundaries.OnNext(0);
+            record.Values.Count.Is(2);
+            record.Values[1].Count.Is(0);
         }
 
         [TestMethod]
