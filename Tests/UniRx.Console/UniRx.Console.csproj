@@ -56,6 +56,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ZipLatestGenerator.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ZipLatestGenerator.txt</LastGenOutput>
+    </Content>
+    <Content Include="ZipLatestGenerator.txt">
+      <DependentUpon>ZipLatestGenerator.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Content>
     <Content Include="CombineLatestGenerator.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>CombineLatestGenerator.txt</LastGenOutput>

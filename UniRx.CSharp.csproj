@@ -144,6 +144,7 @@
     <Compile Include="Assets\UniRx\Scripts\Operators\Buffer.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Cast.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Catch.cs" />
+    <Compile Include="Assets\UniRx\Scripts\Operators\ZipLatest.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\CombineLatest.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Concat.cs" />
     <Compile Include="Assets\UniRx\Scripts\Operators\Create.cs" />

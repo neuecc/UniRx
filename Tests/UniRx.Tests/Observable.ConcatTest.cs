@@ -388,6 +388,187 @@ namespace UniRx.Tests
         }
 
         [TestMethod]
+        public void ZipLatest()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            a.ZipLatest(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+            l[0].Value.Is(new { x = 1000, y = 2000 });
+
+            b.OnNext(3000);
+            l.Count.Is(1);
+
+            a.OnNext(5000);
+            l[1].Value.Is(new { x = 5000, y = 3000 });
+
+            a.OnCompleted();
+            l.Count.Is(2);
+
+            a.OnNext(1001);
+            l.Count.Is(2);
+
+            b.OnNext(5);
+            l.Count.Is(3);
+            l[2].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void ZipLatest2()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            a.ZipLatest(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+            l[0].Value.Is(new { x = 1000, y = 2000 });
+
+            b.OnNext(3000);
+            l.Count.Is(1);
+
+            a.OnNext(5000);
+            l[1].Value.Is(new { x = 5000, y = 3000 });
+
+            a.OnNext(9999); // one more
+
+            a.OnCompleted();
+            l.Count.Is(2);
+
+            a.OnNext(1001);
+            l.Count.Is(2);
+
+            b.OnNext(5);
+            l.Count.Is(4);
+            l[2].Value.Is(new { x = 9999, y = 5 });
+            l[3].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void ZipLatest2Ex()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            a.ZipLatest(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
+
+            b.OnNext(2000);
+            a.OnCompleted();
+
+            l.Count.Is(0);
+
+            b.OnNext(30);
+            l.Count.Is(1);
+            l[0].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void ZipLatestMulti()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.ZipLatest(a, b).Select((xs) => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+            l[0].Value.Is(new { x = 1000, y = 2000 });
+
+            b.OnNext(3000);
+            l.Count.Is(1);
+
+            a.OnNext(5000);
+            l[1].Value.Is(new { x = 5000, y = 3000 });
+
+            a.OnCompleted();
+            l.Count.Is(2);
+
+            b.OnNext(5);
+            l[2].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void ZipLatestMulti2()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.ZipLatest(a, b).Select((xs) => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+            l[0].Value.Is(new { x = 1000, y = 2000 });
+
+            b.OnNext(3000);
+            l.Count.Is(1);
+
+            a.OnNext(5000);
+            l[1].Value.Is(new { x = 5000, y = 3000 });
+
+            a.OnNext(900);
+            a.OnCompleted();
+            l.Count.Is(2);
+
+            b.OnNext(5);
+            l[2].Value.Is(new { x = 900, y = 5 });
+            l[3].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void ZipLatestNth()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+            var c = new Subject<int>();
+            var d = new Subject<int>();
+
+            var record = a.ZipLatest(b, c, d, (x, y, z, w) => new { x, y, z, w }).Record();
+
+            a.OnNext(1);
+            b.OnNext(2);
+            c.OnNext(3);
+            record.Values.Count.Is(0);
+
+            d.OnNext(4);
+            record.Values[0].Is(new { x = 1, y = 2, z = 3, w = 4 });
+
+            a.OnNext(10);
+            record.Values.Count.Is(1);
+
+            b.OnNext(20);
+            c.OnNext(30);
+            d.OnNext(40);
+
+            record.Values[1].Is(new { x = 10, y = 20, z = 30, w = 40 });
+
+            // complete
+            a.OnCompleted();
+            record.Notifications.Count.Is(2);
+
+            b.OnNext(200);
+            record.Notifications.Count.Is(3);
+            record.Notifications.Last().Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
         public void StartWith()
         {
             var seq = Observable.Range(1, 5);
