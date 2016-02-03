@@ -569,6 +569,40 @@ namespace UniRx.Tests
         }
 
         [TestMethod]
+        public void WithLatestFrom()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            var record = a.WithLatestFrom(b, (x, y) => new { x, y }).Record();
+
+            b.OnNext(0); // 50
+            b.OnNext(1); // 100
+            a.OnNext(0); // 140
+            b.OnNext(2); // 150
+            b.OnNext(3); // 200
+            b.OnNext(4); // 250
+            a.OnNext(1); // 280
+            b.OnNext(5); // 300
+            b.OnNext(6); // 350
+            b.OnNext(7); // 400
+            a.OnNext(2); // 420
+            b.OnNext(8); // 450
+            b.OnNext(9); // 500
+            b.OnNext(10); // 550
+            a.OnNext(3); // 600
+
+            record.Values.IsCollection(
+                new { x = 0, y = 1 },
+                new { x = 1, y = 4 },
+                new { x = 2, y = 7 },
+                new { x = 3, y = 10 });
+
+            a.OnCompleted();
+            record.Notifications.Last().Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
         public void StartWith()
         {
             var seq = Observable.Range(1, 5);

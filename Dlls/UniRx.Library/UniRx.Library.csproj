@@ -370,6 +370,9 @@
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Where.cs">
       <Link>Operators\Where.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\UniRx\Scripts\Operators\WithLatestFrom.cs">
+      <Link>Operators\WithLatestFrom.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\UniRx\Scripts\Operators\Zip.cs">
       <Link>Operators\Zip.cs</Link>
     </Compile>

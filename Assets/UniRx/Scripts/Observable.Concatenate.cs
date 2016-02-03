@@ -227,6 +227,11 @@ namespace UniRx
             return new SwitchObservable<T>(sources);
         }
 
+        public static IObservable<TResult> WithLatestFrom<TLeft, TRight, TResult>(this IObservable<TLeft> left, IObservable<TRight> right, Func<TLeft, TRight, TResult> selector)
+        {
+            return new WithLatestFromObservable<TLeft, TRight, TResult>(left, right, selector);
+        }
+
         /// <summary>
         /// <para>Specialized for single async operations like Task.WhenAll, Zip.Take(1).</para>
         /// <para>If sequence is empty, return T[0] array.</para>
