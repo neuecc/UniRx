@@ -12,6 +12,8 @@ namespace UniRx
     public interface IReactiveProperty<T> : IReadOnlyReactiveProperty<T>
     {
         new T Value { get; set; }
+
+        ISubject<T> AsSubject();
     }
 
     /// <summary>
@@ -101,7 +103,7 @@ namespace UniRx
 
             canPublishValueOnSubscribe = false;
             publisher = new Subject<T>();
-            sourceConnection = source.Subscribe(new ReactivePropertyObserver(this));
+            sourceConnection = source.Subscribe(AsSubject());
         }
 
         public ReactiveProperty(IObservable<T> source, T initialValue)
@@ -109,7 +111,7 @@ namespace UniRx
             canPublishValueOnSubscribe = false;
             Value = initialValue;
             publisher = new Subject<T>();
-            sourceConnection = source.Subscribe(new ReactivePropertyObserver(this));
+            sourceConnection = source.Subscribe(AsSubject());
         }
 
         protected virtual void SetValue(T value)
@@ -207,12 +209,17 @@ namespace UniRx
             return false;
         }
 
-        class ReactivePropertyObserver : IObserver<T>
+        public ISubject<T> AsSubject()
+        {
+            return new ReactivePropertySubject(this);
+        }
+
+        class ReactivePropertySubject : ISubject<T>
         {
             readonly ReactiveProperty<T> parent;
             int isStopped = 0;
 
-            public ReactivePropertyObserver(ReactiveProperty<T> parent)
+            public ReactivePropertySubject(ReactiveProperty<T> parent)
             {
                 this.parent = parent;
             }
@@ -236,6 +243,11 @@ namespace UniRx
                 {
                     parent.publisher.OnCompleted();
                 }
+            }
+
+            public IDisposable Subscribe(IObserver<T> observer)
+            {
+                return parent.Subscribe(observer);
             }
         }
     }
