@@ -47,232 +47,235 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\AsyncOperationExtensions.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\AotSafeExtensions.cs">
+      <Link>UnityEngineBridge\AotSafeExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\AsyncOperationExtensions.cs">
       <Link>UnityEngineBridge\AsyncOperationExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\CancellationToken.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\CancellationToken.cs">
       <Link>UnityEngineBridge\CancellationToken.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\LogEntry.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Diagnostics\LogEntry.cs">
       <Link>UnityEngineBridge\Diagnostics\LogEntry.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\LogEntryExtensions.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Diagnostics\LogEntryExtensions.cs">
       <Link>UnityEngineBridge\Diagnostics\LogEntryExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\Logger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Diagnostics\Logger.cs">
       <Link>UnityEngineBridge\Diagnostics\Logger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\ObservableLogger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Diagnostics\ObservableLogger.cs">
       <Link>UnityEngineBridge\Diagnostics\ObservableLogger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Diagnostics\UnityDebugSink.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Diagnostics\UnityDebugSink.cs">
       <Link>UnityEngineBridge\Diagnostics\UnityDebugSink.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\InspectableReactiveProperty.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\InspectableReactiveProperty.cs">
       <Link>UnityEngineBridge\InspectableReactiveProperty.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\InspectorDisplayDrawer.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\InspectorDisplayDrawer.cs">
       <Link>UnityEngineBridge\InspectorDisplayDrawer.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\LazyTask.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\LazyTask.cs">
       <Link>UnityEngineBridge\LazyTask.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\LifetimeDisposableExtensions.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\LifetimeDisposableExtensions.cs">
       <Link>UnityEngineBridge\LifetimeDisposableExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\MainThreadDispatcher.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\MainThreadDispatcher.cs">
       <Link>UnityEngineBridge\MainThreadDispatcher.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\MainThreadScheduler.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\MainThreadScheduler.cs">
       <Link>UnityEngineBridge\MainThreadScheduler.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Observable.Unity.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Observable.Unity.cs">
       <Link>UnityEngineBridge\Observable.Unity.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ObservableMonoBehaviour.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObservableMonoBehaviour.cs">
       <Link>UnityEngineBridge\ObservableMonoBehaviour.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ObservableWWW.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObservableWWW.cs">
       <Link>UnityEngineBridge\ObservableWWW.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ObserveExtensions.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObserveExtensions.cs">
       <Link>UnityEngineBridge\ObserveExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\DelayFrame.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\DelayFrame.cs">
       <Link>UnityEngineBridge\Operators\DelayFrame.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\DelayFrameSubscription.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\DelayFrameSubscription.cs">
       <Link>UnityEngineBridge\Operators\DelayFrameSubscription.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\FromCoroutine.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\FromCoroutine.cs">
       <Link>UnityEngineBridge\Operators\FromCoroutine.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\RepeatUntil.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\RepeatUntil.cs">
       <Link>UnityEngineBridge\Operators\RepeatUntil.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\SampleFrame.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\SampleFrame.cs">
       <Link>UnityEngineBridge\Operators\SampleFrame.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\SubscribeOnMainThread.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\SubscribeOnMainThread.cs">
       <Link>UnityEngineBridge\Operators\SubscribeOnMainThread.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\ThrottleFirstFrame.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\ThrottleFirstFrame.cs">
       <Link>UnityEngineBridge\Operators\ThrottleFirstFrame.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\ThrottleFrame.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\ThrottleFrame.cs">
       <Link>UnityEngineBridge\Operators\ThrottleFrame.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Operators\TimeoutFrame.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\TimeoutFrame.cs">
       <Link>UnityEngineBridge\Operators\TimeoutFrame.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\PresenterBase.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\PresenterBase.cs">
       <Link>UnityEngineBridge\PresenterBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ReactiveCollection.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveCollection.cs">
       <Link>UnityEngineBridge\ReactiveCollection.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ReactiveDictionary.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveDictionary.cs">
       <Link>UnityEngineBridge\ReactiveDictionary.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs">
       <Link>UnityEngineBridge\ReactiveProperty.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs">
       <Link>UnityEngineBridge\ScenePlaybackDetector.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableAnimatorTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableAnimatorTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableAnimatorTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableBeginDragTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableBeginDragTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableBeginDragTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCancelTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCancelTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableCancelTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCanvasGroupChangedTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCanvasGroupChangedTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableCanvasGroupChangedTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCollision2DTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCollision2DTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableCollision2DTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCollisionTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCollisionTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableCollisionTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDeselectTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDeselectTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableDeselectTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDestroyTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDestroyTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableDestroyTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDragTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDragTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableDragTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDropTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableDropTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableDropTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableEnableTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableEnableTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableEnableTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableEndDragTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableEndDragTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableEndDragTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableEventTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableEventTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableEventTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableFixedUpdateTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableFixedUpdateTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableFixedUpdateTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableInitializePotentialDragTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableInitializePotentialDragTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableInitializePotentialDragTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableLateUpdateTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableLateUpdateTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableLateUpdateTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableMouseTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableMouseTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableMouseTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableMoveTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableMoveTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableMoveTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerClickTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerClickTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservablePointerClickTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerDownTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerDownTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservablePointerDownTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerEnterTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerEnterTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservablePointerEnterTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerExitTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerExitTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservablePointerExitTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerUpTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerUpTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservablePointerUpTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableRectTransformTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableRectTransformTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableRectTransformTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableScrollTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableScrollTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableScrollTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableSelectTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableSelectTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableSelectTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableStateMachineTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableStateMachineTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableStateMachineTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableSubmitTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableSubmitTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableSubmitTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTransformChangedTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTransformChangedTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableTransformChangedTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTrigger2DTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTrigger2DTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableTrigger2DTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerBase.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerBase.cs">
       <Link>UnityEngineBridge\Triggers\ObservableTriggerBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerExtensions.Component.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerExtensions.Component.cs">
       <Link>UnityEngineBridge\Triggers\ObservableTriggerExtensions.Component.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerExtensions.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerExtensions.cs">
       <Link>UnityEngineBridge\Triggers\ObservableTriggerExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableTriggerTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableTriggerTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableUpdateSelectedTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableUpdateSelectedTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableUpdateSelectedTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableUpdateTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableUpdateTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableUpdateTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableVisibleTrigger.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableVisibleTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableVisibleTrigger.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\TypedMonoBehaviour.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\TypedMonoBehaviour.cs">
       <Link>UnityEngineBridge\TypedMonoBehaviour.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\UnityEqualityComparer.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\UnityEqualityComparer.cs">
       <Link>UnityEngineBridge\UnityEqualityComparer.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\UnityEventExtensions.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\UnityEventExtensions.cs">
       <Link>UnityEngineBridge\UnityEventExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\UnityGraphicExtensions.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\UnityGraphicExtensions.cs">
       <Link>UnityEngineBridge\UnityGraphicExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\UnityUIComponentExtensions.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\UnityUIComponentExtensions.cs">
       <Link>UnityEngineBridge\UnityUIComponentExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityEngineBridge\YieldInstructionCache.cs">
-      <Link>YieldInstructionCache.cs</Link>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\YieldInstructionCache.cs">
+      <Link>UnityEngineBridge\YieldInstructionCache.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityWinRTBridge\Thread.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityWinRTBridge\Thread.cs">
       <Link>UnityWinRTBridge\Thread.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\UniRx\Scripts\UnityWinRTBridge\ThreadPoolScheduler_UnityWinRT.cs">
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityWinRTBridge\ThreadPoolScheduler_UnityWinRT.cs">
       <Link>UnityWinRTBridge\ThreadPoolScheduler_UnityWinRT.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -214,7 +214,6 @@ namespace UniRx.Operators
             T[] values;
             bool[] isStarted;
             bool[] isCompleted;
-            bool isAllValueStarted;
 
             public ZipLatest(ZipLatestObservable<T> parent, IObserver<IList<T>> observer, IDisposable cancel) : base(observer, cancel)
             {
