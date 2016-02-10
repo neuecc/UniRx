@@ -294,12 +294,21 @@ namespace UniRx.ObjectTest
 
         public StringReactiveCollection SerializableRxc;
 
+        [Range(1, 10)]
+        public float TadanoRange;
+
+        [RangeReactivePropertyAttribute(1, 10)]
         public IntReactiveProperty Intxxx;
         public LongReactiveProperty LongxXXX;
         public BoolReactiveProperty Booxxx;
+
+        [RangeReactivePropertyAttribute(1, 10)]
         public FloatReactiveProperty FloAAX;
+
+        [RangeReactivePropertyAttribute(1, 10)]
         public DoubleReactiveProperty DuAAX;
         public MikanReactiveProperty MikanRP;
+        [RangeReactivePropertyAttribute(1, 10)]
         public StringReactiveProperty Strrrrr;
 
         [Multiline]
@@ -359,6 +368,9 @@ namespace UniRx.ObjectTest
                 UnityEngine.Debug.Log("---");
             });
 #endif
+
+            FloAAX.Subscribe(x => Debug.Log("FloAAX:" + x));
+
         }
 
         CompositeDisposable disposables = new CompositeDisposable();

@@ -43,6 +43,22 @@ namespace UniRx
         }
     }
 
+    /// <summary>
+    /// Enables range input field for Int/FloatReactiveProperty.
+    /// </summary>
+    [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    public class RangeReactivePropertyAttribute : PropertyAttribute
+    {
+        public float Min { get; private set; }
+        public float Max { get; private set; }
+
+        public RangeReactivePropertyAttribute(float min, float max)
+        {
+            this.Min = min;
+            this.Max = max;
+        }
+    }
+
 #if UNITY_EDITOR
 
 
@@ -215,7 +231,26 @@ namespace UniRx
             var multiline = GetMultilineAttribute();
             if (multiline == null)
             {
-                UnityEditor.EditorGUI.PropertyField(position, targetSerializedProperty, label, includeChildren: true);
+                var range = GetRangeAttribute();
+                if (range == null)
+                {
+                    UnityEditor.EditorGUI.PropertyField(position, targetSerializedProperty, label, includeChildren: true);
+                }
+                else
+                {
+                    if (targetSerializedProperty.propertyType == SerializedPropertyType.Float)
+                    {
+                        EditorGUI.Slider(position, targetSerializedProperty, range.Min, range.Max, label);
+                    }
+                    else if (targetSerializedProperty.propertyType == SerializedPropertyType.Integer)
+                    {
+                        EditorGUI.IntSlider(position, targetSerializedProperty, (int)range.Min, (int)range.Max, label);
+                    }
+                    else
+                    {
+                        EditorGUI.LabelField(position, label.text, "Use Range with float or int.");
+                    }
+                }
             }
             else
             {
@@ -243,6 +278,13 @@ namespace UniRx
             var fi = this.fieldInfo;
             if (fi == null) return null;
             return fi.GetCustomAttributes(false).OfType<MultilineReactivePropertyAttribute>().FirstOrDefault();
+        }
+
+        RangeReactivePropertyAttribute GetRangeAttribute()
+        {
+            var fi = this.fieldInfo;
+            if (fi == null) return null;
+            return fi.GetCustomAttributes(false).OfType<RangeReactivePropertyAttribute>().FirstOrDefault();
         }
     }
 
