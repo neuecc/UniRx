@@ -25,7 +25,7 @@
     var projPath = targetProj.FullName;
     var classNames = GetClassNamesAsync(projPath).Result.OrderBy(x => x.ClassName).ThenBy(x => x.MethodName);
 #>
-
+#if !UNITY_METRO && !UNITY_4_5
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -116,7 +116,7 @@ namespace UniRx.Tests
 <# } #>
 
 }
-
+#endif
 <#+
     class UnitTestCode
     {
@@ -163,4 +163,3 @@ namespace UniRx.Tests
         return testCodes;
     }
 #>
-

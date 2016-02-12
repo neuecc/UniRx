@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if !UNITY_METRO && !UNITY_4_5
+
+using UnityEngine;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnityEngine.UI;
@@ -37,3 +39,5 @@ namespace UniRx.Tests
         }
     }
 }
+
+#endif

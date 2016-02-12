@@ -1,4 +1,4 @@
-﻿
+﻿#if !UNITY_METRO && !UNITY_4_5
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,6 +31,16 @@ namespace UniRx.Tests
                 {
                     Clear(resultVertical);
                     MainThreadDispatcher.StartCoroutine(AggregateTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform, true);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
+                button.GetComponentInChildren<Text>().text = "ContinueWithTest(2)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(ContinueWithTest.Run(resultPrefab, resultVertical));
                 });
                 button.transform.SetParent(buttonVertical.transform, true);
             }
@@ -86,7 +96,7 @@ namespace UniRx.Tests
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab) as Button;
-                button.GetComponentInChildren<Text>().text = "ObservableConcatTest(19)";
+                button.GetComponentInChildren<Text>().text = "ObservableConcatTest(26)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
                     Clear(resultVertical);
@@ -126,7 +136,7 @@ namespace UniRx.Tests
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab) as Button;
-                button.GetComponentInChildren<Text>().text = "ObservablePagingTest(25)";
+                button.GetComponentInChildren<Text>().text = "ObservablePagingTest(30)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
                     Clear(resultVertical);
@@ -326,6 +336,112 @@ namespace UniRx.Tests
 
             Observable.Empty<int>().Scan((x, y) => x + y).ToArrayWait().IsCollection();
             Observable.Empty<int>().Scan(100, (x, y) => x + y).ToArrayWait().IsCollection();
+        }
+
+
+
+    }
+
+
+    public partial class ContinueWithTest
+    {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new ContinueWithTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "ContinueWith";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ContinueWith();
+                    r.Message.Value = "ContinueWith OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ContinueWith NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ContinueWith NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "ContinueWith2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ContinueWith2();
+                    r.Message.Value = "ContinueWith2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ContinueWith2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ContinueWith2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
+
+        [TestMethod]
+        public void ContinueWith()
+        {
+            var subject = new Subject<int>();
+
+            var record = subject.ContinueWith(x => Observable.Return(x)).Record();
+
+            subject.OnNext(10);
+            record.Values.Count.Is(0);
+
+            subject.OnNext(100);
+            record.Values.Count.Is(0);
+
+            subject.OnCompleted();
+            record.Values[0].Is(100);
+            record.Notifications.Last().Kind.Is(NotificationKind.OnCompleted);
+        }
+
+
+
+
+        [TestMethod]
+        public void ContinueWith2()
+        {
+            var subject = new Subject<int>();
+
+            var record = subject.ContinueWith(x => Observable.Return(x).Delay(TimeSpan.FromMilliseconds(100))).Record();
+
+            subject.OnNext(10);
+            record.Values.Count.Is(0);
+
+            subject.OnNext(100);
+            record.Values.Count.Is(0);
+
+            subject.OnCompleted();
+            Thread.Sleep(TimeSpan.FromMilliseconds(200));
+            record.Values[0].Is(100);
+            record.Notifications.Last().Kind.Is(NotificationKind.OnCompleted);
         }
 
 
@@ -2005,6 +2121,32 @@ namespace UniRx.Tests
                 var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "WithLatestFrom";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.WithLatestFrom();
+                    r.Message.Value = "WithLatestFrom OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "WithLatestFrom NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "WithLatestFrom NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "Zip";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -2049,6 +2191,162 @@ namespace UniRx.Tests
                 catch (Exception ex)
                 {
                     r.Message.Value = "Zip2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "ZipLatest";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ZipLatest();
+                    r.Message.Value = "ZipLatest OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ZipLatest NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ZipLatest NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "ZipLatest2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ZipLatest2();
+                    r.Message.Value = "ZipLatest2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ZipLatest2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ZipLatest2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "ZipLatest2Ex";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ZipLatest2Ex();
+                    r.Message.Value = "ZipLatest2Ex OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ZipLatest2Ex NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ZipLatest2Ex NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "ZipLatestMulti";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ZipLatestMulti();
+                    r.Message.Value = "ZipLatestMulti OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ZipLatestMulti NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ZipLatestMulti NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "ZipLatestMulti2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ZipLatestMulti2();
+                    r.Message.Value = "ZipLatestMulti2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ZipLatestMulti2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ZipLatestMulti2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "ZipLatestNth";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.ZipLatestNth();
+                    r.Message.Value = "ZipLatestNth OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "ZipLatestNth NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "ZipLatestNth NG\r\n" + ex.ToString();
                     r.Color.Value = UnityEngine.Color.red;
                 }
             }
@@ -2526,6 +2824,43 @@ namespace UniRx.Tests
 
 
         [TestMethod]
+        public void WithLatestFrom()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            var record = a.WithLatestFrom(b, (x, y) => new { x, y }).Record();
+
+            b.OnNext(0); // 50
+            b.OnNext(1); // 100
+            a.OnNext(0); // 140
+            b.OnNext(2); // 150
+            b.OnNext(3); // 200
+            b.OnNext(4); // 250
+            a.OnNext(1); // 280
+            b.OnNext(5); // 300
+            b.OnNext(6); // 350
+            b.OnNext(7); // 400
+            a.OnNext(2); // 420
+            b.OnNext(8); // 450
+            b.OnNext(9); // 500
+            b.OnNext(10); // 550
+            a.OnNext(3); // 600
+
+            record.Values.IsCollection(
+                new { x = 0, y = 1 },
+                new { x = 1, y = 4 },
+                new { x = 2, y = 7 },
+                new { x = 3, y = 10 });
+
+            a.OnCompleted();
+            record.Notifications.Last().Kind.Is(NotificationKind.OnCompleted);
+        }
+
+
+
+
+        [TestMethod]
         public void Zip()
         {
             var a = new Subject<int>();
@@ -2579,6 +2914,205 @@ namespace UniRx.Tests
 
             l.Count.Is(2); // Completed!
             l[1].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+
+
+
+        [TestMethod]
+        public void ZipLatest()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            a.ZipLatest(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+            l[0].Value.Is(new { x = 1000, y = 2000 });
+
+            b.OnNext(3000);
+            l.Count.Is(1);
+
+            a.OnNext(5000);
+            l[1].Value.Is(new { x = 5000, y = 3000 });
+
+            a.OnCompleted();
+            l.Count.Is(2);
+
+            a.OnNext(1001);
+            l.Count.Is(2);
+
+            b.OnNext(5);
+            l.Count.Is(3);
+            l[2].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+
+
+
+        [TestMethod]
+        public void ZipLatest2()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            a.ZipLatest(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+            l[0].Value.Is(new { x = 1000, y = 2000 });
+
+            b.OnNext(3000);
+            l.Count.Is(1);
+
+            a.OnNext(5000);
+            l[1].Value.Is(new { x = 5000, y = 3000 });
+
+            a.OnNext(9999); // one more
+
+            a.OnCompleted();
+            l.Count.Is(2);
+
+            a.OnNext(1001);
+            l.Count.Is(2);
+
+            b.OnNext(5);
+            l.Count.Is(4);
+            l[2].Value.Is(new { x = 9999, y = 5 });
+            l[3].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+
+
+
+        [TestMethod]
+        public void ZipLatest2Ex()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            a.OnNext(10);
+            b.OnNext(20);
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            a.ZipLatest(b, (x, y) => new { x, y }).Materialize().Subscribe(x => l.Add(x));
+
+            b.OnNext(2000);
+            a.OnCompleted();
+
+            l.Count.Is(0);
+
+            b.OnNext(30);
+            l.Count.Is(1);
+            l[0].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+
+
+
+        [TestMethod]
+        public void ZipLatestMulti()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.ZipLatest(a, b).Select((xs) => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+            l[0].Value.Is(new { x = 1000, y = 2000 });
+
+            b.OnNext(3000);
+            l.Count.Is(1);
+
+            a.OnNext(5000);
+            l[1].Value.Is(new { x = 5000, y = 3000 });
+
+            a.OnCompleted();
+            l.Count.Is(2);
+
+            b.OnNext(5);
+            l[2].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+
+
+
+        [TestMethod]
+        public void ZipLatestMulti2()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+
+            var l = Enumerable.Empty<Unit>().Select(_ => Notification.CreateOnNext(new { x = 0, y = 0 })).ToList();
+            Observable.ZipLatest(a, b).Select((xs) => new { x = xs[0], y = xs[1] }).Materialize().Subscribe(x => l.Add(x));
+
+            a.OnNext(1000);
+            b.OnNext(2000);
+            l[0].Value.Is(new { x = 1000, y = 2000 });
+
+            b.OnNext(3000);
+            l.Count.Is(1);
+
+            a.OnNext(5000);
+            l[1].Value.Is(new { x = 5000, y = 3000 });
+
+            a.OnNext(900);
+            a.OnCompleted();
+            l.Count.Is(2);
+
+            b.OnNext(5);
+            l[2].Value.Is(new { x = 900, y = 5 });
+            l[3].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+
+
+
+        [TestMethod]
+        public void ZipLatestNth()
+        {
+            var a = new Subject<int>();
+            var b = new Subject<int>();
+            var c = new Subject<int>();
+            var d = new Subject<int>();
+
+            var record = a.ZipLatest(b, c, d, (x, y, z, w) => new { x, y, z, w }).Record();
+
+            a.OnNext(1);
+            b.OnNext(2);
+            c.OnNext(3);
+            record.Values.Count.Is(0);
+
+            d.OnNext(4);
+            record.Values[0].Is(new { x = 1, y = 2, z = 3, w = 4 });
+
+            a.OnNext(10);
+            record.Values.Count.Is(1);
+
+            b.OnNext(20);
+            c.OnNext(30);
+            d.OnNext(40);
+
+            record.Values[1].Is(new { x = 10, y = 20, z = 30, w = 40 });
+
+            // complete
+            a.OnCompleted();
+            record.Notifications.Count.Is(2);
+
+            b.OnNext(200);
+            record.Notifications.Count.Is(3);
+            record.Notifications.Last().Kind.Is(NotificationKind.OnCompleted);
         }
 
 
@@ -3626,6 +4160,32 @@ namespace UniRx.Tests
                 var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "BufferTimeAndCountTimeSide";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BufferTimeAndCountTimeSide();
+                    r.Message.Value = "BufferTimeAndCountTimeSide OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BufferTimeAndCountTimeSide NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BufferTimeAndCountTimeSide NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "BufferTimeComplete";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3704,6 +4264,32 @@ namespace UniRx.Tests
                 var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "BufferWindowBoundaries";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.BufferWindowBoundaries();
+                    r.Message.Value = "BufferWindowBoundaries OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "BufferWindowBoundaries NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "BufferWindowBoundaries NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "First";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3748,6 +4334,32 @@ namespace UniRx.Tests
                 catch (Exception ex)
                 {
                     r.Message.Value = "FirstOrDefault NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "GroupBy";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.GroupBy();
+                    r.Message.Value = "GroupBy OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "GroupBy NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "GroupBy NG\r\n" + ex.ToString();
                     r.Color.Value = UnityEngine.Color.red;
                 }
             }
@@ -4042,6 +4654,58 @@ namespace UniRx.Tests
                 var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "TakeLast";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.TakeLast();
+                    r.Message.Value = "TakeLast OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "TakeLast NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "TakeLast NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "TakeLastDuration";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.TakeLastDuration();
+                    r.Message.Value = "TakeLastDuration OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "TakeLastDuration NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "TakeLastDuration NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "TakeUntil";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -4285,6 +4949,20 @@ namespace UniRx.Tests
 
 
         [TestMethod]
+        public void BufferTimeAndCountTimeSide()
+        {
+            var subject = new Subject<int>();
+            var record = subject.Buffer(TimeSpan.FromMilliseconds(100), 100).Take(5).Record();
+
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+
+            record.Values.Count.Is(5);
+        }
+
+
+
+
+        [TestMethod]
         public void BufferTimeComplete()
         {
             // when complete, return empty array.
@@ -4329,6 +5007,30 @@ namespace UniRx.Tests
                 .Wait();
 
             xs.Length.Is(1);
+        }
+
+
+
+
+        [TestMethod]
+        public void BufferWindowBoundaries()
+        {
+            var subject = new Subject<int>();
+            var boundaries = new Subject<int>();
+
+            var record = subject.Buffer(boundaries).Record();
+
+            subject.OnNext(1);
+            subject.OnNext(2);
+            record.Values.Count.Is(0);
+
+            boundaries.OnNext(0);
+            record.Values.Count.Is(1);
+            record.Values[0].IsCollection(1, 2);
+
+            boundaries.OnNext(0);
+            record.Values.Count.Is(2);
+            record.Values[1].Count.Is(0);
         }
 
 
@@ -4471,6 +5173,47 @@ namespace UniRx.Tests
 
                 l[0].Kind.Is(NotificationKind.OnError);
             }
+        }
+
+
+
+
+        [TestMethod]
+        public void GroupBy()
+        {
+            var subject = new Subject<int>();
+
+            RecordObserver<int> a = null;
+            RecordObserver<int> b = null;
+            RecordObserver<int> c = null;
+            var recorder = subject.GroupBy(x => x % 3)
+                .Subscribe(x =>
+                {
+                    if (x.Key == 0)
+                    {
+                        a = x.Record();
+                    }
+                    else if (x.Key == 1)
+                    {
+                        b = x.Record();
+                    }
+                    else if (x.Key == 2)
+                    {
+                        c = x.Record();
+                    }
+                });
+
+            subject.OnNext(99);
+            subject.OnNext(100);
+            subject.OnNext(101);
+
+            subject.OnNext(0);
+            subject.OnNext(1);
+            subject.OnNext(2);
+
+            a.Values.IsCollection(99, 0);
+            b.Values.IsCollection(100, 1);
+            c.Values.IsCollection(101, 2);
         }
 
 
@@ -5021,6 +5764,49 @@ namespace UniRx.Tests
                 .ToArray()
                 .Wait()
                 .IsCollection(7, 8, 9, 10);
+        }
+
+
+
+
+        [TestMethod]
+        public void TakeLast()
+        {
+            var record = Observable.Range(1, 2).TakeLast(3).Record();
+            record.Values.IsCollection(1, 2);
+
+            record = Observable.Range(1, 3).TakeLast(3).Record();
+            record.Values.IsCollection(1, 2, 3);
+
+            record = Observable.Range(1, 4).TakeLast(3).Record();
+            record.Values.IsCollection(2, 3, 4);
+
+            record = Observable.Range(1, 10).TakeLast(3).Record();
+            record.Values.IsCollection(8, 9, 10);
+
+            record = Observable.Empty<int>().TakeLast(3).Record();
+            record.Notifications[0].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+
+
+
+        [TestMethod]
+        public void TakeLastDuration()
+        {
+            var subject = new Subject<long>();
+
+            var record = subject.Record();
+            subject.OnCompleted();
+            record.Notifications[0].Kind.Is(NotificationKind.OnCompleted);
+
+            // 0, 200, 400, 600, 800
+            var data = Observable.Timer(TimeSpan.Zero, TimeSpan.FromMilliseconds(200))
+                .Take(5)
+                .TakeLast(TimeSpan.FromMilliseconds(250))
+                .ToArrayWait();
+
+            data.IsCollection(3, 4);
         }
 
 
@@ -8298,4 +9084,4 @@ namespace UniRx.Tests
 
 
 }
-
+#endif

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if !UNITY_4_5
+
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -13,3 +15,5 @@ public class CountOnly : MonoBehaviour
         text.text = (count++).ToString();
     }
 }
+
+#endif

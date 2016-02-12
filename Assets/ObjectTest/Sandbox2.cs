@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if !UNITY_4_5
+
+using UnityEngine;
 using UniRx;
 using UniRx.Triggers;
 using System.Collections;
@@ -66,4 +68,6 @@ public class Sandbox2 : MonoBehaviour
             Debug.Log(cube);
         });
     }
-} 
+}
+
+#endif

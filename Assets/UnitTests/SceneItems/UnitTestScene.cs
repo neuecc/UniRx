@@ -1,4 +1,4 @@
-﻿#if !UNITY_METRO
+﻿#if !UNITY_METRO && !UNITY_4_5
 
 using UnityEngine;
 using System.Collections;
