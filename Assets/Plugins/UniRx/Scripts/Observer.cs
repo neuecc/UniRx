@@ -8,7 +8,7 @@ namespace UniRx
         internal static IObserver<T> CreateSubscribeObserver<T>(Action<T> onNext, Action<Exception> onError, Action onCompleted)
         {
             // need compare for avoid iOS AOT
-            if (onNext == Stubs.Ignore<T>)
+            if (onNext == Stubs<T>.Ignore)
             {
                 return new Subscribe_<T>(onError, onCompleted);
             }
@@ -21,7 +21,7 @@ namespace UniRx
         public static IObserver<T> Create<T>(Action<T> onNext, Action<Exception> onError, Action onCompleted)
         {
             // need compare for avoid iOS AOT
-            if (onNext == Stubs.Ignore<T>)
+            if (onNext == Stubs<T>.Ignore)
             {
                 return new EmptyOnNextAnonymousObserver<T>(onError, onCompleted);
             }
@@ -269,15 +269,16 @@ namespace UniRx
         public static readonly Action Nop = () => { };
         public static readonly Action<Exception> Throw = ex => { throw ex; };
 
-        // Stubs<T>.Ignore can't avoid iOS AOT problem.
-        public static void Ignore<T>(T t)
-        {
-        }
-
         // marker for CatchIgnore and Catch avoid iOS AOT problem.
         public static IObservable<TSource> CatchIgnore<TSource>(Exception ex)
         {
             return Observable.Empty<TSource>();
         }
+    }
+
+    internal static class Stubs<T>
+    {
+        public static readonly Action<T> Ignore = (T t) => { };
+        public static readonly Func<T, T> Identity = (T t) => t;
     }
 }

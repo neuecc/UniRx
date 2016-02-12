@@ -993,5 +993,43 @@ namespace UniRx.Tests
 
             data.IsCollection(3, 4);
         }
+
+        [TestMethod]
+        public void GroupBy()
+        {
+            var subject = new Subject<int>();
+
+            RecordObserver<int> a = null;
+            RecordObserver<int> b = null;
+            RecordObserver<int> c = null;
+            var recorder = subject.GroupBy(x => x % 3)
+                .Subscribe(x =>
+                {
+                    if (x.Key == 0)
+                    {
+                        a = x.Record();
+                    }
+                    else if (x.Key == 1)
+                    {
+                        b = x.Record();
+                    }
+                    else if (x.Key == 2)
+                    {
+                        c = x.Record();
+                    }
+                });
+
+            subject.OnNext(99);
+            subject.OnNext(100);
+            subject.OnNext(101);
+
+            subject.OnNext(0);
+            subject.OnNext(1);
+            subject.OnNext(2);
+
+            a.Values.IsCollection(99, 0);
+            b.Values.IsCollection(100, 1);
+            c.Values.IsCollection(101, 2);
+        }
     }
 }

@@ -238,6 +238,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\FromEvent.cs">
       <Link>Operators\FromEvent.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\GroupBy.cs">
+      <Link>Operators\GroupBy.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\IgnoreElements.cs">
       <Link>Operators\IgnoreElements.cs</Link>
     </Compile>

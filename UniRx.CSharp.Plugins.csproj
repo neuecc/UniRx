@@ -179,6 +179,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Switch.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Synchronize.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\SynchronizedObserver.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\GroupBy.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\TakeLast.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Take.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\TakeUntil.cs" />
