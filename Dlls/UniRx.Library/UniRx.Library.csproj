@@ -328,6 +328,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\Take.cs">
       <Link>Operators\Take.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\TakeLast.cs">
+      <Link>Operators\TakeLast.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\TakeUntil.cs">
       <Link>Operators\TakeUntil.cs</Link>
     </Compile>

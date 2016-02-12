@@ -956,5 +956,42 @@ namespace UniRx.Tests
             xs[2].Previous.Is(3); xs[2].Current.Is(4);
             xs[3].Previous.Is(4); xs[3].Current.Is(5);
         }
+
+        [TestMethod]
+        public void TakeLast()
+        {
+            var record = Observable.Range(1, 2).TakeLast(3).Record();
+            record.Values.IsCollection(1, 2);
+
+            record = Observable.Range(1, 3).TakeLast(3).Record();
+            record.Values.IsCollection(1, 2, 3);
+
+            record = Observable.Range(1, 4).TakeLast(3).Record();
+            record.Values.IsCollection(2, 3, 4);
+
+            record = Observable.Range(1, 10).TakeLast(3).Record();
+            record.Values.IsCollection(8, 9, 10);
+
+            record = Observable.Empty<int>().TakeLast(3).Record();
+            record.Notifications[0].Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [TestMethod]
+        public void TakeLastDuration()
+        {
+            var subject = new Subject<long>();
+
+            var record = subject.Record();
+            subject.OnCompleted();
+            record.Notifications[0].Kind.Is(NotificationKind.OnCompleted);
+
+            // 0, 200, 400, 600, 800
+            var data = Observable.Timer(TimeSpan.Zero, TimeSpan.FromMilliseconds(200))
+                .Take(5)
+                .TakeLast(TimeSpan.FromMilliseconds(250))
+                .ToArrayWait();
+
+            data.IsCollection(3, 4);
+        }
     }
 }

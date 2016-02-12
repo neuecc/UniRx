@@ -66,6 +66,26 @@ namespace UniRx
             return new TakeUntilObservable<T, TOther>(source, other);
         }
 
+        public static IObservable<T> TakeLast<T>(this IObservable<T> source, int count)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (count < 0) throw new ArgumentOutOfRangeException("count");
+
+            return new TakeLastObservable<T>(source, count);
+        }
+
+        public static IObservable<T> TakeLast<T>(this IObservable<T> source, TimeSpan duration)
+        {
+            return TakeLast<T>(source, duration, Scheduler.DefaultSchedulers.TimeBasedOperations);
+        }
+
+        public static IObservable<T> TakeLast<T>(this IObservable<T> source, TimeSpan duration, IScheduler scheduler)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+
+            return new TakeLastObservable<T>(source, duration, scheduler);
+        }
+
         public static IObservable<T> Skip<T>(this IObservable<T> source, int count)
         {
             if (source == null) throw new ArgumentNullException("source");
