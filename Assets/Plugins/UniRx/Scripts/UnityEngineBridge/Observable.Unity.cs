@@ -671,7 +671,7 @@ namespace UniRx
         /// <summary>Convert to awaitable IEnumerator.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, CancellationToken cancel = default(CancellationToken))
         {
-            return ToAwaitableEnumerator<T>(source, Stubs.Ignore<T>, Stubs.Throw, cancel);
+            return ToAwaitableEnumerator<T>(source, Stubs<T>.Ignore, Stubs.Throw, cancel);
         }
 
         /// <summary>Convert to awaitable IEnumerator.</summary>
@@ -683,7 +683,7 @@ namespace UniRx
         /// <summary>Convert to awaitable IEnumerator.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
         {
-            return ToAwaitableEnumerator<T>(source, Stubs.Ignore<T>, onError, cancel);
+            return ToAwaitableEnumerator<T>(source, Stubs<T>.Ignore, onError, cancel);
         }
 
         /// <summary>Convert to awaitable IEnumerator.</summary>
@@ -715,7 +715,7 @@ namespace UniRx
         /// <summary>AutoStart observable as coroutine.</summary>
         public static Coroutine StartAsCoroutine<T>(this IObservable<T> source, CancellationToken cancel = default(CancellationToken))
         {
-            return StartAsCoroutine<T>(source, Stubs.Ignore<T>, Stubs.Throw, cancel);
+            return StartAsCoroutine<T>(source, Stubs<T>.Ignore, Stubs.Throw, cancel);
         }
 
         /// <summary>AutoStart observable as coroutine.</summary>
@@ -727,7 +727,7 @@ namespace UniRx
         /// <summary>AutoStart observable as coroutine.</summary>
         public static Coroutine StartAsCoroutine<T>(this IObservable<T> source, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
         {
-            return StartAsCoroutine<T>(source, Stubs.Ignore<T>, onError, cancel);
+            return StartAsCoroutine<T>(source, Stubs<T>.Ignore, onError, cancel);
         }
 
         /// <summary>AutoStart observable as coroutine.</summary>

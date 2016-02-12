@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Library", "Dlls\UniRx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Library.Unity", "Dlls\UniRx.Library.Unity\UniRx.Library.Unity.csproj", "{0039CA1D-87A6-4F2F-85DC-659FFE5B56FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "Dlls\UniRx\UniRx.csproj", "{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{0039CA1D-87A6-4F2F-85DC-659FFE5B56FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0039CA1D-87A6-4F2F-85DC-659FFE5B56FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0039CA1D-87A6-4F2F-85DC-659FFE5B56FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

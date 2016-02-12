@@ -338,7 +338,7 @@ namespace UniRx
             if (exceptionCallback == null)
             {
                 // do nothing
-                Instance.unhandledExceptionCallback = Stubs.Ignore<Exception>;
+                Instance.unhandledExceptionCallback = Stubs<Exception>.Ignore;
             }
             else
             {
