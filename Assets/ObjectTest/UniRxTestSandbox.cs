@@ -332,8 +332,6 @@ namespace UniRx.ObjectTest
         public RectReactiveProperty EEE;
 
         // public Slider MySlider;
-        public CountOnly only;
-
         public MySuperStructReactiveProperty SUPER_Rx;
 
         public AnimationCurveReactiveProperty FFF;
