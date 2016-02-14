@@ -334,7 +334,7 @@ PlayerSettings:
   metroCertificatePassword: 
   metroCertificateSubject: neuecc
   metroCertificateIssuer: neuecc
-  metroCertificateNotAfter: 808ea5e15856d201
+  metroCertificateNotAfter: 8094c35e0586d201
   metroApplicationDescription: UnityRx
   wsaImages: {}
   metroTileShortName: 

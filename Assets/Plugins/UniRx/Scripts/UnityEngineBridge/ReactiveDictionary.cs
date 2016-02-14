@@ -5,15 +5,16 @@ using System.Runtime.Serialization;
 
 namespace UniRx
 {
-    public struct DictionaryAddEvent<TKey, TValue> : IEquatable<DictionaryAddEvent<TKey,TValue>>
+    public struct DictionaryAddEvent<TKey, TValue> : IEquatable<DictionaryAddEvent<TKey, TValue>>
     {
         public TKey Key { get; private set; }
         public TValue Value { get; private set; }
 
-        public DictionaryAddEvent(TKey Key, TValue value)
+        public DictionaryAddEvent(TKey key, TValue value)
+            : this()
         {
-            this.Key = Key;
-            this.Value = value;
+            Key = key;
+            Value = value;
         }
 
         public override string ToString()
@@ -32,15 +33,16 @@ namespace UniRx
         }
     }
 
-    public struct DictionaryRemoveEvent<TKey, TValue> : IEquatable<DictionaryRemoveEvent<TKey,TValue>>
+    public struct DictionaryRemoveEvent<TKey, TValue> : IEquatable<DictionaryRemoveEvent<TKey, TValue>>
     {
         public TKey Key { get; private set; }
         public TValue Value { get; private set; }
 
         public DictionaryRemoveEvent(TKey key, TValue value)
+            : this()
         {
-            this.Key = key;
-            this.Value = value;
+            Key = key;
+            Value = value;
         }
 
         public override string ToString()
@@ -59,17 +61,18 @@ namespace UniRx
         }
     }
 
-    public struct DictionaryReplaceEvent<TKey, TValue> : IEquatable<DictionaryReplaceEvent<TKey,TValue>>
+    public struct DictionaryReplaceEvent<TKey, TValue> : IEquatable<DictionaryReplaceEvent<TKey, TValue>>
     {
         public TKey Key { get; private set; }
         public TValue OldValue { get; private set; }
         public TValue NewValue { get; private set; }
 
         public DictionaryReplaceEvent(TKey key, TValue oldValue, TValue newValue)
+            : this()
         {
-            this.Key = key;
-            this.OldValue = oldValue;
-            this.NewValue = newValue;
+            Key = key;
+            OldValue = oldValue;
+            NewValue = newValue;
         }
 
         public override string ToString()

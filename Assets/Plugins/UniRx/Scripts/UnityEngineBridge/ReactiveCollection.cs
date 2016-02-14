@@ -10,9 +10,10 @@ namespace UniRx
         public T Value { get; private set; }
 
         public CollectionAddEvent(int index, T value)
+            :this()
         {
-            this.Index = index;
-            this.Value = value;
+            Index = index;
+            Value = value;
         }
 
         public override string ToString()
@@ -37,9 +38,10 @@ namespace UniRx
         public T Value { get; private set; }
 
         public CollectionRemoveEvent(int index, T value)
+            : this()
         {
-            this.Index = index;
-            this.Value = value;
+            Index = index;
+            Value = value;
         }
 
         public override string ToString()
@@ -65,10 +67,11 @@ namespace UniRx
         public T Value { get; private set; }
 
         public CollectionMoveEvent(int oldIndex, int newIndex, T value)
+            : this()
         {
-            this.OldIndex = oldIndex;
-            this.NewIndex = newIndex;
-            this.Value = value;
+            OldIndex = oldIndex;
+            NewIndex = newIndex;
+            Value = value;
         }
 
         public override string ToString()
@@ -94,10 +97,11 @@ namespace UniRx
         public T NewValue { get; private set; }
 
         public CollectionReplaceEvent(int index, T oldValue, T newValue)
+            : this()
         {
-            this.Index = index;
-            this.OldValue = oldValue;
-            this.NewValue = newValue;
+            Index = index;
+            OldValue = oldValue;
+            NewValue = newValue;
         }
 
         public override string ToString()
