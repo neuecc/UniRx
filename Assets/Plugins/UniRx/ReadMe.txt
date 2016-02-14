@@ -1,4 +1,4 @@
-UniRx - Reactive Extensions for Unity / ver.5.1.0
+UniRx - Reactive Extensions for Unity / ver 5.2.0
 ===
 Created by Yoshifumi Kawai(neuecc)
 
@@ -6,7 +6,7 @@ Created by Yoshifumi Kawai(neuecc)
 
 What is UniRx?
 ---
-UniRx (Reactive Extensions for Unity) is a reimplementation of the .NET Reactive Extensions. The Official Rx implementation is great but doesn't work on Unity and has issues with iOS AOT/IL2CPP compatibility. This library fixes those issues and adds some specific utilities for Unity. Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc and the library is fully supported on both Unity 5 and 4.6.   
+UniRx (Reactive Extensions for Unity) is a reimplementation of the .NET Reactive Extensions. The Official Rx implementation is great but doesn't work on Unity and has issues with iOS IL2CPP compatibility. This library fixes those issues and adds some specific utilities for Unity. Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc and the library is fully supported on both Unity 5 and 4.6.   
 
 UniRx is available on the Unity Asset Store (FREE) - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
 
@@ -615,7 +615,6 @@ EveryFixedUpdate|
 EveryEndOfFrame|
 EveryGameObjectUpdate|
 EveryLateUpdate|
-EveryAfterUpdate|
 ObserveOnMainThread|
 NextFrame|
 IntervalFrame|
@@ -638,15 +637,13 @@ Every* Method's execution order is
 ```
 EveryGameObjectUpdate(in MainThreadDispatcher's Execution Order) ->
 EveryUpdate -> 
-EveryAfterUpdate -> 
 EveryLateUpdate -> 
 EveryEndOfFrame
 ```
 
 EveryGameObjectUpdate invoke from same frame if caller is called before MainThreadDispatcher.Update(I recommend MainThreadDispatcher called first than others(ScriptExecutionOrder makes -32000)      
 EveryLateUpdate, EveryEndOfFrame invoke from same frame.  
-EveryUpdate, EveryAfterUpdate invoke from next frame.  
-EveryAfterUpdate is only available in after Unity 5.3.
+EveryUpdate, invoke from next frame.  
 
 uGUI Integration
 ---
@@ -721,13 +718,15 @@ enemy.IsDead.Where(isDead => isDead == true)
 
 You can combine ReactiveProperties, ReactiveCollections and observables returned by UnityEvent.AsObservable. All UI elements are observable.
 
-Generic ReactiveProperties are not serializable or inspecatble in the Unity editor, but UniRx provides specialized subclasses of ReactiveProperty that are. These include classes such as Int/LongReactiveProperty, Float/DoubleReactiveProperty, StringReactiveProperty, BoolReactiveProperty and more (Browse them here: [InspectableReactiveProperty.cs](https://github.com/neuecc/UniRx/blob/master/Assets/UniRx/Scripts/UnityEngineBridge/InspectableReactiveProperty.cs)). All are fully editable in the inspector. For custom Enum ReactiveProperty, it's easy to write a custom inspectable ReactiveProperty[T].
+Generic ReactiveProperties are not serializable or inspecatble in the Unity editor, but UniRx provides specialized subclasses of ReactiveProperty that are. These include classes such as Int/LongReactiveProperty, Float/DoubleReactiveProperty, StringReactiveProperty, BoolReactiveProperty and more (Browse them here: [InspectableReactiveProperty.cs](https://github.com/neuecc/UniRx/blob/master/Assets/Plugins/UniRx/Scripts/UnityEngineBridge/InspectableReactiveProperty.cs)). All are fully editable in the inspector. For custom Enum ReactiveProperty, it's easy to write a custom inspectable ReactiveProperty[T].
+
+If you needs `[Multiline]` or `[Range]` attach to ReactiveProperty, you can use `MultilineReactivePropertyAttribute` and `RangeReactivePropertyAttribute` instead of `Multiline` and `Range`.
 
 The provided derived InpsectableReactiveProperties are displayed in the inspector naturally and notify when their value is changed even when it is changed in the inspector.
 
 ![](StoreDocument/RxPropInspector.png)
 
-This functionality is provided by [InspectorDisplayDrawer](https://github.com/neuecc/UniRx/blob/master/Assets/UniRx/Scripts/UnityEngineBridge/InspectorDisplayDrawer.cs). You can supply your own custom specialized ReactiveProperties by inheriting from it:
+This functionality is provided by [InspectorDisplayDrawer](https://github.com/neuecc/UniRx/blob/master/Assets/Plugins/UniRx/Scripts/UnityEngineBridge/InspectorDisplayDrawer.cs). You can supply your own custom specialized ReactiveProperties by inheriting from it:
 
 ```csharp
 public enum Fruit
@@ -922,7 +921,7 @@ Please submit new analyzer ideas on GitHub Issues!
 
 Samples
 ---
-See [UniRx/Examples](https://github.com/neuecc/UniRx/tree/master/Assets/UniRx/Examples)  
+See [UniRx/Examples](https://github.com/neuecc/UniRx/tree/master/Assets/Plugins/UniRx/Examples)  
 
 The samples demonstrate how to do resource management (Sample09_EventHandling), what is the MainThreadDispatcher, among other things.
 
@@ -933,7 +932,9 @@ Therefore, when using NETFX_CORE, please refrain from using such constructs as `
 
 DLL Separation
 ---
-If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx.Library` and `UniRx.Library.Unity`. `UniRx.Library` can use both .NET 3.5 normal CLR application and Unity. `UniRx.Library.Unity` is for Unity project. You should define compile symbol like  `UniRxLibrary;UNITY;UNITY_5_3_0;UNITY_5_3;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol to `UniRx.Library`, `UniRx.Library.Unity`. We can not provides binary because compile symbol is different each other.
+If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx`, it is fullset separated project of UniRx. You should define compile symbol like  `UNITY;UNITY_5_3_0;UNITY_5_3;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol. If you want to use UniRx for .NET 3.5 normal CLR application, you can use `UniRx.Library` and `UniRx.Library.Unity`. `UniRx.Library` is splitted UnityEngine dependency. `UniRx.Library.Unity` is diffrence for Unity project. Both projects need to define `UniRxLibrary` symbol.
+
+We can not provides binary to release page, asset store because compile symbol is different each other.
 
 If needs `UniRx.Library` for minimal test, it avilable in NuGet.
 
@@ -971,7 +972,7 @@ Support thread on the Unity forum. Ask me any question - [http://forum.unity3d.c
 
 We welcome any contributions, be they bug reports, requests or pull request.  
 Please consult and submit your reports or requests on GitHub issues.  
-Source code is available in `Assets/UniRx/Scripts`.  
+Source code is available in `Assets/Plugins/UniRx/Scripts`.  
 This project is using Visual Studio with [UnityVS](http://unityvs.com/).
 
 Author's other Unity + LINQ Assets

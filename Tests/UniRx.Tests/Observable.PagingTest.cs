@@ -1002,7 +1002,7 @@ namespace UniRx.Tests
             RecordObserver<int> a = null;
             RecordObserver<int> b = null;
             RecordObserver<int> c = null;
-            var recorder = subject.GroupBy(x => x % 3)
+            subject.GroupBy(x => x % 3)
                 .Subscribe(x =>
                 {
                     if (x.Key == 0)
