@@ -61,9 +61,9 @@ namespace UniRx.Examples
     // Reactive Notification Model
     public class Enemy
     {
-        public ReactiveProperty<long> CurrentHp { get; private set; }
+        public IReactiveProperty<long> CurrentHp { get; private set; }
 
-        public ReactiveProperty<bool> IsDead { get; private set; }
+        public IReactiveProperty<bool> IsDead { get; private set; }
 
         public Enemy(int initialHp)
         {

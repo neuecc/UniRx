@@ -718,13 +718,13 @@ enemy.IsDead.Where(isDead => isDead == true)
 
 You can combine ReactiveProperties, ReactiveCollections and observables returned by UnityEvent.AsObservable. All UI elements are observable.
 
-Generic ReactiveProperties are not serializable or inspecatble in the Unity editor, but UniRx provides specialized subclasses of ReactiveProperty that are. These include classes such as Int/LongReactiveProperty, Float/DoubleReactiveProperty, StringReactiveProperty, BoolReactiveProperty and more (Browse them here: [InspectableReactiveProperty.cs](https://github.com/neuecc/UniRx/blob/master/Assets/UniRx/Scripts/UnityEngineBridge/InspectableReactiveProperty.cs)). All are fully editable in the inspector. For custom Enum ReactiveProperty, it's easy to write a custom inspectable ReactiveProperty[T].
+Generic ReactiveProperties are not serializable or inspecatble in the Unity editor, but UniRx provides specialized subclasses of ReactiveProperty that are. These include classes such as Int/LongReactiveProperty, Float/DoubleReactiveProperty, StringReactiveProperty, BoolReactiveProperty and more (Browse them here: [InspectableReactiveProperty.cs](https://github.com/neuecc/UniRx/blob/master/Assets/Plugins/UniRx/Scripts/UnityEngineBridge/InspectableReactiveProperty.cs)). All are fully editable in the inspector. For custom Enum ReactiveProperty, it's easy to write a custom inspectable ReactiveProperty[T].
 
 The provided derived InpsectableReactiveProperties are displayed in the inspector naturally and notify when their value is changed even when it is changed in the inspector.
 
 ![](StoreDocument/RxPropInspector.png)
 
-This functionality is provided by [InspectorDisplayDrawer](https://github.com/neuecc/UniRx/blob/master/Assets/UniRx/Scripts/UnityEngineBridge/InspectorDisplayDrawer.cs). You can supply your own custom specialized ReactiveProperties by inheriting from it:
+This functionality is provided by [InspectorDisplayDrawer](https://github.com/neuecc/UniRx/blob/master/Assets/Plugins/UniRx/Scripts/UnityEngineBridge/InspectorDisplayDrawer.cs). You can supply your own custom specialized ReactiveProperties by inheriting from it:
 
 ```csharp
 public enum Fruit
@@ -919,7 +919,7 @@ Please submit new analyzer ideas on GitHub Issues!
 
 Samples
 ---
-See [UniRx/Examples](https://github.com/neuecc/UniRx/tree/master/Assets/UniRx/Examples)  
+See [UniRx/Examples](https://github.com/neuecc/UniRx/tree/master/Assets/Plugins/UniRx/Examples)  
 
 The samples demonstrate how to do resource management (Sample09_EventHandling), what is the MainThreadDispatcher, among other things.
 
@@ -968,7 +968,7 @@ Support thread on the Unity forum. Ask me any question - [http://forum.unity3d.c
 
 We welcome any contributions, be they bug reports, requests or pull request.  
 Please consult and submit your reports or requests on GitHub issues.  
-Source code is available in `Assets/UniRx/Scripts`.  
+Source code is available in `Assets/Plugins/UniRx/Scripts`.  
 This project is using Visual Studio with [UnityVS](http://unityvs.com/).
 
 Author's other Unity + LINQ Assets
