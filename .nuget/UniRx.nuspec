@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>UniRx</id>
-        <version>5.1.0</version>
+        <version>5.2.0</version>
         <title>UniRx</title>
         <authors>neuecc</authors>
         <owners>neuecc</owners>
@@ -10,7 +10,18 @@
         <description>Reactive Extensions for Unity. This is .NET 3.5 subset of UniRx.</description>
         <releaseNotes>
             <![CDATA[
-drop ReactiveProperty.
+Add : ReactiveProperty, ReactiveCollection, ReactiveDictionary
+Add : Observable.Pairwise overload(returns Pair[T])
+Add : Observable.ContinueWith
+Add : Observable.Share
+Add : Observable.ZipLatest
+Add : Observable.WithLatestFrom
+Add : Observable.TakeLast
+Add : Observable.GroupBy
+Add : IObserver.Synchronize
+Add : ISubject.Synchronize
+Fix : Subscribe() throw exception on OnError (this is degraded from UniRx 5.0)
+Breaking Changes : Buffer(windowBoundaries), Buffer(timeSpan, count) should publish value when buffer is empty.
             ]]>
         </releaseNotes>
         <language>en-US</language>

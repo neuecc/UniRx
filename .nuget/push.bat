@@ -1,1 +1,1 @@
-nuget push UniRx.5.0.0.nupkg
+nuget push UniRx.5.2.0.nupkg

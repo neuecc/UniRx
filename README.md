@@ -932,11 +932,9 @@ Therefore, when using NETFX_CORE, please refrain from using such constructs as `
 
 DLL Separation
 ---
-If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx`, it is fullset separated project of UniRx. You should define compile symbol like  `UNITY;UNITY_5_3_0;UNITY_5_3;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol. If you want to use UniRx for .NET 3.5 normal CLR application, you can use `UniRx.Library` and `UniRx.Library.Unity`. `UniRx.Library` is splitted UnityEngine dependency. `UniRx.Library.Unity` is diffrence for Unity project. Both projects need to define `UniRxLibrary` symbol.
+If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx`, it is fullset separated project of UniRx. You should define compile symbol like  `UNITY;UNITY_5_3_0;UNITY_5_3;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol. We can not provides pre-build binary to release page, asset store because compile symbol is different each other.
 
-We can not provides binary to release page, asset store because compile symbol is different each other.
-
-If needs `UniRx.Library` for minimal test, it avilable in NuGet.
+If you want to use UniRx for .NET 3.5 normal CLR application, you can use `UniRx.Library`. `UniRx.Library` is splitted UnityEngine dependency, build `UniRx.Library` needs to define `UniRxLibrary` symbol. pre-build `UniRx.Library` binary, it avilable in NuGet.
 
 [Install-Package UniRx](https://www.nuget.org/packages/UniRx)
 

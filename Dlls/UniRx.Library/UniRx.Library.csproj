@@ -451,6 +451,15 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Timestamped.cs">
       <Link>Timestamped.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveCollection.cs">
+      <Link>UnityEngineBridge\ReactiveCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveDictionary.cs">
+      <Link>UnityEngineBridge\ReactiveDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs">
+      <Link>UnityEngineBridge\ReactiveProperty.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
