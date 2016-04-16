@@ -30,23 +30,36 @@ namespace UniRx.Operators
             }
             else
             {
-                var currentCount = this.repeatCount.Value;
-                return scheduler.Schedule((Action self) =>
+                if (scheduler == Scheduler.Immediate)
                 {
-                    if (currentCount > 0)
+                    var count = this.repeatCount.Value;
+                    for (int i = 0; i < count; i++)
                     {
                         observer.OnNext(value);
-                        currentCount--;
                     }
-
-                    if (currentCount == 0)
+                    observer.OnCompleted();
+                    return Disposable.Empty;
+                }
+                else
+                {
+                    var currentCount = this.repeatCount.Value;
+                    return scheduler.Schedule((Action self) =>
                     {
-                        observer.OnCompleted();
-                        return;
-                    }
+                        if (currentCount > 0)
+                        {
+                            observer.OnNext(value);
+                            currentCount--;
+                        }
 
-                    self();
-                });
+                        if (currentCount == 0)
+                        {
+                            observer.OnCompleted();
+                            return;
+                        }
+
+                        self();
+                    });
+                }
             }
         }
 

@@ -22,21 +22,35 @@ namespace UniRx.Operators
         {
             observer = new Range(observer, cancel);
 
-            var i = 0;
-            return scheduler.Schedule((Action self) =>
+            if (scheduler == Scheduler.Immediate)
             {
-                if (i < count)
+                for (int i = 0; i < count; i++)
                 {
                     int v = start + i;
                     observer.OnNext(v);
-                    i++;
-                    self();
                 }
-                else
+                observer.OnCompleted();
+
+                return Disposable.Empty;
+            }
+            else
+            {
+                var i = 0;
+                return scheduler.Schedule((Action self) =>
                 {
-                    observer.OnCompleted();
-                }
-            });
+                    if (i < count)
+                    {
+                        int v = start + i;
+                        observer.OnNext(v);
+                        i++;
+                        self();
+                    }
+                    else
+                    {
+                        observer.OnCompleted();
+                    }
+                });
+            }
         }
 
         class Range : OperatorObserverBase<int, int>

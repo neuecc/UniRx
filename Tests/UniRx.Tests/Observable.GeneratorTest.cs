@@ -47,6 +47,12 @@ namespace UniRx.Tests
         }
 
         [TestMethod]
+        public void Repeat2()
+        {
+            Observable.Repeat("a", 5, Scheduler.Immediate).ToArrayWait().IsCollection("a", "a", "a", "a", "a");
+        }
+
+        [TestMethod]
         public void RepeatStatic()
         {
             var xss = Observable.Repeat(5, 3).ToArray().Wait();
