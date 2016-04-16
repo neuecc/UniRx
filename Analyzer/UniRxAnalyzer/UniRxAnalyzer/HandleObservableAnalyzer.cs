@@ -29,7 +29,7 @@ namespace UniRxAnalyzer
         private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
         {
             var invocationExpressions = context.Node
-                .DescendantNodes(descendIntoChildren: x => !(x is InvocationExpressionSyntax))
+                .DescendantNodes()
                 .OfType<InvocationExpressionSyntax>();
 
             foreach (var expr in invocationExpressions)
@@ -45,41 +45,45 @@ namespace UniRxAnalyzer
                     context.ReportDiagnostic(diagnostic);
                 }
             }
-
-            // in lambda expression
-
-            var inlambdaInvocationExpressions = context.Node.DescendantNodes()
-                .OfType<LambdaExpressionSyntax>()
-                .SelectMany(x => x.DescendantNodes(descendIntoChildren: y => !(y is InvocationExpressionSyntax)).OfType<InvocationExpressionSyntax>(),
-                    (lambda, invocation) => new { lambda, invocation });
-
-            foreach (var inlambda in inlambdaInvocationExpressions)
-            {
-                if (!inlambda.lambda.ChildNodes().OfType<BlockSyntax>().Any()) continue;
-
-                var expr = inlambda.invocation;
-
-                var type = context.SemanticModel.GetTypeInfo(expr).Type;
-                // UniRx.IObservable? System.IObservable?
-                if (new[] { type }.Concat(type.AllInterfaces).Any(x => x.Name == "IObservable"))
-                {
-                    if (ValidateInvocation(expr)) continue;
-
-                    // Report Warning
-                    var diagnostic = Diagnostic.Create(Rule, expr.GetLocation());
-                    context.ReportDiagnostic(diagnostic);
-                }
-            }
         }
 
         static bool ValidateInvocation(InvocationExpressionSyntax expr)
         {
-            // Okay => x = M(), var x = M(), return M(), from x in M(), (bool) ? M() : M()
-            if (expr.Parent.IsKind(SyntaxKind.SimpleAssignmentExpression)) return true;
-            if (expr.Parent.IsKind(SyntaxKind.EqualsValueClause) && expr.Parent.Parent.IsKind(SyntaxKind.VariableDeclarator)) return true;
-            if (expr.Parent.IsKind(SyntaxKind.ReturnStatement)) return true;
-            if (expr.Parent.IsKind(SyntaxKind.FromClause)) return true;
-            if (expr.Parent.IsKind(SyntaxKind.ConditionalExpression)) return true;
+            bool allAncestorsIsParenthes = true;
+            foreach (var x in expr.Ancestors())
+            {
+                // scope is in lambda, method
+                if (x.IsKind(SyntaxKind.SimpleLambdaExpression) || x.IsKind(SyntaxKind.ParenthesizedLambdaExpression) || x.IsKind(SyntaxKind.ArrowExpressionClause))
+                {
+                    // () => M()
+                    if (allAncestorsIsParenthes) return true;
+                    break;
+                }
+                if (x.IsKind(SyntaxKind.MethodDeclaration)) break;
+                if (x.IsKind(SyntaxKind.PropertyDeclaration)) break;
+                if (x.IsKind(SyntaxKind.ConstructorDeclaration)) break;
+
+                // x = M()
+                if (x.IsKind(SyntaxKind.SimpleAssignmentExpression)) return true;
+                // var x = M()
+                if (x.IsKind(SyntaxKind.VariableDeclarator)) return true;
+                // return M()
+                if (x.IsKind(SyntaxKind.ReturnStatement)) return true;
+                // from x in M()
+                if (x.IsKind(SyntaxKind.FromClause)) return true;
+                // (bool) ? M() : M()
+                if (x.IsKind(SyntaxKind.ConditionalExpression)) return true;
+                // M(M())
+                if (x.IsKind(SyntaxKind.InvocationExpression)) return true;
+                // new C(M())
+                if (x.IsKind(SyntaxKind.ObjectCreationExpression)) return true;
+
+                // (((((M()))))
+                if (!x.IsKind(SyntaxKind.ParenthesizedExpression))
+                {
+                    allAncestorsIsParenthes = false;
+                }
+            }
 
             // Okay => M().M()
             if (expr.DescendantNodes().OfType<InvocationExpressionSyntax>().Any()) return true;

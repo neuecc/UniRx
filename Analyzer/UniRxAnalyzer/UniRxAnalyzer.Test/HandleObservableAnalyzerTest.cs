@@ -191,5 +191,112 @@ class Test
 
             this.VerifyCSharpDiagnostic(source, expected);
         }
+
+        [TestMethod]
+        public void CallMethod()
+        {
+            var source = @"
+using System;
+   
+class Test
+{
+    IObservable<int> GetObservable() => null;
+
+    void Huga(IObservable<int> source)
+    {
+    }
+
+    void Hoge()
+    {
+        Huga(GetObservable());
+    }
+}";
+
+            this.VerifyCSharpDiagnostic(source);
+        }
+
+        [TestMethod]
+        public void Constructor()
+        {
+            var source = @"
+using System;
+
+class Test2
+{
+    readonly IObservable<int> source;
+
+    public Test2(IObservable<int> source)
+    {
+        this.source = source;
+    }
+}
+   
+class Test
+{
+    IObservable<int> GetObservable() => null;
+
+    void Hoge()
+    {
+        var _ = new Test2(GetObservable());
+    }
+}";
+
+            this.VerifyCSharpDiagnostic(source);
+        }
+
+
+        [TestMethod]
+        public void LambdaReturn()
+        {
+            var source = @"
+using System;
+
+class Test
+{
+    IObservable<int> GetObservable() => null;
+
+    void Hoge()
+    {
+        Func<IObservable<int>> _ = () => GetObservable();
+    }
+}";
+
+            this.VerifyCSharpDiagnostic(source);
+        }
+
+        [TestMethod]
+        public void NgInlambda()
+        {
+            var source = @"
+using System;
+   
+class Test
+{
+    IObservable<int> GetObservable() => null;
+
+    void Hoge()
+    {
+        var lambda = new Func<int, int>(x =>
+        {
+            GetObservable();
+            return 0;
+        });
+    }
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = UniRxAnalyzer.HandleObservableAnalyzer.DiagnosticId,
+                Message = "This call does not handle IObservable<T>.",
+                Severity = DiagnosticSeverity.Warning,
+                Locations = new[]
+                {
+                    new DiagnosticResultLocation("Test0.cs", 12, 13)
+                }
+            };
+
+            this.VerifyCSharpDiagnostic(source, expected);
+        }
+
+        int Hoge() => 3;
     }
 }

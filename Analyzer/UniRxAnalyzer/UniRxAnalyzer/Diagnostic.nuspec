@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>UniRxAnalyzer</id>
-        <version>1.0.3.2</version>
+        <version>1.0.4.1</version>
         <title>UniRxAnalyzer</title>
         <authors>neuecc</authors>
         <projectUrl>https://github.com/neuecc/UniRx</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Various Analyzers for UniRx</description>
-        <releaseNotes>Update for VS2015 RTM.</releaseNotes>
+        <releaseNotes>Fix show invalid warning when IObservable in Constructor.</releaseNotes>
         <tags>UniRx, analyzers</tags>
     </metadata>
     <files>
