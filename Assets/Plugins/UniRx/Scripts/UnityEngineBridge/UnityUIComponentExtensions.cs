@@ -11,22 +11,22 @@ namespace UniRx
     {
         public static IDisposable SubscribeToText(this IObservable<string> source, Text text)
         {
-            return source.Subscribe(x => text.text = x);
+            return source.SubscribeWithState(text, (x, t) => t.text = x);
         }
 
         public static IDisposable SubscribeToText<T>(this IObservable<T> source, Text text)
         {
-            return source.Subscribe(x => text.text = x.ToString());
+            return source.SubscribeWithState(text, (x, t) => t.text = x.ToString());
         }
 
         public static IDisposable SubscribeToText<T>(this IObservable<T> source, Text text, Func<T, string> selector)
         {
-            return source.Subscribe(x => text.text = selector(x));
+            return source.SubscribeWithState(Tuple.Create(text, selector), (x, t) => t.Item1.text = t.Item2(x));
         }
 
         public static IDisposable SubscribeToInteractable(this IObservable<bool> source, Selectable selectable)
         {
-            return source.Subscribe(x => selectable.interactable = x);
+            return source.SubscribeWithState(selectable, (x, s) => s.interactable = x);
         }
 
         /// <summary>Observe onClick event.</summary>

@@ -23,7 +23,7 @@ namespace UniRx
                 trigger = gameObject.AddComponent<ObservableDestroyTrigger>();
             }
 
-            trigger.OnDestroyAsObservable().Subscribe(_ => disposable.Dispose());
+            trigger.OnDestroyAsObservable().SubscribeWithState(disposable, (_, d) => d.Dispose());
             return disposable;
         }
 
