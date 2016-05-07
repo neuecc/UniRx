@@ -26,13 +26,11 @@ namespace UniRx.Operators
         class DelayFrame : OperatorObserverBase<T, T>
         {
             readonly DelayFrameObservable<T> parent;
-            YieldInstruction yieldInstruction;
             BooleanDisposable coroutineKey;
 
             public DelayFrame(DelayFrameObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.yieldInstruction = parent.frameCountType.GetYieldInstruction();
             }
 
             public IDisposable Run()
@@ -47,7 +45,7 @@ namespace UniRx.Operators
                 var frameCount = parent.frameCount;
                 while (!coroutineKey.IsDisposed && frameCount-- != 0)
                 {
-                    yield return yieldInstruction;
+                    yield return null;
                 }
                 if (!coroutineKey.IsDisposed)
                 {
@@ -60,7 +58,7 @@ namespace UniRx.Operators
                 var frameCount = parent.frameCount;
                 while (!coroutineKey.IsDisposed && frameCount-- != 0)
                 {
-                    yield return yieldInstruction;
+                    yield return null;
                 }
                 if (!coroutineKey.IsDisposed)
                 {
@@ -75,7 +73,20 @@ namespace UniRx.Operators
             {
                 if (coroutineKey.IsDisposed) return;
 
-                MainThreadDispatcher.StartCoroutine(OnNextDelay(value));
+                switch (parent.frameCountType)
+                {
+                    case FrameCountType.Update:
+                        MainThreadDispatcher.StartUpdateMicroCoroutine(OnNextDelay(value));
+                        break;
+                    case FrameCountType.FixedUpdate:
+                        MainThreadDispatcher.StartFixedUpdateMicroCoroutine(OnNextDelay(value));
+                        break;
+                    case FrameCountType.EndOfFrame:
+                        MainThreadDispatcher.StartEndOfFrameMicroCoroutine(OnNextDelay(value));
+                        break;
+                    default:
+                        throw new ArgumentException("Invalid FrameCountType:" + parent.frameCountType);
+                }
             }
 
             public override void OnError(Exception error)
@@ -89,7 +100,21 @@ namespace UniRx.Operators
             public override void OnCompleted()
             {
                 if (coroutineKey.IsDisposed) return;
-                MainThreadDispatcher.StartCoroutine(OnCompletedDelay());
+
+                switch (parent.frameCountType)
+                {
+                    case FrameCountType.Update:
+                        MainThreadDispatcher.StartUpdateMicroCoroutine(OnCompletedDelay());
+                        break;
+                    case FrameCountType.FixedUpdate:
+                        MainThreadDispatcher.StartFixedUpdateMicroCoroutine(OnCompletedDelay());
+                        break;
+                    case FrameCountType.EndOfFrame:
+                        MainThreadDispatcher.StartEndOfFrameMicroCoroutine(OnCompletedDelay());
+                        break;
+                    default:
+                        throw new ArgumentException("Invalid FrameCountType:" + parent.frameCountType);
+                }
             }
         }
     }

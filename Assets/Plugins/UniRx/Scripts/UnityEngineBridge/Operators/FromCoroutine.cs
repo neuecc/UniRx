@@ -60,20 +60,35 @@ namespace UniRx.Operators
     internal class FromMicroCoroutineObservable<T> : OperatorObservableBase<T>
     {
         readonly Func<IObserver<T>, CancellationToken, IEnumerator> coroutine;
+        readonly FrameCountType frameCountType;
 
-        public FromMicroCoroutineObservable(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine)
+        public FromMicroCoroutineObservable(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine, FrameCountType frameCountType)
             : base(false)
         {
             this.coroutine = coroutine;
+            this.frameCountType = frameCountType;
         }
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            var fromCoroutineObserver = new FromMicroCoroutine(observer, cancel);
+            var microCoroutineObserver = new FromMicroCoroutine(observer, cancel);
 
             var moreCancel = new BooleanDisposable();
 
-            MainThreadDispatcher.StartMicroCoroutine(coroutine(fromCoroutineObserver, new CancellationToken(moreCancel)));
+            switch (frameCountType)
+            {
+                case FrameCountType.Update:
+                    MainThreadDispatcher.StartUpdateMicroCoroutine(coroutine(microCoroutineObserver, new CancellationToken(moreCancel)));
+                    break;
+                case FrameCountType.FixedUpdate:
+                    MainThreadDispatcher.StartFixedUpdateMicroCoroutine(coroutine(microCoroutineObserver, new CancellationToken(moreCancel)));
+                    break;
+                case FrameCountType.EndOfFrame:
+                    MainThreadDispatcher.StartEndOfFrameMicroCoroutine(coroutine(microCoroutineObserver, new CancellationToken(moreCancel)));
+                    break;
+                default:
+                    throw new ArgumentException("Invalid FrameCountType:" + frameCountType);
+            }
 
             return moreCancel;
         }

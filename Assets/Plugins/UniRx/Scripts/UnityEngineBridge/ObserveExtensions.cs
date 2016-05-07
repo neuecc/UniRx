@@ -24,24 +24,23 @@ namespace UniRx
 
             if (isUnityObject)
             {
-                return ObservableUnity.FromCoroutine<TProperty>((observer, cancellationToken) => PublishUnityObjectValueChanged(unityObject, propertySelector, frameCountType, observer, cancellationToken));
+                return ObservableUnity.FromMicroCoroutine<TProperty>((observer, cancellationToken) => PublishUnityObjectValueChanged(unityObject, propertySelector, observer, cancellationToken), frameCountType);
             }
             else
             {
                 var reference = new WeakReference(source);
                 source = null;
-                return ObservableUnity.FromCoroutine<TProperty>((observer, cancellationToken) => PublishPocoValueChanged(reference, propertySelector, frameCountType, observer, cancellationToken));
+                return ObservableUnity.FromMicroCoroutine<TProperty>((observer, cancellationToken) => PublishPocoValueChanged(reference, propertySelector, observer, cancellationToken), frameCountType);
             }
         }
 
-        static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType, IObserver<TProperty> observer, CancellationToken cancellationToken)
+        static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
             var comparer = UnityEqualityComparer.GetDefault<TProperty>();
 
             var isFirst = true;
             var currentValue = default(TProperty);
             var prevValue = default(TProperty);
-            var yieldInstruction = frameCountType.GetYieldInstruction();
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -76,18 +75,17 @@ namespace UniRx
                     prevValue = currentValue;
                 }
 
-                yield return yieldInstruction;
+                yield return null;
             }
         }
 
-        static IEnumerator PublishUnityObjectValueChanged<TSource, TProperty>(UnityEngine.Object unityObject, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType, IObserver<TProperty> observer, CancellationToken cancellationToken)
+        static IEnumerator PublishUnityObjectValueChanged<TSource, TProperty>(UnityEngine.Object unityObject, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
             var comparer = UnityEqualityComparer.GetDefault<TProperty>();
 
             var isFirst = true;
             var currentValue = default(TProperty);
             var prevValue = default(TProperty);
-            var yieldInstruction = frameCountType.GetYieldInstruction();
 
             var source = (TSource)(object)unityObject;
 
@@ -118,7 +116,7 @@ namespace UniRx
                     prevValue = currentValue;
                 }
 
-                yield return yieldInstruction;
+                yield return null;
             }
         }
     }

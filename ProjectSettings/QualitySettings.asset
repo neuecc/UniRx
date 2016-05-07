@@ -14,8 +14,9 @@ QualitySettings:
     shadowProjection: 1
     shadowCascades: 1
     shadowDistance: 15
-    shadowCascade2Split: .333333343
-    shadowCascade4Split: {x: .0666666701, y: .200000003, z: .466666669}
+    shadowNearPlaneOffset: 2
+    shadowCascade2Split: 0.33333334
+    shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
     blendWeights: 1
     textureQuality: 1
     anisotropicTextures: 0
@@ -25,9 +26,11 @@ QualitySettings:
     realtimeReflectionProbes: 0
     billboardsFaceCameraPosition: 0
     vSyncCount: 0
-    lodBias: .300000012
+    lodBias: 0.3
     maximumLODLevel: 0
     particleRaycastBudget: 4
+    asyncUploadTimeSlice: 2
+    asyncUploadBufferSize: 4
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Fast
@@ -37,8 +40,9 @@ QualitySettings:
     shadowProjection: 1
     shadowCascades: 1
     shadowDistance: 20
-    shadowCascade2Split: .333333343
-    shadowCascade4Split: {x: .0666666701, y: .200000003, z: .466666669}
+    shadowNearPlaneOffset: 2
+    shadowCascade2Split: 0.33333334
+    shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
     blendWeights: 2
     textureQuality: 0
     anisotropicTextures: 0
@@ -48,9 +52,11 @@ QualitySettings:
     realtimeReflectionProbes: 0
     billboardsFaceCameraPosition: 0
     vSyncCount: 0
-    lodBias: .400000006
+    lodBias: 0.4
     maximumLODLevel: 0
     particleRaycastBudget: 16
+    asyncUploadTimeSlice: 2
+    asyncUploadBufferSize: 4
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Simple
@@ -60,8 +66,9 @@ QualitySettings:
     shadowProjection: 1
     shadowCascades: 1
     shadowDistance: 20
-    shadowCascade2Split: .333333343
-    shadowCascade4Split: {x: .0666666701, y: .200000003, z: .466666669}
+    shadowNearPlaneOffset: 2
+    shadowCascade2Split: 0.33333334
+    shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
     blendWeights: 2
     textureQuality: 0
     anisotropicTextures: 1
@@ -71,9 +78,11 @@ QualitySettings:
     realtimeReflectionProbes: 0
     billboardsFaceCameraPosition: 0
     vSyncCount: 0
-    lodBias: .699999988
+    lodBias: 0.7
     maximumLODLevel: 0
     particleRaycastBudget: 64
+    asyncUploadTimeSlice: 2
+    asyncUploadBufferSize: 4
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Good
@@ -83,8 +92,9 @@ QualitySettings:
     shadowProjection: 1
     shadowCascades: 2
     shadowDistance: 40
-    shadowCascade2Split: .333333343
-    shadowCascade4Split: {x: .0666666701, y: .200000003, z: .466666669}
+    shadowNearPlaneOffset: 2
+    shadowCascade2Split: 0.33333334
+    shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
     blendWeights: 2
     textureQuality: 0
     anisotropicTextures: 1
@@ -93,10 +103,12 @@ QualitySettings:
     softVegetation: 1
     realtimeReflectionProbes: 1
     billboardsFaceCameraPosition: 1
-    vSyncCount: 1
+    vSyncCount: 0
     lodBias: 1
     maximumLODLevel: 0
     particleRaycastBudget: 256
+    asyncUploadTimeSlice: 2
+    asyncUploadBufferSize: 4
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Beautiful
@@ -106,8 +118,9 @@ QualitySettings:
     shadowProjection: 1
     shadowCascades: 2
     shadowDistance: 70
-    shadowCascade2Split: .333333343
-    shadowCascade4Split: {x: .0666666701, y: .200000003, z: .466666669}
+    shadowNearPlaneOffset: 2
+    shadowCascade2Split: 0.33333334
+    shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
     blendWeights: 4
     textureQuality: 0
     anisotropicTextures: 2
@@ -120,6 +133,8 @@ QualitySettings:
     lodBias: 1.5
     maximumLODLevel: 0
     particleRaycastBudget: 1024
+    asyncUploadTimeSlice: 2
+    asyncUploadBufferSize: 4
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Fantastic
@@ -129,8 +144,9 @@ QualitySettings:
     shadowProjection: 1
     shadowCascades: 4
     shadowDistance: 150
-    shadowCascade2Split: .333333343
-    shadowCascade4Split: {x: .0666666701, y: .200000003, z: .466666669}
+    shadowNearPlaneOffset: 2
+    shadowCascade2Split: 0.33333334
+    shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
     blendWeights: 4
     textureQuality: 0
     anisotropicTextures: 2
@@ -143,5 +159,13 @@ QualitySettings:
     lodBias: 2
     maximumLODLevel: 0
     particleRaycastBudget: 4096
+    asyncUploadTimeSlice: 2
+    asyncUploadBufferSize: 4
     excludedTargetPlatforms: []
-  m_PerPlatformDefaultQuality: {}
+  m_PerPlatformDefaultQuality:
+    Android: 0
+    Standalone: 0
+    Web: 0
+    WebGL: 0
+    Windows Store Apps: 0
+    iPhone: 0

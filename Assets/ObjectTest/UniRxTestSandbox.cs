@@ -343,6 +343,9 @@ namespace UniRx.ObjectTest
         {
             MainThreadDispatcher.Initialize();
 
+
+            Application.targetFrameRate = -1;
+
             //LogHelper.LogCallbackAsObservable()
             //    .ObserveOnMainThread()
             //    .Where(x => x.LogType == LogType.Exception)
@@ -466,24 +469,37 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-
-
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ObserveEveryValueChanged_10000"))
+            {
+                stopwatch.Stop();
+                elapsed.Clear();
+                for (int i = 0; i < 10000; i++)
+                {
+                    this.ObserveEveryValueChanged(x => x.counter).Subscribe().AddTo(disposables);
+                }
+                logger.Debug("ObserveEveryValueChanged_10000");
+            }
             ypos += 100;
 
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Every"))
             {
-                Observable.EveryGameObjectUpdate().Subscribe(x => Debug.Log("EveryGameObjectUpdate" + x));
-                Observable.EveryUpdate().Subscribe(x => Debug.Log("EveryUpdate:" + x));
-                // Observable.EveryAfterUpdate().Subscribe(x => Debug.Log("EveryAfterUpdate:" + x));
-                UnityEngine.Debug.Log("---");
-                Observable.EveryLateUpdate().Subscribe(x => Debug.Log("EveryLateUpdate:" + x));
-                Observable.EveryEndOfFrame().Subscribe(x => Debug.Log("EveryEndOfFrame:" + x));
+                this.UpdateAsObservable().Take(1).Subscribe(__ =>
+                {
+                    UnityEngine.Debug.Log("Register Start");
+                    Observable.EveryGameObjectUpdate().Subscribe(x => Debug.Log("EveryGameObjectUpdate" + x));
+                    Observable.EveryUpdate().Subscribe(x => Debug.Log("EveryUpdate:" + x));
+                    Observable.EveryLateUpdate().Subscribe(x => Debug.Log("EveryLateUpdate:" + x));
+                    Observable.EveryEndOfFrame().Subscribe(x => Debug.Log("EveryEndOfFrame:" + x));
+                    Observable.EveryFixedUpdate().Subscribe(x => Debug.Log("EveryFixedUpdate:" + x));
+
+                    UnityEngine.Debug.Log("Register End");
+                });
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Select"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Delay"))
             {
-                Source.Select(x => x * 100).Subscribe(x => logger.Debug(x)).AddTo(disposables);
+                Observable.Return(100).DelayFrame(25, FrameCountType.Update).Subscribe(x => Debug.Log("delayed"));
             }
             ypos += 100;
 

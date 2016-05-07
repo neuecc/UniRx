@@ -239,10 +239,14 @@ namespace UniRx
             return FromCoroutine<Unit>((observer, cancellationToken) => WrapEnumerator(coroutine(), observer, cancellationToken, publishEveryYield));
         }
 
-        /// <summary>From has no callback coroutine to IObservable. If publishEveryYield = true then publish OnNext every yield return else return once on enumeration completed.</summary>
-        public static IObservable<Unit> FromMicroCoroutine(Func<IEnumerator> coroutine, bool publishEveryYield = false)
+        /// <summary>
+        /// MicroCoroutine is lightweight, fast coroutine dispatcher.
+        /// IEnumerator supports only yield return null.
+        /// If publishEveryYield = true then publish OnNext every yield return else return once on enumeration completed.
+        /// </summary>
+        public static IObservable<Unit> FromMicroCoroutine(Func<IEnumerator> coroutine, bool publishEveryYield = false, FrameCountType frameCountType = FrameCountType.Update)
         {
-            return FromMicroCoroutine<Unit>((observer, cancellationToken) => WrapEnumerator(coroutine(), observer, cancellationToken, publishEveryYield));
+            return FromMicroCoroutine<Unit>((observer, cancellationToken) => WrapEnumerator(coroutine(), observer, cancellationToken, publishEveryYield), frameCountType);
         }
 
         static IEnumerator WrapEnumerator(IEnumerator enumerator, IObserver<Unit> observer, CancellationToken cancellationToken, bool publishEveryYield)
@@ -410,14 +414,22 @@ namespace UniRx
             return new UniRx.Operators.FromCoroutineObservable<T>(coroutine);
         }
 
-        public static IObservable<T> FromMicroCoroutine<T>(Func<IObserver<T>, IEnumerator> coroutine)
+        /// <summary>
+        /// MicroCoroutine is lightweight, fast coroutine dispatcher.
+        /// IEnumerator supports only yield return null.
+        /// </summary>
+        public static IObservable<T> FromMicroCoroutine<T>(Func<IObserver<T>, IEnumerator> coroutine, FrameCountType frameCountType = FrameCountType.Update)
         {
             return FromMicroCoroutine<T>((observer, _) => coroutine(observer));
         }
 
-        public static IObservable<T> FromMicroCoroutine<T>(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine)
+        /// <summary>
+        /// MicroCoroutine is lightweight, fast coroutine dispatcher.
+        /// IEnumerator supports only yield return null.
+        /// </summary>
+        public static IObservable<T> FromMicroCoroutine<T>(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine, FrameCountType frameCountType = FrameCountType.Update)
         {
-            return new UniRx.Operators.FromMicroCoroutineObservable<T>(coroutine);
+            return new UniRx.Operators.FromMicroCoroutineObservable<T>(coroutine, frameCountType);
         }
 
         public static IObservable<Unit> SelectMany<T>(this IObservable<T> source, IEnumerator coroutine, bool publishEveryYield = false)
@@ -450,54 +462,26 @@ namespace UniRx
         /// </summary>
         public static IObservable<long> EveryUpdate()
         {
-            return FromCoroutine<long>((observer, cancellationToken) => EveryUpdateCore(observer, cancellationToken));
+            return FromMicroCoroutine<long>((observer, cancellationToken) => EveryCycleCore(observer, cancellationToken), FrameCountType.Update);
         }
 
-        static IEnumerator EveryUpdateCore(IObserver<long> observer, CancellationToken cancellationToken)
+        public static IObservable<long> EveryFixedUpdate()
+        {
+            return FromMicroCoroutine<long>((observer, cancellationToken) => EveryCycleCore(observer, cancellationToken), FrameCountType.FixedUpdate);
+        }
+
+        public static IObservable<long> EveryEndOfFrame()
+        {
+            return FromMicroCoroutine<long>((observer, cancellationToken) => EveryCycleCore(observer, cancellationToken), FrameCountType.EndOfFrame);
+        }
+
+        static IEnumerator EveryCycleCore(IObserver<long> observer, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
             while (true)
             {
                 yield return null;
-                if (cancellationToken.IsCancellationRequested) yield break;
-
-                observer.OnNext(count++);
-            }
-        }
-
-        public static IObservable<long> EveryFixedUpdate()
-        {
-            return FromCoroutine<long>((observer, cancellationToken) => EveryFixedUpdateCore(observer, cancellationToken));
-        }
-
-        static IEnumerator EveryFixedUpdateCore(IObserver<long> observer, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) yield break;
-            var count = 0L;
-            var yieldInstruction = YieldInstructionCache.WaitForFixedUpdate;
-            while (true)
-            {
-                yield return yieldInstruction;
-                if (cancellationToken.IsCancellationRequested) yield break;
-
-                observer.OnNext(count++);
-            }
-        }
-
-        public static IObservable<long> EveryEndOfFrame()
-        {
-            return FromCoroutine<long>((observer, cancellationToken) => EveryEndOfFrameCore(observer, cancellationToken));
-        }
-
-        static IEnumerator EveryEndOfFrameCore(IObserver<long> observer, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) yield break;
-            var count = 0L;
-            var yieldInstruction = YieldInstructionCache.WaitForEndOfFrame;
-            while (true)
-            {
-                yield return yieldInstruction;
                 if (cancellationToken.IsCancellationRequested) yield break;
 
                 observer.OnNext(count++);
@@ -539,12 +523,12 @@ namespace UniRx
 
         public static IObservable<Unit> NextFrame(FrameCountType frameCountType = FrameCountType.Update)
         {
-            return FromCoroutine<Unit>((observer, cancellation) => NextFrameCore(observer, frameCountType, cancellation));
+            return FromMicroCoroutine<Unit>((observer, cancellation) => NextFrameCore(observer, cancellation), frameCountType);
         }
 
-        static IEnumerator NextFrameCore(IObserver<Unit> observer, FrameCountType frameCountType, CancellationToken cancellation)
+        static IEnumerator NextFrameCore(IObserver<Unit> observer, CancellationToken cancellation)
         {
-            yield return frameCountType.GetYieldInstruction();
+            yield return null;
 
             if (!cancellation.IsCancellationRequested)
             {
@@ -560,21 +544,21 @@ namespace UniRx
 
         public static IObservable<long> TimerFrame(int dueTimeFrameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
-            return FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, frameCountType, cancellation));
+            return FromMicroCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, cancellation), frameCountType);
         }
 
         public static IObservable<long> TimerFrame(int dueTimeFrameCount, int periodFrameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
-            return FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, periodFrameCount, frameCountType, cancellation));
+            return FromMicroCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, periodFrameCount, cancellation), frameCountType);
         }
 
-        static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, FrameCountType frameCountType, CancellationToken cancel)
+        static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, CancellationToken cancel)
         {
             // normalize
             if (dueTimeFrameCount <= 0) dueTimeFrameCount = 0;
 
             var currentFrame = 0;
-            var yieldInstruction = frameCountType.GetYieldInstruction();
+            
             // initial phase
             while (!cancel.IsCancellationRequested)
             {
@@ -584,11 +568,11 @@ namespace UniRx
                     observer.OnCompleted();
                     break;
                 }
-                yield return yieldInstruction;
+                yield return null;
             }
         }
 
-        static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, int periodFrameCount, FrameCountType frameCountType, CancellationToken cancel)
+        static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, int periodFrameCount, CancellationToken cancel)
         {
             // normalize
             if (dueTimeFrameCount <= 0) dueTimeFrameCount = 0;
@@ -596,7 +580,6 @@ namespace UniRx
 
             var sendCount = 0L;
             var currentFrame = 0;
-            var yieldInstruction = frameCountType.GetYieldInstruction();
 
             // initial phase
             while (!cancel.IsCancellationRequested)
@@ -607,7 +590,7 @@ namespace UniRx
                     currentFrame = -1;
                     break;
                 }
-                yield return yieldInstruction;
+                yield return null;
             }
 
             // period phase
@@ -618,7 +601,7 @@ namespace UniRx
                     observer.OnNext(sendCount++);
                     currentFrame = 0;
                 }
-                yield return yieldInstruction;
+                yield return null;
             }
         }
 
