@@ -126,7 +126,7 @@ namespace UniRx
     public interface IReadOnlyReactiveCollection<T> : IEnumerable<T>
     {
         int Count { get; }
-        T this[int index] { get; set; }
+        T this[int index] { get; }
         IObservable<CollectionAddEvent<T>> ObserveAdd();
         IObservable<int> ObserveCountChanged(bool notifyCurrentCount = false);
         IObservable<CollectionMoveEvent<T>> ObserveMove();
