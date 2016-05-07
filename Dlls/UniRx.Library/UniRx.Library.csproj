@@ -94,6 +94,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\ListObserver.cs">
       <Link>InternalUtil\ListObserver.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\MicroCoroutine.cs">
+      <Link>InternalUtil\MicroCoroutine.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\PriorityQueue.cs">
       <Link>InternalUtil\PriorityQueue.cs</Link>
     </Compile>
