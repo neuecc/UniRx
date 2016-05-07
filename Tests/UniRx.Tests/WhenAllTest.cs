@@ -37,8 +37,42 @@ namespace UniRx.Tests.Operators
                     Observable.Timer(TimeSpan.FromSeconds(1)).Select(_ => 5),
                     Observable.Range(1, 4)
             }.Select(x => x).WhenAll().Wait();
-                
+
             xs.IsCollection(100, 5, 4);
+        }
+
+        [TestMethod]
+        public void WhenAllUnitEmpty()
+        {
+            var xs = Observable.WhenAll(new IObservable<Unit>[0]).Wait();
+            xs.Is(Unit.Default);
+
+            var xs2 = Observable.WhenAll(Enumerable.Empty<IObservable<Unit>>().Select(x => x)).Wait();
+            xs2.Is(Unit.Default);
+        }
+
+        [TestMethod]
+        public void WhenAllUnit()
+        {
+            var xs = Observable.WhenAll(
+                    Observable.Return(100).AsUnitObservable(),
+                    Observable.Timer(TimeSpan.FromSeconds(1)).AsUnitObservable(),
+                    Observable.Range(1, 4).AsUnitObservable())
+                .Wait();
+
+            xs.Is(Unit.Default);
+        }
+
+        [TestMethod]
+        public void WhenAllUnitEnumerable()
+        {
+            var xs = new[] {
+                    Observable.Return(100).AsUnitObservable(),
+                    Observable.Timer(TimeSpan.FromSeconds(1)).AsUnitObservable(),
+                    Observable.Range(1, 4).AsUnitObservable()
+            }.Select(x => x).WhenAll().Wait();
+
+            xs.Is(Unit.Default);
         }
     }
 }

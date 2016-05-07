@@ -245,6 +245,16 @@ namespace UniRx
 
         /// <summary>
         /// <para>Specialized for single async operations like Task.WhenAll, Zip.Take(1).</para>
+        /// </summary>
+        public static IObservable<Unit> WhenAll(params IObservable<Unit>[] sources)
+        {
+            if (sources.Length == 0) return Observable.ReturnUnit();
+
+            return new WhenAllObservable(sources);
+        }
+
+        /// <summary>
+        /// <para>Specialized for single async operations like Task.WhenAll, Zip.Take(1).</para>
         /// <para>If sequence is empty, return T[0] array.</para>
         /// </summary>
         public static IObservable<T[]> WhenAll<T>(this IEnumerable<IObservable<T>> sources)
@@ -253,6 +263,17 @@ namespace UniRx
             if (array != null) return WhenAll(array);
 
             return new WhenAllObservable<T>(sources);
+        }
+
+        /// <summary>
+        /// <para>Specialized for single async operations like Task.WhenAll, Zip.Take(1).</para>
+        /// </summary>
+        public static IObservable<Unit> WhenAll(this IEnumerable<IObservable<Unit>> sources)
+        {
+            var array = sources as IObservable<Unit>[];
+            if (array != null) return WhenAll(array);
+
+            return new WhenAllObservable(sources);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, T value)
