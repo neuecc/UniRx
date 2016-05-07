@@ -27,6 +27,26 @@ namespace UniRx
         }
 
         /// <summary>
+        /// Create anonymous observable. Observer has exception durability. This is recommended for make operator and event like generator. 
+        /// </summary>
+        public static IObservable<T> CreateWithState<T, TState>(TState state, Func<TState, IObserver<T>, IDisposable> subscribe)
+        {
+            if (subscribe == null) throw new ArgumentNullException("subscribe");
+
+            return new CreateObservable<T, TState>(state, subscribe);
+        }
+
+        /// <summary>
+        /// Create anonymous observable. Observer has exception durability. This is recommended for make operator and event like generator(HotObservable). 
+        /// </summary>
+        public static IObservable<T> CreateWithState<T, TState>(TState state, Func<TState, IObserver<T>, IDisposable> subscribe, bool isRequiredSubscribeOnCurrentThread)
+        {
+            if (subscribe == null) throw new ArgumentNullException("subscribe");
+
+            return new CreateObservable<T, TState>(state, subscribe, isRequiredSubscribeOnCurrentThread);
+        }
+
+        /// <summary>
         /// Create anonymous observable. Safe means auto detach when error raised in onNext pipeline. This is recommended for make generator (ColdObservable).
         /// </summary>
         public static IObservable<T> CreateSafe<T>(Func<IObserver<T>, IDisposable> subscribe)

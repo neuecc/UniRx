@@ -12,6 +12,11 @@ namespace UniRx
             return new AnonymousDisposable(disposeAction);
         }
 
+        public static IDisposable CreateWithState<TState>(TState state, Action<TState> disposeAction)
+        {
+            return new AnonymousDisposable<TState>(state, disposeAction);
+        }
+
         class EmptyDisposable : IDisposable
         {
             public static EmptyDisposable Singleton = new EmptyDisposable();
@@ -42,6 +47,28 @@ namespace UniRx
                 {
                     isDisposed = true;
                     dispose();
+                }
+            }
+        }
+
+        class AnonymousDisposable<T> : IDisposable
+        {
+            bool isDisposed = false;
+            readonly T state;
+            readonly Action<T> dispose;
+
+            public AnonymousDisposable(T state, Action<T> dispose)
+            {
+                this.state = state;
+                this.dispose = dispose;
+            }
+
+            public void Dispose()
+            {
+                if (!isDisposed)
+                {
+                    isDisposed = true;
+                    dispose(state);
                 }
             }
         }
