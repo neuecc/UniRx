@@ -12,6 +12,7 @@ using UniRx.Diagnostics;
 using System.Net;
 using System.IO;
 using System.Linq;
+
 #if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
     // Fallback for Unity versions below 4.5
     using Hash = System.Collections.Hashtable;
@@ -347,11 +348,11 @@ namespace UniRx.ObjectTest
             //    .Where(x => x.LogType == LogType.Exception)
             //    .Subscribe(x => logtext.AppendLine(x.ToString()));
 
-            //ObservableLogger.Listener.LogToUnityDebug();
-            //ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
-            //{
-            //    logtext.AppendLine(x.Message);
-            //});
+            ObservableLogger.Listener.LogToUnityDebug();
+            ObservableLogger.Listener.ObserveOnMainThread().Subscribe(x =>
+            {
+                logtext.AppendLine(x.Message);
+            });
 
 #if UNITY_5_3
 
@@ -411,6 +412,16 @@ namespace UniRx.ObjectTest
         Subject<long> subj;
         object gate = new object();
 
+        int counter;
+        IEnumerator IncrCounter()
+        {
+            while (true)
+            {
+                yield return null;
+                counter++;
+            }
+        }
+
 
         public void OnGUI()
         {
@@ -424,10 +435,39 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Co"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StartCo"))
             {
-
+                stopwatch.Stop();
+                elapsed.Clear();
+                for (int i = 0; i < 10000; i++)
+                {
+                    Observable.FromCoroutine(IncrCounter).Subscribe().AddTo(disposables);
+                }
+                logger.Debug("StartCo");
             }
+            ypos += 100;
+
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "StartMicro"))
+            {
+                stopwatch.Stop();
+                elapsed.Clear();
+                for (int i = 0; i < 10000; i++)
+                {
+                    Observable.FromMicroCoroutine(IncrCounter).Subscribe().AddTo(disposables);
+                }
+                logger.Debug("StartMicro");
+            }
+            ypos += 100;
+
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Average"))
+            {
+                var avg = elapsed.Average(x => x.TotalMilliseconds) + "ms";
+                logger.Debug("Average:" + avg);
+            }
+            ypos += 100;
+
+
+
             ypos += 100;
 
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Every"))
@@ -875,6 +915,27 @@ namespace UniRx.ObjectTest
             // Log
             //GUI.Box(new Rect(Screen.width - 300, 0, 300, 300), "Log");
             //GUI.Label(new Rect(Screen.width - 290, 10, 290, 290), logtext.ToString());
+        }
+
+
+
+        List<TimeSpan> elapsed = new List<TimeSpan>();
+        System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
+        void Update()
+        {
+            stopwatch.Reset();
+            stopwatch.Start();
+        }
+
+        void LateUpdate()
+        {
+            if (stopwatch.IsRunning)
+            {
+                stopwatch.Stop();
+                elapsed.Add(stopwatch.Elapsed);
+                stopwatch.Reset();
+            }
         }
     }
 }

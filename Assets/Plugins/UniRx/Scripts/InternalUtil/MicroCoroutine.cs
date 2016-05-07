@@ -73,6 +73,16 @@ namespace UniRx.InternalUtil
                                 coroutines[i] = null;
                                 needsRefresh = true;
                             }
+                            else
+                            {
+#if UNITY_EDITOR
+                                // validation only on Editor.
+                                if (coroutine.Current != null)
+                                {
+                                    UnityEngine.Debug.LogWarning("MicroCoroutine supports only yield return null. return value = " + coroutine.Current);
+                                }
+#endif
+                            }
                         }
                         catch (Exception ex)
                         {

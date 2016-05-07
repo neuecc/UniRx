@@ -14,6 +14,8 @@ namespace UniRx
 {
     public sealed class MainThreadDispatcher : MonoBehaviour
     {
+        const int RefreshCycleFrame = 79;
+
         public enum CullingMode
         {
             /// <summary>
@@ -316,6 +318,19 @@ namespace UniRx
             }
         }
 
+        public static void StartMicroCoroutine(IEnumerator routine)
+        {
+#if UNITY_EDITOR
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStartCoroutine(routine); return; }
+#endif
+
+            var dispatcher = Instance;
+            if (dispatcher != null)
+            {
+                dispatcher.microCoroutine.AddCoroutine(routine);
+            }
+        }
+
         new public static Coroutine StartCoroutine(IEnumerator routine)
         {
 #if UNITY_EDITOR
@@ -347,7 +362,9 @@ namespace UniRx
         }
 
         ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
+        MicroCoroutine microCoroutine = null;
         Action<Exception> unhandledExceptionCallback = ex => Debug.LogException(ex); // default
+        int frameCountForRefresh = 0;
 
         static MainThreadDispatcher instance;
         static bool initialized;
@@ -427,6 +444,8 @@ namespace UniRx
 
         void Awake()
         {
+            StartCoroutine_Auto(RunMicroCoroutine());
+
             if (instance == null)
             {
                 instance = this;
@@ -453,6 +472,29 @@ namespace UniRx
                 {
                     Debug.LogWarning("There is already a MainThreadDispatcher in the scene.");
                 }
+            }
+        }
+
+        IEnumerator RunMicroCoroutine()
+        {
+            this.microCoroutine = new MicroCoroutine(() =>
+            {
+                if (frameCountForRefresh > RefreshCycleFrame)
+                {
+                    frameCountForRefresh = 0;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }, ex => unhandledExceptionCallback(ex));
+
+            while (true)
+            {
+                yield return null;
+                frameCountForRefresh++;
+                microCoroutine.Run();
             }
         }
 

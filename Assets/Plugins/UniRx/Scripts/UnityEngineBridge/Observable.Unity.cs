@@ -239,6 +239,12 @@ namespace UniRx
             return FromCoroutine<Unit>((observer, cancellationToken) => WrapEnumerator(coroutine(), observer, cancellationToken, publishEveryYield));
         }
 
+        /// <summary>From has no callback coroutine to IObservable. If publishEveryYield = true then publish OnNext every yield return else return once on enumeration completed.</summary>
+        public static IObservable<Unit> FromMicroCoroutine(Func<IEnumerator> coroutine, bool publishEveryYield = false)
+        {
+            return FromMicroCoroutine<Unit>((observer, cancellationToken) => WrapEnumerator(coroutine(), observer, cancellationToken, publishEveryYield));
+        }
+
         static IEnumerator WrapEnumerator(IEnumerator enumerator, IObserver<Unit> observer, CancellationToken cancellationToken, bool publishEveryYield)
         {
             var hasNext = default(bool);
@@ -401,7 +407,17 @@ namespace UniRx
 
         public static IObservable<T> FromCoroutine<T>(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine)
         {
-            return new UniRx.Operators.FromCoroutine<T>(coroutine);
+            return new UniRx.Operators.FromCoroutineObservable<T>(coroutine);
+        }
+
+        public static IObservable<T> FromMicroCoroutine<T>(Func<IObserver<T>, IEnumerator> coroutine)
+        {
+            return FromMicroCoroutine<T>((observer, _) => coroutine(observer));
+        }
+
+        public static IObservable<T> FromMicroCoroutine<T>(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine)
+        {
+            return new UniRx.Operators.FromMicroCoroutineObservable<T>(coroutine);
         }
 
         public static IObservable<Unit> SelectMany<T>(this IObservable<T> source, IEnumerator coroutine, bool publishEveryYield = false)
