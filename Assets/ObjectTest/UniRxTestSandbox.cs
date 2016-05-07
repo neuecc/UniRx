@@ -1,3 +1,6 @@
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
+#define SupportCustomYieldInstruction
+#endif
 #pragma warning disable 0414
 
 using UnityEngine;
@@ -236,6 +239,8 @@ namespace UniRx.ObjectTest
 
         static IEnumerator Enumerate<T>(IObservable<T> source)
         {
+#if SupportCustomYieldInstruction
+
             Debug.Log("Start:" + Time.frameCount);
 
             var yi = source.ToYieldInstruction(false);
@@ -250,6 +255,9 @@ namespace UniRx.ObjectTest
             }
 
             Debug.Log("End:" + Time.frameCount);
+#else
+            yield return null;
+#endif
         }
 
 
