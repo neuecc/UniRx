@@ -469,15 +469,13 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ObserveEveryValueChanged_10000"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "MainThreadFixedUpdate"))
             {
-                stopwatch.Stop();
-                elapsed.Clear();
-                for (int i = 0; i < 10000; i++)
+                var now = DateTime.Now;
+                Scheduler.MainThreadFixedUpdate.Schedule(TimeSpan.FromSeconds(3), () =>
                 {
-                    this.ObserveEveryValueChanged(x => x.counter).Subscribe().AddTo(disposables);
-                }
-                logger.Debug("ObserveEveryValueChanged_10000");
+                    logger.Debug(DateTime.Now - now);
+                });
             }
             ypos += 100;
 

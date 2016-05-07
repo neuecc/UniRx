@@ -38,7 +38,7 @@ namespace UniRx
         static IScheduler mainThreadIgnoreTimeScale;
 
         /// <summary>
-        /// Another MainThread scheduler, delay elapsed time is calculated based on Time.realtimeSinceStartup.
+        /// Another MainThread scheduler, delay elapsed time is calculated based on Time.unscaledDeltaTime.
         /// </summary>
         public static IScheduler MainThreadIgnoreTimeScale
         {
@@ -51,7 +51,7 @@ namespace UniRx
         static IScheduler mainThreadFixedUpdate;
 
         /// <summary>
-        /// Run on fixed update mainthread, delay elapsed time is calculated based on Time.realtimeSinceStartup.
+        /// Run on fixed update mainthread, delay elapsed time is calculated based on Time.fixedTime.
         /// </summary>
         public static IScheduler MainThreadFixedUpdate
         {
@@ -64,7 +64,7 @@ namespace UniRx
         static IScheduler mainThreadEndOfFrame;
 
         /// <summary>
-        /// Run on end of frame mainthread, delay elapsed time is calculated based on Time.realtimeSinceStartup.
+        /// Run on end of frame mainthread, delay elapsed time is calculated based on Time.deltaTime.
         /// </summary>
         public static IScheduler MainThreadEndOfFrame
         {
@@ -227,14 +227,14 @@ namespace UniRx
                 }
                 else
                 {
-                    var startTime = Time.realtimeSinceStartup; // WaitForSeconds is affected in timescale, doesn't use.
+                    var elapsed = 0f;
                     var dt = (float)dueTime.TotalSeconds;
                     while (true)
                     {
                         yield return null;
                         if (cancellation.IsDisposed) break;
 
-                        var elapsed = Time.realtimeSinceStartup - startTime;
+                        elapsed += Time.unscaledDeltaTime;
                         if (elapsed >= dt)
                         {
                             MainThreadDispatcher.UnsafeSend(action);
@@ -259,18 +259,18 @@ namespace UniRx
                 }
                 else
                 {
-                    var startTime = Time.realtimeSinceStartup; // WaitForSeconds is affected in timescale, doesn't use.
+                    var elapsed = 0f;
                     var dt = (float)period.TotalSeconds;
                     while (true)
                     {
                         yield return null;
                         if (cancellation.IsDisposed) break;
 
-                        var elapsed = Time.realtimeSinceStartup - startTime;
+                        elapsed += Time.unscaledDeltaTime;
                         if (elapsed >= dt)
                         {
-                            startTime = Time.realtimeSinceStartup; // set next start
                             MainThreadDispatcher.UnsafeSend(action);
+                            elapsed = 0;
                         }
                     }
                 }
@@ -369,14 +369,14 @@ namespace UniRx
                 }
                 else
                 {
-                    var startTime = Time.realtimeSinceStartup; // WaitForSeconds is affected in timescale, doesn't use.
+                    var startTime = Time.fixedTime;
                     var dt = (float)dueTime.TotalSeconds;
                     while (true)
                     {
                         yield return null;
                         if (cancellation.IsDisposed) break;
 
-                        var elapsed = Time.realtimeSinceStartup - startTime;
+                        var elapsed = Time.fixedTime - startTime;
                         if (elapsed >= dt)
                         {
                             MainThreadDispatcher.UnsafeSend(action);
@@ -401,18 +401,19 @@ namespace UniRx
                 }
                 else
                 {
-                    var startTime = Time.realtimeSinceStartup; // WaitForSeconds is affected in timescale, doesn't use.
+                    var startTime = Time.fixedTime;
                     var dt = (float)period.TotalSeconds;
                     while (true)
                     {
                         yield return null;
                         if (cancellation.IsDisposed) break;
 
-                        var elapsed = Time.realtimeSinceStartup - startTime;
+                        var ft = Time.fixedTime;
+                        var elapsed = ft - startTime;
                         if (elapsed >= dt)
                         {
-                            startTime = Time.realtimeSinceStartup; // set next start
                             MainThreadDispatcher.UnsafeSend(action);
+                            startTime = ft;
                         }
                     }
                 }
@@ -485,14 +486,14 @@ namespace UniRx
                 }
                 else
                 {
-                    var startTime = Time.realtimeSinceStartup; // WaitForSeconds is affected in timescale, doesn't use.
+                    var elapsed = 0f;
                     var dt = (float)dueTime.TotalSeconds;
                     while (true)
                     {
                         yield return null;
                         if (cancellation.IsDisposed) break;
 
-                        var elapsed = Time.realtimeSinceStartup - startTime;
+                        elapsed += Time.deltaTime;
                         if (elapsed >= dt)
                         {
                             MainThreadDispatcher.UnsafeSend(action);
@@ -517,18 +518,18 @@ namespace UniRx
                 }
                 else
                 {
-                    var startTime = Time.realtimeSinceStartup; // WaitForSeconds is affected in timescale, doesn't use.
+                    var elapsed = 0f;
                     var dt = (float)period.TotalSeconds;
                     while (true)
                     {
                         yield return null;
                         if (cancellation.IsDisposed) break;
-
-                        var elapsed = Time.realtimeSinceStartup - startTime;
+                        
+                        elapsed += Time.deltaTime;
                         if (elapsed >= dt)
                         {
-                            startTime = Time.realtimeSinceStartup; // set next start
                             MainThreadDispatcher.UnsafeSend(action);
+                            elapsed = 0;
                         }
                     }
                 }
