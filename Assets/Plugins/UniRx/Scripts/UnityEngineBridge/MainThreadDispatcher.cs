@@ -84,7 +84,7 @@ namespace UniRx
                 }
             }
 
-            public void UnsafeInvoke(Action<object> action, object state)
+            public void UnsafeInvoke<T>(Action<T> action, T state)
             {
                 try
                 {
@@ -267,7 +267,7 @@ namespace UniRx
         }
 
         /// <summary>Run Synchronous action.</summary>
-        public static void UnsafeSend(Action<object> action, object state)
+        public static void UnsafeSend<T>(Action<T> action, T state)
         {
 #if UNITY_EDITOR
             if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.UnsafeInvoke(action, state); return; }
