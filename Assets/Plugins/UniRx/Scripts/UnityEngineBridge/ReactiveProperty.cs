@@ -115,7 +115,7 @@ namespace UniRx
         public ReactiveProperty(IObservable<T> source, T initialValue)
         {
             canPublishValueOnSubscribe = false;
-            Value = initialValue;
+            Value = initialValue; // Value set canPublishValueOnSubcribe = true
             publisher = new Subject<T>();
             sourceConnection = source.Subscribe(new ReactivePropertyObserver(this));
         }
@@ -280,6 +280,7 @@ namespace UniRx
         public ReadOnlyReactiveProperty(IObservable<T> source, T initialValue)
         {
             value = initialValue;
+            canPublishValueOnSubscribe = true;
             publisher = new Subject<T>();
             sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
         }
