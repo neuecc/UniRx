@@ -233,55 +233,6 @@ namespace UniRx.ObjectTest
     public class UniRxTestSandbox : MonoBehaviour
     {
 
-#if UNITY_5_3
-
-        public UnityEngine.UI.Button button;
-
-        static IEnumerator Enumerate<T>(IObservable<T> source)
-        {
-#if SupportCustomYieldInstruction
-
-            Debug.Log("Start:" + Time.frameCount);
-
-            var yi = source.ToYieldInstruction(false);
-            yield return yi;
-            if (yi.HasError)
-            {
-                Debug.Log(yi.Error);
-            }
-            else
-            {
-                Debug.Log(yi.Result);
-            }
-
-            Debug.Log("End:" + Time.frameCount);
-#else
-            yield return null;
-#endif
-        }
-
-
-        IEnumerator TestNewCustomYieldInstruction()
-        {
-            // wait Rx Observable.
-            yield return Observable.Timer(TimeSpan.FromSeconds(1)).ToYieldInstruction();
-
-            // you can change the scheduler(this is ignore Time.scale)
-            yield return Observable.Timer(TimeSpan.FromSeconds(1), Scheduler.MainThreadIgnoreTimeScale).ToYieldInstruction();
-
-            // get return value from ObservableYieldInstruction
-            var o = ObservableWWW.Get("http://unity3d.com/").ToYieldInstruction(throwOnError: false);
-            yield return o;
-
-            if (o.HasError) { Debug.Log(o.Error.ToString()); }
-            if (o.HasResult) { Debug.Log(o.Result); }
-
-            // other sample(wait until transform.position.y >= 100) 
-            yield return this.ObserveEveryValueChanged(x => x.transform).FirstOrDefault(x => x.position.y >= 100).ToYieldInstruction();
-        }
-
-#endif
-
 
         readonly static UniRx.Diagnostics.Logger logger = new UniRx.Diagnostics.Logger("UniRx.Test.NewBehaviour");
 
@@ -367,16 +318,16 @@ namespace UniRx.ObjectTest
 
 #if UNITY_5_3
 
-            button.OnClickAsObservable().Subscribe(_ =>
-            {
-                UnityEngine.Debug.Log("---");
-                Observable.EveryGameObjectUpdate().Subscribe(x => Debug.Log("EveryGameObjectUpdate" + x));
-                Observable.EveryUpdate().Subscribe(x => Debug.Log("EveryUpdate:" + x));
-                // Observable.EveryAfterUpdate().Subscribe(x => Debug.Log("EveryAfterUpdate:" + x));
-                Observable.EveryLateUpdate().Subscribe(x => Debug.Log("EveryLateUpdate:" + x));
-                Observable.EveryEndOfFrame().Subscribe(x => Debug.Log("EveryEndOfFrame:" + x));
-                UnityEngine.Debug.Log("---");
-            });
+            //button.OnClickAsObservable().Subscribe(_ =>
+            //{
+            //    UnityEngine.Debug.Log("---");
+            //    Observable.EveryGameObjectUpdate().Subscribe(x => Debug.Log("EveryGameObjectUpdate" + x));
+            //    Observable.EveryUpdate().Subscribe(x => Debug.Log("EveryUpdate:" + x));
+            //    // Observable.EveryAfterUpdate().Subscribe(x => Debug.Log("EveryAfterUpdate:" + x));
+            //    Observable.EveryLateUpdate().Subscribe(x => Debug.Log("EveryLateUpdate:" + x));
+            //    Observable.EveryEndOfFrame().Subscribe(x => Debug.Log("EveryEndOfFrame:" + x));
+            //    UnityEngine.Debug.Log("---");
+            //});
 #endif
 
             FloAAX.Subscribe(x => Debug.Log("FloAAX:" + x));
@@ -433,17 +384,6 @@ namespace UniRx.ObjectTest
             }
         }
 
-        IEnumerator ToYield()
-        {
-            UnityEngine.Debug.Log("start");
-
-            var source = new BooleanDisposable();
-            var x = Observable.TimerFrame(100).ToYieldInstruction(new CancellationToken(source));
-
-            // Observable.TimerFrame(30).Subscribe(_ => source.Dispose());
-            yield return x;
-            UnityEngine.Debug.Log("end, canceled?" + x.IsCanceled);
-        }
 
         public void OnGUI()
         {
@@ -490,7 +430,7 @@ namespace UniRx.ObjectTest
 
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ToYield"))
             {
-                StartCoroutine_Auto(ToYield());
+                // StartCoroutine_Auto(ToYield());
             }
             ypos += 100;
 
