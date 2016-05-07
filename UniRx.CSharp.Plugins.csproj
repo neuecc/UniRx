@@ -155,6 +155,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Empty.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Finally.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\First.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\AsSingleUnitObservable.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\ForEachAsync.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\FromEvent.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\GroupBy.cs" />

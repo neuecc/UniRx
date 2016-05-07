@@ -62,5 +62,13 @@ namespace UniRx
         {
             return new AsUnitObservableObservable<T>(source);
         }
+
+        /// <summary>
+        /// Same as LastOrDefault().AsUnitObservable().
+        /// </summary>
+        public static IObservable<Unit> AsSingleUnitObservable<T>(this IObservable<T> source)
+        {
+            return new AsSingleUnitObservableObservable<T>(source);
+        }
     }
 }

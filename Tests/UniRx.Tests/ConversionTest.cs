@@ -49,5 +49,21 @@ namespace UniRx.Tests.Operators
 
             list.IsCollection(1, 2, 3);
         }
+
+        [TestMethod]
+        public void AsSingleUnitObservable()
+        {
+            var subject = new Subject<int>();
+
+            var done = false;
+            subject.AsSingleUnitObservable().Subscribe(_ => done = true);
+
+            subject.OnNext(1);
+            done.IsFalse();
+            subject.OnNext(100);
+            done.IsFalse();
+            subject.OnCompleted();
+            done.IsTrue();
+        }
     }
 }

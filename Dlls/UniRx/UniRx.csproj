@@ -183,6 +183,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\AsObservable.cs">
       <Link>Operators\AsObservable.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\AsSingleUnitObservable.cs">
+      <Link>Operators\AsSingleUnitObservable.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\AsUnitObservable.cs">
       <Link>Operators\AsUnitObservable.cs</Link>
     </Compile>
