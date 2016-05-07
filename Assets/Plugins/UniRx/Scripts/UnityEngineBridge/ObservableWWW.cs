@@ -200,7 +200,7 @@ namespace UniRx
 
                 if (!string.IsNullOrEmpty(www.error))
                 {
-                    observer.OnError(new WWWErrorException(www));
+                    observer.OnError(new WWWErrorException(www, www.text));
                 }
                 else
                 {
@@ -259,7 +259,7 @@ namespace UniRx
 
                 if (!string.IsNullOrEmpty(www.error))
                 {
-                    observer.OnError(new WWWErrorException(www));
+                    observer.OnError(new WWWErrorException(www, www.text));
                 }
                 else
                 {
@@ -318,7 +318,7 @@ namespace UniRx
 
                 if (!string.IsNullOrEmpty(www.error))
                 {
-                    observer.OnError(new WWWErrorException(www));
+                    observer.OnError(new WWWErrorException(www, www.text));
                 }
                 else
                 {
@@ -377,7 +377,7 @@ namespace UniRx
 
                 if (!string.IsNullOrEmpty(www.error))
                 {
-                    observer.OnError(new WWWErrorException(www));
+                    observer.OnError(new WWWErrorException(www, ""));
                 }
                 else
                 {
@@ -397,13 +397,14 @@ namespace UniRx
         public System.Collections.Generic.Dictionary<string, string> ResponseHeaders { get; private set; }
         public WWW WWW { get; private set; }
 
-        public WWWErrorException(WWW www)
+        // cache the text because if www was disposed, can't access it.
+        public WWWErrorException(WWW www, string text)
         {
             this.WWW = www;
             this.RawErrorMessage = www.error;
             this.ResponseHeaders = www.responseHeaders;
             this.HasResponse = false;
-            this.Text = www.text; // cache the text because if www was disposed, can't access it.
+            this.Text = text; 
 
             var splitted = RawErrorMessage.Split(' ', ':');
             if (splitted.Length != 0)
