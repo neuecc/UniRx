@@ -18,6 +18,11 @@ namespace UniRx
             }
         }
 
+        internal static IObserver<T> CreateSubscribeWithStateObserver<T, TState>(TState state, Action<T, TState> onNext, Action<Exception, TState> onError, Action<TState> onCompleted)
+        {
+            return new Subscribe<T, TState>(state, onNext, onError, onCompleted);
+        }
+
         public static IObserver<T> Create<T>(Action<T> onNext)
         {
             return Create<T>(onNext, UniRx.Stubs.Throw, UniRx.Stubs.Nop);
@@ -203,6 +208,50 @@ namespace UniRx
             }
         }
 
+        // with state
+        class Subscribe<T, TState> : IObserver<T>
+        {
+            readonly TState state;
+            readonly Action<T, TState> onNext;
+            readonly Action<Exception, TState> onError;
+            readonly Action<TState> onCompleted;
+
+            int isStopped = 0;
+
+            public Subscribe(TState state, Action<T, TState> onNext, Action<Exception, TState> onError, Action<TState> onCompleted)
+            {
+                this.state = state;
+                this.onNext = onNext;
+                this.onError = onError;
+                this.onCompleted = onCompleted;
+            }
+
+            public void OnNext(T value)
+            {
+                if (isStopped == 0)
+                {
+                    onNext(value, state);
+                }
+            }
+
+            public void OnError(Exception error)
+            {
+                if (Interlocked.Increment(ref isStopped) == 1)
+                {
+                    onError(error, state);
+                }
+            }
+
+
+            public void OnCompleted()
+            {
+                if (Interlocked.Increment(ref isStopped) == 1)
+                {
+                    onCompleted(state);
+                }
+            }
+        }
+
         class AutoDetachObserver<T> : UniRx.Operators.OperatorObserverBase<T, T>
         {
             public AutoDetachObserver(IObserver<T> observer, IDisposable cancel)
@@ -277,6 +326,26 @@ namespace UniRx
         {
             return source.Subscribe(Observer.CreateSubscribeObserver(onNext, onError, onCompleted));
         }
+
+        public static IDisposable SubscribeWithState<T, TState>(this IObservable<T> source, TState state, Action<T, TState> onNext)
+        {
+            return source.Subscribe(Observer.CreateSubscribeWithStateObserver(state, onNext, Stubs<TState>.Throw, Stubs<TState>.Ignore));
+        }
+
+        public static IDisposable SubscribeWithState<T, TState>(this IObservable<T> source, TState state, Action<T, TState> onNext, Action<Exception, TState> onError)
+        {
+            return source.Subscribe(Observer.CreateSubscribeWithStateObserver(state, onNext, onError, Stubs<TState>.Ignore));
+        }
+
+        public static IDisposable SubscribeWithState<T, TState>(this IObservable<T> source, TState state, Action<T, TState> onNext, Action<TState> onCompleted)
+        {
+            return source.Subscribe(Observer.CreateSubscribeWithStateObserver(state, onNext, Stubs<TState>.Throw, onCompleted));
+        }
+
+        public static IDisposable SubscribeWithState<T, TState>(this IObservable<T> source, TState state, Action<T, TState> onNext, Action<Exception, TState> onError, Action<TState> onCompleted)
+        {
+            return source.Subscribe(Observer.CreateSubscribeWithStateObserver(state, onNext, onError, onCompleted));
+        }
     }
 
     internal static class Stubs
@@ -295,5 +364,6 @@ namespace UniRx
     {
         public static readonly Action<T> Ignore = (T t) => { };
         public static readonly Func<T, T> Identity = (T t) => t;
+        public static readonly Action<Exception, T> Throw = (ex, _) => { throw ex; };
     }
 }
