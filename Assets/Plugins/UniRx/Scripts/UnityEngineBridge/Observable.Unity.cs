@@ -57,16 +57,18 @@ namespace UniRx
     {
         readonly IDisposable subscription;
         readonly bool reThrowOnError;
+        readonly CancellationToken cancel;
         T current;
         T result;
         bool moveNext;
         bool hasResult;
         Exception error;
 
-        public ObservableYieldInstruction(IObservable<T> source, bool reThrowOnError)
+        public ObservableYieldInstruction(IObservable<T> source, bool reThrowOnError, CancellationToken cancel)
         {
             this.moveNext = true;
             this.reThrowOnError = reThrowOnError;
+            this.cancel = cancel;
             try
             {
                 this.subscription = source.Subscribe(new ToYieldInstruction(this));
@@ -86,6 +88,16 @@ namespace UniRx
         public bool HasResult
         {
             get { return hasResult; }
+        }
+
+        public bool IsCanceled
+        {
+            get
+            {
+                if (hasResult) return false;
+                if (error != null) return false;
+                return cancel.IsCancellationRequested;
+            }
         }
 
         public T Result
@@ -119,7 +131,15 @@ namespace UniRx
 
         bool IEnumerator.MoveNext()
         {
-            return moveNext;
+            if (!moveNext) return false;
+
+            if (cancel.IsCancellationRequested)
+            {
+                subscription.Dispose();
+                return false;
+            }
+
+            return true;
         }
 
         public void Dispose()
@@ -650,9 +670,9 @@ namespace UniRx
         /// If needs last result, you can take ObservableYieldInstruction.HasResult/Result property.
         /// This overload throws exception if received OnError events(same as coroutine).
         /// </summary>
-        public static ObservableYieldInstruction<T> ToYieldInstruction<T>(this IObservable<T> source)
+        public static ObservableYieldInstruction<T> ToYieldInstruction<T>(this IObservable<T> source, CancellationToken cancel = default(CancellationToken))
         {
-            return new ObservableYieldInstruction<T>(source, true);
+            return new ObservableYieldInstruction<T>(source, true, cancel);
         }
 
         /// <summary>
@@ -660,9 +680,9 @@ namespace UniRx
         /// If needs last result, you can take ObservableYieldInstruction.HasResult/Result property.
         /// If throwOnError = false, you can take ObservableYieldInstruction.HasError/Error property.
         /// </summary>
-        public static ObservableYieldInstruction<T> ToYieldInstruction<T>(this IObservable<T> source, bool throwOnError)
+        public static ObservableYieldInstruction<T> ToYieldInstruction<T>(this IObservable<T> source, bool throwOnError, CancellationToken cancel = default(CancellationToken))
         {
-            return new ObservableYieldInstruction<T>(source, throwOnError);
+            return new ObservableYieldInstruction<T>(source, throwOnError, cancel);
         }
 
 #endif
@@ -688,7 +708,7 @@ namespace UniRx
         /// <summary>Convert to awaitable IEnumerator.</summary>
         public static IEnumerator ToAwaitableEnumerator<T>(this IObservable<T> source, Action<T> onResult, Action<Exception> onError, CancellationToken cancel = default(CancellationToken))
         {
-            var enumerator = new ObservableYieldInstruction<T>(source, false);
+            var enumerator = new ObservableYieldInstruction<T>(source, false, cancel);
             var e = (IEnumerator<T>)enumerator;
             while (e.MoveNext() && !cancel.IsCancellationRequested)
             {

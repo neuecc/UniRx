@@ -425,6 +425,17 @@ namespace UniRx.ObjectTest
             }
         }
 
+        IEnumerator ToYield()
+        {
+            UnityEngine.Debug.Log("start");
+
+            var source = new BooleanDisposable();
+            var x = Observable.TimerFrame(100).ToYieldInstruction(new CancellationToken(source));
+
+            // Observable.TimerFrame(30).Subscribe(_ => source.Dispose());
+            yield return x;
+            UnityEngine.Debug.Log("end, canceled?" + x.IsCanceled);
+        }
 
         public void OnGUI()
         {
@@ -469,13 +480,9 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "MainThreadFixedUpdate"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ToYield"))
             {
-                var now = DateTime.Now;
-                Scheduler.MainThreadFixedUpdate.Schedule(TimeSpan.FromSeconds(3), () =>
-                {
-                    logger.Debug(DateTime.Now - now);
-                });
+                StartCoroutine_Auto(ToYield());
             }
             ypos += 100;
 
