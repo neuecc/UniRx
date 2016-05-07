@@ -9,6 +9,7 @@ namespace UniRx
     public interface IReadOnlyReactiveProperty<T> : IObservable<T>
     {
         T Value { get; }
+        bool HasValue { get; }
     }
 
     public interface IReactiveProperty<T> : IReadOnlyReactiveProperty<T>
@@ -86,6 +87,14 @@ namespace UniRx
                         p.OnNext(this.value);
                     }
                 }
+            }
+        }
+
+        public bool HasValue
+        {
+            get
+            {
+                return canPublishValueOnSubscribe;
             }
         }
 
@@ -271,6 +280,14 @@ namespace UniRx
             }
         }
 
+        public bool HasValue
+        {
+            get
+            {
+                return canPublishValueOnSubscribe;
+            }
+        }
+
         public ReadOnlyReactiveProperty(IObservable<T> source)
         {
             publisher = new Subject<T>();
@@ -420,6 +437,11 @@ namespace UniRx
         public static ReadOnlyReactiveProperty<T> ToReadOnlyReactiveProperty<T>(this IObservable<T> source, T initialValue)
         {
             return new ReadOnlyReactiveProperty<T>(source, initialValue);
+        }
+
+        public static IObservable<T> SkipLatestValueOnSubscribe<T>(this IReadOnlyReactiveProperty<T> source)
+        {
+            return source.HasValue ? source.Skip(1) : source;
         }
 
         // for multiple toggle or etc..
