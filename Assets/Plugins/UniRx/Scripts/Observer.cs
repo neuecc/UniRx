@@ -18,6 +18,21 @@ namespace UniRx
             }
         }
 
+        public static IObserver<T> Create<T>(Action<T> onNext)
+        {
+            return Create<T>(onNext, UniRx.Stubs.Throw, UniRx.Stubs.Nop);
+        }
+
+        public static IObserver<T> Create<T>(Action<T> onNext, Action<Exception> onError)
+        {
+            return Create<T>(onNext, onError, UniRx.Stubs.Nop);
+        }
+
+        public static IObserver<T> Create<T>(Action<T> onNext, Action onCompleted)
+        {
+            return Create<T>(onNext, UniRx.Stubs.Throw, onCompleted);
+        }
+
         public static IObserver<T> Create<T>(Action<T> onNext, Action<Exception> onError, Action onCompleted)
         {
             // need compare for avoid iOS AOT
