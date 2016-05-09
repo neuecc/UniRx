@@ -27,6 +27,12 @@ namespace UniRx
         {
             Execute(Unit.Default);
         }
+
+        /// <summary>Force push parameter to subscribers.</summary>
+        public void ForceExecute()
+        {
+            ForceExecute(Unit.Default);
+        }
     }
 
     public class ReactiveCommand<T> : IObservable<T>, IDisposable
