@@ -2,6 +2,12 @@
 
 namespace UniRx
 {
+    public interface IReactiveCommand<T> : IObservable<T>
+    {
+        IReadOnlyReactiveProperty<bool> CanExecute { get; }
+        bool Execute(T parameter);
+    }
+
     /// <summary>
     /// Represents ReactiveCommand&lt;Unit&gt;
     /// </summary>
@@ -23,9 +29,9 @@ namespace UniRx
         }
 
         /// <summary>Push null to subscribers.</summary>
-        public void Execute()
+        public bool Execute()
         {
-            Execute(Unit.Default);
+            return Execute(Unit.Default);
         }
 
         /// <summary>Force push parameter to subscribers.</summary>
@@ -35,7 +41,7 @@ namespace UniRx
         }
     }
 
-    public class ReactiveCommand<T> : IObservable<T>, IDisposable
+    public class ReactiveCommand<T> : IReactiveCommand<T>, IDisposable
     {
         readonly Subject<T> trigger = new Subject<T>();
         readonly IDisposable canExecuteSubscription;
@@ -68,7 +74,7 @@ namespace UniRx
             this.canExecute = new ReactiveProperty<bool>(initialValue);
             this.canExecuteSubscription = canExecuteSource
                 .DistinctUntilChanged()
-                .Subscribe(b => canExecute.Value = b);
+                .SubscribeWithState(canExecute, (b, c) => c.Value = b);
         }
 
         /// <summary>Push parameter to subscribers when CanExecute.</summary>
@@ -135,7 +141,7 @@ namespace UniRx
         // for uGUI(from 4.6)
 #if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
 
-        public static IDisposable SubscribeToButton(this ReactiveCommand<Unit> command, UnityEngine.UI.Button button)
+        public static IDisposable BindTo(this ReactiveCommand<Unit> command, UnityEngine.UI.Button button)
         {
             var d1 = command.CanExecute.SubscribeToInteractable(button);
             var d2 = button.OnClickAsObservable().SubscribeWithState(command, (x, c) => c.Execute(x));
