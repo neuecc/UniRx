@@ -21,7 +21,7 @@ namespace UniRx
 
         public static IDisposable SubscribeToText<T>(this IObservable<T> source, Text text, Func<T, string> selector)
         {
-            return source.SubscribeWithState(Tuple.Create(text, selector), (x, t) => t.Item1.text = t.Item2(x));
+            return source.SubscribeWithState2(text, selector, (x, t, s) => t.text = s(x));
         }
 
         public static IDisposable SubscribeToInteractable(this IObservable<bool> source, Selectable selectable)

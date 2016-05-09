@@ -20,9 +20,9 @@ namespace UniRx.Operators
             var d = new SerialDisposable();
             d.Disposable = m;
 
-            m.Disposable = subscribeTrigger.SubscribeWithState(Tuple.Create(observer, d, source), (_, t) =>
+            m.Disposable = subscribeTrigger.SubscribeWithState3(observer, d, source, (_, o, disp, s) =>
             {
-                t.Item2.Disposable = t.Item3.Subscribe(t.Item1);
+                disp.Disposable = s.Subscribe(o);
             });
 
             return d;
