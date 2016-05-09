@@ -549,6 +549,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveCollection.cs">
       <Link>UnityEngineBridge\ReactiveCollection.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveCommand.cs">
+      <Link>UnityEngineBridge\ReactiveCommand.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveDictionary.cs">
       <Link>UnityEngineBridge\ReactiveDictionary.cs</Link>
     </Compile>

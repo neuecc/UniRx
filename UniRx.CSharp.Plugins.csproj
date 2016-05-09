@@ -258,6 +258,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\TimeoutFrame.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\PresenterBase.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveCollection.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveCommand.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveDictionary.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs" />
