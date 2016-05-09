@@ -109,7 +109,7 @@ namespace UniRx
     public static class ReactiveCommandExtensions
     {
         /// <summary>
-        /// CanExecuteChanged is called from canExecute sequence on UIDispatcherScheduler.
+        /// Create non parameter commands. CanExecute is changed from canExecute sequence.
         /// </summary>
         public static ReactiveCommand ToReactiveCommand(this IObservable<bool> canExecuteSource, bool initialValue = true)
         {
@@ -117,7 +117,7 @@ namespace UniRx
         }
 
         /// <summary>
-        /// CanExecuteChanged is called from canExecute sequence on UIDispatcherScheduler.
+        /// Create parametered comamnds. CanExecute is changed from canExecute sequence.
         /// </summary>
         public static ReactiveCommand<T> ToReactiveCommand<T>(this IObservable<bool> canExecuteSource, bool initialValue = true)
         {
