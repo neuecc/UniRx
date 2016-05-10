@@ -35,7 +35,6 @@ Unity is generally single threaded but UniRx facilitates multithreading for join
 
 UniRx helps UI programming with uGUI. All UI events (clicked, valuechanged, etc) can be converted to UniRx event streams. 
         
-
 Introduction
 ---
 Great introduction to Rx article: [The introduction to Reactive Programming you've been missing](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754).
@@ -645,6 +644,39 @@ EveryGameObjectUpdate invoke from same frame if caller is called before MainThre
 EveryLateUpdate, EveryEndOfFrame invoke from same frame.  
 EveryUpdate, invoke from next frame.  
 
+MicroCoroutine
+---
+MicroCoroutine is memory efficient and fast coroutine worker. This implemantation is based on [Unity blog's 10000 UPDATE() CALLS](http://blogs.unity3d.com/2015/12/23/1k-update-calls/), avoid managed-unmanaged overhead so gets 10x faster iteration. MicroCoroutine is automaticaly used on Framecount-based time operators and ObserveEveryValueChanged.
+
+If you want to use MicroCoroutine instead of standard unity coroutine, use `MainThreadDispatcher.StartUpdateMicroCoroutine` or `Observable.FromMicroCoroutine`.
+
+```csharp
+int counter;
+
+IEnumerator Worker()
+{
+    while(true)
+    {
+        counter++;
+        yield return null;
+    }
+}
+
+void Start()
+{
+    for(var i = 0; i < 10000; i++)
+    {
+        // fast, memory efficient
+        MainThreadDispatcher.StartUpdateMicroCoroutine(Worker());
+
+        // slow...
+        // StartCoroutine(Worker());
+    }
+}
+```
+
+MicroCoroutine's limitation, only supports `yield return null` and update timing is determined start method(`StartUpdateMicroCoroutine`, `StartFixedUpdateMicroCoroutine`, `StartEndOfFrameMicroCoroutine`). 
+
 uGUI Integration
 ---
 UniRx can handle `UnityEvent`s easily. Use `UnityEvent.AsObservable` to subscribe to events:
@@ -904,6 +936,65 @@ PresenterBase has three phases.
 Yellow is `Awake`, order is indeterminate. Green is `BeforeInitialize` phase, its parent -> child. Red is `Initialize` phase, its child -> parent. This sample, you can see `Sample14_PresenterBase`.
 
 If you create `PresenterBase` dynamically for example from Prefab, you can call `ForceInitialize(argument)` after instantiate.
+
+ReactiveCommand
+---
+ReactiveCommand abstraction of button command with boolean interactable.
+
+```csharp 
+public class Player
+{
+   public ReactiveProperty<int> Hp;
+   public ReactiveCommand Resurrect;
+
+   public Player()
+   {
+        Hp = new ReactiveProperty<int>(1000);
+        
+        // If dead, can not execute.
+        Resurrect = Hp.Select(x => x <= 0).ToReactiveCommand();
+        // Execute when clicked
+        Resurrect.Subscribe(_ =>
+        {
+             Hp.Value = 1000;
+        }); 
+    }
+}
+
+public class Presenter
+{
+    public Button resurrectButton;
+
+    Player player;
+
+    void Start()
+    {
+      player = new Player();
+
+      // If Hp <= 0, can't press button.
+      player.Resurrect.BindTo(resurrectButton);
+    }
+}
+```
+
+MessageBroker
+---
+MessageBroker is Rx based in-memory pubsub system filtered by type.
+
+```csharp
+public class TestArgs
+{
+    public int Value { get; set; }
+}
+
+---
+
+// Subscribe message on global-scope.
+MessageBroker.Default.Receive<TestArgs>().Subscribe(x => UnityEngine.Debug.Log(x));
+
+// Publish message
+MessageBroker.Default.Publish(new TestArgs { Value = 1000 });
+```
 
 Visual Studio Analyzer
 ---
