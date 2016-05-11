@@ -316,10 +316,10 @@ namespace UniRx.Operators
                 completedCount = 0;
 
                 var subscriptions = new IDisposable[length];
-                for (int index = 0; index < length; index++)
+                for (int index = 0; index < sources.Length; index++)
                 {
                     var source = sources[index];
-                    var observer = new WhenAllCollectionObserver(this, index);
+                    var observer = new WhenAllCollectionObserver(this);
                     subscriptions[index] = source.Subscribe(observer);
                 }
 
@@ -344,13 +344,11 @@ namespace UniRx.Operators
             class WhenAllCollectionObserver : IObserver<Unit>
             {
                 readonly WhenAll parent;
-                readonly int index;
                 bool isCompleted = false;
 
-                public WhenAllCollectionObserver(WhenAll parent, int index)
+                public WhenAllCollectionObserver(WhenAll parent)
                 {
                     this.parent = parent;
-                    this.index = index;
                 }
 
                 public void OnNext(Unit value)
@@ -418,7 +416,7 @@ namespace UniRx.Operators
                 for (int index = 0; index < length; index++)
                 {
                     var source = sources[index];
-                    var observer = new WhenAllCollectionObserver(this, index);
+                    var observer = new WhenAllCollectionObserver(this);
                     subscriptions[index] = source.Subscribe(observer);
                 }
 
@@ -443,13 +441,11 @@ namespace UniRx.Operators
             class WhenAllCollectionObserver : IObserver<Unit>
             {
                 readonly WhenAll_ parent;
-                readonly int index;
                 bool isCompleted = false;
 
-                public WhenAllCollectionObserver(WhenAll_ parent, int index)
+                public WhenAllCollectionObserver(WhenAll_ parent)
                 {
                     this.parent = parent;
-                    this.index = index;
                 }
 
                 public void OnNext(Unit value)

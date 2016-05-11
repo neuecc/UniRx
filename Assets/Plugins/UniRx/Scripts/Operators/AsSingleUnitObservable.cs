@@ -15,16 +15,13 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<Unit> observer, IDisposable cancel)
         {
-            return source.Subscribe(new AsSingleUnitObservable(this, observer, cancel));
+            return source.Subscribe(new AsSingleUnitObservable(observer, cancel));
         }
 
         class AsSingleUnitObservable : OperatorObserverBase<T, Unit>
         {
-            readonly AsSingleUnitObservableObservable<T> parent;
-
-            public AsSingleUnitObservable(AsSingleUnitObservableObservable<T> parent, IObserver<Unit> observer, IDisposable cancel) : base(observer, cancel)
+            public AsSingleUnitObservable(IObserver<Unit> observer, IDisposable cancel) : base(observer, cancel)
             {
-                this.parent = parent;
             }
 
             public override void OnNext(T value)
