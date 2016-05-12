@@ -677,6 +677,24 @@ void Start()
 
 MicroCoroutine's limitation, only supports `yield return null` and update timing is determined start method(`StartUpdateMicroCoroutine`, `StartFixedUpdateMicroCoroutine`, `StartEndOfFrameMicroCoroutine`). 
 
+If you combine with other IObservable, you can check completed property like isDone.
+
+```csharp
+IEnumerator MicroCoroutineWithToYieldInstruction()
+{
+    var www = ObservableWWW.Get("http://aaa").ToYieldInstruction();
+    while (!(www.HasResult || www.IsCanceled || www.HasError))
+    {
+        yield return null;
+    }
+
+    if (www.HasResult)
+    {
+        UnityEngine.Debug.Log(www.Result);
+    }
+}
+```
+
 uGUI Integration
 ---
 UniRx can handle `UnityEvent`s easily. Use `UnityEvent.AsObservable` to subscribe to events:
