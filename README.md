@@ -675,6 +675,8 @@ void Start()
 }
 ```
 
+![image](https://cloud.githubusercontent.com/assets/46207/15267997/86e9ed5c-1a0c-11e6-8371-14b61a09c72c.png)
+
 MicroCoroutine's limitation, only supports `yield return null` and update timing is determined start method(`StartUpdateMicroCoroutine`, `StartFixedUpdateMicroCoroutine`, `StartEndOfFrameMicroCoroutine`). 
 
 If you combine with other IObservable, you can check completed property like isDone.
