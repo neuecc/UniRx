@@ -30,7 +30,7 @@ namespace UniRx
         GameObjectUpdate,
         LateUpdate,
 #if SupportCustomYieldInstruction
-        /// <summary>Same as Update</summary>
+        /// <summary>[Obsolete]Same as Update</summary>
         [Obsolete]
         AfterUpdate
 #endif

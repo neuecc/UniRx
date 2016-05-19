@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.CSharp.Plugins", "UniRx.CSharp.Plugins.csproj", "{261425B8-5130-5906-0900-47C2D623D55C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.CSharp", "UniRx.CSharp.csproj", "{8D313F3E-8834-BB21-0B11-13E35DA39B9D}"
@@ -18,6 +20,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Library", "Dlls\UniRx.Library\UniRx.Library.csproj", "{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "Dlls\UniRx\UniRx.csproj", "{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3BB2EF36-3E99-49E4-8384-A2E974E0F741}"
+	ProjectSection(SolutionItems) = preProject
+		VSDocToMarkdown.csx = VSDocToMarkdown.csx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
