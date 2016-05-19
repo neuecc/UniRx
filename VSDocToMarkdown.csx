@@ -140,7 +140,7 @@ XmlDocumentComment[] ParseXmlComment(XDocument xDoc)
     return xDoc.Descendants("member")
         .Select(x =>
         {
-            var match = Regex.Match(x.Attribute("name").Value, @"(.):(.+)\.(\w+)?(\(.+\)|$)");
+            var match = Regex.Match(x.Attribute("name").Value, @"(.):(.+)\.([^.]+)?(\(.+\)|$)");
             if (!match.Groups[1].Success) return null;
 
             var memberType = (MemberType)match.Groups[1].Value[0];
