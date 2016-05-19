@@ -44,17 +44,38 @@ var publicTypes = new[] { Assembly.LoadFrom(dllPath) }
     .Select(x => new
     {
         type = x,
-        methods = x.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.InvokeMethod)
-            .Where(y => !y.IsSpecialName && !y.GetCustomAttributes<ObsoleteAttribute>().Any())
+        methods = x.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.InvokeMethod)
+            .Where(y => !y.IsSpecialName && !y.GetCustomAttributes<ObsoleteAttribute>().Any() && !y.IsPrivate)
             .ToArray(),
-        properties = x.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.GetProperty | BindingFlags.SetProperty)
+        properties = x.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.GetProperty | BindingFlags.SetProperty)
             .Where(y => !y.IsSpecialName && !y.GetCustomAttributes<ObsoleteAttribute>().Any())
+            .Where(y =>
+            {
+                var get = y.GetGetMethod(true);
+                var set = y.GetSetMethod(true);
+                if (get != null && set != null)
+                {
+                    return !(get.IsPrivate && set.IsPrivate);
+                }
+                else if (get != null)
+                {
+                    return !get.IsPrivate;
+                }
+                else if (set != null)
+                {
+                    return !set.IsPrivate;
+                }
+                else
+                {
+                    return false;
+                }
+            })
             .ToArray(),
-        fields = x.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.GetField | BindingFlags.SetField)
-            .Where(y => !y.IsSpecialName && !y.GetCustomAttributes<ObsoleteAttribute>().Any())
+        fields = x.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.GetField | BindingFlags.SetField)
+            .Where(y => !y.IsSpecialName && !y.GetCustomAttributes<ObsoleteAttribute>().Any() && !y.IsPrivate)
             .ToArray(),
-        staticMethods = x.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.InvokeMethod)
-            .Where(y => !y.IsSpecialName && !y.GetCustomAttributes<ObsoleteAttribute>().Any())
+        staticMethods = x.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.InvokeMethod)
+            .Where(y => !y.IsSpecialName && !y.GetCustomAttributes<ObsoleteAttribute>().Any() && !y.IsPrivate)
             .ToArray(),
         // events = x.GetEvents()
     })
@@ -74,7 +95,7 @@ foreach (var item in publicTypes.OrderBy(x => x.type.FullName))
 
     sb.AppendLine("```csharp");
     var stat = (item.type.IsAbstract && item.type.IsSealed) ? "static " : "";
-    var abst = (item.type.IsAbstract && !item.type.IsInterface && !item.type.IsSealed) ? "abstract ": "";
+    var abst = (item.type.IsAbstract && !item.type.IsInterface && !item.type.IsSealed) ? "abstract " : "";
     var classOrStructOrEnumOrInterface = item.type.IsInterface ? "interface" : item.type.IsEnum ? "enum" : item.type.IsValueType ? "struct" : "class";
 
     sb.AppendLine($"public {stat}{abst}{classOrStructOrEnumOrInterface} {BeautifyType(item.type, true)}");
@@ -140,7 +161,7 @@ XmlDocumentComment[] ParseXmlComment(XDocument xDoc)
     return xDoc.Descendants("member")
         .Select(x =>
         {
-            var match = Regex.Match(x.Attribute("name").Value, @"(.):(.+)\.([^.]+)?(\(.+\)|$)");
+            var match = Regex.Match(x.Attribute("name").Value, @"(.):(.+)\.([^.()]+)?(\(.+\)|$)");
             if (!match.Groups[1].Success) return null;
 
             var memberType = (MemberType)match.Groups[1].Value[0];
@@ -149,7 +170,7 @@ XmlDocumentComment[] ParseXmlComment(XDocument xDoc)
             var summary = ((string)x.Element("summary")) ?? "";
             if (summary != "")
             {
-                summary = string.Join("  ", summary.Split(new[] { "\r","\n", "\t" }, StringSplitOptions.RemoveEmptyEntries).Select(y => y.Trim()));
+                summary = string.Join("  ", summary.Split(new[] { "\r", "\n", "\t" }, StringSplitOptions.RemoveEmptyEntries).Select(y => y.Trim()));
             }
 
             var returns = ((string)x.Element("returns")) ?? "";
