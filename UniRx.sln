@@ -21,11 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Library", "Dlls\UniRx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "Dlls\UniRx\UniRx.csproj", "{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3BB2EF36-3E99-49E4-8384-A2E974E0F741}"
-	ProjectSection(SolutionItems) = preProject
-		VSDocToMarkdown.csx = VSDocToMarkdown.csx
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
