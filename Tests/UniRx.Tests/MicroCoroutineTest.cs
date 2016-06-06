@@ -53,6 +53,34 @@ namespace UniRx.Tests
             return new InternalUtil.MicroCoroutine(ex => Console.WriteLine(ex));
         }
 
+        static int FindLast(UniRx.InternalUtil.MicroCoroutine mc)
+        {
+            var coroutines = mc.GetType().GetField("coroutines", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+            var enumerators = (IEnumerator[])coroutines.GetValue(mc);
+
+            int tail = -1;
+            for (int i = 0; i < enumerators.Length; i++)
+            {
+                if (enumerators[i] == null)
+                {
+                    if (tail == -1)
+                    {
+                        tail = i;
+                    }
+                }
+                else
+                {
+                    if (tail != -1)
+                    {
+                        throw new Exception("what's happen?");
+                    }
+                }
+            }
+
+            if (tail == -1) tail = enumerators.Length;
+            return tail;
+        }
+
         static int GetTailDynamic(UniRx.InternalUtil.MicroCoroutine mc)
         {
             var tail = mc.GetType().GetField("tail", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
@@ -201,7 +229,7 @@ namespace UniRx.Tests
                         expected = expected.Select(x => (x == -1) ? -1 : (x - 1)).ToArray();
                         coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(expected);
 
-                        var tail = coroutines.Count(x => x.Count != -1);
+                        var tail = FindLast(mc);
                         GetTailDynamic(mc).Is(tail);
                     }
                     GetTailDynamic(mc).Is(0);
@@ -234,7 +262,7 @@ namespace UniRx.Tests
                         expected = expected.Select(x => (x == -1) ? -1 : (x - 1)).ToArray();
                         coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(expected);
 
-                        var tail = coroutines.Count(x => x.Count != -1);
+                        var tail = FindLast(mc);
                         GetTailDynamic(mc).Is(tail);
                     }
                     GetTailDynamic(mc).Is(0);
@@ -267,7 +295,7 @@ namespace UniRx.Tests
                         expected = expected.Select(x => (x == -1) ? -1 : (x - 1)).ToArray();
                         coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(expected);
 
-                        var tail = coroutines.Count(x => x.Count != -1);
+                        var tail = FindLast(mc);
                         GetTailDynamic(mc).Is(tail);
                     }
                     GetTailDynamic(mc).Is(0);
