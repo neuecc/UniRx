@@ -389,16 +389,8 @@ namespace UniRx
         Action<Exception> unhandledExceptionCallback = ex => Debug.LogException(ex); // default
 
         MicroCoroutine updateMicroCoroutine = null;
-        int updateCountForRefresh = 0;
-        const int UpdateRefreshCycle = 79;
-
         MicroCoroutine fixedUpdateMicroCoroutine = null;
-        int fixedUpdateCountForRefresh = 0;
-        const int FixedUpdateRefreshCycle = 73;
-
         MicroCoroutine endOfFrameMicroCoroutine = null;
-        int endOfFrameCountForRefresh = 0;
-        const int EndOfFrameRefreshCycle = 71;
 
         static MainThreadDispatcher instance;
         static bool initialized;
@@ -513,75 +505,33 @@ namespace UniRx
 
         IEnumerator RunUpdateMicroCoroutine()
         {
-            this.updateMicroCoroutine = new MicroCoroutine(
-                () =>
-                {
-                    if (updateCountForRefresh > UpdateRefreshCycle)
-                    {
-                        updateCountForRefresh = 0;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                },
-                ex => unhandledExceptionCallback(ex));
+            this.updateMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
 
             while (true)
             {
                 yield return null;
-                updateCountForRefresh++;
                 updateMicroCoroutine.Run();
             }
         }
 
         IEnumerator RunFixedUpdateMicroCoroutine()
         {
-            this.fixedUpdateMicroCoroutine = new MicroCoroutine(
-                () =>
-                {
-                    if (fixedUpdateCountForRefresh > FixedUpdateRefreshCycle)
-                    {
-                        fixedUpdateCountForRefresh = 0;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }, 
-                ex => unhandledExceptionCallback(ex));
+            this.fixedUpdateMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
 
             while (true)
             {
                 yield return YieldInstructionCache.WaitForFixedUpdate;
-                fixedUpdateCountForRefresh++;
                 fixedUpdateMicroCoroutine.Run();
             }
         }
 
         IEnumerator RunEndOfFrameMicroCoroutine()
         {
-            this.endOfFrameMicroCoroutine = new MicroCoroutine(
-                () =>
-                {
-                    if (endOfFrameCountForRefresh > EndOfFrameRefreshCycle)
-                    {
-                        endOfFrameCountForRefresh = 0;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }, 
-                ex => unhandledExceptionCallback(ex));
+            this.endOfFrameMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
 
             while (true)
             {
                 yield return YieldInstructionCache.WaitForEndOfFrame;
-                endOfFrameCountForRefresh++;
                 endOfFrameMicroCoroutine.Run();
             }
         }
