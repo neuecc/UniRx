@@ -30,7 +30,7 @@ namespace UniRx
             if (!trigger.IsActivated && !trigger.IsMonitoredActivate && !trigger.gameObject.activeInHierarchy)
             {
                 trigger.IsMonitoredActivate = true;
-                MainThreadDispatcher.StartEndOfFrameMicroCoroutine(MonitorTriggerHealth(trigger));
+                MainThreadDispatcher.StartEndOfFrameMicroCoroutine(MonitorTriggerHealth(trigger, gameObject));
             }
 
 #pragma warning restore CS0618
@@ -39,15 +39,14 @@ namespace UniRx
             return disposable;
         }
 
-        static IEnumerator MonitorTriggerHealth(ObservableDestroyTrigger trigger)
+        static IEnumerator MonitorTriggerHealth(ObservableDestroyTrigger trigger, GameObject targetGameObject)
         {
-            var go = trigger.gameObject;
             while (true)
             {
                 yield return null;
                 if (trigger.IsActivated) yield break;
 
-                if (go == null) // isDestroy
+                if (targetGameObject == null) // isDestroy
                 {
                     trigger.ForceRaiseOnDestroy(); // Force publish OnDestroy
                     yield break;
