@@ -22,25 +22,82 @@ namespace UniRx
             var isUnityObject = source is UnityEngine.Object;
             if (isUnityObject && unityObject == null) return Observable.Empty<TProperty>();
 
+            // MicroCoroutine does not publish value immediately, so publish value on subscribe.
             if (isUnityObject)
             {
-                return ObservableUnity.FromMicroCoroutine<TProperty>((observer, cancellationToken) => PublishUnityObjectValueChanged(unityObject, propertySelector, observer, cancellationToken), frameCountType);
+                return ObservableUnity.FromMicroCoroutine<TProperty>((observer, cancellationToken) =>
+                {
+                    if (unityObject != null)
+                    {
+                        var firstValue = default(TProperty);
+                        try
+                        {
+                            firstValue = propertySelector((TSource)(object)unityObject);
+                        }
+                        catch (Exception ex)
+                        {
+                            observer.OnError(ex);
+                            return EmptyEnumerator();
+                        }
+
+                        observer.OnNext(firstValue);
+                        return PublishUnityObjectValueChanged(unityObject, firstValue, propertySelector, observer, cancellationToken);
+                    }
+                    else
+                    {
+                        observer.OnCompleted();
+                        return EmptyEnumerator();
+                    }
+                }, frameCountType);
             }
             else
             {
                 var reference = new WeakReference(source);
                 source = null;
-                return ObservableUnity.FromMicroCoroutine<TProperty>((observer, cancellationToken) => PublishPocoValueChanged(reference, propertySelector, observer, cancellationToken), frameCountType);
+
+                return ObservableUnity.FromMicroCoroutine<TProperty>((observer, cancellationToken) =>
+                {
+                    var target = reference.Target;
+                    if (target != null)
+                    {
+                        var firstValue = default(TProperty);
+                        try
+                        {
+                            firstValue = propertySelector((TSource)target);
+                        }
+                        catch (Exception ex)
+                        {
+                            observer.OnError(ex);
+                            return EmptyEnumerator();
+                        }
+                        finally
+                        {
+                            target = null;
+                        }
+
+                        observer.OnNext(firstValue);
+                        return PublishPocoValueChanged(reference, firstValue, propertySelector, observer, cancellationToken);
+                    }
+                    else
+                    {
+                        observer.OnCompleted();
+                        return EmptyEnumerator();
+                    }
+                }, frameCountType);
             }
         }
 
-        static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
+        static IEnumerator EmptyEnumerator()
+        {
+            yield break;
+        }
+
+        static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, TProperty firstValue, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
             var comparer = UnityEqualityComparer.GetDefault<TProperty>();
 
-            var isFirst = true;
             var currentValue = default(TProperty);
-            var prevValue = default(TProperty);
+            var prevValue = firstValue;
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -67,10 +124,8 @@ namespace UniRx
                     yield break;
                 }
 
-
-                if (isFirst || !comparer.Equals(currentValue, prevValue))
+                if (!comparer.Equals(currentValue, prevValue))
                 {
-                    isFirst = false;
                     observer.OnNext(currentValue);
                     prevValue = currentValue;
                 }
@@ -79,13 +134,12 @@ namespace UniRx
             }
         }
 
-        static IEnumerator PublishUnityObjectValueChanged<TSource, TProperty>(UnityEngine.Object unityObject, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
+        static IEnumerator PublishUnityObjectValueChanged<TSource, TProperty>(UnityEngine.Object unityObject, TProperty firstValue, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
             var comparer = UnityEqualityComparer.GetDefault<TProperty>();
 
-            var isFirst = true;
             var currentValue = default(TProperty);
-            var prevValue = default(TProperty);
+            var prevValue = firstValue;
 
             var source = (TSource)(object)unityObject;
 
@@ -109,9 +163,8 @@ namespace UniRx
                     yield break;
                 }
 
-                if (isFirst || !comparer.Equals(currentValue, prevValue))
+                if (!comparer.Equals(currentValue, prevValue))
                 {
-                    isFirst = false;
                     observer.OnNext(currentValue);
                     prevValue = currentValue;
                 }
