@@ -1051,29 +1051,42 @@ If you want to use UniRx for .NET 3.5 normal CLR application, you can use `UniRx
 
 Reference
 ---
-* [RxJava Wiki](https://github.com/Netflix/RxJava/wiki)
- 
-This wiki is a great way for learn Rx. All operators are illustrated with graphical marble diagrams, which makes them easy to understand.
+* [UniRx/wiki](https://github.com/neuecc/UniRx/wiki)
 
-* [Reactive Game Architectures](http://sugarpillstudios.com/wp/?page_id=279)
+UniRx API documents.
 
-Introduction on how to use Rx for game programming.
+* [ReactiveX](http://reactivex.io/)
+
+The home of ReactiveX. [Introduction](http://reactivex.io/intro.html), [All operators](http://reactivex.io/documentation/operators.html) are illustrated with graphical marble diagrams, there makes easy to understand. And UniRx is official [ReactiveX Languages](http://reactivex.io/languages.html).
 
 * [Introduction to Rx](http://introtorx.com/)
 
 A great online tutorial and eBook.
 
-* [Rx(Reactive Extensions)](https://rx.codeplex.com/)
-
-The original project home page.
-
 * [Beginner's Guide to the Reactive Extensions](http://msdn.microsoft.com/en-us/data/gg577611)
 
-Many videos, slides and documents.
+Many videos, slides and documents for Rx.NET.
 
-* [ReactiveX Languages](http://reactivex.io/languages.html)
+* [The future of programming technology in Unity - UniRx -(JPN)](http://www.slideshare.net/torisoup/unity-unirx) 
+  - [Korean translation](http://www.slideshare.net/agebreak/160402-unirx)
 
-UniRx is an official ReacitveX family language.
+Intro slide by [@torisoup](https://github.com/torisoup)
+
+* [Reactive Programming, ​Unity 3D and you](http://slides.com/sammegidov/unirx#/)
+
+Intro slide by [@Xerios](https://github.com/Xerios)
+
+What game or library is using UniRx?
+---
+Games
+
+Libraries
+
+- [PhotonWire](https://github.com/neuecc/PhotonWire) - Typed Asynchronous RPC Layer for Photon Server + Unity.
+- [uFrame Game Framework](https://www.assetstore.unity3d.com/en/#!/content/14381) - MVVM/MV* framework designed for the Unity Engine.
+- [EcsRx](https://github.com/grofit/ecsrx) - A simple framework for unity using the ECS paradigm but with unirx for fully reactive systems.
+
+If you use UniRx, please comment to [UniRx/issues/152](https://github.com/neuecc/UniRx/issues/152).
 
 Help & Contribute
 ---
