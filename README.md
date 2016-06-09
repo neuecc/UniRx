@@ -1076,6 +1076,18 @@ Intro slide by [@torisoup](https://github.com/torisoup)
 
 Intro slide by [@Xerios](https://github.com/Xerios)
 
+What game or library is using UniRx?
+---
+Games
+
+Libraries
+
+- [PhotonWire](https://github.com/neuecc/PhotonWire) - Typed Asynchronous RPC Layer for Photon Server + Unity.
+- [uFrame Game Framework](https://www.assetstore.unity3d.com/en/#!/content/14381) - MVVM/MV* framework designed for the Unity Engine.
+- [EcsRx](https://github.com/grofit/ecsrx) - A simple framework for unity using the ECS paradigm but with unirx for fully reactive systems.
+
+If you use UniRx, please comment to [UniRx/issues/152](https://github.com/neuecc/UniRx/issues/152).
+
 Help & Contribute
 ---
 Support thread on the Unity forum. Ask me any question - [http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity](http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity)  
