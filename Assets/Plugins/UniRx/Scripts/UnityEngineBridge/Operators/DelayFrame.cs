@@ -32,7 +32,7 @@ namespace UniRx.Operators
             bool readyDrainEnumerator;
             bool running;
             IDisposable sourceSubscription;
-            Queue<T> currentQueueReference = new Queue<T>();
+            Queue<T> currentQueueReference;
             bool calledCompleted;
             bool hasError;
             Exception error;
@@ -127,6 +127,8 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
+                if (cancelationToken.IsDisposed) return;
+
                 Queue<T> targetQueue = null;
                 lock (gate)
                 {
@@ -134,17 +136,18 @@ namespace UniRx.Operators
                     {
                         readyDrainEnumerator = true;
                         runningEnumeratorCount++;
-                        targetQueue = currentQueueReference = new Queue<T>(5); // Queue's default capacity is 32, it's too large for this usecase
+                        targetQueue = currentQueueReference = new Queue<T>(2); // at first, focus single(1) or asynchronous(1,2) operation.
                         targetQueue.Enqueue(value);
                     }
                     else
                     {
-                        currentQueueReference.Enqueue(value);
+                        if (currentQueueReference != null) // null - if doesn't start OnNext and start OnCompleted
+                        {
+                            currentQueueReference.Enqueue(value);
+                        }
                         return;
                     }
                 }
-
-                if (cancelationToken.IsDisposed) return;
 
                 switch (parent.frameCountType)
                 {

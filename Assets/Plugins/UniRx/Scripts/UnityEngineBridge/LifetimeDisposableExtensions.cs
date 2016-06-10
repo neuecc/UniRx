@@ -24,7 +24,7 @@ namespace UniRx
                 trigger = gameObject.AddComponent<ObservableDestroyTrigger>();
             }
 
-#pragma warning disable CS0618
+#pragma warning disable 618
 
             // If gameObject is deactive, does not raise OnDestroy, watch and invoke trigger.
             if (!trigger.IsActivated && !trigger.IsMonitoredActivate && !trigger.gameObject.activeInHierarchy)
@@ -33,7 +33,7 @@ namespace UniRx
                 MainThreadDispatcher.StartEndOfFrameMicroCoroutine(MonitorTriggerHealth(trigger, gameObject));
             }
 
-#pragma warning restore CS0618
+#pragma warning restore 618
 
             trigger.OnDestroyAsObservable().SubscribeWithState(disposable, (_, d) => d.Dispose());
             return disposable;
