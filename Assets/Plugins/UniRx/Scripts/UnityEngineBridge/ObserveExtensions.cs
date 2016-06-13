@@ -16,7 +16,17 @@ namespace UniRx
         public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType = FrameCountType.Update)
             where TSource : class
         {
+            return ObserveEveryValueChanged(source, propertySelector, frameCountType, UnityEqualityComparer.GetDefault<TProperty>());
+        }
+
+        /// <summary>
+        /// Publish target property when value is changed. If source is destroyed/destructed, publish OnCompleted.
+        /// </summary>
+        public static IObservable<TProperty> ObserveEveryValueChanged<TSource, TProperty>(this TSource source, Func<TSource, TProperty> propertySelector, FrameCountType frameCountType, IEqualityComparer<TProperty> comparer)
+            where TSource : class
+        {
             if (source == null) return Observable.Empty<TProperty>();
+            if (comparer == null) comparer = UnityEqualityComparer.GetDefault<TProperty>();
 
             var unityObject = source as UnityEngine.Object;
             var isUnityObject = source is UnityEngine.Object;
@@ -41,7 +51,7 @@ namespace UniRx
                         }
 
                         observer.OnNext(firstValue);
-                        return PublishUnityObjectValueChanged(unityObject, firstValue, propertySelector, observer, cancellationToken);
+                        return PublishUnityObjectValueChanged(unityObject, firstValue, propertySelector, comparer, observer, cancellationToken);
                     }
                     else
                     {
@@ -76,7 +86,7 @@ namespace UniRx
                         }
 
                         observer.OnNext(firstValue);
-                        return PublishPocoValueChanged(reference, firstValue, propertySelector, observer, cancellationToken);
+                        return PublishPocoValueChanged(reference, firstValue, propertySelector, comparer, observer, cancellationToken);
                     }
                     else
                     {
@@ -92,10 +102,8 @@ namespace UniRx
             yield break;
         }
 
-        static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, TProperty firstValue, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
+        static IEnumerator PublishPocoValueChanged<TSource, TProperty>(WeakReference sourceReference, TProperty firstValue, Func<TSource, TProperty> propertySelector, IEqualityComparer<TProperty> comparer, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
-            var comparer = UnityEqualityComparer.GetDefault<TProperty>();
-
             var currentValue = default(TProperty);
             var prevValue = firstValue;
 
@@ -134,10 +142,8 @@ namespace UniRx
             }
         }
 
-        static IEnumerator PublishUnityObjectValueChanged<TSource, TProperty>(UnityEngine.Object unityObject, TProperty firstValue, Func<TSource, TProperty> propertySelector, IObserver<TProperty> observer, CancellationToken cancellationToken)
+        static IEnumerator PublishUnityObjectValueChanged<TSource, TProperty>(UnityEngine.Object unityObject, TProperty firstValue, Func<TSource, TProperty> propertySelector, IEqualityComparer<TProperty> comparer, IObserver<TProperty> observer, CancellationToken cancellationToken)
         {
-            var comparer = UnityEqualityComparer.GetDefault<TProperty>();
-
             var currentValue = default(TProperty);
             var prevValue = firstValue;
 
