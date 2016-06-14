@@ -456,15 +456,13 @@ namespace UniRx
 
                 if (dispatcher == null)
                 {
-                    instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
+                    // awake call immediately from UnityEngine
+                    new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
                 }
                 else
                 {
-                    instance = dispatcher;
+                    dispatcher.Awake(); // force awake
                 }
-                DontDestroyOnLoad(instance);
-                mainThreadToken = new object();
-                initialized = true;
             }
         }
 
@@ -484,25 +482,27 @@ namespace UniRx
                 StartCoroutine_Auto(RunFixedUpdateMicroCoroutine());
                 StartCoroutine_Auto(RunEndOfFrameMicroCoroutine());
 
-                // Added for consistency with Initialize()
                 DontDestroyOnLoad(gameObject);
             }
             else
             {
-                if (cullingMode == CullingMode.Self)
+                if (this != instance)
                 {
-                    Debug.LogWarning("There is already a MainThreadDispatcher in the scene. Removing myself...");
-                    // Destroy this dispatcher if there's already one in the scene.
-                    DestroyDispatcher(this);
-                }
-                else if (cullingMode == CullingMode.All)
-                {
-                    Debug.LogWarning("There is already a MainThreadDispatcher in the scene. Cleaning up all excess dispatchers...");
-                    CullAllExcessDispatchers();
-                }
-                else
-                {
-                    Debug.LogWarning("There is already a MainThreadDispatcher in the scene.");
+                    if (cullingMode == CullingMode.Self)
+                    {
+                        // Try to destroy this dispatcher if there's already one in the scene.
+                        Debug.LogWarning("There is already a MainThreadDispatcher in the scene. Removing myself...");
+                        DestroyDispatcher(this);
+                    }
+                    else if (cullingMode == CullingMode.All)
+                    {
+                        Debug.LogWarning("There is already a MainThreadDispatcher in the scene. Cleaning up all excess dispatchers...");
+                        CullAllExcessDispatchers();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("There is already a MainThreadDispatcher in the scene.");
+                    }
                 }
             }
         }
