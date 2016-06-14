@@ -1073,8 +1073,9 @@ Many videos, slides and documents for Rx.NET.
 Intro slide by [@torisoup](https://github.com/torisoup)
 
 * [Reactive Programming, ​Unity 3D and you](http://slides.com/sammegidov/unirx#/)
+  - [Repository of UniRxSimpleGame](https://github.com/Xerios/UniRxSimpleGame)
 
-Intro slide by [@Xerios](https://github.com/Xerios)
+Intro slide and sample game by [@Xerios](https://github.com/Xerios)
 
 What game or library is using UniRx?
 ---
@@ -1085,6 +1086,8 @@ Libraries
 - [PhotonWire](https://github.com/neuecc/PhotonWire) - Typed Asynchronous RPC Layer for Photon Server + Unity.
 - [uFrame Game Framework](https://www.assetstore.unity3d.com/en/#!/content/14381) - MVVM/MV* framework designed for the Unity Engine.
 - [EcsRx](https://github.com/grofit/ecsrx) - A simple framework for unity using the ECS paradigm but with unirx for fully reactive systems.
+- [ActionStreetMap Demo](https://github.com/ActionStreetMap/demo) - ASM is an engine for building real city environment dynamically using OSM data.
+- [utymap](https://github.com/reinterpretcat/utymap) - UtyMap is library for building real city environment dynamically using various data sources (mostly, OpenStreetMap and Natural Earth).
 
 If you use UniRx, please comment to [UniRx/issues/152](https://github.com/neuecc/UniRx/issues/152).
 
