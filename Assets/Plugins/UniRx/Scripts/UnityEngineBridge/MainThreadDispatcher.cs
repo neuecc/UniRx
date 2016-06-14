@@ -476,6 +476,10 @@ namespace UniRx
                 mainThreadToken = new object();
                 initialized = true;
 
+                updateMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
+                fixedUpdateMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
+                endOfFrameMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
+
                 StartCoroutine_Auto(RunUpdateMicroCoroutine());
                 StartCoroutine_Auto(RunFixedUpdateMicroCoroutine());
                 StartCoroutine_Auto(RunEndOfFrameMicroCoroutine());
@@ -505,8 +509,6 @@ namespace UniRx
 
         IEnumerator RunUpdateMicroCoroutine()
         {
-            this.updateMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
-
             while (true)
             {
                 yield return null;
@@ -516,8 +518,6 @@ namespace UniRx
 
         IEnumerator RunFixedUpdateMicroCoroutine()
         {
-            this.fixedUpdateMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
-
             while (true)
             {
                 yield return YieldInstructionCache.WaitForFixedUpdate;
@@ -527,8 +527,6 @@ namespace UniRx
 
         IEnumerator RunEndOfFrameMicroCoroutine()
         {
-            this.endOfFrameMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
-
             while (true)
             {
                 yield return YieldInstructionCache.WaitForEndOfFrame;
