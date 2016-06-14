@@ -231,19 +231,19 @@ namespace UniRx.Operators
         class QueuePool
         {
             readonly object gate = new object();
-            Queue<Queue<T>> Pool = new Queue<Queue<T>>();
+            readonly Queue<Queue<T>> pool = new Queue<Queue<T>>(2);
 
             public Queue<T> Get()
             {
                 lock (gate)
                 {
-                    if (Pool.Count == 0)
+                    if (pool.Count == 0)
                     {
                         return new Queue<T>(2);
                     }
                     else
                     {
-                        return Pool.Dequeue();
+                        return pool.Dequeue();
                     }
                 }
             }
@@ -252,7 +252,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    Pool.Enqueue(q);
+                    pool.Enqueue(q);
                 }
             }
         }
