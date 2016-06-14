@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace UniRx.Operators
 {
@@ -28,6 +27,7 @@ namespace UniRx.Operators
         {
             readonly DelayFrameObservable<T> parent;
             readonly object gate = new object();
+            readonly QueuePool pool = new QueuePool();
             int runningEnumeratorCount;
             bool readyDrainEnumerator;
             bool running;
@@ -88,6 +88,11 @@ namespace UniRx.Operators
                                 running = false;
                             }
                         }
+
+                        if (q.Count == 0)
+                        {
+                            pool.Return(q);
+                        }
                     }
 
                     if (hasError)
@@ -136,7 +141,7 @@ namespace UniRx.Operators
                     {
                         readyDrainEnumerator = true;
                         runningEnumeratorCount++;
-                        targetQueue = currentQueueReference = new Queue<T>(2); // at first, focus single(1) or asynchronous(1,2) operation.
+                        targetQueue = currentQueueReference = pool.Get();
                         targetQueue.Enqueue(value);
                     }
                     else
@@ -219,6 +224,35 @@ namespace UniRx.Operators
                         break;
                     default:
                         throw new ArgumentException("Invalid FrameCountType:" + parent.frameCountType);
+                }
+            }
+        }
+
+        class QueuePool
+        {
+            readonly object gate = new object();
+            Queue<Queue<T>> Pool = new Queue<Queue<T>>();
+
+            public Queue<T> Get()
+            {
+                lock (gate)
+                {
+                    if (Pool.Count == 0)
+                    {
+                        return new Queue<T>(2);
+                    }
+                    else
+                    {
+                        return Pool.Dequeue();
+                    }
+                }
+            }
+
+            public void Return(Queue<T> q)
+            {
+                lock (gate)
+                {
+                    Pool.Enqueue(q);
                 }
             }
         }
