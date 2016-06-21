@@ -131,7 +131,15 @@ namespace UniRx
 
         bool IEnumerator.MoveNext()
         {
-            if (!moveNext) return false;
+            if (!moveNext)
+            {
+                if (reThrowOnError && HasError)
+                {
+                    throw Error;
+                }
+
+                return false;
+            }
 
             if (cancel.IsCancellationRequested)
             {
@@ -170,10 +178,8 @@ namespace UniRx
             {
                 parent.moveNext = false;
                 parent.error = error;
-                if (parent.reThrowOnError)
-                {
-                    throw error;
-                }
+                
+                // if parent.reThrowOnError, throw on next MoveNext(propagete exception)
             }
 
             public void OnCompleted()
@@ -578,7 +584,7 @@ namespace UniRx
             if (dueTimeFrameCount <= 0) dueTimeFrameCount = 0;
 
             var currentFrame = 0;
-            
+
             // initial phase
             while (!cancel.IsCancellationRequested)
             {
