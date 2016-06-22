@@ -53,11 +53,20 @@ namespace UniRx
         }
     }
 
-    public class ObservableYieldInstruction<T> : IEnumerator<T>
+    internal interface ICustomYieldInstructionErrorHandler
+    {
+        bool HasError { get; }
+        Exception Error { get; }
+        bool IsReThrowOnError { get; }
+        void ForceDisableRethrowOnError();
+        void ForceEnableRethrowOnError();
+    }
+
+    public class ObservableYieldInstruction<T> : IEnumerator<T>, ICustomYieldInstructionErrorHandler
     {
         readonly IDisposable subscription;
-        readonly bool reThrowOnError;
         readonly CancellationToken cancel;
+        bool reThrowOnError;
         T current;
         T result;
         bool moveNext;
@@ -150,6 +159,21 @@ namespace UniRx
             return true;
         }
 
+        bool ICustomYieldInstructionErrorHandler.IsReThrowOnError
+        {
+            get { return reThrowOnError; }
+        }
+
+        void ICustomYieldInstructionErrorHandler.ForceDisableRethrowOnError()
+        {
+            this.reThrowOnError = false;
+        }
+
+        void ICustomYieldInstructionErrorHandler.ForceEnableRethrowOnError()
+        {
+            this.reThrowOnError = true;
+        }
+
         public void Dispose()
         {
             subscription.Dispose();
@@ -178,8 +202,6 @@ namespace UniRx
             {
                 parent.moveNext = false;
                 parent.error = error;
-                
-                // if parent.reThrowOnError, throw on next MoveNext(propagete exception)
             }
 
             public void OnCompleted()
@@ -320,7 +342,43 @@ namespace UniRx
                 }
                 if (hasNext)
                 {
+#if SupportCustomYieldInstruction
+                    var current = enumerator.Current;
+                    var customHandler = current as ICustomYieldInstructionErrorHandler;
+                    if (customHandler != null && customHandler.IsReThrowOnError)
+                    {
+                        // If throws exception in Custom YieldInsrtuction, can't handle parent coroutine.
+                        // It is C# limitation.
+                        // so store error info and retrive from parent.
+                        customHandler.ForceDisableRethrowOnError();
+                        yield return current;
+                        customHandler.ForceEnableRethrowOnError();
+
+                        if (customHandler.HasError)
+                        {
+                            try
+                            {
+                                raisedError = true;
+                                observer.OnError(customHandler.Error);
+                            }
+                            finally
+                            {
+                                var d = enumerator as IDisposable;
+                                if (d != null)
+                                {
+                                    d.Dispose();
+                                }
+                            }
+                            yield break;
+                        }
+                    }
+                    else
+                    {
+                        yield return enumerator.Current; // yield inner YieldInstruction
+                    }
+#else
                     yield return enumerator.Current; // yield inner YieldInstruction
+#endif
                 }
             } while (hasNext && !cancellationToken.IsCancellationRequested);
 
@@ -387,7 +445,38 @@ namespace UniRx
 #if SupportCustomYieldInstruction
                     else if (current is IEnumerator)
                     {
-                        yield return current;
+                        var customHandler = current as ICustomYieldInstructionErrorHandler;
+                        if (customHandler != null && customHandler.IsReThrowOnError)
+                        {
+                            // If throws exception in Custom YieldInsrtuction, can't handle parent coroutine.
+                            // It is C# limitation.
+                            // so store error info and retrive from parent.
+                            customHandler.ForceDisableRethrowOnError();
+                            yield return current;
+                            customHandler.ForceEnableRethrowOnError();
+
+                            if (customHandler.HasError)
+                            {
+                                try
+                                {
+                                    raisedError = true;
+                                    observer.OnError(customHandler.Error);
+                                }
+                                finally
+                                {
+                                    var d = enumerator as IDisposable;
+                                    if (d != null)
+                                    {
+                                        d.Dispose();
+                                    }
+                                }
+                                yield break;
+                            }
+                        }
+                        else
+                        {
+                            yield return current;
+                        }
                     }
 #endif
                     else if (current == null && nullAsNextUpdate)
@@ -479,6 +568,26 @@ namespace UniRx
         public static IObservable<Unit> ToObservable(this IEnumerator coroutine, bool publishEveryYield = false)
         {
             return FromCoroutine<Unit>((observer, cancellationToken) => WrapEnumerator(coroutine, observer, cancellationToken, publishEveryYield));
+        }
+
+        public static ObservableYieldInstruction<Unit> ToYieldInstruction(this IEnumerator coroutine)
+        {
+            return ToObservable(coroutine, false).ToYieldInstruction();
+        }
+
+        public static ObservableYieldInstruction<Unit> ToYieldInstruction(this IEnumerator coroutine, bool throwOnError)
+        {
+            return ToObservable(coroutine, false).ToYieldInstruction(throwOnError);
+        }
+
+        public static ObservableYieldInstruction<Unit> ToYieldInstruction(this IEnumerator coroutine, CancellationToken cancellationToken)
+        {
+            return ToObservable(coroutine, false).ToYieldInstruction(cancellationToken);
+        }
+
+        public static ObservableYieldInstruction<Unit> ToYieldInstruction(this IEnumerator coroutine, bool throwOnError, CancellationToken cancellationToken)
+        {
+            return ToObservable(coroutine, false).ToYieldInstruction(throwOnError, cancellationToken);
         }
 
         // variation of FromCoroutine
