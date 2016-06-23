@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UniRx.InternalUtil;
 
 namespace UniRx
 {
@@ -102,7 +103,6 @@ namespace UniRx
 
         public IObservable<Unit> PublishAsync<T>(T message)
         {
-            // UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>
             UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>> notifier;
             lock (notifiers)
             {
@@ -130,18 +130,22 @@ namespace UniRx
 
         public IDisposable Subscribe<T>(Func<T, IObservable<Unit>> asyncMessageReceiver)
         {
-            object notifier;
             lock (notifiers)
             {
                 if (isDisposed) throw new ObjectDisposedException("AsyncMessageBroker");
 
-                if (!notifiers.TryGetValue(typeof(T), out notifier))
+                object _notifier;
+                if (!notifiers.TryGetValue(typeof(T), out _notifier))
                 {
-                    var _notifier = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
-                    _notifier = _notifier.Add(asyncMessageReceiver);
-
-                    notifier = _notifier;
+                    var notifier = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
+                    notifier = notifier.Add(asyncMessageReceiver);
                     notifiers.Add(typeof(T), notifier);
+                }
+                else
+                {
+                    var notifier = (ImmutableList<Func<T, IObservable<Unit>>>)_notifier;
+                    notifier = notifier.Add(asyncMessageReceiver);
+                    notifiers[typeof(T)] = notifier;
                 }
             }
 
@@ -175,13 +179,12 @@ namespace UniRx
             {
                 lock (parent.notifiers)
                 {
-                    object notifier;
-                    if (!parent.notifiers.TryGetValue(typeof(T), out notifier))
+                    object _notifier;
+                    if (parent.notifiers.TryGetValue(typeof(T), out _notifier))
                     {
-                        var _notifier = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
-                        _notifier = _notifier.Remove(asyncMessageReceiver);
+                        var notifier = (ImmutableList<Func<T, IObservable<Unit>>>)_notifier;
+                        notifier = notifier.Remove(asyncMessageReceiver);
 
-                        notifier = _notifier;
                         parent.notifiers[typeof(T)] = notifier;
                     }
                 }
