@@ -349,7 +349,7 @@ namespace UniRx
                     {
                         // If throws exception in Custom YieldInsrtuction, can't handle parent coroutine.
                         // It is C# limitation.
-                        // so store error info and retrive from parent.
+                        // so store error info and retrieve from parent.
                         customHandler.ForceDisableRethrowOnError();
                         yield return current;
                         customHandler.ForceEnableRethrowOnError();
@@ -450,7 +450,7 @@ namespace UniRx
                         {
                             // If throws exception in Custom YieldInsrtuction, can't handle parent coroutine.
                             // It is C# limitation.
-                            // so store error info and retrive from parent.
+                            // so store error info and retrieve from parent.
                             customHandler.ForceDisableRethrowOnError();
                             yield return current;
                             customHandler.ForceEnableRethrowOnError();
@@ -981,6 +981,7 @@ namespace UniRx
 
         public static IObservable<T> TakeUntilDestroy<T>(this IObservable<T> source, GameObject target)
         {
+            Observable.FromCoroutine(() => 
             return source.TakeUntil(target.OnDestroyAsObservable());
         }
 
