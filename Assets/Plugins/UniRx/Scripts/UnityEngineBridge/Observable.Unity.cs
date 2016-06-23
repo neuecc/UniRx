@@ -981,7 +981,6 @@ namespace UniRx
 
         public static IObservable<T> TakeUntilDestroy<T>(this IObservable<T> source, GameObject target)
         {
-            Observable.FromCoroutine(() => 
             return source.TakeUntil(target.OnDestroyAsObservable());
         }
 
