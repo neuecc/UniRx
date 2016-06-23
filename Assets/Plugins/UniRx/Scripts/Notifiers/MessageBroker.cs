@@ -55,7 +55,7 @@ namespace UniRx
                     return;
                 }
             }
-            ((Subject<T>)notifier).OnNext(message);
+            ((ISubject<T>)notifier).OnNext(message);
         }
 
         public IObservable<T> Receive<T>()
@@ -67,7 +67,8 @@ namespace UniRx
 
                 if (!notifiers.TryGetValue(typeof(T), out notifier))
                 {
-                    notifier = new Subject<T>();
+                    ISubject<T> n = new Subject<T>().Synchronize();
+                    notifier = n;
                     notifiers.Add(typeof(T), notifier);
                 }
             }
