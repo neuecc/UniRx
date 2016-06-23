@@ -4,30 +4,44 @@ using UniRx.InternalUtil;
 
 namespace UniRx
 {
-    public interface IMessageBroker
+    public interface IMessagePublisher
     {
         /// <summary>
         /// Send Message to all receiver.
         /// </summary>
         void Publish<T>(T message);
+    }
 
+    public interface IMessageReceiver
+    {
         /// <summary>
         /// Subscribe typed message.
         /// </summary>
         IObservable<T> Receive<T>();
     }
 
-    public interface IAsyncMessageBroker
+    public interface IMessageBroker : IMessagePublisher, IMessageReceiver
+    {
+    }
+
+    public interface IAsyncMessagePublisher
     {
         /// <summary>
         /// Send Message to all receiver and await complete.
         /// </summary>
         IObservable<Unit> PublishAsync<T>(T message);
+    }
 
+    public interface IAsyncMessageReceiver
+    {
         /// <summary>
         /// Subscribe typed message.
         /// </summary>
         IDisposable Subscribe<T>(Func<T, IObservable<Unit>> asyncMessageReceiver);
+    }
+
+    public interface IAsyncMessageBroker : IAsyncMessagePublisher, IAsyncMessageReceiver
+    {
     }
 
     /// <summary>
