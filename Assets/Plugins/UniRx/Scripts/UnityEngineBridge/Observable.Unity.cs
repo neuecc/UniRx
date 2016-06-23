@@ -570,6 +570,8 @@ namespace UniRx
             return FromCoroutine<Unit>((observer, cancellationToken) => WrapEnumerator(coroutine, observer, cancellationToken, publishEveryYield));
         }
 
+#if SupportCustomYieldInstruction
+
         public static ObservableYieldInstruction<Unit> ToYieldInstruction(this IEnumerator coroutine)
         {
             return ToObservable(coroutine, false).ToYieldInstruction();
@@ -589,6 +591,8 @@ namespace UniRx
         {
             return ToObservable(coroutine, false).ToYieldInstruction(throwOnError, cancellationToken);
         }
+
+#endif
 
         // variation of FromCoroutine
 
