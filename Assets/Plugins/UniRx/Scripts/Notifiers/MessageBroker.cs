@@ -100,21 +100,6 @@ namespace UniRx
         bool isDisposed = false;
         readonly Dictionary<Type, object> notifiers = new Dictionary<Type, object>();
 
-        public void Publish<T>(T message)
-        {
-            object notifier;
-            lock (notifiers)
-            {
-                if (isDisposed) return;
-
-                if (!notifiers.TryGetValue(typeof(T), out notifier))
-                {
-                    return;
-                }
-            }
-            ((Subject<T>)notifier).OnNext(message);
-        }
-
         public IObservable<Unit> PublishAsync<T>(T message)
         {
             // UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>
@@ -124,7 +109,7 @@ namespace UniRx
                 if (isDisposed) throw new ObjectDisposedException("AsyncMessageBroker");
 
                 object _notifier;
-                if (!notifiers.TryGetValue(typeof(T), out _notifier))
+                if (notifiers.TryGetValue(typeof(T), out _notifier))
                 {
                     notifier = (UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>)_notifier;
                 }
