@@ -231,7 +231,7 @@ namespace UniRx.Operators
                 for (int i = 0; i < length; i++)
                 {
                     var source = parent.sources[i];
-                    disposables[i] = source.Subscribe(new CombineLatestObserver(this, i));
+                    disposables[i] = source.Subscribe(new ZipLatestObserver(this, i));
                 }
 
                 return StableCompositeDisposable.CreateUnsafe(disposables);
@@ -302,12 +302,12 @@ namespace UniRx.Operators
                 finally { Dispose(); }
             }
 
-            class CombineLatestObserver : IObserver<T>
+            class ZipLatestObserver : IObserver<T>
             {
                 readonly ZipLatest parent;
                 readonly int index;
 
-                public CombineLatestObserver(ZipLatest parent, int index)
+                public ZipLatestObserver(ZipLatest parent, int index)
                 {
                     this.parent = parent;
                     this.index = index;
