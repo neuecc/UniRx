@@ -490,6 +490,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Diagnostics\UnityDebugSink.cs">
       <Link>UnityEngineBridge\Diagnostics\UnityDebugSink.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\FrameInterval.cs">
+      <Link>UnityEngineBridge\FrameInterval.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\InspectableReactiveProperty.cs">
       <Link>UnityEngineBridge\InspectableReactiveProperty.cs</Link>
     </Compile>
@@ -525,6 +528,12 @@
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\DelayFrameSubscription.cs">
       <Link>UnityEngineBridge\Operators\DelayFrameSubscription.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\FrameInterval.cs">
+      <Link>UnityEngineBridge\Operators\FrameInterval.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\FrameTimeInterval.cs">
+      <Link>UnityEngineBridge\Operators\FrameTimeInterval.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\FromCoroutine.cs">
       <Link>UnityEngineBridge\Operators\FromCoroutine.cs</Link>

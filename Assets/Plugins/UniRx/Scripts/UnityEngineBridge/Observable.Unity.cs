@@ -1019,6 +1019,16 @@ namespace UniRx
             return new UniRx.Operators.RepeatUntilObservable<T>(sources, trigger, lifeTimeChecker);
         }
 
+        public static IObservable<UniRx.FrameInterval<T>> FrameInterval<T>(this IObservable<T> source)
+        {
+            return new UniRx.Operators.FrameIntervalObservable<T>(source);
+        }
+
+        public static IObservable<UniRx.TimeInterval<T>> FrameTimeInterval<T>(this IObservable<T> source, bool ignoreTimeScale = false)
+        {
+            return new UniRx.Operators.FrameTimeIntervalObservable<T>(source, ignoreTimeScale);
+        }
+
 
 #if UniRxLibrary
 
