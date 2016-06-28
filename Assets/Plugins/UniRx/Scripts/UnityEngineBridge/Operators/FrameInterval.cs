@@ -14,18 +14,16 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<UniRx.FrameInterval<T>> observer, IDisposable cancel)
         {
-            return source.Subscribe(new FrameInterval(this, observer, cancel));
+            return source.Subscribe(new FrameInterval(observer, cancel));
         }
 
         class FrameInterval : OperatorObserverBase<T, UniRx.FrameInterval<T>>
         {
-            readonly FrameIntervalObservable<T> parent;
             int lastFrame;
 
-            public FrameInterval(FrameIntervalObservable<T> parent, IObserver<UniRx.FrameInterval<T>> observer, IDisposable cancel)
+            public FrameInterval(IObserver<UniRx.FrameInterval<T>> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
-                this.parent = parent;
                 this.lastFrame = UnityEngine.Time.frameCount;
             }
 
