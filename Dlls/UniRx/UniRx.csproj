@@ -523,6 +523,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObserveExtensions.cs">
       <Link>UnityEngineBridge\ObserveExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\BatchFrame.cs">
+      <Link>UnityEngineBridge\Operators\BatchFrame.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\DelayFrame.cs">
       <Link>UnityEngineBridge\Operators\DelayFrame.cs</Link>
     </Compile>

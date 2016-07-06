@@ -243,6 +243,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObservableMonoBehaviour.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObservableWWW.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObserveExtensions.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\BatchFrame.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\FrameInterval.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\FrameTimeInterval.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\DelayFrame.cs" />

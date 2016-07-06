@@ -647,6 +647,33 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
+            ypos = 0;
+            xpos += 100;
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "BatchFrame?"))
+            {
+                MainThreadDispatcher.UpdateAsObservable().First().Subscribe(__ =>
+                {
+                    var s1 = new Subject<Unit>();
+                    var s2 = new Subject<Unit>();
+
+                    Observable.Merge(s1, s2)
+                        .BatchFrame(3, FrameCountType.Update)
+                        .Subscribe(xs => Debug.Log(Time.frameCount));
+
+                    Debug.Log("Before BatchFrame:" + Time.frameCount);
+
+                    s1.OnNext(Unit.Default);
+                    s2.OnNext(Unit.Default);
+
+                    Observable.TimerFrame(10).Subscribe(___ =>
+                    {
+                        s1.OnNext(Unit.Default);
+                        s2.OnNext(Unit.Default);
+                    });
+                });
+            }
+            ypos += 100;
+
 
             //if (GUI.Button(new Rect(xpos, ypos, 100, 100), "CurrentThreadScheduler"))
             //{

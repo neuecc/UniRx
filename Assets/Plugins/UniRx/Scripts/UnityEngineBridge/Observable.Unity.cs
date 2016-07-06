@@ -1029,6 +1029,40 @@ namespace UniRx
             return new UniRx.Operators.FrameTimeIntervalObservable<T>(source, ignoreTimeScale);
         }
 
+        /// <summary>
+        /// Buffer elements in during target frame counts. Default raise same frame of end(frameCount = 0, frameCountType = EndOfFrame).
+        /// </summary>
+        public static IObservable<IList<T>> BatchFrame<T>(this IObservable<T> source)
+        {
+            // if use default argument, comiler errors ambiguous(Unity's limitation)
+            return BatchFrame<T>(source, 0, FrameCountType.EndOfFrame);
+        }
+
+        /// <summary>
+        /// Buffer elements in during target frame counts.
+        /// </summary>
+        public static IObservable<IList<T>> BatchFrame<T>(this IObservable<T> source, int frameCount, FrameCountType frameCountType)
+        {
+            if (frameCount < 0) throw new ArgumentException("frameCount must be >= 0, frameCount:" + frameCount);
+            return new UniRx.Operators.BatchFrameObservable<T>(source, frameCount, frameCountType);
+        }
+
+        /// <summary>
+        /// Wait command in during target frame counts. Default raise same frame of end(frameCount = 0, frameCountType = EndOfFrame).
+        /// </summary>
+        public static IObservable<Unit> BatchFrame(this IObservable<Unit> source)
+        {
+            return BatchFrame(source, 0, FrameCountType.EndOfFrame);
+        }
+
+        /// <summary>
+        /// Wait command in during target frame counts.
+        /// </summary>
+        public static IObservable<Unit> BatchFrame(this IObservable<Unit> source, int frameCount, FrameCountType frameCountType)
+        {
+            if (frameCount < 0) throw new ArgumentException("frameCount must be >= 0, frameCount:" + frameCount);
+            return new UniRx.Operators.BatchFrameObservable(source, frameCount, frameCountType);
+        }
 
 #if UniRxLibrary
 
