@@ -26,7 +26,6 @@ namespace UniRx.Operators
         {
             readonly BatchFrameObservable<T> parent;
             readonly object gate = new object();
-            readonly SerialDisposable timerSubscription = new SerialDisposable();
             readonly BooleanDisposable cancellationToken = new BooleanDisposable();
             readonly System.Collections.IEnumerator timer;
             bool isRunning;
@@ -169,7 +168,6 @@ namespace UniRx.Operators
         {
             readonly BatchFrameObservable parent;
             readonly object gate = new object();
-            readonly SerialDisposable timerSubscription = new SerialDisposable();
             readonly BooleanDisposable cancellationToken = new BooleanDisposable();
             readonly System.Collections.IEnumerator timer;
 
