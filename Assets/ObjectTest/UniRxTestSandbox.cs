@@ -649,28 +649,23 @@ namespace UniRx.ObjectTest
 
             ypos = 0;
             xpos += 100;
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "BatchFrame?"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "OnDestroy?"))
             {
-                MainThreadDispatcher.UpdateAsObservable().First().Subscribe(__ =>
+                var cube = GameObject.Find("aaa");
+                if (cube == null)
                 {
-                    var s1 = new Subject<Unit>();
-                    var s2 = new Subject<Unit>();
+                    cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    cube.name = "aaa";
+                }
+                Observable.IntervalFrame(1).DoOnCancel(() => Debug.Log("canceled"))
+                    .Subscribe()
+                    .AddTo(cube);
+            }
+            ypos += 100;
 
-                    Observable.Merge(s1, s2)
-                        .BatchFrame(3, FrameCountType.Update)
-                        .Subscribe(xs => Debug.Log(Time.frameCount));
-
-                    Debug.Log("Before BatchFrame:" + Time.frameCount);
-
-                    s1.OnNext(Unit.Default);
-                    s2.OnNext(Unit.Default);
-
-                    Observable.TimerFrame(10).Subscribe(___ =>
-                    {
-                        s1.OnNext(Unit.Default);
-                        s2.OnNext(Unit.Default);
-                    });
-                });
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Destroy"))
+            {
+                GameObject.Destroy(GameObject.Find("aaa"));
             }
             ypos += 100;
 

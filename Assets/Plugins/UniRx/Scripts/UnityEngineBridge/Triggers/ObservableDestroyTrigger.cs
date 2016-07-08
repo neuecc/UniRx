@@ -8,6 +8,7 @@ namespace UniRx.Triggers
     {
         bool calledDestroy = false;
         Subject<Unit> onDestroy;
+        CompositeDisposable disposablesOnDestroy;
 
         [Obsolete("Internal Use.")]
         internal bool IsMonitoredActivate { get; set; }
@@ -25,6 +26,7 @@ namespace UniRx.Triggers
             if (!calledDestroy)
             {
                 calledDestroy = true;
+                if (disposablesOnDestroy != null) disposablesOnDestroy.Dispose();
                 if (onDestroy != null) { onDestroy.OnNext(Unit.Default); onDestroy.OnCompleted(); }
             }
         }
@@ -41,6 +43,18 @@ namespace UniRx.Triggers
         public void ForceRaiseOnDestroy()
         {
             OnDestroy();
+        }
+
+        public void AddDisposableOnDestroy(IDisposable disposable)
+        {
+            if (calledDestroy)
+            {
+                disposable.Dispose();
+                return;
+            }
+
+            if (disposablesOnDestroy == null) disposablesOnDestroy = new CompositeDisposable();
+            disposablesOnDestroy.Add(disposable);
         }
     }
 }

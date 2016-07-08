@@ -35,7 +35,7 @@ namespace UniRx
 
 #pragma warning restore 618
 
-            trigger.OnDestroyAsObservable().SubscribeWithState(disposable, (_, d) => d.Dispose());
+            trigger.AddDisposableOnDestroy(disposable);
             return disposable;
         }
 
