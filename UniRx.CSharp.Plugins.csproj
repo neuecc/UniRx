@@ -241,7 +241,6 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\MainThreadScheduler.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Observable.Unity.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObservableMonoBehaviour.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObservableWebRequest.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObservableWWW.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ObserveExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\BatchFrame.cs" />
@@ -262,6 +261,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveDictionary.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Toolkit\ObjectPool.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableAnimatorTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableBeginDragTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableCancelTrigger.cs" />
