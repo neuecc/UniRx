@@ -127,15 +127,22 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Return<T>(T value, IScheduler scheduler)
         {
-            return new ReturnObservable<T>(value, scheduler);
+            if (scheduler == Scheduler.Immediate)
+            {
+                return new ImmediateReturnObservable<T>(value);
+            }
+            else
+            {
+                return new ReturnObservable<T>(value, scheduler);
+            }
         }
 
         /// <summary>
-        /// Same as Observable.Return(Unit.Default);
+        /// Same as Observable.Return(Unit.Default); but no allocate memory.
         /// </summary>
         public static IObservable<Unit> ReturnUnit()
         {
-            return Return(Unit.Default);
+            return ImmutableReturnUnitObservable.Instance;
         }
 
         /// <summary>
