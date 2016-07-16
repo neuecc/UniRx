@@ -95,7 +95,7 @@ namespace UniRx
     public interface IReadOnlyReactiveDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
         int Count { get; }
-        TValue this[TKey index] { get; set; }
+        TValue this[TKey index] { get; }
         bool ContainsKey(TKey key);
         bool TryGetValue(TKey key, out TValue value);
 
