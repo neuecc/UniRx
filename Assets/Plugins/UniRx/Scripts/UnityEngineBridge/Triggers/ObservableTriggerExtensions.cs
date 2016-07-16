@@ -323,6 +323,29 @@ namespace UniRx.Triggers
         #endregion
 #endif
 
+        #region ObservableParticleTrigger
+
+        /// <summary>OnParticleCollision is called when a particle hits a collider.</summary>
+        public static IObservable<GameObject> OnParticleCollisionAsObservable(this GameObject gameObject)
+        {
+            if (gameObject == null) return Observable.Empty<GameObject>();
+            return GetOrAddComponent<ObservableParticleTrigger>(gameObject).OnParticleCollisionAsObservable();
+        }
+
+#if UNITY_5_4_OR_NEWER
+
+        /// <summary>OnParticleTrigger is called when any particles in a particle system meet the conditions in the trigger module.</summary>
+        public static IObservable<Unit> OnParticleTriggerAsObservable(this GameObject gameObject)
+        {
+            if (gameObject == null) return Observable.Empty<Unit>();
+            return GetOrAddComponent<ObservableParticleTrigger>(gameObject).OnParticleTriggerAsObservable();
+        }
+
+#endif
+
+        #endregion
+
+
         static T GetOrAddComponent<T>(GameObject gameObject)
             where T : Component
         {

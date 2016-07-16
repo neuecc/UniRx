@@ -484,6 +484,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Diagnostics\Logger.cs">
       <Link>UnityEngineBridge\Diagnostics\Logger.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Diagnostics\ObservableDebugExtensions.cs">
+      <Link>UnityEngineBridge\Diagnostics\ObservableDebugExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Diagnostics\ObservableLogger.cs">
       <Link>UnityEngineBridge\Diagnostics\ObservableLogger.cs</Link>
     </Compile>
@@ -577,6 +580,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs">
       <Link>UnityEngineBridge\ScenePlaybackDetector.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Toolkit\ObjectPool.cs">
+      <Link>UnityEngineBridge\Tookit\ObjectPool.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableAnimatorTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableAnimatorTrigger.cs</Link>
     </Compile>
@@ -630,6 +636,9 @@
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableMoveTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservableMoveTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableParticleTrigger.cs">
+      <Link>UnityEngineBridge\Triggers\ObservableParticleTrigger.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservablePointerClickTrigger.cs">
       <Link>UnityEngineBridge\Triggers\ObservablePointerClickTrigger.cs</Link>

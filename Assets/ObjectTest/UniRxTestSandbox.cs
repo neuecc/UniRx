@@ -701,11 +701,11 @@ namespace UniRx.ObjectTest
 
             ypos = 0;
             xpos += 100;
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Preload"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "New Timer"))
             {
-                // objectPoolTest.PreloadAsync(100, 20).Subscribe(_ => Debug.Log("preload complete"));
-
-                Observable.Range(1, 10).Debug("test").Subscribe();
+                Observable.Timer(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(1))
+                    .Do(_ => Thread.Sleep(TimeSpan.FromMilliseconds(230)))
+                    .Subscribe(_ => Debug.Log(DateTime.Now));
 
             }
             ypos += 100;
