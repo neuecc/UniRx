@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UniRx.Operators
 {
-    public class SwitchObservable<T> : OperatorObservableBase<T>
+    internal class SwitchObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<IObservable<T>> sources;
 

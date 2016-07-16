@@ -2,7 +2,7 @@
 
 namespace UniRx.Operators
 {
-    public class FinallyObservable<T> : OperatorObservableBase<T>
+    internal class FinallyObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly Action finallyAction;
