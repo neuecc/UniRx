@@ -543,12 +543,7 @@ namespace UniRx
 
         public static IObservable<T> FromCoroutine<T>(Func<IObserver<T>, IEnumerator> coroutine)
         {
-            return FromCoroutine<T>((observer, _) => coroutine(observer));
-        }
-
-        public static IObservable<T> FromCoroutine<T>(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine)
-        {
-            return new UniRx.Operators.FromCoroutineObservable<T>(coroutine);
+            return FromCoroutine<T>((observer, cancellationToken) => WrapToCancellableEnumerator(coroutine(observer), cancellationToken));
         }
 
         /// <summary>
@@ -557,7 +552,43 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> FromMicroCoroutine<T>(Func<IObserver<T>, IEnumerator> coroutine, FrameCountType frameCountType = FrameCountType.Update)
         {
-            return FromMicroCoroutine<T>((observer, _) => coroutine(observer));
+            return FromMicroCoroutine<T>((observer, cancellationToken) => WrapToCancellableEnumerator(coroutine(observer), cancellationToken), frameCountType);
+        }
+
+        static IEnumerator WrapToCancellableEnumerator(IEnumerator enumerator, CancellationToken cancellationToken)
+        {
+            var hasNext = default(bool);
+            do
+            {
+                try
+                {
+                    hasNext = enumerator.MoveNext();
+                }
+                catch
+                {
+                    var d = enumerator as IDisposable;
+                    if (d != null)
+                    {
+                        d.Dispose();
+                    }
+                    yield break;
+                }
+
+                yield return enumerator.Current; // yield inner YieldInstruction
+            } while (hasNext && !cancellationToken.IsCancellationRequested);
+
+            {
+                var d = enumerator as IDisposable;
+                if (d != null)
+                {
+                    d.Dispose();
+                }
+            }
+        }
+   
+        public static IObservable<T> FromCoroutine<T>(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine)
+        {
+            return new UniRx.Operators.FromCoroutineObservable<T>(coroutine);
         }
 
         /// <summary>

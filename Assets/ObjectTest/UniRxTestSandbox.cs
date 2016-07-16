@@ -423,6 +423,19 @@ namespace UniRx.ObjectTest
             }
         }
 
+        IDisposable cancelCoroutine;
+
+        IEnumerator TestCoroutine(IObserver<int> observer)
+        {
+            var i = 0;
+            while (true)
+            {
+                Debug.Log(i++);
+                observer.OnNext(i);
+                yield return null;
+            }
+        }
+
 
         public void OnGUI()
         {
@@ -694,15 +707,16 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "rent"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Run"))
             {
-                objectPoolTest.RentAsync().Subscribe(xp => rentInstance = xp);
+                cancelCoroutine = Observable.FromCoroutine<int>(observer => TestCoroutine(observer))
+                    .Subscribe(x => Debug.Log("Subs " + x));
             }
             ypos += 100;
 
             if (GUI.Button(new Rect(xpos, ypos, 100, 100), "return"))
             {
-                objectPoolTest.Return(rentInstance);
+                cancelCoroutine.Dispose();
             }
             ypos += 100;
 
