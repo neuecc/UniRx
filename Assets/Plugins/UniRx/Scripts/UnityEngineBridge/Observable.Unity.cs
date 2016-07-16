@@ -109,6 +109,17 @@ namespace UniRx
             }
         }
 
+        /// <summary>
+        /// HasResult || IsCanceled || HasError
+        /// </summary>
+        public bool IsDone
+        {
+            get
+            {
+                return HasResult || HasError || (cancel.IsCancellationRequested);
+            }
+        }
+
         public T Result
         {
             get { return result; }
