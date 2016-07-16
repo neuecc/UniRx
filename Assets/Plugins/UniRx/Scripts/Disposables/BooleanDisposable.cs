@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace UniRx
 {
-    public class BooleanDisposable : IDisposable, ICancelable
+    public sealed class BooleanDisposable : IDisposable, ICancelable
     {
         public bool IsDisposed { get; private set; }
 

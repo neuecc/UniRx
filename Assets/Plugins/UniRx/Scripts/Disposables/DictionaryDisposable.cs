@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace UniRx
 {
-    public class DictionaryDisposable<TKey, TValue> : IDisposable, IDictionary<TKey, TValue>
+    public sealed class DictionaryDisposable<TKey, TValue> : IDisposable, IDictionary<TKey, TValue>
         where TValue : IDisposable
     {
         bool isDisposed = false;

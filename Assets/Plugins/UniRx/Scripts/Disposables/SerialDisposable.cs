@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace UniRx
 {
-    public class SerialDisposable : IDisposable, ICancelable
+    public sealed class SerialDisposable : IDisposable, ICancelable
     {
         readonly object gate = new object();
         IDisposable current;
