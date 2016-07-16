@@ -229,35 +229,6 @@ namespace UniRx.ObjectTest
 
 #endif
 
-    public class MyObjectPool : AsyncObjectPool<Clicker>
-    {
-        Transform parent;
-
-        public MyObjectPool(Transform parent)
-        {
-            this.parent = parent;
-        }
-
-        protected override IObservable<Clicker> CreateInstanceAsync()
-        {
-            return Observable.Start(() =>
-            {
-                var p = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-                p.transform.SetParent(parent);
-                return p.AddComponent<Clicker>();
-            }, TimeSpan.FromSeconds(1), Scheduler.MainThread);
-        }
-
-        protected override void OnBeforeRent(Clicker instance)
-        {
-            instance.gameObject.SetActive(true);
-        }
-
-        protected override void OnBeforeReturn(Clicker instance)
-        {
-            instance.gameObject.SetActive(false);
-        }
-    }
 
 
     // test sandbox
@@ -330,7 +301,6 @@ namespace UniRx.ObjectTest
         public BoundsReactiveProperty GGG;
         public QuaternionReactiveProperty HHH;
 
-        MyObjectPool objectPoolTest;
 
         public void Awake()
         {
@@ -351,7 +321,6 @@ namespace UniRx.ObjectTest
             });
 
 
-            objectPoolTest = new ObjectTest.MyObjectPool(this.transform);
 
 #if UNITY_5_3
 
