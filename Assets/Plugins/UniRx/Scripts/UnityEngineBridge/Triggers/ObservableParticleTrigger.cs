@@ -7,7 +7,9 @@ namespace UniRx.Triggers
     public class ObservableParticleTrigger : ObservableTriggerBase
     {
         Subject<GameObject> onParticleCollision;
+#if UNITY_5_4_OR_NEWER
         Subject<Unit> onParticleTrigger;
+#endif
 
         /// <summary>OnParticleCollision is called when a particle hits a collider.</summary>
         void OnParticleCollision(GameObject other)
@@ -43,10 +45,12 @@ namespace UniRx.Triggers
             {
                 onParticleCollision.OnCompleted();
             }
+#if UNITY_5_4_OR_NEWER
             if (onParticleTrigger != null)
             {
                 onParticleTrigger.OnCompleted();
             }
+#endif
         }
     }
 }
