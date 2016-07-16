@@ -24,6 +24,7 @@ using System.Linq;
 using Hash = System.Collections.Generic.Dictionary<string, string>;
 using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
 using UniRx.InternalUtil;
+using UniRx.Toolkit;
 #endif
 
 namespace UniRx.ObjectTest
@@ -228,6 +229,37 @@ namespace UniRx.ObjectTest
 
 #endif
 
+    public class MyObjectPool : AsyncObjectPool<Clicker>
+    {
+        Transform parent;
+
+        public MyObjectPool(Transform parent)
+        {
+            this.parent = parent;
+        }
+
+        protected override IObservable<Clicker> CreateInstanceAsync()
+        {
+            return Observable.Start(() =>
+            {
+                var p = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                p.transform.SetParent(parent);
+                return p.AddComponent<Clicker>();
+            }, TimeSpan.FromSeconds(1), Scheduler.MainThread);
+        }
+
+        protected override void OnBeforeRent(Clicker instance)
+        {
+            instance.gameObject.SetActive(true);
+        }
+
+        protected override void OnBeforeReturn(Clicker instance)
+        {
+            instance.gameObject.SetActive(false);
+        }
+    }
+
+
     // test sandbox
     [Serializable]
     public class UniRxTestSandbox : MonoBehaviour
@@ -298,6 +330,8 @@ namespace UniRx.ObjectTest
         public BoundsReactiveProperty GGG;
         public QuaternionReactiveProperty HHH;
 
+        MyObjectPool objectPoolTest;
+
         public void Awake()
         {
             MainThreadDispatcher.Initialize();
@@ -315,6 +349,9 @@ namespace UniRx.ObjectTest
             {
                 logtext.AppendLine(x.Message);
             });
+
+
+            objectPoolTest = new ObjectTest.MyObjectPool(this.transform);
 
 #if UNITY_5_3
 
@@ -373,6 +410,8 @@ namespace UniRx.ObjectTest
 
         Subject<long> subj;
         object gate = new object();
+
+        Clicker rentInstance;
 
         int counter;
         IEnumerator IncrCounter()
@@ -649,23 +688,21 @@ namespace UniRx.ObjectTest
 
             ypos = 0;
             xpos += 100;
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "OnDestroy?"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Preload"))
             {
-                var cube = GameObject.Find("aaa");
-                if (cube == null)
-                {
-                    cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.name = "aaa";
-                }
-                Observable.IntervalFrame(1).DoOnCancel(() => Debug.Log("canceled"))
-                    .Subscribe()
-                    .AddTo(cube);
+                objectPoolTest.PreloadAsync(100, 20).Subscribe(_ => Debug.Log("preload complete"));
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Destroy"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "rent"))
             {
-                GameObject.Destroy(GameObject.Find("aaa"));
+                objectPoolTest.RentAsync().Subscribe(xp => rentInstance = xp);
+            }
+            ypos += 100;
+
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "return"))
+            {
+                objectPoolTest.Return(rentInstance);
             }
             ypos += 100;
 

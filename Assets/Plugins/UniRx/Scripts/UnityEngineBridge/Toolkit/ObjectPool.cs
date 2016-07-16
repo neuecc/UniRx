@@ -43,21 +43,11 @@ namespace UniRx.Toolkit
         /// </summary>
         public T Rent()
         {
-            var instance = default(T);
-            var needsCreate = true;
-
             if (q == null) q = new Queue<T>();
 
-            if (q.Count > 0)
-            {
-                needsCreate = false;
-                instance = q.Dequeue();
-            }
-
-            if (needsCreate)
-            {
-                instance = CreateInstance();
-            }
+            var instance = (q.Count > 0)
+                ? q.Dequeue()
+                : CreateInstance();
 
             OnBeforeRent(instance);
             return instance;
@@ -91,7 +81,7 @@ namespace UniRx.Toolkit
 
         IEnumerator PreloadCore(int preloadCount, int threshold, IObserver<Unit> observer, CancellationToken cancellationToken)
         {
-            while (preloadCount < Count && !cancellationToken.IsCancellationRequested)
+            while (Count < preloadCount && !cancellationToken.IsCancellationRequested)
             {
                 var requireCount = preloadCount - Count;
                 if (requireCount <= 0) break;
@@ -158,22 +148,19 @@ namespace UniRx.Toolkit
         /// </summary>
         public IObservable<T> RentAsync()
         {
-            var instance = default(IObservable<T>);
-            var needsCreate = true;
-
             if (q == null) q = new Queue<T>();
+
             if (q.Count > 0)
             {
-                needsCreate = false;
-                instance = Observable.Return(q.Dequeue());
+                var instance = q.Dequeue();
+                OnBeforeRent(instance);
+                return Observable.Return(instance);
             }
-
-            if (needsCreate)
+            else
             {
-                instance = CreateInstanceAsync();
+                var instance = CreateInstanceAsync();
+                return instance.Do(x => OnBeforeRent(x));
             }
-
-            return instance;
         }
 
         /// <summary>
@@ -182,10 +169,9 @@ namespace UniRx.Toolkit
         public void Return(T instance)
         {
             if (instance == null) throw new ArgumentNullException("instance");
+            if (q == null) q = new Queue<T>();
 
             OnBeforeReturn(instance);
-
-            if (q == null) q = new Queue<T>();
             q.Enqueue(instance);
         }
 
@@ -203,7 +189,7 @@ namespace UniRx.Toolkit
 
         IEnumerator PreloadCore(int preloadCount, int threshold, IObserver<Unit> observer, CancellationToken cancellationToken)
         {
-            while (preloadCount < Count && !cancellationToken.IsCancellationRequested)
+            while (Count < preloadCount && !cancellationToken.IsCancellationRequested)
             {
                 var requireCount = preloadCount - Count;
                 if (requireCount <= 0) break;
