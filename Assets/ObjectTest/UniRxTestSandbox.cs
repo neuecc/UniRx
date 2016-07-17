@@ -15,6 +15,7 @@ using UniRx.Diagnostics;
 using System.Net;
 using System.IO;
 using System.Linq;
+using UniRx.InternalUtil;
 
 #if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
     // Fallback for Unity versions below 4.5
@@ -23,8 +24,6 @@ using System.Linq;
 #else
 using Hash = System.Collections.Generic.Dictionary<string, string>;
 using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
-using UniRx.InternalUtil;
-using UniRx.Toolkit;
 #endif
 
 namespace UniRx.ObjectTest
