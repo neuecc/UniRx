@@ -5,6 +5,7 @@ namespace UniRx.Operators
     internal interface ISelect<TR>
     {
         // IObservable<TR2> CombineSelector<TR2>(Func<TR, TR2> selector);
+        IObservable<TR> CombinePredicate(Func<TR, bool> predicate);
     }
 
     internal class SelectObservable<T, TR> : OperatorObservableBase<TR>, ISelect<TR>
@@ -40,6 +41,18 @@ namespace UniRx.Operators
         //        return new Select<TR, TR2>(this, combineSelector);
         //    }
         //}
+
+        public IObservable<TR> CombinePredicate(Func<TR, bool> predicate)
+        {
+            if (this.selector != null)
+            {
+                return new SelectWhereObservable<T, TR>(this.source, this.selector, predicate);
+            }
+            else
+            {
+                return new WhereObservable<TR>(this, predicate); // can't combine
+            }
+        }
 
         protected override IDisposable SubscribeCore(IObserver<TR> observer, IDisposable cancel)
         {

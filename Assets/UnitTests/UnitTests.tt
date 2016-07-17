@@ -39,7 +39,7 @@ using UnityEngine.UI;
 namespace UniRx.Tests
 {
 
-    public static class UnitTests
+    public static partial class UnitTests
     {
         public static void Clear(GameObject resultVertical)
         {

@@ -670,12 +670,15 @@ namespace UniRx.ObjectTest
 
             ypos = 0;
             xpos += 100;
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "New Timer"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "Test for Where.Select"))
             {
-                Observable.Timer(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(1))
-                    .Do(_ => Thread.Sleep(TimeSpan.FromMilliseconds(230)))
-                    .Subscribe(_ => Debug.Log(DateTime.Now));
+                var seq = Observable.Range(1, 10)
+                    .Where(x => x % 2 == 0) // 2, 4, 6, 8, 10
+                    .Select(x => x * x); // 4, 16, 36, 64, 100
 
+                logger.Debug(seq.GetType().Name);
+
+                seq.Subscribe(x => logger.Debug(x));
             }
             ypos += 100;
 

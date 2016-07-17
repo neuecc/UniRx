@@ -173,6 +173,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Scan.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Select.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\SelectMany.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\SelectWhere.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Single.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Skip.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\SkipUntil.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\ToObservable.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Wait.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\WhenAll.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\WhereSelect.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Where.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\WithLatestFrom.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Zip.cs" />

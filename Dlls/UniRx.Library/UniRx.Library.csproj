@@ -304,6 +304,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\SelectMany.cs">
       <Link>Operators\SelectMany.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\SelectWhere.cs">
+      <Link>Operators\SelectWhere.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\Single.cs">
       <Link>Operators\Single.cs</Link>
     </Compile>
@@ -384,6 +387,9 @@
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\Where.cs">
       <Link>Operators\Where.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\WhereSelect.cs">
+      <Link>Operators\WhereSelect.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\WithLatestFrom.cs">
       <Link>Operators\WithLatestFrom.cs</Link>

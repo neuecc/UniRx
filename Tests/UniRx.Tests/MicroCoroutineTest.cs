@@ -199,7 +199,7 @@ namespace UniRx.Tests
         public void EnumerationCycleRandom()
         {
             // pattern for shuffle
-            var rand = new Random();
+            var rand = new System.Random();
             // large number
             {
                 for (int i = 0; i < 1000; i++)

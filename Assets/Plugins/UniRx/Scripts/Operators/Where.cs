@@ -36,6 +36,20 @@ namespace UniRx.Operators
             }
         }
 
+        // Optimize for .Where().Select()
+
+        public IObservable<TR> CombineSelector<TR>(Func<T, TR> selector)
+        {
+            if (this.predicate != null)
+            {
+                return new WhereSelectObservable<T, TR>(source, predicate, selector);
+            }
+            else
+            {
+                return new SelectObservable<T, TR>(this, selector); // can't combine
+            }
+        }
+
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
             if (predicate != null)

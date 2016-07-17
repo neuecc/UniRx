@@ -12,7 +12,7 @@ using UnityEngine.UI;
 namespace UniRx.Tests
 {
 
-    public static class UnitTests
+    public static partial class UnitTests
     {
         public static void Clear(GameObject resultVertical)
         {
@@ -46,7 +46,7 @@ namespace UniRx.Tests
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab) as Button;
-                button.GetComponentInChildren<Text>().text = "ConversionTest(5)";
+                button.GetComponentInChildren<Text>().text = "ConversionTest(6)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
                     Clear(resultVertical);
@@ -96,6 +96,16 @@ namespace UniRx.Tests
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab) as Button;
+                button.GetComponentInChildren<Text>().text = "MicroCoroutineTest(4)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(MicroCoroutineTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform, true);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "ObservableConcatTest(26)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -126,7 +136,7 @@ namespace UniRx.Tests
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab) as Button;
-                button.GetComponentInChildren<Text>().text = "ObservableGeneratorTest(8)";
+                button.GetComponentInChildren<Text>().text = "ObservableGeneratorTest(9)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
                     Clear(resultVertical);
@@ -206,6 +216,16 @@ namespace UniRx.Tests
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab) as Button;
+                button.GetComponentInChildren<Text>().text = "SelectWhereOptimizeTest(3)";
+                button.OnClickAsObservable().Subscribe(_ =>
+                {
+                    Clear(resultVertical);
+                    MainThreadDispatcher.StartCoroutine(SelectWhereOptimizeTest.Run(resultPrefab, resultVertical));
+                });
+                button.transform.SetParent(buttonVertical.transform, true);
+            }
+            {
+                var button = GameObject.Instantiate(buttonPrefab) as Button;
                 button.GetComponentInChildren<Text>().text = "SubjectTests(6)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
@@ -236,7 +256,7 @@ namespace UniRx.Tests
             }
             {
                 var button = GameObject.Instantiate(buttonPrefab) as Button;
-                button.GetComponentInChildren<Text>().text = "WhenAllTest(3)";
+                button.GetComponentInChildren<Text>().text = "WhenAllTest(6)";
                 button.OnClickAsObservable().Subscribe(_ =>
                 {
                     Clear(resultVertical);
@@ -484,6 +504,32 @@ namespace UniRx.Tests
                 var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "AsSingleUnitObservable";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.AsSingleUnitObservable();
+                    r.Message.Value = "AsSingleUnitObservable OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "AsSingleUnitObservable NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "AsSingleUnitObservable NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "AsUnitObservable";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -592,6 +638,25 @@ namespace UniRx.Tests
         public void AsObservable()
         {
             Observable.Range(1, 10).AsObservable().ToArrayWait().IsCollection(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        }
+
+
+
+
+        [TestMethod]
+        public void AsSingleUnitObservable()
+        {
+            var subject = new Subject<int>();
+
+            var done = false;
+            subject.AsSingleUnitObservable().Subscribe(_ => done = true);
+
+            subject.OnNext(1);
+            done.IsFalse();
+            subject.OnNext(100);
+            done.IsFalse();
+            subject.OnCompleted();
+            done.IsTrue();
         }
 
 
@@ -1740,6 +1805,350 @@ namespace UniRx.Tests
             finally
             {
                 called.IsTrue();
+            }
+        }
+
+
+
+    }
+
+
+    public partial class MicroCoroutineTest
+    {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new MicroCoroutineTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "EnumerationCycle";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.EnumerationCycle();
+                    r.Message.Value = "EnumerationCycle OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "EnumerationCycle NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "EnumerationCycle NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "EnumerationCycleBlank";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.EnumerationCycleBlank();
+                    r.Message.Value = "EnumerationCycleBlank OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "EnumerationCycleBlank NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "EnumerationCycleBlank NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "EnumerationCycleFull";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.EnumerationCycleFull();
+                    r.Message.Value = "EnumerationCycleFull OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "EnumerationCycleFull NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "EnumerationCycleFull NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "EnumerationCycleRandom";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.EnumerationCycleRandom();
+                    r.Message.Value = "EnumerationCycleRandom OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "EnumerationCycleRandom NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "EnumerationCycleRandom NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
+
+
+        [TestMethod]
+        public void EnumerationCycle()
+        {
+            var coroutines = new[]
+            {
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(2),
+                new DecrementEnumerator(3),
+                new DecrementEnumerator(4),
+                new DecrementEnumerator(5),
+            };
+
+            var mc = Create();
+            foreach (var item in coroutines)
+            {
+                mc.AddCoroutine(item);
+            }
+
+            mc.Run();
+            GetTailDynamic(mc).Is(5);
+            coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(0, 1, 2, 3, 4);
+
+            mc.Run();
+            GetTailDynamic(mc).Is(4);
+            coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(-1, 0, 1, 2, 3);
+
+            mc.Run();
+            GetTailDynamic(mc).Is(3);
+            coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(-1, -1, 0, 1, 2);
+
+            mc.Run();
+            GetTailDynamic(mc).Is(2);
+            coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(-1, -1, -1, 0, 1);
+
+            mc.Run();
+            GetTailDynamic(mc).Is(1);
+            coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(-1, -1, -1, -1, 0);
+
+            mc.Run();
+            GetTailDynamic(mc).Is(0);
+            coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(-1, -1, -1, -1, -1);
+        }
+
+
+
+
+        [TestMethod]
+        public void EnumerationCycleBlank()
+        {
+            var coroutines = new[]
+            {
+                new DecrementEnumerator(0),
+                new DecrementEnumerator(0),
+                new DecrementEnumerator(0),
+                new DecrementEnumerator(0),
+                new DecrementEnumerator(0),
+            };
+
+            var mc = Create();
+            foreach (var item in coroutines)
+            {
+                mc.AddCoroutine(item);
+            }
+
+            GetTailDynamic(mc).Is(5);
+
+            mc.Run();
+            GetTailDynamic(mc).Is(0);
+            coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(-1, -1, -1, -1, -1);
+        }
+
+
+
+
+        [TestMethod]
+        public void EnumerationCycleFull()
+        {
+            var coroutines = new[]
+            {
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+                new DecrementEnumerator(1),
+            };
+
+            var mc = Create();
+            foreach (var item in coroutines)
+            {
+                mc.AddCoroutine(item);
+            }
+
+            GetTailDynamic(mc).Is(16);
+
+            mc.Run();
+            GetTailDynamic(mc).Is(16);
+            coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+            mc.Run();
+            GetTailDynamic(mc).Is(0);
+            coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+        }
+
+
+
+
+        [TestMethod]
+        public void EnumerationCycleRandom()
+        {
+            // pattern for shuffle
+            var rand = new System.Random();
+            // large number
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    var expectedTail = rand.Next(1, 100);
+
+                    var coroutines = Enumerable.Range(1, expectedTail)
+                        .Select(x => new DecrementEnumerator(rand.Next(0, 100)))
+                        .ToArray();
+
+                    var mc = Create();
+                    foreach (var item in coroutines)
+                    {
+                        mc.AddCoroutine(item);
+                    }
+
+                    var maxRunCount = coroutines.Max(x => x.OriginalCount);
+                    var expected = coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).ToArray();
+
+
+
+                    for (int j = 0; j < maxRunCount + 1; j++)
+                    {
+                        mc.Run();
+
+                        // validate
+                        expected = expected.Select(x => (x == -1) ? -1 : (x - 1)).ToArray();
+                        coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(expected);
+
+                        var tail = FindLast(mc);
+                        GetTailDynamic(mc).Is(tail);
+                    }
+                    GetTailDynamic(mc).Is(0);
+                }
+            }
+            {
+                // small case
+                for (int i = 0; i < 1000; i++)
+                {
+                    var expectedTail = rand.Next(1, 100);
+
+                    var coroutines = Enumerable.Range(1, expectedTail)
+                        .Select(x => new DecrementEnumerator(rand.Next(0, 5)))
+                        .ToArray();
+
+                    var mc = Create();
+                    foreach (var item in coroutines)
+                    {
+                        mc.AddCoroutine(item);
+                    }
+
+                    var maxRunCount = coroutines.Max(x => x.OriginalCount);
+                    var expected = coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).ToArray();
+
+                    for (int j = 0; j < maxRunCount + 1; j++)
+                    {
+                        mc.Run();
+
+                        // validate
+                        expected = expected.Select(x => (x == -1) ? -1 : (x - 1)).ToArray();
+                        coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(expected);
+
+                        var tail = FindLast(mc);
+                        GetTailDynamic(mc).Is(tail);
+                    }
+                    GetTailDynamic(mc).Is(0);
+                }
+            }
+            {
+                // small case2
+                for (int i = 0; i < 1000; i++)
+                {
+                    var expectedTail = rand.Next(1, 10);
+
+                    var coroutines = Enumerable.Range(1, expectedTail)
+                        .Select(x => new DecrementEnumerator(rand.Next(0, 5)))
+                        .ToArray();
+
+                    var mc = Create();
+                    foreach (var item in coroutines)
+                    {
+                        mc.AddCoroutine(item);
+                    }
+
+                    var maxRunCount = coroutines.Max(x => x.OriginalCount);
+                    var expected = coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).ToArray();
+
+                    for (int j = 0; j < maxRunCount + 1; j++)
+                    {
+                        mc.Run();
+
+                        // validate
+                        expected = expected.Select(x => (x == -1) ? -1 : (x - 1)).ToArray();
+                        coroutines.OrderBy(x => x.OriginalCount).Select(x => x.Count).IsCollection(expected);
+
+                        var tail = FindLast(mc);
+                        GetTailDynamic(mc).Is(tail);
+                    }
+                    GetTailDynamic(mc).Is(0);
+                }
             }
         }
 
@@ -3748,6 +4157,32 @@ namespace UniRx.Tests
                 var r = GameObject.Instantiate(resultPrefab) as Result;
                 r.ForceInitialize();
                 r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "Repeat2";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.Repeat2();
+                    r.Message.Value = "Repeat2 OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "Repeat2 NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "Repeat2 NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
                 r.Message.Value = "RepeatStatic";
                 r.Color.Value = UnityEngine.Color.gray;
                 yield return null;
@@ -3892,6 +4327,15 @@ namespace UniRx.Tests
                 .Wait();
             xs.IsCollection(1, 2, 3, 100, 1, 2, 3, 100, 1, 2);
             Observable.Repeat(100).Take(5).ToArray().Wait().IsCollection(100, 100, 100, 100, 100);
+        }
+
+
+
+
+        [TestMethod]
+        public void Repeat2()
+        {
+            Observable.Repeat("a", 5, Scheduler.Immediate).ToArrayWait().IsCollection("a", "a", "a", "a", "a");
         }
 
 
@@ -7284,6 +7728,9 @@ namespace UniRx.Tests
 
             Observable.Range(1, 0).ToArray().Wait().Length.Is(0);
             Observable.Range(1, 10).ToArray().Wait().IsCollection(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+            Observable.Range(1, 0, Scheduler.Immediate).ToArray().Wait().Length.Is(0);
+            Observable.Range(1, 10, Scheduler.Immediate).ToArray().Wait().IsCollection(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         }
 
 
@@ -8187,6 +8634,165 @@ namespace UniRx.Tests
     }
 
 
+    public partial class SelectWhereOptimizeTest
+    {
+        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        {
+            var test = new SelectWhereOptimizeTest();
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "SelectWhere";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.SelectWhere();
+                    r.Message.Value = "SelectWhere OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "SelectWhere NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "SelectWhere NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "WhereSelect";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.WhereSelect();
+                    r.Message.Value = "WhereSelect OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "WhereSelect NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "WhereSelect NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "WhereWhere";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.WhereWhere();
+                    r.Message.Value = "WhereWhere OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "WhereWhere NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "WhereWhere NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+        }
+
+
+
+
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
+        public void SelectWhere()
+        {
+            var selectWhere = Observable.Range(1, 10)
+                .Select(x => x * x)
+                .Where(x => x % 2 == 0);
+
+            selectWhere.GetType().Name.Contains("SelectWhere").IsTrue();
+            selectWhere.ToArrayWait().IsCollection(4, 16, 36, 64, 100);
+
+            var selectWhere2 = Observable.Range(1, 10)
+                .Select((x, i) => x * x)
+                .Where(x => x % 2 == 0);
+
+            selectWhere2.GetType().Name.Contains("SelectWhere").IsFalse();
+            selectWhere2.ToArrayWait().IsCollection(4, 16, 36, 64, 100);
+        }
+
+
+
+
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
+        public void WhereSelect()
+        {
+            var whereSelect = Observable.Range(1, 10)
+                .Where(x => x % 2 == 0)
+                .Select(x => x * x);
+
+            whereSelect.GetType().Name.Contains("WhereSelect").IsTrue();
+            whereSelect.ToArrayWait().IsCollection(4, 16, 36, 64, 100);
+
+            var whereSelect2 = Observable.Range(1, 10)
+                .Where((x, i) => x % 2 == 0)
+                .Select(x => x * x);
+
+            whereSelect2.GetType().Name.Contains("WhereSelect").IsFalse();
+            whereSelect2.ToArrayWait().IsCollection(4, 16, 36, 64, 100);
+        }
+
+
+
+        // Combine selector currently disabled.
+        //[Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
+        //public void SelectSelect()
+        //{
+        //    var selectselect = Observable.Range(1, 10)
+        //        .Select(x => x)
+        //        .Select(x => x * -1);
+        //}
+
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
+        public void WhereWhere()
+        {
+            var wherewhere = Observable.Range(1, 10)
+                .Where(x => x % 2 == 0)
+                .Where(x => x > 5);
+
+            wherewhere.ToArrayWait().IsCollection(6, 8, 10);
+
+            var wherewhere2 = Observable.Range(1, 10)
+                .Where((x, i) => x % 2 == 0)
+                .Where(x => x > 5);
+
+            wherewhere.ToArrayWait().IsCollection(6, 8, 10);
+        }
+
+
+
+    }
+
+
     public partial class SubjectTests
     {
         public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
@@ -9034,6 +9640,84 @@ namespace UniRx.Tests
                 }
             }
             yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "WhenAllUnit";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.WhenAllUnit();
+                    r.Message.Value = "WhenAllUnit OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "WhenAllUnit NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "WhenAllUnit NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "WhenAllUnitEmpty";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.WhenAllUnitEmpty();
+                    r.Message.Value = "WhenAllUnitEmpty OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "WhenAllUnitEmpty NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "WhenAllUnitEmpty NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
+            {
+                var r = GameObject.Instantiate(resultPrefab) as Result;
+                r.ForceInitialize();
+                r.gameObject.transform.SetParent(resultVertical.transform, true);
+                r.Message.Value = "WhenAllUnitEnumerable";
+                r.Color.Value = UnityEngine.Color.gray;
+                yield return null;
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    test.WhenAllUnitEnumerable();
+                    r.Message.Value = "WhenAllUnitEnumerable OK " + sw.Elapsed.TotalMilliseconds + "ms";
+                    r.Color.Value = UnityEngine.Color.green;
+                }
+                catch (AssertFailedException ex)
+                {
+                    r.Message.Value = "WhenAllUnitEnumerable NG\r\n" + ex.Message;
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+                catch (Exception ex)
+                {
+                    r.Message.Value = "WhenAllUnitEnumerable NG\r\n" + ex.ToString();
+                    r.Color.Value = UnityEngine.Color.red;
+                }
+            }
+            yield return null;
         }
 
 
@@ -9074,8 +9758,51 @@ namespace UniRx.Tests
                     Observable.Timer(TimeSpan.FromSeconds(1)).Select(_ => 5),
                     Observable.Range(1, 4)
             }.Select(x => x).WhenAll().Wait();
-                
+
             xs.IsCollection(100, 5, 4);
+        }
+
+
+
+
+        [TestMethod]
+        public void WhenAllUnit()
+        {
+            var xs = Observable.WhenAll(
+                    Observable.Return(100).AsUnitObservable(),
+                    Observable.Timer(TimeSpan.FromSeconds(1)).AsUnitObservable(),
+                    Observable.Range(1, 4).AsUnitObservable())
+                .Wait();
+
+            xs.Is(Unit.Default);
+        }
+
+
+
+
+        [TestMethod]
+        public void WhenAllUnitEmpty()
+        {
+            var xs = Observable.WhenAll(new IObservable<Unit>[0]).Wait();
+            xs.Is(Unit.Default);
+
+            var xs2 = Observable.WhenAll(Enumerable.Empty<IObservable<Unit>>().Select(x => x)).Wait();
+            xs2.Is(Unit.Default);
+        }
+
+
+
+
+        [TestMethod]
+        public void WhenAllUnitEnumerable()
+        {
+            var xs = new[] {
+                    Observable.Return(100).AsUnitObservable(),
+                    Observable.Timer(TimeSpan.FromSeconds(1)).AsUnitObservable(),
+                    Observable.Range(1, 4).AsUnitObservable()
+            }.Select(x => x).WhenAll().Wait();
+
+            xs.Is(Unit.Default);
         }
 
 
