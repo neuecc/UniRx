@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UniRx.Diagnostics
 {
-    public class LogEntry
+    public struct LogEntry
     {
         // requires
         public string LoggerName { get; private set; }

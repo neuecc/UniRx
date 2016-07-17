@@ -8785,7 +8785,7 @@ namespace UniRx.Tests
                 .Where((x, i) => x % 2 == 0)
                 .Where(x => x > 5);
 
-            wherewhere.ToArrayWait().IsCollection(6, 8, 10);
+            wherewhere2.ToArrayWait().IsCollection(6, 8, 10);
         }
 
 
