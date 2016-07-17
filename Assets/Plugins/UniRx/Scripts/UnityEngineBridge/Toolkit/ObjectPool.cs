@@ -72,7 +72,7 @@ namespace UniRx.Toolkit
         }
 
         /// <summary>
-        /// Get from pool.
+        /// Get instance from pool.
         /// </summary>
         public T Rent()
         {
@@ -88,7 +88,7 @@ namespace UniRx.Toolkit
         }
 
         /// <summary>
-        /// Return to pool.
+        /// Return instance to pool.
         /// </summary>
         public void Return(T instance)
         {
@@ -124,17 +124,22 @@ namespace UniRx.Toolkit
         }
 
         /// <summary>
-        /// Trim pool instances.
+        /// Trim pool instances. 
         /// </summary>
-        public void Shrink(float removeRatio, bool callOnBeforeRent = false)
+        /// <param name="instanceCountRatio">0.0f = clear all ~ 1.0f = live all.</param>
+        /// <param name="minSize">Min pool count.</param>
+        /// <param name="callOnBeforeRent">If true, call OnBeforeRent before OnClear.</param>
+        public void Shrink(float instanceCountRatio, int minSize, bool callOnBeforeRent = false)
         {
             if (q == null) return;
 
-            if (removeRatio <= 0) removeRatio = 0;
-            if (removeRatio >= 1.0f) removeRatio = 1.0f;
+            if (instanceCountRatio <= 0) instanceCountRatio = 0;
+            if (instanceCountRatio >= 1.0f) instanceCountRatio = 1.0f;
 
-            var size = (int)(q.Count * removeRatio);
-            while (q.Count >= size)
+            var size = (int)(q.Count * instanceCountRatio);
+            size = Math.Max(minSize, size);
+
+            while (q.Count > size)
             {
                 var instance = q.Dequeue();
                 if (callOnBeforeRent)
@@ -148,13 +153,17 @@ namespace UniRx.Toolkit
         /// <summary>
         /// If needs shrink pool frequently, start check timer.
         /// </summary>
-        public IDisposable StartShrinkTimer(TimeSpan checkInterval, float removeRatio, bool callOnBeforeRent = false)
+        /// <param name="checkInterval">Interval of call Shrink.</param>
+        /// <param name="instanceCountRatio">0.0f = clearAll ~ 1.0f = live all.</param>
+        /// <param name="minSize">Min pool count.</param>
+        /// <param name="callOnBeforeRent">If true, call OnBeforeRent before OnClear.</param>
+        public IDisposable StartShrinkTimer(TimeSpan checkInterval, float instanceCountRatio, int minSize, bool callOnBeforeRent = false)
         {
             return Observable.Interval(checkInterval)
                 .TakeWhile(_ => disposedValue)
                 .Subscribe(_ =>
                 {
-                    Shrink(removeRatio, callOnBeforeRent);
+                    Shrink(instanceCountRatio, minSize, callOnBeforeRent);
                 });
         }
 
@@ -288,7 +297,7 @@ namespace UniRx.Toolkit
         }
 
         /// <summary>
-        /// Get from pool.
+        /// Get instance from pool.
         /// </summary>
         public IObservable<T> RentAsync()
         {
@@ -309,7 +318,7 @@ namespace UniRx.Toolkit
         }
 
         /// <summary>
-        /// Return to pool.
+        /// Return instance to pool.
         /// </summary>
         public void Return(T instance)
         {
@@ -328,17 +337,22 @@ namespace UniRx.Toolkit
         }
 
         /// <summary>
-        /// Trim pool instances.
+        /// Trim pool instances. 
         /// </summary>
-        public void Shrink(float removeRatio, bool callOnBeforeRent = false)
+        /// <param name="instanceCountRatio">0.0f = clear all ~ 1.0f = live all.</param>
+        /// <param name="minSize">Min pool count.</param>
+        /// <param name="callOnBeforeRent">If true, call OnBeforeRent before OnClear.</param>
+        public void Shrink(float instanceCountRatio, int minSize, bool callOnBeforeRent = false)
         {
             if (q == null) return;
 
-            if (removeRatio <= 0) removeRatio = 0;
-            if (removeRatio >= 1.0f) removeRatio = 1.0f;
+            if (instanceCountRatio <= 0) instanceCountRatio = 0;
+            if (instanceCountRatio >= 1.0f) instanceCountRatio = 1.0f;
 
-            var size = (int)(q.Count * removeRatio);
-            while (q.Count >= size)
+            var size = (int)(q.Count * instanceCountRatio);
+            size = Math.Max(minSize, size);
+
+            while (q.Count > size)
             {
                 var instance = q.Dequeue();
                 if (callOnBeforeRent)
@@ -352,13 +366,17 @@ namespace UniRx.Toolkit
         /// <summary>
         /// If needs shrink pool frequently, start check timer.
         /// </summary>
-        public IDisposable StartShrinkTimer(TimeSpan checkInterval, float removeRatio, bool callOnBeforeRent = false)
+        /// <param name="checkInterval">Interval of call Shrink.</param>
+        /// <param name="instanceCountRatio">0.0f = clearAll ~ 1.0f = live all.</param>
+        /// <param name="minSize">Min pool count.</param>
+        /// <param name="callOnBeforeRent">If true, call OnBeforeRent before OnClear.</param>
+        public IDisposable StartShrinkTimer(TimeSpan checkInterval, float instanceCountRatio, int minSize, bool callOnBeforeRent = false)
         {
             return Observable.Interval(checkInterval)
                 .TakeWhile(_ => disposedValue)
                 .Subscribe(_ =>
                 {
-                    Shrink(removeRatio, callOnBeforeRent);
+                    Shrink(instanceCountRatio, minSize, callOnBeforeRent);
                 });
         }
 
