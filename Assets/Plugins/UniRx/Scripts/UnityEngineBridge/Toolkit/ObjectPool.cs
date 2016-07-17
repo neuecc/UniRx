@@ -9,8 +9,10 @@ namespace UniRx.Toolkit
     /// <summary>
     /// Bass class of ObjectPool.
     /// </summary>
-    public abstract class ObjectPool<T>
+    public abstract class ObjectPool<T> : IDisposable
+        where T : UnityEngine.Component
     {
+        bool disposedValue = false;
         Queue<T> q;
 
         /// <summary>
@@ -19,14 +21,32 @@ namespace UniRx.Toolkit
         protected abstract T CreateInstance();
 
         /// <summary>
-        /// Called before return to pool, useful for set active object.
+        /// Called before return to pool, useful for set active object(it is default behavior).
         /// </summary>
-        protected abstract void OnBeforeRent(T instance);
+        protected virtual void OnBeforeRent(T instance)
+        {
+            instance.gameObject.SetActive(true);
+        }
 
         /// <summary>
-        /// Called before return to pool, useful for set inactive object.
+        /// Called before return to pool, useful for set inactive object(it is default behavior).
         /// </summary>
-        protected abstract void OnBeforeReturn(T instance);
+        protected virtual void OnBeforeReturn(T instance)
+        {
+            instance.gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Called when clear or disposed, useful for destroy instance or other finalize method.
+        /// </summary>
+        protected virtual void OnClear(T instance)
+        {
+            if (instance == null) return;
+
+            var go = instance.gameObject;
+            if (go == null) return;
+            UnityEngine.Object.Destroy(go);
+        }
 
         /// <summary>
         /// Current pooled object count.
@@ -45,6 +65,7 @@ namespace UniRx.Toolkit
         /// </summary>
         public T Rent()
         {
+            if (disposedValue) throw new ObjectDisposedException("ObjectPool was already disposed.");
             if (q == null) q = new Queue<T>();
 
             var instance = (q.Count > 0)
@@ -60,6 +81,7 @@ namespace UniRx.Toolkit
         /// </summary>
         public void Return(T instance)
         {
+            if (disposedValue) throw new ObjectDisposedException("ObjectPool was already disposed.");
             if (instance == null) throw new ArgumentNullException("instance");
 
             OnBeforeReturn(instance);
@@ -67,6 +89,22 @@ namespace UniRx.Toolkit
             if (q == null) q = new Queue<T>();
 
             q.Enqueue(instance);
+        }
+
+        /// <summary>
+        /// Clear pool.
+        /// </summary>
+        public void Clear(bool callOnBeforeRent = false)
+        {
+            while (q.Count != 0)
+            {
+                var instance = q.Dequeue();
+                if (callOnBeforeRent)
+                {
+                    OnBeforeRent(instance);
+                }
+                OnClear(instance);
+            }
         }
 
         /// <summary>
@@ -109,13 +147,37 @@ namespace UniRx.Toolkit
             observer.OnNext(Unit.Default);
             observer.OnCompleted();
         }
+
+        #region IDisposable Support
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Clear(false);
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        #endregion
     }
 
     /// <summary>
     /// Bass class of ObjectPool. If needs asynchronous initialization, use this instead of standard ObjectPool.
     /// </summary>
-    public abstract class AsyncObjectPool<T>
+    public abstract class AsyncObjectPool<T> : IDisposable
+        where T : UnityEngine.Component
     {
+        bool disposedValue = false;
         Queue<T> q;
 
         /// <summary>
@@ -124,14 +186,32 @@ namespace UniRx.Toolkit
         protected abstract IObservable<T> CreateInstanceAsync();
 
         /// <summary>
-        /// Called before return to pool, useful for set active object.
+        /// Called before return to pool, useful for set active object(it is default behavior).
         /// </summary>
-        protected abstract void OnBeforeRent(T instance);
+        protected virtual void OnBeforeRent(T instance)
+        {
+            instance.gameObject.SetActive(true);
+        }
 
         /// <summary>
-        /// Called before return to pool, useful for set inactive object.
+        /// Called before return to pool, useful for set inactive object(it is default behavior).
         /// </summary>
-        protected abstract void OnBeforeReturn(T instance);
+        protected virtual void OnBeforeReturn(T instance)
+        {
+            instance.gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Called when clear or disposed, useful for destroy instance or other finalize method.
+        /// </summary>
+        protected virtual void OnClear(T instance)
+        {
+            if (instance == null) return;
+
+            var go = instance.gameObject;
+            if (go == null) return;
+            UnityEngine.Object.Destroy(go);
+        }
 
         /// <summary>
         /// Current pooled object count.
@@ -150,6 +230,7 @@ namespace UniRx.Toolkit
         /// </summary>
         public IObservable<T> RentAsync()
         {
+            if (disposedValue) throw new ObjectDisposedException("ObjectPool was already disposed.");
             if (q == null) q = new Queue<T>();
 
             if (q.Count > 0)
@@ -170,11 +251,28 @@ namespace UniRx.Toolkit
         /// </summary>
         public void Return(T instance)
         {
+            if (disposedValue) throw new ObjectDisposedException("ObjectPool was already disposed.");
             if (instance == null) throw new ArgumentNullException("instance");
             if (q == null) q = new Queue<T>();
 
             OnBeforeReturn(instance);
             q.Enqueue(instance);
+        }
+
+        /// <summary>
+        /// Clear pool.
+        /// </summary>
+        public void Clear(bool callOnBeforeRent = false)
+        {
+            while (q.Count != 0)
+            {
+                var instance = q.Dequeue();
+                if (callOnBeforeRent)
+                {
+                    OnBeforeRent(instance);
+                }
+                OnClear(instance);
+            }
         }
 
         /// <summary>
@@ -225,6 +323,28 @@ namespace UniRx.Toolkit
             observer.OnNext(Unit.Default);
             observer.OnCompleted();
         }
+
+        #region IDisposable Support
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Clear(false);
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        #endregion
     }
 }
 
