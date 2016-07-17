@@ -16,6 +16,17 @@ namespace UniRx.Toolkit
         Queue<T> q;
 
         /// <summary>
+        /// Limit of instace count.
+        /// </summary>
+        protected int MaxPoolCount
+        {
+            get
+            {
+                return int.MaxValue;
+            }
+        }
+
+        /// <summary>
         /// Create instance when needed.
         /// </summary>
         protected abstract T CreateInstance();
@@ -84,10 +95,14 @@ namespace UniRx.Toolkit
             if (disposedValue) throw new ObjectDisposedException("ObjectPool was already disposed.");
             if (instance == null) throw new ArgumentNullException("instance");
 
-            OnBeforeReturn(instance);
-
             if (q == null) q = new Queue<T>();
 
+            if ((q.Count + 1) == MaxPoolCount)
+            {
+                throw new InvalidOperationException("Reached Max PoolSize");
+            }
+
+            OnBeforeReturn(instance);
             q.Enqueue(instance);
         }
 
@@ -96,6 +111,7 @@ namespace UniRx.Toolkit
         /// </summary>
         public void Clear(bool callOnBeforeRent = false)
         {
+            if (q == null) return;
             while (q.Count != 0)
             {
                 var instance = q.Dequeue();
@@ -105,6 +121,41 @@ namespace UniRx.Toolkit
                 }
                 OnClear(instance);
             }
+        }
+
+        /// <summary>
+        /// Trim pool instances.
+        /// </summary>
+        public void Shrink(float removeRatio, bool callOnBeforeRent = false)
+        {
+            if (q == null) return;
+
+            if (removeRatio <= 0) removeRatio = 0;
+            if (removeRatio >= 1.0f) removeRatio = 1.0f;
+
+            var size = (int)(q.Count * removeRatio);
+            while (q.Count >= size)
+            {
+                var instance = q.Dequeue();
+                if (callOnBeforeRent)
+                {
+                    OnBeforeRent(instance);
+                }
+                OnClear(instance);
+            }
+        }
+
+        /// <summary>
+        /// If needs shrink pool frequently, start check timer.
+        /// </summary>
+        public IDisposable StartShrinkTimer(TimeSpan checkInterval, float removeRatio, bool callOnBeforeRent = false)
+        {
+            return Observable.Interval(checkInterval)
+                .TakeWhile(_ => disposedValue)
+                .Subscribe(_ =>
+                {
+                    Shrink(removeRatio, callOnBeforeRent);
+                });
         }
 
         /// <summary>
@@ -181,6 +232,17 @@ namespace UniRx.Toolkit
         Queue<T> q;
 
         /// <summary>
+        /// Limit of instace count.
+        /// </summary>
+        protected int MaxPoolCount
+        {
+            get
+            {
+                return int.MaxValue;
+            }
+        }
+
+        /// <summary>
         /// Create instance when needed.
         /// </summary>
         protected abstract IObservable<T> CreateInstanceAsync();
@@ -253,10 +315,51 @@ namespace UniRx.Toolkit
         {
             if (disposedValue) throw new ObjectDisposedException("ObjectPool was already disposed.");
             if (instance == null) throw new ArgumentNullException("instance");
+
             if (q == null) q = new Queue<T>();
+
+            if ((q.Count + 1) == MaxPoolCount)
+            {
+                throw new InvalidOperationException("Reached Max PoolSize");
+            }
 
             OnBeforeReturn(instance);
             q.Enqueue(instance);
+        }
+
+        /// <summary>
+        /// Trim pool instances.
+        /// </summary>
+        public void Shrink(float removeRatio, bool callOnBeforeRent = false)
+        {
+            if (q == null) return;
+
+            if (removeRatio <= 0) removeRatio = 0;
+            if (removeRatio >= 1.0f) removeRatio = 1.0f;
+
+            var size = (int)(q.Count * removeRatio);
+            while (q.Count >= size)
+            {
+                var instance = q.Dequeue();
+                if (callOnBeforeRent)
+                {
+                    OnBeforeRent(instance);
+                }
+                OnClear(instance);
+            }
+        }
+
+        /// <summary>
+        /// If needs shrink pool frequently, start check timer.
+        /// </summary>
+        public IDisposable StartShrinkTimer(TimeSpan checkInterval, float removeRatio, bool callOnBeforeRent = false)
+        {
+            return Observable.Interval(checkInterval)
+                .TakeWhile(_ => disposedValue)
+                .Subscribe(_ =>
+                {
+                    Shrink(removeRatio, callOnBeforeRent);
+                });
         }
 
         /// <summary>
@@ -264,6 +367,7 @@ namespace UniRx.Toolkit
         /// </summary>
         public void Clear(bool callOnBeforeRent = false)
         {
+            if (q == null) return;
             while (q.Count != 0)
             {
                 var instance = q.Dequeue();
