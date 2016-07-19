@@ -128,7 +128,7 @@ namespace UniRx
     /// <summary>
     /// Variation of ReactiveCommand, when executing command then CanExecute = false after CanExecute = true.
     /// </summary>
-    public class AsyncReactiveCommand : AsyncReactiveCommand<Unit>, IDisposable
+    public class AsyncReactiveCommand : AsyncReactiveCommand<Unit>
     {
         public AsyncReactiveCommand(IReactiveProperty<bool> sharedCanExecuteSource)
             : base(sharedCanExecuteSource)
@@ -143,8 +143,6 @@ namespace UniRx
     {
         readonly object gate = new object();
         UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>> asyncActions = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
-
-        readonly IDisposable canExecuteSubscription;
 
         IReactiveProperty<bool> canExecute;
         public IReadOnlyReactiveProperty<bool> CanExecute
@@ -219,17 +217,6 @@ namespace UniRx
             }
 
             return new Subscription(this, asyncAction);
-        }
-
-        /// <summary>
-        /// Stop source subscription.
-        /// </summary>
-        public void Dispose()
-        {
-            if (IsDisposed) return;
-
-            IsDisposed = true;
-            canExecuteSubscription.Dispose();
         }
 
         class Subscription : IDisposable
