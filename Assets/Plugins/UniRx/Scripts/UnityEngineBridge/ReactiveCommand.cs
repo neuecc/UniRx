@@ -134,11 +134,6 @@ namespace UniRx
             : base(sharedCanExecuteSource)
         {
         }
-        public AsyncReactiveCommand(IReactiveProperty<bool> sharedCanExecuteSource, int throttleFrameCount)
-            : base(sharedCanExecuteSource, throttleFrameCount)
-        {
-
-        }
     }
 
     /// <summary>
@@ -150,7 +145,6 @@ namespace UniRx
         UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>> asyncActions = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
 
         readonly IDisposable canExecuteSubscription;
-        readonly int? throttleFrameCount;
 
         IReactiveProperty<bool> canExecute;
         public IReadOnlyReactiveProperty<bool> CanExecute
@@ -169,18 +163,6 @@ namespace UniRx
         public AsyncReactiveCommand(IReactiveProperty<bool> sharedCanExecuteSource)
         {
             this.canExecute = sharedCanExecuteSource;
-            this.canExecuteSubscription = sharedCanExecuteSource.SubscribeWithState(canExecute, (b, c) => c.Value = b);
-            this.throttleFrameCount = null;
-        }
-
-        /// <summary>
-        /// CanExecute is changed from canExecute sequence and when executing changed to false and delay after throttleFrameCount, to true.
-        /// </summary>
-        public AsyncReactiveCommand(IReactiveProperty<bool> sharedCanExecuteSource, int throttleFrameCount)
-        {
-            this.canExecute = sharedCanExecuteSource;
-            this.canExecuteSubscription = sharedCanExecuteSource.SubscribeWithState(canExecute, (b, c) => c.Value = b);
-            this.throttleFrameCount = throttleFrameCount;
         }
 
         /// <summary>Push parameter to subscribers when CanExecute.</summary>
@@ -195,15 +177,7 @@ namespace UniRx
                     try
                     {
                         var asyncState = a[0].Invoke(parameter) ?? Observable.ReturnUnit();
-
-                        if (this.throttleFrameCount == null)
-                        {
-                            return asyncState.Finally(() => canExecute.Value = true).Subscribe();
-                        }
-                        else
-                        {
-                            return asyncState.DelayFrame(throttleFrameCount.Value).Finally(() => canExecute.Value = true).Subscribe();
-                        }
+                        return asyncState.Finally(() => canExecute.Value = true).Subscribe();
                     }
                     catch
                     {
@@ -227,14 +201,7 @@ namespace UniRx
                         throw;
                     }
 
-                    if (this.throttleFrameCount == null)
-                    {
-                        return Observable.WhenAll(xs).Finally(() => canExecute.Value = true).Subscribe();
-                    }
-                    else
-                    {
-                        return Observable.WhenAll(xs).DelayFrame(throttleFrameCount.Value).Finally(() => canExecute.Value = true).Subscribe();
-                    }
+                    return Observable.WhenAll(xs).Finally(() => canExecute.Value = true).Subscribe();
                 }
             }
             else
@@ -346,18 +313,14 @@ namespace UniRx
 
     public static class AsyncReactiveCommandExtensions
     {
-        public static AsyncReactiveCommand ToAsyncReactiveCommand(this IReactiveProperty<bool> sharedCanExecuteSource, int? throttleFrameCount = null)
+        public static AsyncReactiveCommand ToAsyncReactiveCommand(this IReactiveProperty<bool> sharedCanExecuteSource)
         {
-            return (throttleFrameCount == null)
-                ? new AsyncReactiveCommand(sharedCanExecuteSource)
-                : new AsyncReactiveCommand(sharedCanExecuteSource, throttleFrameCount.Value);
+            return new AsyncReactiveCommand(sharedCanExecuteSource);
         }
 
-        public static AsyncReactiveCommand<T> ToAsyncReactiveCommand<T>(this IReactiveProperty<bool> sharedCanExecuteSource, int? throttleFrameCount = null)
+        public static AsyncReactiveCommand<T> ToAsyncReactiveCommand<T>(this IReactiveProperty<bool> sharedCanExecuteSource)
         {
-            return (throttleFrameCount == null)
-                ? new AsyncReactiveCommand<T>(sharedCanExecuteSource)
-                : new AsyncReactiveCommand<T>(sharedCanExecuteSource, throttleFrameCount.Value);
+            return new AsyncReactiveCommand<T>(sharedCanExecuteSource);
         }
 
 #if !UniRxLibrary
@@ -391,9 +354,9 @@ namespace UniRx
         /// <summary>
         /// Bind sharedCanExecuteSource source to button's interactable and onClick and register async action to command.
         /// </summary>
-        public static IDisposable BindToButton(this IReactiveProperty<bool> sharedCanExecuteSource, UnityEngine.UI.Button button, Func<Unit, IObservable<Unit>> asyncOnClick, int? throttleFrameCount = null)
+        public static IDisposable BindToButton(this IReactiveProperty<bool> sharedCanExecuteSource, UnityEngine.UI.Button button, Func<Unit, IObservable<Unit>> asyncOnClick)
         {
-            return sharedCanExecuteSource.ToAsyncReactiveCommand(throttleFrameCount).BindToOnClick(button, asyncOnClick);
+            return sharedCanExecuteSource.ToAsyncReactiveCommand().BindToOnClick(button, asyncOnClick);
         }
 #endif
 
