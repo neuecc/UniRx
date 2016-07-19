@@ -8,6 +8,13 @@ namespace UniRx
         bool Execute(T parameter);
     }
 
+    public interface IAsyncReactiveCommand<T>
+    {
+        IReadOnlyReactiveProperty<bool> CanExecute { get; }
+        IDisposable Execute(T parameter);
+        IDisposable Subscribe(Func<T, IObservable<Unit>> asyncAction);
+    }
+
     /// <summary>
     /// Represents ReactiveCommand&lt;Unit&gt;
     /// </summary>
@@ -121,7 +128,7 @@ namespace UniRx
     /// <summary>
     /// Variation of ReactiveCommand, when executing command then CanExecute = false after CanExecute = true.
     /// </summary>
-    public class AsyncReactiveCommand : AsyncReactiveCommand<Unit>
+    public class AsyncReactiveCommand : AsyncReactiveCommand<Unit>, IDisposable
     {
         public AsyncReactiveCommand(IReactiveProperty<bool> sharedCanExecuteSource)
             : base(sharedCanExecuteSource)
@@ -137,7 +144,7 @@ namespace UniRx
     /// <summary>
     /// Variation of ReactiveCommand, canExecute is changed when executing command then CanExecute = false after CanExecute = true.
     /// </summary>
-    public class AsyncReactiveCommand<T>
+    public class AsyncReactiveCommand<T> : IAsyncReactiveCommand<T>
     {
         readonly object gate = new object();
         UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>> asyncActions = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
