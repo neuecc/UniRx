@@ -130,9 +130,35 @@ namespace UniRx
     /// </summary>
     public class AsyncReactiveCommand : AsyncReactiveCommand<Unit>
     {
-        public AsyncReactiveCommand(IReactiveProperty<bool> sharedCanExecuteSource)
-            : base(sharedCanExecuteSource)
+        /// <summary>
+        /// CanExecute is automatically changed when executing to false and finished to true.
+        /// </summary>
+        public AsyncReactiveCommand()
+            : base()
         {
+
+        }
+
+        /// <summary>
+        /// CanExecute is automatically changed when executing to false and finished to true.
+        /// </summary>
+        public AsyncReactiveCommand(IObservable<bool> canExecuteSource)
+            : base(canExecuteSource)
+        {
+        }
+
+        /// <summary>
+        /// CanExecute is automatically changed when executing to false and finished to true.
+        /// The source is shared between other AsyncReactiveCommand.
+        /// </summary>
+        public AsyncReactiveCommand(IReactiveProperty<bool> sharedCanExecute)
+            : base(sharedCanExecute)
+        {
+        }
+
+        public IDisposable Execute()
+        {
+            return base.Execute(Unit.Default);
         }
     }
 
@@ -141,10 +167,12 @@ namespace UniRx
     /// </summary>
     public class AsyncReactiveCommand<T> : IAsyncReactiveCommand<T>
     {
-        readonly object gate = new object();
         UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>> asyncActions = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
 
-        IReactiveProperty<bool> canExecute;
+        readonly object gate = new object();
+        readonly IReactiveProperty<bool> canExecuteSource;
+        readonly IReadOnlyReactiveProperty<bool> canExecute;
+
         public IReadOnlyReactiveProperty<bool> CanExecute
         {
             get
@@ -156,11 +184,31 @@ namespace UniRx
         public bool IsDisposed { get; private set; }
 
         /// <summary>
-        /// CanExecute is changed from canExecute sequence and when executing changed to false.
+        /// CanExecute is automatically changed when executing to false and finished to true.
         /// </summary>
-        public AsyncReactiveCommand(IReactiveProperty<bool> sharedCanExecuteSource)
+        public AsyncReactiveCommand()
         {
-            this.canExecute = sharedCanExecuteSource;
+            this.canExecuteSource = new ReactiveProperty<bool>(true);
+            this.canExecute = canExecuteSource;
+        }
+
+        /// <summary>
+        /// CanExecute is automatically changed when executing to false and finished to true.
+        /// </summary>
+        public AsyncReactiveCommand(IObservable<bool> canExecuteSource)
+        {
+            this.canExecuteSource = new ReactiveProperty<bool>(true);
+            this.canExecute = canExecute.CombineLatest(canExecuteSource, (x, y) => x && y).ToReactiveProperty();
+        }
+
+        /// <summary>
+        /// CanExecute is automatically changed when executing to false and finished to true.
+        /// The source is shared between other AsyncReactiveCommand.
+        /// </summary>
+        public AsyncReactiveCommand(IReactiveProperty<bool> sharedCanExecute)
+        {
+            this.canExecuteSource = sharedCanExecute;
+            this.canExecute = sharedCanExecute;
         }
 
         /// <summary>Push parameter to subscribers when CanExecute.</summary>
@@ -168,18 +216,18 @@ namespace UniRx
         {
             if (canExecute.Value)
             {
-                canExecute.Value = false;
+                canExecuteSource.Value = false;
                 var a = asyncActions.Data;
                 if (a.Length == 1)
                 {
                     try
                     {
                         var asyncState = a[0].Invoke(parameter) ?? Observable.ReturnUnit();
-                        return asyncState.Finally(() => canExecute.Value = true).Subscribe();
+                        return asyncState.Finally(() => canExecuteSource.Value = true).Subscribe();
                     }
                     catch
                     {
-                        canExecute.Value = true;
+                        canExecuteSource.Value = true;
                         throw;
                     }
                 }
@@ -195,11 +243,11 @@ namespace UniRx
                     }
                     catch
                     {
-                        canExecute.Value = true;
+                        canExecuteSource.Value = true;
                         throw;
                     }
 
-                    return Observable.WhenAll(xs).Finally(() => canExecute.Value = true).Subscribe();
+                    return Observable.WhenAll(xs).Finally(() => canExecuteSource.Value = true).Subscribe();
                 }
             }
             else
