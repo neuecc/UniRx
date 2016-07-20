@@ -106,4 +106,38 @@ namespace UniRx.Operators
             return Disposable.Empty;
         }
     }
+
+    internal class ImmutableReturnTrueObservable : IObservable<bool>, IOptimizedObservable<bool>
+    {
+        internal static ImmutableReturnTrueObservable Instance = new ImmutableReturnTrueObservable();
+
+        public bool IsRequiredSubscribeOnCurrentThread()
+        {
+            return false;
+        }
+
+        public IDisposable Subscribe(IObserver<bool> observer)
+        {
+            observer.OnNext(true);
+            observer.OnCompleted();
+            return Disposable.Empty;
+        }
+    }
+
+    internal class ImmutableReturnFalseObservable : IObservable<bool>, IOptimizedObservable<bool>
+    {
+        internal static ImmutableReturnFalseObservable Instance = new ImmutableReturnFalseObservable();
+
+        public bool IsRequiredSubscribeOnCurrentThread()
+        {
+            return false;
+        }
+
+        public IDisposable Subscribe(IObserver<bool> observer)
+        {
+            observer.OnNext(false);
+            observer.OnCompleted();
+            return Disposable.Empty;
+        }
+    }
 }

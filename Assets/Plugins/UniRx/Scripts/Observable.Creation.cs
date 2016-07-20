@@ -138,6 +138,24 @@ namespace UniRx
         }
 
         /// <summary>
+        /// Return single sequence Immediately, optimized for Unit(no allocate memory).
+        /// </summary>
+        public static IObservable<Unit> Return(Unit value)
+        {
+            return ImmutableReturnUnitObservable.Instance;
+        }
+
+        /// <summary>
+        /// Return single sequence Immediately, optimized for Boolean(no allocate memory).
+        /// </summary>
+        public static IObservable<bool> Return(bool value)
+        {
+            return (value == true)
+                ? (IObservable<bool>)ImmutableReturnTrueObservable.Instance
+                : (IObservable<bool>)ImmutableReturnFalseObservable.Instance;
+        }
+
+        /// <summary>
         /// Same as Observable.Return(Unit.Default); but no allocate memory.
         /// </summary>
         public static IObservable<Unit> ReturnUnit()
