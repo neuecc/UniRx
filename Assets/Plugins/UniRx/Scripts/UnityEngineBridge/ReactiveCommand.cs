@@ -387,9 +387,17 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Bind sharedCanExecuteSource source to button's interactable and onClick and register async action to command.
+        /// Create AsyncReactiveCommand and bind to button's interactable and onClick and register async action to command.
         /// </summary>
-        public static IDisposable BindToButton(this IReactiveProperty<bool> sharedCanExecuteSource, UnityEngine.UI.Button button, Func<Unit, IObservable<Unit>> asyncOnClick)
+        public static IDisposable BindOnClick(this UnityEngine.UI.Button button, Func<Unit, IObservable<Unit>> asyncOnClick)
+        {
+            return new AsyncReactiveCommand().BindToOnClick(button, asyncOnClick);
+        }
+
+        /// <summary>
+        /// Create AsyncReactiveCommand and bind sharedCanExecuteSource source to button's interactable and onClick and register async action to command.
+        /// </summary>
+        public static IDisposable BindOnClick(this UnityEngine.UI.Button button, IReactiveProperty<bool> sharedCanExecuteSource, Func<Unit, IObservable<Unit>> asyncOnClick)
         {
             return sharedCanExecuteSource.ToAsyncReactiveCommand().BindToOnClick(button, asyncOnClick);
         }
