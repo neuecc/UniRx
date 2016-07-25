@@ -19,6 +19,7 @@ namespace UniRx
         void InitializeCore();
         void StartCapturePhase();
         void Awake();
+        void ForceInitialize(object argument);
     }
 
     /// <summary>
@@ -121,6 +122,11 @@ namespace UniRx
             Awake();
             PropagateArgument(argument);
             Start();
+        }
+
+        void IPresenter.ForceInitialize(object argument)
+        {
+            ForceInitialize((T)argument);
         }
 
         void IPresenter.Awake()
