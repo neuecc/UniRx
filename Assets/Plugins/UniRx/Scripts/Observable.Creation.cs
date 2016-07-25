@@ -79,7 +79,14 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Empty<T>(IScheduler scheduler)
         {
-            return new EmptyObservable<T>(scheduler);
+            if (scheduler == Scheduler.Immediate)
+            {
+                return ImmutableEmptyObservable<T>.Instance;
+            }
+            else
+            {
+                return new EmptyObservable<T>(scheduler);
+            }
         }
 
         /// <summary>
@@ -103,7 +110,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Never<T>()
         {
-            return new NeverObservable<T>();
+            return ImmutableNeverObservable<T>.Instance;
         }
 
         /// <summary>
@@ -111,7 +118,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Never<T>(T witness)
         {
-            return Never<T>();
+            return ImmutableNeverObservable<T>.Instance;
         }
 
         /// <summary>

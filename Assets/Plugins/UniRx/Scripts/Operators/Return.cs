@@ -94,6 +94,11 @@ namespace UniRx.Operators
     {
         internal static ImmutableReturnUnitObservable Instance = new ImmutableReturnUnitObservable();
 
+        ImmutableReturnUnitObservable()
+        {
+
+        }
+
         public bool IsRequiredSubscribeOnCurrentThread()
         {
             return false;
@@ -111,6 +116,11 @@ namespace UniRx.Operators
     {
         internal static ImmutableReturnTrueObservable Instance = new ImmutableReturnTrueObservable();
 
+        ImmutableReturnTrueObservable()
+        {
+
+        }
+
         public bool IsRequiredSubscribeOnCurrentThread()
         {
             return false;
@@ -127,6 +137,11 @@ namespace UniRx.Operators
     internal class ImmutableReturnFalseObservable : IObservable<bool>, IOptimizedObservable<bool>
     {
         internal static ImmutableReturnFalseObservable Instance = new ImmutableReturnFalseObservable();
+
+        ImmutableReturnFalseObservable()
+        {
+
+        }
 
         public bool IsRequiredSubscribeOnCurrentThread()
         {
