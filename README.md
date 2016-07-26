@@ -29,7 +29,7 @@ This kind of lack of composability causes operations to be close-coupled, which 
 
 Rx cures that kind of "asynchronous blues". Rx is a library for composing asynchronous and event-based programs using observable collections and LINQ-style query operators. 
   
-The game loop (every Update, OnCollisionEnter, etc), sensor data (Kinect, Leap Motion, etc.) are all types of events. Rx represents events as reactive sequences which are both easily composable and support time-based operations by using LINQ query operators.
+The game loop (every Update, OnCollisionEnter, etc), sensor data (Kinect, Leap Motion, VR Input, etc.) are all types of events. Rx represents events as reactive sequences which are both easily composable and support time-based operations by using LINQ query operators.
 
 Unity is generally single threaded but UniRx facilitates multithreading for joins, cancels, accessing GameObjects, etc.
 
@@ -320,7 +320,7 @@ public class MyComponent : MonoBehaviour
 }
 ```
 
-Supported triggers are `ObservableAnimatorTrigger`, `ObservableCollision2DTrigger`, `ObservableCollisionTrigger`, `ObservableDestroyTrigger`, `ObservableEnableTrigger`, `ObservableFixedUpdateTrigger`, `ObservableUpdateTrigger`, `ObservableLastUpdateTrigger`, `ObservableMouseTrigger`, `ObservableTrigger2DTrigger`, `ObservableTriggerTrigger`, `ObservableVisibleTrigger`, `ObservableTransformChangedTrigger`, `ObservableRectTransformTrigger`, `ObservableCanvasGroupChangedTrigger`, `ObservableStateMachineTrigger`, `ObservableEventTrigger`.
+Supported triggers are listed in [UniRx.wiki#UniRx.Triggers](https://github.com/neuecc/UniRx/wiki#unirxtriggers).
 
 These can also be handled more easily by directly subscribing to observables returned by extension methods on Component/GameObject. These methods inject ObservableTrigger automaticaly (except for `ObservableEventTrigger` and `ObservableStateMachineTrigger`):
 
@@ -581,6 +581,18 @@ logger.Log("Message");
 logger.Exception(new Exception("test exception"));
 ```
 
+Debugging
+---
+`Debug` operator in `UniRx.Diagnostics` namespace helps debugging.
+
+```csharp
+using UniRx.Diagnostics;
+
+fooObservable.Debug("Debug Test").Subscribe();
+```
+
+shows sequence element on `OnNext`, `OnError`, `OnCompleted`, `OnCancel`, `OnSubscribe` timing to Debug.Log. It enables only `#if DEBUG`.
+
 Unity-specific Extra Gems
 ---
 ```csharp
@@ -624,6 +636,9 @@ ThrottleFrame|
 ThrottleFirstFrame|
 TimeoutFrame|
 DelayFrameSubscription|
+FrameInterval|
+FrameTimeInterval|
+BatchFrame|
 
 For example, delayed invoke once:
 
@@ -685,7 +700,7 @@ If you combine with other IObservable, you can check completed property like isD
 IEnumerator MicroCoroutineWithToYieldInstruction()
 {
     var www = ObservableWWW.Get("http://aaa").ToYieldInstruction();
-    while (!(www.HasResult || www.IsCanceled || www.HasError))
+    while (!www.IsDone)
     {
         yield return null;
     }
@@ -957,7 +972,7 @@ Yellow is `Awake`, order is indeterminate. Green is `BeforeInitialize` phase, it
 
 If you create `PresenterBase` dynamically for example from Prefab, you can call `ForceInitialize(argument)` after instantiate.
 
-ReactiveCommand
+ReactiveCommand, AsyncReactiveCommand
 ---
 ReactiveCommand abstraction of button command with boolean interactable.
 
@@ -981,7 +996,7 @@ public class Player
     }
 }
 
-public class Presenter
+public class Presenter : MonoBehaviour
 {
     public Button resurrectButton;
 
@@ -997,7 +1012,68 @@ public class Presenter
 }
 ```
 
-MessageBroker
+AsyncReactiveCommand is a variation of ReactiveCommand that `CanExecute`(in many cases bind to button's interactable) is changed to false until asynchronous execution was finished.
+
+```csharp
+public class Presenter : MonoBehaviour
+{
+    public UnityEngine.UI.Button button;
+
+    void Start()
+    {
+        var command = new AsyncReactiveCommand();
+
+        command.Subscribe(_ =>
+        {
+            // heavy, heavy, heavy method....
+            return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();
+        });
+
+        // after clicked, button shows disable for 3 seconds
+        command.BindTo(button);
+
+        // Note:shortcut extension, bind aync onclick directly
+        button.BindToOnClick(_ =>
+        {
+            return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();
+        });
+    }
+}
+```
+
+`AsyncReactiveCommand` has three constructor.
+
+* `()` - CanExecute is changed to false until async execution finished
+* `(IObservable<bool> canExecuteSource)` - Mixed with empty, CanExecute becomes true when canExecuteSource send to true and does not executing 
+* `(IReactiveProperty<bool> sharedCanExecute)` - share execution status between multiple AsyncReactiveCommands, if one AsyncReactiveCommand is executing, other AsyncReactiveCommands(with same sharedCanExecute property) becomes CanExecute false until async execution finished
+
+```csharp
+public class Presenter : MonoBehaviour
+{
+    public UnityEngine.UI.Button button1;
+    public UnityEngine.UI.Button button2;
+
+    void Start()
+    {
+        // share canExecute status.
+        // when clicked button1, button1 and button2 was disabled for 3 seconds.
+
+        var sharedCanExecute = new ReactiveProperty<bool>();
+
+        button1.BindToOnClick(sharedCanExecute, _ =>
+        {
+            return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();
+        });
+
+        button2.BindToOnClick(sharedCanExecute, _ =>
+        {
+            return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();
+        });
+    }
+}
+```
+
+MessageBroker, AsyncMessageBroker
 ---
 MessageBroker is Rx based in-memory pubsub system filtered by type.
 
@@ -1014,6 +1090,92 @@ MessageBroker.Default.Receive<TestArgs>().Subscribe(x => UnityEngine.Debug.Log(x
 
 // Publish message
 MessageBroker.Default.Publish(new TestArgs { Value = 1000 });
+```
+
+AsyncMessageBroker is variation of MessageBroker, can await Publish call.
+
+```csharp
+AsyncMessageBroker.Default.Subscribe<TestArgs>(x =>
+{
+    // show after 3 seconds.
+    return Observable.Timer(TimeSpan.FromSeconds(3))
+        .ForEachAsync(_ =>
+        {
+            UnityEngine.Debug.Log(x);
+        });
+});
+
+AsyncMessageBroker.Default.PublishAsync(new TestArgs { Value = 3000 })
+    .Subscribe(_ =>
+    {
+        UnityEngine.Debug.Log("called all subscriber completed");
+    });
+```
+
+UniRx.Toolkit
+---
+`UniRx.Toolkit` includes serveral Rx-ish tools. Currently includes `ObjectPool` and `AsyncObjectPool`.  It can `Rent`, `Return` and `PreloadAsync` for fill pool before rent operation.
+
+```csharp
+// sample class
+public class Foobar : MonoBehaviour
+{
+    public IObservable<Unit> ActionAsync()
+    {
+        // heavy, heavy, action...
+        return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();
+    }
+}
+
+public class FoobarPool : ObjectPool<Foobar>
+{
+    readonly Foobar prefab;
+    readonly Transform hierarchyParent;
+
+    public FoobarPool(Foobar prefab, Transform hierarchyParent)
+    {
+        this.prefab = prefab;
+        this.hierarchyParent = hierarchyParent;
+    }
+
+    protected override Foobar CreateInstance()
+    {
+        var foobar = GameObject.Instantiate<Foobar>(prefab);
+        foobar.transform.SetParent(hierarchyParent);
+
+        return foobar;
+    }
+
+    // You can overload OnBeforeRent, OnBeforeReturn, OnClear for customize action.
+    // In default, OnBeforeRent = SetActive(true), OnBeforeReturn = SetActive(false)
+
+    // protected override void OnBeforeRent(Foobar instance)
+    // protected override void OnBeforeReturn(Foobar instance)
+    // protected override void OnClear(Foobar instance)
+}
+
+public class Presenter : MonoBehaviour
+{
+    FoobarPool pool = null;
+
+    public Foobar prefab;
+    public Button rentButton;
+
+    void Start()
+    {
+        pool = new FoobarPool(prefab, this.transform);
+
+        rentButton.OnClickAsObservable().Subscribe(_ =>
+        {
+            var foobar = pool.Rent();
+            foobar.ActionAsync().Subscribe(__ =>
+            {
+                // if action completed, return to pool
+                pool.Return(foobar);
+            });
+        });
+    }
+}
 ```
 
 Visual Studio Analyzer
@@ -1043,7 +1205,7 @@ Therefore, when using NETFX_CORE, please refrain from using such constructs as `
 
 DLL Separation
 ---
-If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx`, it is fullset separated project of UniRx. You should define compile symbol like  `UNITY;UNITY_5_3_0;UNITY_5_3;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol. We can not provides pre-build binary to release page, asset store because compile symbol is different each other.
+If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx`, it is fullset separated project of UniRx. You should define compile symbol like  `UNITY;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol. We can not provides pre-build binary to release page, asset store because compile symbol is different each other.
 
 If you want to use UniRx for .NET 3.5 normal CLR application, you can use `UniRx.Library`. `UniRx.Library` is splitted UnityEngine dependency, build `UniRx.Library` needs to define `UniRxLibrary` symbol. pre-build `UniRx.Library` binary, it avilable in NuGet.
 
