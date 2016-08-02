@@ -16,7 +16,7 @@ Support thread on the Unity Forums: Ask me any question - http://forum.unity3d.c
 
 Release Notes, see [UniRx/releases](https://github.com/neuecc/UniRx/releases)
 
-UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/PresenterBase/etc) 
+UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/etc) 
 
 Why Rx?
 ---
@@ -908,8 +908,13 @@ eventTrigger.OnBeginDragAsObservable()
     .Subscribe(x => Debug.Log(x));
 ```
 
-PresenterBase
+(Optional)PresenterBase
 ---
+> Note:  
+> PresenterBase works enough, but too complex.  
+> You can use simple `Initialize` method and call parent to child, it works for most scenario.  
+> So I don't recommend using `PresenterBase`, sorry.
+
 UI has hierarchy and maybe contains a few presenters. But Unity's script execution order is indeterminate in default, so you can't touch child presenter's property before child has been initialized. And sometimes ReactiveProperty requires initial value but Unity doesn't have constructor.  `PresenterBase` solves there two problems.
 
 * Resolve initialize dependency of multiple presenters chain
