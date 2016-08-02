@@ -3,7 +3,6 @@
 using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEditor.iOS.Xcode;
 using UnityEngine;
 
 public static class PostBuildProcessor
@@ -52,6 +51,7 @@ public static class PostBuildProcessor
     {
         if (buildTarget == BuildTarget.iOS)
         {
+#if UNITY_IOS
             string projPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
             PBXProject proj = new PBXProject();
             string nativeTarget = proj.TargetGuidByName(UnityEditor.iOS.Xcode.PBXProject.GetUnityTargetName());
@@ -60,6 +60,7 @@ public static class PostBuildProcessor
             proj.ReadFromString(File.ReadAllText(projPath));
             proj.SetBuildProperty(buildTargets, "ENABLE_BITCODE", "NO");
             File.WriteAllText(projPath, proj.WriteToString());
+#endif
         }
     }
 
