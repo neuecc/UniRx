@@ -586,9 +586,48 @@ Debugging
 `Debug` operator in `UniRx.Diagnostics` namespace helps debugging.
 
 ```csharp
+// needs Diagnostics using
 using UniRx.Diagnostics;
 
-fooObservable.Debug("Debug Test").Subscribe();
+---
+
+// [DebugDump, Normal]OnSubscribe
+// [DebugDump, Normal]OnNext(1)
+// [DebugDump, Normal]OnNext(10)
+// [DebugDump, Normal]OnCompleted()
+{
+    var subject = new Subject<int>();
+
+    subject.Debug("DebugDump, Normal").Subscribe();
+
+    subject.OnNext(1);
+    subject.OnNext(10);
+    subject.OnCompleted();
+}
+
+// [DebugDump, Cancel]OnSubscribe
+// [DebugDump, Cancel]OnNext(1)
+// [DebugDump, Cancel]OnCancel
+{
+    var subject = new Subject<int>();
+
+    var d = subject.Debug("DebugDump, Cancel").Subscribe();
+
+    subject.OnNext(1);
+    d.Dispose();
+}
+
+// [DebugDump, Error]OnSubscribe
+// [DebugDump, Error]OnNext(1)
+// [DebugDump, Error]OnError(System.Exception)
+{
+    var subject = new Subject<int>();
+
+    subject.Debug("DebugDump, Error").Subscribe();
+
+    subject.OnNext(1);
+    subject.OnError(new Exception());
+}
 ```
 
 shows sequence element on `OnNext`, `OnError`, `OnCompleted`, `OnCancel`, `OnSubscribe` timing to Debug.Log. It enables only `#if DEBUG`.
