@@ -77,9 +77,10 @@ namespace UniRx.Triggers
             return onStateIK ?? (onStateIK = new Subject<OnStateInfo>());
         }
 
-        // ObservableStateMachine Trigger makes stop animating #70
-        // Is this Unity's bug?
-        // comment out until fixed bugs 
+        // Does not implments OnStateMove.
+        // ObservableStateMachine Trigger makes stop animating.
+        // By defining OnAnimatorMove, you are signifying that you want to intercept the movement of the root object and apply it yourself.
+        // http://fogbugz.unity3d.com/default.asp?700990_9jqaim4ev33i8e9h
 
         //// OnStateMove
 
