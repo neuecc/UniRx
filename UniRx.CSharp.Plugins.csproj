@@ -61,9 +61,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>Library\UnityAssemblies\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
