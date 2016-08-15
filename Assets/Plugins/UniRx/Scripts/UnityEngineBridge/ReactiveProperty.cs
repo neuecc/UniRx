@@ -262,6 +262,14 @@ namespace UniRx
     /// </summary>
     public class ReadOnlyReactiveProperty<T> : IReadOnlyReactiveProperty<T>, IDisposable, IOptimizedObservable<T>
     {
+#if !UniRxLibrary
+        static readonly IEqualityComparer<T> defaultEqualityComparer = UnityEqualityComparer.GetDefault<T>();
+#else
+        static readonly IEqualityComparer<T> defaultEqualityComparer = EqualityComparer<T>.Default;
+#endif
+
+        readonly bool distinctUntilChanged = true;
+
         bool canPublishValueOnSubscribe = false;
 
         bool isDisposed = false;
@@ -288,18 +296,42 @@ namespace UniRx
             }
         }
 
+        protected virtual IEqualityComparer<T> EqualityComparer
+        {
+            get
+            {
+                return defaultEqualityComparer;
+            }
+        }
+
         public ReadOnlyReactiveProperty(IObservable<T> source)
         {
-            publisher = new Subject<T>();
-            sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
+            this.publisher = new Subject<T>();
+            this.sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
+        }
+
+        public ReadOnlyReactiveProperty(IObservable<T> source, bool distinctUntilChanged)
+        {
+            this.distinctUntilChanged = distinctUntilChanged;
+            this.publisher = new Subject<T>();
+            this.sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
         }
 
         public ReadOnlyReactiveProperty(IObservable<T> source, T initialValue)
         {
-            value = initialValue;
-            canPublishValueOnSubscribe = true;
-            publisher = new Subject<T>();
-            sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
+            this.value = initialValue;
+            this.canPublishValueOnSubscribe = true;
+            this.publisher = new Subject<T>();
+            this.sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
+        }
+
+        public ReadOnlyReactiveProperty(IObservable<T> source, T initialValue, bool distinctUntilChanged)
+        {
+            this.distinctUntilChanged = distinctUntilChanged;
+            this.value = initialValue;
+            this.canPublishValueOnSubscribe = true;
+            this.publisher = new Subject<T>();
+            this.sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
         }
 
         public IDisposable Subscribe(IObserver<T> observer)
@@ -391,9 +423,20 @@ namespace UniRx
 
             public void OnNext(T value)
             {
-                parent.value = value;
-                parent.canPublishValueOnSubscribe = true;
-                parent.publisher.OnNext(value);
+                if (parent.distinctUntilChanged && parent.canPublishValueOnSubscribe)
+                {
+                    if (!parent.EqualityComparer.Equals(parent.value, value))
+                    {
+                        parent.value = value;
+                        parent.publisher.OnNext(value);
+                    }
+                }
+                else
+                {
+                    parent.value = value;
+                    parent.canPublishValueOnSubscribe = true;
+                    parent.publisher.OnNext(value);
+                }
             }
 
             public void OnError(Exception error)
@@ -434,9 +477,25 @@ namespace UniRx
             return new ReadOnlyReactiveProperty<T>(source);
         }
 
+        /// <summary>
+        /// Create ReadOnlyReactiveProperty with distinctUntilChanged: false.
+        /// </summary>
+        public static ReadOnlyReactiveProperty<T> ToSequentialReadOnlyReactiveProperty<T>(this IObservable<T> source)
+        {
+            return new ReadOnlyReactiveProperty<T>(source, distinctUntilChanged: false);
+        }
+
         public static ReadOnlyReactiveProperty<T> ToReadOnlyReactiveProperty<T>(this IObservable<T> source, T initialValue)
         {
             return new ReadOnlyReactiveProperty<T>(source, initialValue);
+        }
+
+        /// <summary>
+        /// Create ReadOnlyReactiveProperty with distinctUntilChanged: false.
+        /// </summary>
+        public static ReadOnlyReactiveProperty<T> ToSequentialReadOnlyReactiveProperty<T>(this IObservable<T> source, T initialValue)
+        {
+            return new ReadOnlyReactiveProperty<T>(source, initialValue, distinctUntilChanged: false);
         }
 
         public static IObservable<T> SkipLatestValueOnSubscribe<T>(this IReadOnlyReactiveProperty<T> source)

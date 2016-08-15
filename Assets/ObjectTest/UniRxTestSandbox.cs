@@ -379,8 +379,6 @@ namespace UniRx.ObjectTest
         Subject<long> subj;
         object gate = new object();
 
-        Clicker rentInstance;
-
         int counter;
         IEnumerator IncrCounter()
         {
