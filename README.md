@@ -289,7 +289,7 @@ Observable.WhenAll(heavyMethod, heavyMethod2)
 
 DefaultScheduler
 ---
-UniRx's default time based operations (Interval, Timer, Buffer(timeSpan), etc) use `Scheduler.MainThread` as their scheduler. That means most operators (excpet for `Observable.Start`) work on a single thread, so ObserverOn isn't needed and thread safety measures can be ignored. This is differet from the standard RxNet implementation but better suited to the Unity environment.  
+UniRx's default time based operations (Interval, Timer, Buffer(timeSpan), etc) use `Scheduler.MainThread` as their scheduler. That means most operators (except for `Observable.Start`) work on a single thread, so ObserverOn isn't needed and thread safety measures can be ignored. This is differet from the standard RxNet implementation but better suited to the Unity environment.  
 
 `Scheduler.MainThread` runs under Time.timeScale's influence. If you want to ignore the time scale, use ` Scheduler.MainThreadIgnoreTimeScale` instead.
 
@@ -930,7 +930,7 @@ public class Enemy
 }
 ```
 
-A View is a scene, that is a Unity hierarchy. Views are associated with Presenters by the Unity Engine on initialize. The XxxAsObservable methods make creating event signals simple, without any overhead. SubscribeToText and SubscribeToInteractable are simple binding-like helpers. These maya be simple tools, but they are very powerful. They feel natural in the Unity environment and provide high performance and a clean architecture.
+A View is a scene, that is a Unity hierarchy. Views are associated with Presenters by the Unity Engine on initialize. The XxxAsObservable methods make creating event signals simple, without any overhead. SubscribeToText and SubscribeToInteractable are simple binding-like helpers. These may be simple tools, but they are very powerful. They feel natural in the Unity environment and provide high performance and a clean architecture.
 
 ![](StoreDocument/MVRP_Loop.png)
 
