@@ -203,25 +203,25 @@ namespace UniRx
 #endif
 
         /// <summary>Dispatch Asyncrhonous action.</summary>
-        public static void Post(Action<object> action, object state)
+        public static void Post<T>(Action<T> action, T state)
         {
 #if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action, state); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(x => action((T)x), (object)state); return; }
 
 #endif
 
             var dispatcher = Instance;
             if (!isQuitting && !object.ReferenceEquals(dispatcher, null))
             {
-                dispatcher.queueWorker.Enqueue(action, state);
+                InternalGarbagelessQueueWorker.Enqueue(action, state);
             }
         }
 
         /// <summary>Dispatch Synchronous action if possible.</summary>
-        public static void Send(Action<object> action, object state)
+        public static void Send<T>(Action<T> action, T state)
         {
 #if UNITY_EDITOR
-            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(action, state); return; }
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.Enqueue(x => action((T)x), (object)state); return; }
 #endif
 
             if (mainThreadToken != null)
@@ -304,14 +304,14 @@ namespace UniRx
                 var dispatcher = Instance;
                 if (!isQuitting && !object.ReferenceEquals(dispatcher, null))
                 {
-                    dispatcher.queueWorker.Enqueue(_ =>
+                    InternalGarbagelessQueueWorker.Enqueue<IEnumerator>(coroutine =>
                     {
                         var distpacher2 = Instance;
                         if (distpacher2 != null)
                         {
-                            distpacher2.StartCoroutine_Auto(routine);
+                            distpacher2.StartCoroutine_Auto(coroutine);
                         }
-                    }, null);
+                    }, routine);
                 }
             }
         }
@@ -385,7 +385,6 @@ namespace UniRx
             }
         }
 
-        ThreadSafeQueueWorker queueWorker = new ThreadSafeQueueWorker();
         Action<Exception> unhandledExceptionCallback = ex => Debug.LogException(ex); // default
 
         MicroCoroutine updateMicroCoroutine = null;
@@ -599,7 +598,7 @@ namespace UniRx
                     unhandledExceptionCallback(ex);
                 }
             }
-            queueWorker.ExecuteAll(unhandledExceptionCallback);
+            InternalGarbagelessQueueWorker.ExecuteAll(unhandledExceptionCallback);
         }
 
         // for Lifecycle Management

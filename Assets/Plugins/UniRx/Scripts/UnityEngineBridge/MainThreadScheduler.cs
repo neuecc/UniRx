@@ -76,12 +76,12 @@ namespace UniRx
 
         class MainThreadScheduler : IScheduler, ISchedulerPeriodic, ISchedulerQueueing
         {
-            readonly Action<object> scheduleAction;
+            readonly Action<Tuple<BooleanDisposable, Action>> scheduleAction;
 
             public MainThreadScheduler()
             {
                 MainThreadDispatcher.Initialize();
-                scheduleAction = new Action<object>(Schedule);
+                scheduleAction = new Action<Tuple<BooleanDisposable, Action>>(Schedule);
             }
 
             // delay action is run in StartCoroutine
@@ -135,9 +135,8 @@ namespace UniRx
                 get { return Scheduler.Now; }
             }
 
-            void Schedule(object state)
+            void Schedule(Tuple<BooleanDisposable, Action> t)
             {
-                var t = (Tuple<BooleanDisposable, Action>)state;
                 if (!t.Item1.IsDisposed)
                 {
                     t.Item2();
@@ -192,12 +191,10 @@ namespace UniRx
 
             static class QueuedAction<T>
             {
-                public static readonly Action<object> Instance = new Action<object>(Invoke);
+                public static readonly Action<Tuple<ICancelable, T, Action<T>>> Instance = new Action<Tuple<ICancelable, T, Action<T>>>(Invoke);
 
-                public static void Invoke(object state)
+                public static void Invoke(Tuple<ICancelable, T, Action<T>> t)
                 {
-                    var t = (Tuple<ICancelable, T, Action<T>>)state;
-
                     if (!t.Item1.IsDisposed)
                     {
                         t.Item3(t.Item2);
@@ -208,12 +205,12 @@ namespace UniRx
 
         class IgnoreTimeScaleMainThreadScheduler : IScheduler, ISchedulerPeriodic, ISchedulerQueueing
         {
-            readonly Action<object> scheduleAction;
+            readonly Action<Tuple<BooleanDisposable, Action>> scheduleAction;
 
             public IgnoreTimeScaleMainThreadScheduler()
             {
                 MainThreadDispatcher.Initialize();
-                scheduleAction = new Action<object>(Schedule);
+                scheduleAction = new Action<Tuple<BooleanDisposable, Action>>(Schedule);
             }
 
             IEnumerator DelayAction(TimeSpan dueTime, Action action, ICancelable cancellation)
@@ -281,9 +278,8 @@ namespace UniRx
                 get { return Scheduler.Now; }
             }
 
-            void Schedule(object state)
+            void Schedule(Tuple<BooleanDisposable, Action> t)
             {
-                var t = (Tuple<BooleanDisposable, Action>)state;
                 if (!t.Item1.IsDisposed)
                 {
                     t.Item2();
@@ -329,12 +325,10 @@ namespace UniRx
 
             static class QueuedAction<T>
             {
-                public static readonly Action<object> Instance = new Action<object>(Invoke);
+                public static readonly Action<Tuple<ICancelable, T, Action<T>>> Instance = new Action<Tuple<ICancelable, T, Action<T>>>(Invoke);
 
-                public static void Invoke(object state)
+                public static void Invoke(Tuple<ICancelable, T, Action<T>> t)
                 {
-                    var t = (Tuple<ICancelable, T, Action<T>>)state;
-
                     if (!t.Item1.IsDisposed)
                     {
                         t.Item3(t.Item2);
@@ -524,7 +518,7 @@ namespace UniRx
                     {
                         yield return null;
                         if (cancellation.IsDisposed) break;
-                        
+
                         elapsed += Time.deltaTime;
                         if (elapsed >= dt)
                         {
