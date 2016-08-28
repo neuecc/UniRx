@@ -49,14 +49,6 @@ namespace UniRx.Operators
                 return StableCompositeDisposable.Create(cancelable, subscription);
             }
 
-            void OnNext()
-            {
-                lock (gate)
-                {
-                    open = true;
-                }
-            }
-
             public override void OnNext(T value)
             {
                 lock (gate)

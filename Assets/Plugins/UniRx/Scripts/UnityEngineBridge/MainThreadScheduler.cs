@@ -102,7 +102,7 @@ namespace UniRx
                 MainThreadDispatcher.UnsafeSend(action);
             }
 
-            IEnumerator PeriodicAction(TimeSpan period, Action action, ICancelable cancellation)
+            IEnumerator PeriodicAction<T>(T state, TimeSpan period, Action<T> action, ICancelable cancellation)
             {
                 // zero == every frame
                 if (period == TimeSpan.Zero)
@@ -112,7 +112,7 @@ namespace UniRx
                         yield return null; // not immediately, run next frame
                         if (cancellation.IsDisposed) yield break;
 
-                        MainThreadDispatcher.UnsafeSend(action);
+                        MainThreadDispatcher.UnsafeSend(action, state);
                     }
                 }
                 else
@@ -125,7 +125,7 @@ namespace UniRx
                         yield return yieldInstruction;
                         if (cancellation.IsDisposed) yield break;
 
-                        MainThreadDispatcher.UnsafeSend(action);
+                        MainThreadDispatcher.UnsafeSend(action, state);
                     }
                 }
             }
@@ -165,12 +165,12 @@ namespace UniRx
                 return d;
             }
 
-            public IDisposable SchedulePeriodic(TimeSpan period, Action action)
+            public IDisposable SchedulePeriodic<T>(T state, TimeSpan period, Action<T> action)
             {
                 var d = new BooleanDisposable();
                 var time = Scheduler.Normalize(period);
 
-                MainThreadDispatcher.SendStartCoroutine(PeriodicAction(time, action, d));
+                MainThreadDispatcher.SendStartCoroutine(PeriodicAction(state, time, action, d));
 
                 return d;
             }
@@ -241,7 +241,7 @@ namespace UniRx
                 }
             }
 
-            IEnumerator PeriodicAction(TimeSpan period, Action action, ICancelable cancellation)
+            IEnumerator PeriodicAction<T>(T state, TimeSpan period, Action<T> action, ICancelable cancellation)
             {
                 // zero == every frame
                 if (period == TimeSpan.Zero)
@@ -251,7 +251,7 @@ namespace UniRx
                         yield return null; // not immediately, run next frame
                         if (cancellation.IsDisposed) yield break;
 
-                        MainThreadDispatcher.UnsafeSend(action);
+                        MainThreadDispatcher.UnsafeSend(action, state);
                     }
                 }
                 else
@@ -266,7 +266,7 @@ namespace UniRx
                         elapsed += Time.unscaledDeltaTime;
                         if (elapsed >= dt)
                         {
-                            MainThreadDispatcher.UnsafeSend(action);
+                            MainThreadDispatcher.UnsafeSend(action, state);
                             elapsed = 0;
                         }
                     }
@@ -308,12 +308,12 @@ namespace UniRx
                 return d;
             }
 
-            public IDisposable SchedulePeriodic(TimeSpan period, Action action)
+            public IDisposable SchedulePeriodic<T>(T state, TimeSpan period, Action<T> action)
             {
                 var d = new BooleanDisposable();
                 var time = Scheduler.Normalize(period);
 
-                MainThreadDispatcher.SendStartCoroutine(PeriodicAction(time, action, d));
+                MainThreadDispatcher.SendStartCoroutine(PeriodicAction(state, time, action, d));
 
                 return d;
             }
@@ -380,7 +380,7 @@ namespace UniRx
                 }
             }
 
-            IEnumerator PeriodicAction(TimeSpan period, Action action, ICancelable cancellation)
+            IEnumerator PeriodicAction<T>(T state, TimeSpan period, Action<T> action, ICancelable cancellation)
             {
                 // zero == every frame
                 if (period == TimeSpan.Zero)
@@ -390,7 +390,7 @@ namespace UniRx
                         yield return null;
                         if (cancellation.IsDisposed) yield break;
 
-                        MainThreadDispatcher.UnsafeSend(action);
+                        MainThreadDispatcher.UnsafeSend(action, state);
                     }
                 }
                 else
@@ -406,7 +406,7 @@ namespace UniRx
                         var elapsed = ft - startTime;
                         if (elapsed >= dt)
                         {
-                            MainThreadDispatcher.UnsafeSend(action);
+                            MainThreadDispatcher.UnsafeSend(action, state);
                             startTime = ft;
                         }
                     }
@@ -438,12 +438,12 @@ namespace UniRx
                 return d;
             }
 
-            public IDisposable SchedulePeriodic(TimeSpan period, Action action)
+            public IDisposable SchedulePeriodic<T>(T state, TimeSpan period, Action<T> action)
             {
                 var d = new BooleanDisposable();
                 var time = Scheduler.Normalize(period);
 
-                MainThreadDispatcher.StartFixedUpdateMicroCoroutine(PeriodicAction(time, action, d));
+                MainThreadDispatcher.StartFixedUpdateMicroCoroutine(PeriodicAction(state, time, action, d));
 
                 return d;
             }
@@ -497,7 +497,7 @@ namespace UniRx
                 }
             }
 
-            IEnumerator PeriodicAction(TimeSpan period, Action action, ICancelable cancellation)
+            IEnumerator PeriodicAction<T>(T state, TimeSpan period, Action<T> action, ICancelable cancellation)
             {
                 // zero == every frame
                 if (period == TimeSpan.Zero)
@@ -507,7 +507,7 @@ namespace UniRx
                         yield return null;
                         if (cancellation.IsDisposed) yield break;
 
-                        MainThreadDispatcher.UnsafeSend(action);
+                        MainThreadDispatcher.UnsafeSend(action, state);
                     }
                 }
                 else
@@ -522,7 +522,7 @@ namespace UniRx
                         elapsed += Time.deltaTime;
                         if (elapsed >= dt)
                         {
-                            MainThreadDispatcher.UnsafeSend(action);
+                            MainThreadDispatcher.UnsafeSend(action, state);
                             elapsed = 0;
                         }
                     }
@@ -554,12 +554,12 @@ namespace UniRx
                 return d;
             }
 
-            public IDisposable SchedulePeriodic(TimeSpan period, Action action)
+            public IDisposable SchedulePeriodic<T>(T state, TimeSpan period, Action<T> action)
             {
                 var d = new BooleanDisposable();
                 var time = Scheduler.Normalize(period);
 
-                MainThreadDispatcher.StartEndOfFrameMicroCoroutine(PeriodicAction(time, action, d));
+                MainThreadDispatcher.StartEndOfFrameMicroCoroutine(PeriodicAction(state, time, action, d));
 
                 return d;
             }

@@ -415,7 +415,7 @@ namespace UniRx.Operators
                 var periodicScheduler = parent.scheduler as ISchedulerPeriodic;
                 if (periodicScheduler != null)
                 {
-                    timerS.Disposable = periodicScheduler.SchedulePeriodic(parent.timeSpan, () => OnNextTick(currentTimerId));
+                    timerS.Disposable = periodicScheduler.SchedulePeriodic(currentTimerId, parent.timeSpan, OnNextTick);
                 }
                 else
                 {
