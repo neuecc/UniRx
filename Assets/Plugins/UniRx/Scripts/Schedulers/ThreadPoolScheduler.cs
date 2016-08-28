@@ -48,9 +48,9 @@ namespace UniRx
                 return new Timer(dueTime, action);
             }
 
-            public IDisposable SchedulePeriodic(TimeSpan period, Action action)
+            public IDisposable SchedulePeriodic<T>(T state, TimeSpan period, Action<T> action)
             {
-                return new PeriodicTimer(period, action);
+                return new PeriodicTimer<T>(state, period, action);
             }
 
             public void ScheduleQueueing<T>(ICancelable cancel, T state, Action<T> action)
@@ -142,31 +142,36 @@ namespace UniRx
                 }
             }
 
-            sealed class PeriodicTimer : IDisposable
+            static class RunningTimers
             {
-                static readonly HashSet<System.Threading.Timer> s_timers = new HashSet<System.Threading.Timer>();
+                public static readonly HashSet<System.Threading.Timer> Periodic = new HashSet<System.Threading.Timer>();
+            }
 
-                private Action _action;
+            sealed class PeriodicTimer<T> : IDisposable
+            {
+                private T _state;
+                private Action<T> _action;
                 private System.Threading.Timer _timer;
-                private readonly AsyncLock _gate;
+                private readonly AsyncLock<Tuple<Action<T>, T>> _gate;
 
-                public PeriodicTimer(TimeSpan period, Action action)
+                public PeriodicTimer(T state, TimeSpan period, Action<T> action)
                 {
+                    this._state = state;
                     this._action = action;
                     this._timer = new System.Threading.Timer(Tick, null, period, period);
-                    this._gate = new AsyncLock();
+                    this._gate = new AsyncLock<Tuple<Action<T>, T>>();
 
-                    lock (s_timers)
+                    lock (RunningTimers.Periodic)
                     {
-                        s_timers.Add(_timer);
+                        RunningTimers.Periodic.Add(_timer);
                     }
                 }
 
                 private void Tick(object state)
                 {
-                    _gate.Wait(() =>
+                    _gate.Wait(Tuple.Create(_action, _state), t =>
                     {
-                        _action();
+                        t.Item1.Invoke(t.Item2);
                     });
                 }
 
@@ -174,19 +179,19 @@ namespace UniRx
                 {
                     var timer = default(System.Threading.Timer);
 
-                    lock (s_timers)
+                    lock (RunningTimers.Periodic)
                     {
                         timer = _timer;
                         _timer = null;
 
                         if (timer != null)
-                            s_timers.Remove(timer);
+                            RunningTimers.Periodic.Remove(timer);
                     }
 
                     if (timer != null)
                     {
                         timer.Dispose();
-                        _action = Stubs.Nop;
+                        _action = Stubs<T>.Ignore;
                     }
                 }
             }

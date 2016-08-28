@@ -48,7 +48,7 @@ namespace UniRx.Operators
                 var periodicScheduler = parent.scheduler as ISchedulerPeriodic;
                 if (periodicScheduler != null)
                 {
-                    scheduling = periodicScheduler.SchedulePeriodic(parent.interval, OnNextTick);
+                    scheduling = periodicScheduler.SchedulePeriodic(Unit.Default, parent.interval, OnNextTick);
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace UniRx.Operators
                 return StableCompositeDisposable.Create(sourceSubscription, scheduling);
             }
 
-            void OnNextTick()
+            void OnNextTick(Unit _)
             {
                 lock (gate)
                 {
