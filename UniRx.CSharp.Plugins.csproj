@@ -17,7 +17,8 @@
     <UnityProjectType>GamePlugins:3</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.0f3</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -101,6 +102,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\EventPattern.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\AscynLock.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\ImmutableList.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\InternalGarbagelessQueueWorker.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\ListObserver.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\MicroCoroutine.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\PriorityQueue.cs" />

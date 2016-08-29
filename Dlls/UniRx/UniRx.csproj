@@ -100,6 +100,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\ImmutableList.cs">
       <Link>InternalUtil\ImmutableList.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\InternalGarbagelessQueueWorker.cs">
+      <Link>InternalUtil\InternalGarbagelessQueueWorker.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\ListObserver.cs">
       <Link>InternalUtil\ListObserver.cs</Link>
     </Compile>

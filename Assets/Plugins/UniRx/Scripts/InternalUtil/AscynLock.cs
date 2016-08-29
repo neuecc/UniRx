@@ -8,9 +8,9 @@ namespace UniRx.InternalUtil
     /// <summary>
     /// Asynchronous lock.
     /// </summary>
-    internal sealed class AsyncLock : IDisposable
+    internal sealed class AsyncLock<T> : IDisposable
     {
-        private readonly Queue<Action> queue = new Queue<Action>();
+        private readonly Queue<Action<T>> queue = new Queue<Action<T>>();
         private bool isAcquired = false;
         private bool hasFaulted = false;
 
@@ -21,7 +21,7 @@ namespace UniRx.InternalUtil
         /// </summary>
         /// <param name="action">Action to queue for execution.</param>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public void Wait(Action action)
+        public void Wait(T state, Action<T> action)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
@@ -41,7 +41,7 @@ namespace UniRx.InternalUtil
             {
                 while (true)
                 {
-                    var work = default(Action);
+                    var work = default(Action<T>);
                     lock (queue)
                     {
                         if (queue.Count > 0)
@@ -55,7 +55,7 @@ namespace UniRx.InternalUtil
 
                     try
                     {
-                        work();
+                        work(state);
                     }
                     catch
                     {

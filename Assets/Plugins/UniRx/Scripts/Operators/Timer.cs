@@ -38,7 +38,7 @@ namespace UniRx.Operators
             {
                 return scheduler.Schedule(Scheduler.Normalize(dueTime), () =>
                 {
-                    timerObserver.OnNext();
+                    timerObserver.OnNext(0L);
                     timerObserver.OnCompleted();
                 });
             }
@@ -50,7 +50,7 @@ namespace UniRx.Operators
                     if (dueTime == period.Value)
                     {
                         // same(Observable.Interval), run periodic
-                        return periodicScheduler.SchedulePeriodic(Scheduler.Normalize(dueTime), timerObserver.OnNext);
+                        return periodicScheduler.SchedulePeriodic(0L, Scheduler.Normalize(dueTime), timerObserver.OnNext);
                     }
                     else
                     {
@@ -59,10 +59,10 @@ namespace UniRx.Operators
 
                         disposable.Disposable = scheduler.Schedule(Scheduler.Normalize(dueTime), () =>
                         {
-                            timerObserver.OnNext(); // run first
+                            timerObserver.OnNext(0L); // run first
 
                             var timeP = Scheduler.Normalize(period.Value);
-                            disposable.Disposable = periodicScheduler.SchedulePeriodic(timeP, timerObserver.OnNext); // run periodic
+                            disposable.Disposable = periodicScheduler.SchedulePeriodic(0L, timeP, timerObserver.OnNext); // run periodic
                         });
 
                         return disposable;
@@ -74,7 +74,7 @@ namespace UniRx.Operators
 
                     return scheduler.Schedule(Scheduler.Normalize(dueTime), self =>
                     {
-                        timerObserver.OnNext();
+                        timerObserver.OnNext(0L);
                         self(timeP);
                     });
                 }
@@ -90,7 +90,8 @@ namespace UniRx.Operators
             {
             }
 
-            public void OnNext()
+            // value no use.
+            public override void OnNext(long _)
             {
                 try
                 {
@@ -101,11 +102,6 @@ namespace UniRx.Operators
                     Dispose();
                     throw;
                 }
-            }
-
-            public override void OnNext(long value)
-            {
-                // no use.
             }
 
             public override void OnError(Exception error)

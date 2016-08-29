@@ -6,22 +6,25 @@ namespace UniRx
     {
         DateTimeOffset Now { get; }
 
-        // Interface is changed from official Rx for avoid iOS AOT problem (state is dangerous).
-
+        // simple path
         IDisposable Schedule(Action action);
-
         IDisposable Schedule(TimeSpan dueTime, Action action);
+
+        // memory optimize path
+        //IDisposable Schedule<TState>(TState state, Action<TState> action);
+        //IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Action action);
     }
 
     public interface ISchedulerPeriodic
     {
-        IDisposable SchedulePeriodic(TimeSpan period, Action action);
+        IDisposable SchedulePeriodic<T>(T state, TimeSpan period, Action<T> action);
     }
 
-    public interface ISchedulerLongRunning
-    {
-        IDisposable ScheduleLongRunning(Action<ICancelable> action);
-    }
+    // currently does not use this.
+    // public interface ISchedulerLongRunning
+    // {
+    //     IDisposable ScheduleLongRunning(Action<ICancelable> action);
+    // }
 
     public interface ISchedulerQueueing
     {
