@@ -686,9 +686,47 @@ namespace UniRx.ObjectTest
             }
             ypos += 100;
 
-            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "return"))
+            if (GUI.Button(new Rect(xpos, ypos, 100, 100), "ReadOnlyRx"))
             {
-                cancelCoroutine.Dispose();
+                try
+                {
+                    var rp = Observable.Return("1").ToReadOnlyReactiveProperty();
+                    rp.Last().Subscribe(x => Debug.Log("!!!" + x));
+                }
+                catch (Exception ex) { Debug.LogException(ex); }
+
+                try
+                {
+                    var rp = Observable.Return("2").ObserveOnMainThread().ToReadOnlyReactiveProperty();
+                    rp.Last().Subscribe(x => Debug.Log("???" + x));
+                }
+                catch (Exception ex) { Debug.LogException(ex); }
+
+                try
+                {
+                    var rp = Observable.Return("3").ObserveOnMainThread().ToReadOnlyReactiveProperty();
+                    rp.Last().Subscribe(x => Debug.Log("***" + x));
+
+                    // one more...
+                    Observable.TimerFrame(1).Subscribe(_ =>
+                    {
+                        rp.Last().Subscribe(x => Debug.Log("|||" + x));
+                    });
+                }
+                catch (Exception ex) { Debug.LogException(ex); }
+
+
+                try
+                {
+                    var rp = Observable.Return("4").ToReactiveProperty();
+                    rp.Take(1).Subscribe(x => Debug.Log("___" + x));
+
+                    Observable.NextFrame().Subscribe(_ =>
+                    {
+                        rp.Take(1).Subscribe(x => Debug.Log("^^^" + x));
+                    });
+                }
+                catch (Exception ex) { Debug.LogException(ex); }
             }
             ypos += 100;
 
