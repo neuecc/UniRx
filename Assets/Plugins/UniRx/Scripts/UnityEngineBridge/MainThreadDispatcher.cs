@@ -306,10 +306,10 @@ namespace UniRx
                 {
                     dispatcher.queueWorker.Enqueue(_ =>
                     {
-                        var distpacher2 = Instance;
-                        if (distpacher2 != null)
+                        var dispacher2 = Instance;
+                        if (dispacher2 != null)
                         {
-                            distpacher2.StartCoroutine_Auto(routine);
+                            (dispacher2 as MonoBehaviour).StartCoroutine(routine);
                         }
                     }, null);
                 }
@@ -364,7 +364,7 @@ namespace UniRx
             var dispatcher = Instance;
             if (dispatcher != null)
             {
-                return dispatcher.StartCoroutine_Auto(routine);
+                return (dispatcher as MonoBehaviour).StartCoroutine(routine);
             }
             else
             {
@@ -478,9 +478,9 @@ namespace UniRx
                 fixedUpdateMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
                 endOfFrameMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
 
-                StartCoroutine_Auto(RunUpdateMicroCoroutine());
-                StartCoroutine_Auto(RunFixedUpdateMicroCoroutine());
-                StartCoroutine_Auto(RunEndOfFrameMicroCoroutine());
+                StartCoroutine(RunUpdateMicroCoroutine());
+                StartCoroutine(RunFixedUpdateMicroCoroutine());
+                StartCoroutine(RunEndOfFrameMicroCoroutine());
 
                 DontDestroyOnLoad(gameObject);
             }
