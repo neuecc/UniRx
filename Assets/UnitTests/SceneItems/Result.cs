@@ -8,26 +8,14 @@ using System;
 
 namespace UniRx.Tests
 {
-    public class Result : PresenterBase
+    public class Result : MonoBehaviour
     {
         public UnityEngine.UI.Text text;
 
         public ReactiveProperty<string> Message { get; private set; }
         public ReactiveProperty<Color> Color { get; private set; }
 
-        protected override IPresenter[] Children
-        {
-            get
-            {
-                return EmptyChildren;
-            }
-        }
-
-        protected override void BeforeInitialize()
-        {
-        }
-
-        protected override void Initialize()
+        void Start()
         {
             var image = this.GetComponent<Image>();
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !UNITY_5_5_OR_NEWER
+
+using System;
 using UnityEngine;
 
 namespace UniRx
@@ -862,6 +864,7 @@ namespace UniRx
     }
 }
 
+#endif
 
 // above code is generated from template
 

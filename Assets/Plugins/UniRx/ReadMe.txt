@@ -1,4 +1,4 @@
-﻿UniRx - Reactive Extensions for Unity / ver 5.4.0
+﻿UniRx - Reactive Extensions for Unity / ver 5.4.1
 ===
 Created by Yoshifumi Kawai(neuecc)
 
@@ -16,7 +16,7 @@ Support thread on the Unity Forums: Ask me any question - http://forum.unity3d.c
 
 Release Notes, see [UniRx/releases](https://github.com/neuecc/UniRx/releases)
 
-UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/PresenterBase/etc) 
+UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/etc) 
 
 Why Rx?
 ---
@@ -289,7 +289,7 @@ Observable.WhenAll(heavyMethod, heavyMethod2)
 
 DefaultScheduler
 ---
-UniRx's default time based operations (Interval, Timer, Buffer(timeSpan), etc) use `Scheduler.MainThread` as their scheduler. That means most operators (excpet for `Observable.Start`) work on a single thread, so ObserverOn isn't needed and thread safety measures can be ignored. This is differet from the standard RxNet implementation but better suited to the Unity environment.  
+UniRx's default time based operations (Interval, Timer, Buffer(timeSpan), etc) use `Scheduler.MainThread` as their scheduler. That means most operators (except for `Observable.Start`) work on a single thread, so ObserverOn isn't needed and thread safety measures can be ignored. This is differet from the standard RxNet implementation but better suited to the Unity environment.  
 
 `Scheduler.MainThread` runs under Time.timeScale's influence. If you want to ignore the time scale, use ` Scheduler.MainThreadIgnoreTimeScale` instead.
 
@@ -586,9 +586,48 @@ Debugging
 `Debug` operator in `UniRx.Diagnostics` namespace helps debugging.
 
 ```csharp
+// needs Diagnostics using
 using UniRx.Diagnostics;
 
-fooObservable.Debug("Debug Test").Subscribe();
+---
+
+// [DebugDump, Normal]OnSubscribe
+// [DebugDump, Normal]OnNext(1)
+// [DebugDump, Normal]OnNext(10)
+// [DebugDump, Normal]OnCompleted()
+{
+    var subject = new Subject<int>();
+
+    subject.Debug("DebugDump, Normal").Subscribe();
+
+    subject.OnNext(1);
+    subject.OnNext(10);
+    subject.OnCompleted();
+}
+
+// [DebugDump, Cancel]OnSubscribe
+// [DebugDump, Cancel]OnNext(1)
+// [DebugDump, Cancel]OnCancel
+{
+    var subject = new Subject<int>();
+
+    var d = subject.Debug("DebugDump, Cancel").Subscribe();
+
+    subject.OnNext(1);
+    d.Dispose();
+}
+
+// [DebugDump, Error]OnSubscribe
+// [DebugDump, Error]OnNext(1)
+// [DebugDump, Error]OnError(System.Exception)
+{
+    var subject = new Subject<int>();
+
+    subject.Debug("DebugDump, Error").Subscribe();
+
+    subject.OnNext(1);
+    subject.OnError(new Exception());
+}
 ```
 
 shows sequence element on `OnNext`, `OnError`, `OnCompleted`, `OnCancel`, `OnSubscribe` timing to Debug.Log. It enables only `#if DEBUG`.
@@ -891,7 +930,7 @@ public class Enemy
 }
 ```
 
-A View is a scene, that is a Unity hierarchy. Views are associated with Presenters by the Unity Engine on initialize. The XxxAsObservable methods make creating event signals simple, without any overhead. SubscribeToText and SubscribeToInteractable are simple binding-like helpers. These maya be simple tools, but they are very powerful. They feel natural in the Unity environment and provide high performance and a clean architecture.
+A View is a scene, that is a Unity hierarchy. Views are associated with Presenters by the Unity Engine on initialize. The XxxAsObservable methods make creating event signals simple, without any overhead. SubscribeToText and SubscribeToInteractable are simple binding-like helpers. These may be simple tools, but they are very powerful. They feel natural in the Unity environment and provide high performance and a clean architecture.
 
 ![](StoreDocument/MVRP_Loop.png)
 
@@ -908,138 +947,12 @@ eventTrigger.OnBeginDragAsObservable()
     .Subscribe(x => Debug.Log(x));
 ```
 
-PresenterBase
+(Obsolete)PresenterBase
 ---
-UI has hierarchy and maybe contains a few presenters. But Unity's script execution order is indeterminate in default, so you can't touch child presenter's property before child has been initialized. And sometimes ReactiveProperty requires initial value but Unity doesn't have constructor.  `PresenterBase` solves there two problems.
-
-* Resolve initialize dependency of multiple presenters chain
-* Passing initial argument like constructor 
-
-```csharp
-// If Presenter receive argument inherit PresenterBase<T> otherwise inherit PresenterBase
-public class CharacterPresenter : PresenterBase<int>
-{    
-    // attach from inspector
-    public WeaponPresenter WeaponPresenter;
-    public StatusPresenter StatusPresenter;
-    
-    // model field
-    private Character character;
-
-    // indicate children dependency
-    protected override IPresenter[] Children
-    {
-        get
-        {
-            // If children is empty, you can write `return EmptyChildren;` 
-            return new IPresenter[] { WeaponPresenter, StatusPresenter };
-        }
-    }
-
-    // This Phase is Parent -> Child
-    // You can pass argument to children, but you can't touch child's property
-    protected override void BeforeInitialize(int argument)
-    {
-        var characterId = argument;
-        character = new Character(characterId); // set up character...        
-
-        // Pass argument to children, call PropagateArgument method
-        WeaponPresenter.PropagateArgument(character.Weapon);
-        StatusPresenter.PropagateArgument(character.Status);
-    }
-
-    // This Phase is Child -> Parent
-    // You can touch child's property safety
-    protected override void Initialize(int argument)
-    {
-        StatusPresenter.StatusChanged.Subscribe(x =>
-        {
-            WeaponPresenter.Weapon.Power.Fix(x.power); 
-        });
-    }
-}
-```
-
-PresenterBase has three phases.
-
-1. In Awake - Resolve parent-child dependency using Children proeperty. 
-2. In Start - Perent to Children, propagete value phase.
-3. In Start - Children to Parent, initialize phase.
-
-![](StoreDocument/presenterbase_steps.gif)
-
-Yellow is `Awake`, order is indeterminate. Green is `BeforeInitialize` phase, its parent -> child. Red is `Initialize` phase, its child -> parent. This sample, you can see `Sample14_PresenterBase`.
-
-If you create `PresenterBase` dynamically for example from Prefab, you can call `ForceInitialize(argument)` after instantiate.
-
-ReactiveCommand, AsyncReactiveCommand
----
-ReactiveCommand abstraction of button command with boolean interactable.
-
-```csharp 
-public class Player
-{
-   public ReactiveProperty<int> Hp;
-   public ReactiveCommand Resurrect;
-
-   public Player()
-   {
-        Hp = new ReactiveProperty<int>(1000);
-        
-        // If dead, can not execute.
-        Resurrect = Hp.Select(x => x <= 0).ToReactiveCommand();
-        // Execute when clicked
-        Resurrect.Subscribe(_ =>
-        {
-             Hp.Value = 1000;
-        }); 
-    }
-}
-
-public class Presenter : MonoBehaviour
-{
-    public Button resurrectButton;
-
-    Player player;
-
-    void Start()
-    {
-      player = new Player();
-
-      // If Hp <= 0, can't press button.
-      player.Resurrect.BindTo(resurrectButton);
-    }
-}
-```
-
-AsyncReactiveCommand is a variation of ReactiveCommand that `CanExecute`(in many cases bind to button's interactable) is changed to false until asynchronous execution was finished.
-
-```csharp
-public class Presenter : MonoBehaviour
-{
-    public UnityEngine.UI.Button button;
-
-    void Start()
-    {
-        var command = new AsyncReactiveCommand();
-
-        command.Subscribe(_ =>
-        {
-            // heavy, heavy, heavy method....
-            return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();
-        });
-
-        // after clicked, button shows disable for 3 seconds
-        command.BindTo(button);
-
-        // Note:shortcut extension, bind aync onclick directly
-        button.BindToOnClick(_ =>
-        {
-            return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();
-        });
-    }
-}
-```
+> Note:
+> PresenterBase works enough, but too complex.  
+> You can use simple `Initialize` method and call parent to child, it works for most scenario.  
+> So I don't recommend using `PresenterBase`, sorry.
 
 `AsyncReactiveCommand` has three constructor.
 

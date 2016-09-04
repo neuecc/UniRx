@@ -94,9 +94,6 @@
     <Compile Include="Assets\Plugins\UniRx\Examples\Sample11_Logger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Examples\Sample12_ReactiveProperty.cs" />
     <Compile Include="Assets\Plugins\UniRx\Examples\Sample13_ToDoApp.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample14_CubeLevel1.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample14_CubeLevel2.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample14_PresenterBase.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Asynchronous\WebRequestExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Disposables\BooleanDisposable.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Disposables\CompositeDisposable.cs" />

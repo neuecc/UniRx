@@ -1,6 +1,12 @@
 ﻿using System;
 using UnityEngine;
 
+/*
+PresenterBase works enough, but too complex.
+You can use simple Initialize method and call parent to child, it works for most scenario.
+So I don't recommend using PresenterBase, sorry.
+*/
+
 namespace UniRx
 {
     // InEditor : Construct Children Dependency
@@ -9,7 +15,7 @@ namespace UniRx
     // Start(Bubbling phase) : Child to Parent, initialize(like constructor)
 
     /// <summary>
-    /// Infrastructure interface for PresenterBase`T
+    /// [Obsolete]Infrastructure interface for PresenterBase`T
     /// </summary>
     public interface IPresenter
     {
@@ -23,7 +29,7 @@ namespace UniRx
     }
 
     /// <summary>
-    /// PresenterBase can control dependency of presenter's hierarchy.
+    /// [Obsolete]PresenterBase can control dependency of presenter's hierarchy.
     /// </summary>
     public abstract class PresenterBase : PresenterBase<Unit>
     {
@@ -57,7 +63,7 @@ namespace UniRx
     }
 
     /// <summary>
-    /// PresenterBase can control dependency of presenter's hierarchy.
+    /// [Obsolete]PresenterBase can control dependency of presenter's hierarchy.
     /// </summary>
     public abstract class PresenterBase<T> : MonoBehaviour, IPresenter
     {
