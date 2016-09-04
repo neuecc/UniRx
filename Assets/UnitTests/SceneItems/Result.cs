@@ -15,8 +15,14 @@ namespace UniRx.Tests
         public ReactiveProperty<string> Message { get; private set; }
         public ReactiveProperty<Color> Color { get; private set; }
 
+        bool alreadyStarted = false;
+
         void Start()
         {
+            if (alreadyStarted) return;
+
+            alreadyStarted = true;
+
             var image = this.GetComponent<Image>();
 
             Message = new ReactiveProperty<string>("");
@@ -24,6 +30,11 @@ namespace UniRx.Tests
 
             Color = new ReactiveProperty<UnityEngine.Color>();
             Color.Subscribe(x => image.color = x);
+        }
+
+        public void ForceInitialize()
+        {
+            Start();
         }
     }
 }
