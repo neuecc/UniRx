@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>UniRx</id>
-        <version>5.4.0.1</version>
+        <version>5.4.1.0</version>
         <title>UniRx</title>
         <authors>neuecc</authors>
         <owners>neuecc</owners>
