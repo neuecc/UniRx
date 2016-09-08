@@ -954,6 +954,75 @@ eventTrigger.OnBeginDragAsObservable()
 > You can use simple `Initialize` method and call parent to child, it works for most scenario.  
 > So I don't recommend using `PresenterBase`, sorry.   
 
+ReactiveCommand, AsyncReactiveCommand
+----
+ReactiveCommand abstraction of button command with boolean interactable.
+             
+```csharp
+public class Player
+{		
+   public ReactiveProperty<int> Hp;		
+   public ReactiveCommand Resurrect;		
+		
+   public Player()
+   {		
+        Hp = new ReactiveProperty<int>(1000);		
+        		
+        // If dead, can not execute.		
+        Resurrect = Hp.Select(x => x <= 0).ToReactiveCommand();		
+        // Execute when clicked		
+        Resurrect.Subscribe(_ =>		
+        {		
+             Hp.Value = 1000;		
+        }); 		
+    }		
+}		
+		
+public class Presenter : MonoBehaviour		
+{		
+    public Button resurrectButton;		
+		
+    Player player;		
+		
+    void Start()
+    {		
+      player = new Player();		
+		
+      // If Hp <= 0, can't press button.		
+      player.Resurrect.BindTo(resurrectButton);		
+    }		
+}		
+```		
+		
+AsyncReactiveCommand is a variation of ReactiveCommand that `CanExecute`(in many cases bind to button's interactable) is changed to false until asynchronous execution was finished.		
+		
+```csharp		
+public class Presenter : MonoBehaviour		
+{		
+    public UnityEngine.UI.Button button;		
+		
+    void Start()
+    {		
+        var command = new AsyncReactiveCommand();		
+		
+        command.Subscribe(_ =>		
+        {		
+            // heavy, heavy, heavy method....		
+            return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();		
+        });		
+		
+        // after clicked, button shows disable for 3 seconds		
+        command.BindTo(button);		
+		
+        // Note:shortcut extension, bind aync onclick directly		
+        button.BindToOnClick(_ =>		
+        {		
+            return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();		
+        });		
+    }		
+}		
+```
+
 `AsyncReactiveCommand` has three constructor.
 
 * `()` - CanExecute is changed to false until async execution finished
