@@ -12,6 +12,8 @@ UniRx is available on the Unity Asset Store (FREE) - http://u3d.as/content/neuec
 
 Presentation - http://www.slideshare.net/neuecc/unirx-reactive-extensions-for-unityen
 
+Blog for update info - https://medium.com/@neuecc
+
 Support thread on the Unity Forums: Ask me any question - http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity
 
 Release Notes, see [UniRx/releases](https://github.com/neuecc/UniRx/releases)
@@ -1258,7 +1260,8 @@ Grani is a top social game developer in Japan.
 He is awarding Microsoft MVP for Visual C# since 2011.  
 He is known as the creator of [linq.js](http://linqjs.codeplex.com/)(LINQ to Objects for JavaScript)
 
-Blog: http://neue.cc/ (Japanese)  
+Blog: https://medium.com/@neuecc (English)
+Blog: http://neue.cc/ (Japanese) 
 Twitter: https://twitter.com/neuecc (Japanese)
 
 License
