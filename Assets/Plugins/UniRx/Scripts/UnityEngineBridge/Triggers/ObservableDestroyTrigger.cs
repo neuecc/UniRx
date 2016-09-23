@@ -15,6 +15,13 @@ namespace UniRx.Triggers
 
         public bool IsActivated { get; private set; }
 
+        /// <summary>
+        /// Check called OnDestroy.
+        /// This property does not guarantees GameObject was destroyed,
+        /// when gameObject is deactive, does not raise OnDestroy.
+        /// </summary>
+        public bool IsCalledOnDestroy { get { return calledDestroy; } }
+
         void Awake()
         {
             IsActivated = true;
