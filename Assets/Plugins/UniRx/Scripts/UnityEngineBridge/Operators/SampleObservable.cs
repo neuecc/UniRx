@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 #if UniRxLibrary
 using UnityObservable = UniRx.ObservableUnity;
@@ -8,34 +8,35 @@ using UnityObservable = UniRx.Observable;
 
 namespace UniRx.Operators
 {
-    internal class SampleFrameObservable<T> : OperatorObservableBase<T>
+    internal class SampleObservableObservable<T, T2> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
-        readonly int frameCount;
-        readonly FrameCountType frameCountType;
+        readonly IObservable<T2> intervalSource;
 
-        public SampleFrameObservable(IObservable<T> source, int frameCount, FrameCountType frameCountType) : base(source.IsRequiredSubscribeOnCurrentThread())
+        public SampleObservableObservable(IObservable<T> source, IObservable<T2> intervalSource)
+            : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.frameCount = frameCount;
-            this.frameCountType = frameCountType;
+            this.intervalSource = intervalSource;
         }
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            return new SampleFrame(this, observer, cancel).Run();
+            return new SampleObservable(this, observer, cancel).Run();
         }
 
-        class SampleFrame : OperatorObserverBase<T, T>
+        class SampleObservable : OperatorObserverBase<T, T>
         {
-            readonly SampleFrameObservable<T> parent;
+            readonly SampleObservableObservable<T, T2> parent;
             readonly object gate = new object();
             T latestValue = default(T);
             bool isUpdated = false;
             bool isCompleted = false;
             SingleAssignmentDisposable sourceSubscription;
 
-            public SampleFrame(SampleFrameObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public SampleObservable(
+                SampleObservableObservable<T, T2> parent, IObserver<T> observer, IDisposable cancel)
+                : base(observer, cancel)
             {
                 this.parent = parent;
             }
@@ -44,14 +45,14 @@ namespace UniRx.Operators
             {
                 sourceSubscription = new SingleAssignmentDisposable();
                 sourceSubscription.Disposable = parent.source.Subscribe(this);
-                
-                var scheduling = UnityObservable.IntervalFrame(parent.frameCount, parent.frameCountType)
-                    .Subscribe(new SampleFrameTick(this));
+
+                var scheduling = this.parent.intervalSource
+                    .Subscribe(new SampleObservableTick(this));
 
                 return StableCompositeDisposable.Create(sourceSubscription, scheduling);
             }
 
-            void OnNextTick(long _)
+            void OnNextTick(T2 _)
             {
                 lock (gate)
                 {
@@ -93,11 +94,11 @@ namespace UniRx.Operators
                     sourceSubscription.Dispose();
                 }
             }
-            class SampleFrameTick : IObserver<long>
+            class SampleObservableTick : IObserver<T2>
             {
-                readonly SampleFrame parent;
+                readonly SampleObservable parent;
 
-                public SampleFrameTick(SampleFrame parent)
+                public SampleObservableTick(SampleObservable parent)
                 {
                     this.parent = parent;
                 }
@@ -110,7 +111,7 @@ namespace UniRx.Operators
                 {
                 }
 
-                public void OnNext(long _)
+                public void OnNext(T2 _)
                 {
                     lock (parent.gate)
                     {
@@ -130,3 +131,4 @@ namespace UniRx.Operators
         }
     }
 }
+
