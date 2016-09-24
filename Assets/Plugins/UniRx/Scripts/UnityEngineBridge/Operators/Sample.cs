@@ -8,12 +8,12 @@ using UnityObservable = UniRx.Observable;
 
 namespace UniRx.Operators
 {
-    internal class SampleObservableObservable<T, T2> : OperatorObservableBase<T>
+    internal class SampleObservable<T, T2> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly IObservable<T2> intervalSource;
 
-        public SampleObservableObservable(IObservable<T> source, IObservable<T2> intervalSource)
+        public SampleObservable(IObservable<T> source, IObservable<T2> intervalSource)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
@@ -22,20 +22,20 @@ namespace UniRx.Operators
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
-            return new SampleObservable(this, observer, cancel).Run();
+            return new Sample(this, observer, cancel).Run();
         }
 
-        class SampleObservable : OperatorObserverBase<T, T>
+        class Sample : OperatorObserverBase<T, T>
         {
-            readonly SampleObservableObservable<T, T2> parent;
+            readonly SampleObservable<T, T2> parent;
             readonly object gate = new object();
             T latestValue = default(T);
             bool isUpdated = false;
             bool isCompleted = false;
             SingleAssignmentDisposable sourceSubscription;
 
-            public SampleObservable(
-                SampleObservableObservable<T, T2> parent, IObserver<T> observer, IDisposable cancel)
+            public Sample(
+                SampleObservable<T, T2> parent, IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
                 this.parent = parent;
@@ -47,7 +47,7 @@ namespace UniRx.Operators
                 sourceSubscription.Disposable = parent.source.Subscribe(this);
 
                 var scheduling = this.parent.intervalSource
-                    .Subscribe(new SampleObservableTick(this));
+                    .Subscribe(new SampleTick(this));
 
                 return StableCompositeDisposable.Create(sourceSubscription, scheduling);
             }
@@ -94,11 +94,12 @@ namespace UniRx.Operators
                     sourceSubscription.Dispose();
                 }
             }
-            class SampleObservableTick : IObserver<T2>
-            {
-                readonly SampleObservable parent;
 
-                public SampleObservableTick(SampleObservable parent)
+            class SampleTick : IObserver<T2>
+            {
+                readonly Sample parent;
+
+                public SampleTick(Sample parent)
                 {
                     this.parent = parent;
                 }

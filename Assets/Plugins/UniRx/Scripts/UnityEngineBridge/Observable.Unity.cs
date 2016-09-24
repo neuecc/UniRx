@@ -8,10 +8,7 @@ using System.Collections.Generic;
 using UniRx.Triggers;
 using UnityEngine;
 
-#if UniRxLibrary
-using UnityObservable = UniRx.ObservableUnity;
-#else
-using UnityObservable = UniRx.Observable;
+#if !UniRxLibrary
 using SchedulerUnity = UniRx.Scheduler;
 #endif
 
@@ -817,17 +814,15 @@ namespace UniRx
             return new UniRx.Operators.DelayFrameObservable<T>(source, frameCount, frameCountType);
         }
 
-        public static IObservable<T> Sample<T, T2>(this IObservable<T> source, IObservable<T2> intervalSource)
+        public static IObservable<T> Sample<T, T2>(this IObservable<T> source, IObservable<T2> sampler)
         {
-            return new UniRx.Operators.SampleObservableObservable<T, T2>(source, intervalSource);
+            return new UniRx.Operators.SampleObservable<T, T2>(source, sampler);
         }
 
         public static IObservable<T> SampleFrame<T>(this IObservable<T> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
             if (frameCount < 0) throw new ArgumentOutOfRangeException("frameCount");
-
-            return source.Sample<T, long>(
-                UnityObservable.IntervalFrame(frameCount, frameCountType));
+            return new UniRx.Operators.SampleFrameObservable<T>(source, frameCount, frameCountType);
         }
 
         public static IObservable<TSource> ThrottleFrame<TSource>(this IObservable<TSource> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
