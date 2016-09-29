@@ -235,6 +235,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\System\IProgress.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\System\Tuple.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\System\Unit.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Tasks\TaskObservableExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\TimeInterval.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Timestamped.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\AotSafeExtensions.cs" />
