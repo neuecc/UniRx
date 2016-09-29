@@ -1,4 +1,6 @@
-﻿namespace UniRx.Diagnostics
+﻿using System;
+
+namespace UniRx.Diagnostics
 {
     public static class ObservableDebugExtensions
     {
