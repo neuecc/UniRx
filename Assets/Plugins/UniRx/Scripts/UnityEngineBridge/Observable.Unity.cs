@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UniRx.Triggers;
 using UnityEngine;
+using System.Threading;
 
 #if !UniRxLibrary
 using SchedulerUnity = UniRx.Scheduler;
@@ -860,7 +861,7 @@ namespace UniRx
         /// </summary>
         public static ObservableYieldInstruction<T> ToYieldInstruction<T>(this IObservable<T> source)
         {
-            return new ObservableYieldInstruction<T>(source, true, CancellationToken.Empty);
+            return new ObservableYieldInstruction<T>(source, true, CancellationToken.None);
         }
 
         /// <summary>
@@ -880,7 +881,7 @@ namespace UniRx
         /// </summary>
         public static ObservableYieldInstruction<T> ToYieldInstruction<T>(this IObservable<T> source, bool throwOnError)
         {
-            return new ObservableYieldInstruction<T>(source, throwOnError, CancellationToken.Empty);
+            return new ObservableYieldInstruction<T>(source, throwOnError, CancellationToken.None);
         }
 
         /// <summary>

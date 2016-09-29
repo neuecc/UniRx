@@ -1,7 +1,11 @@
-﻿using System;
+﻿// LazyTask is only for before MONO_BLEEDING_EDGE
+#if !(ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq; // in future, should remove LINQ
+using System.Threading;
 using UnityEngine;
 
 namespace UniRx
@@ -135,3 +139,5 @@ namespace UniRx
         }
     }
 }
+
+#endif
