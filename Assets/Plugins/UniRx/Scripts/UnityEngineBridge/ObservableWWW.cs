@@ -181,7 +181,6 @@ namespace UniRx
 
                 if (cancel.IsCancellationRequested)
                 {
-                    if (!www.isDone) yield return www; // workaround for freeze bug of dispose WWW when WWW is not completed
                     yield break;
                 }
 
@@ -240,7 +239,6 @@ namespace UniRx
 
                 if (cancel.IsCancellationRequested)
                 {
-                    if (!www.isDone) yield return www; // workaround for freeze bug of dispose WWW when WWW is not completed
                     yield break;
                 }
 
@@ -299,7 +297,6 @@ namespace UniRx
 
                 if (cancel.IsCancellationRequested)
                 {
-                    if (!www.isDone) yield return www; // workaround for freeze bug of dispose WWW when WWW is not completed
                     yield break;
                 }
 
@@ -358,7 +355,6 @@ namespace UniRx
 
                 if (cancel.IsCancellationRequested)
                 {
-                    if (!www.isDone) yield return www; // workaround for freeze bug of dispose WWW when WWW is not completed
                     yield break;
                 }
 
