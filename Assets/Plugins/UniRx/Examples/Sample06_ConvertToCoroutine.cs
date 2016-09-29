@@ -27,17 +27,6 @@ namespace UniRx.Examples
             Debug.Log(v); // 100
         }
 
-        // like WWW.text/error, LazyTask is awaitable value container
-        IEnumerator LazyTaskTest()
-        {
-            // IObservable<T> to LazyTask
-            var task = Observable.Start(() => 100).ToLazyTask();
-
-            yield return task.Start(); // wait for OnCompleted
-
-            Debug.Log(task.Result); // or task.Exception
-        }
-
         // Note:ToAwaitableEnumerator/StartAsCoroutine/LazyTask are obsolete way on Unity 5.3
         // You can use ToYieldInstruction.
 
