@@ -556,9 +556,6 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\SampleFrame.cs">
       <Link>UnityEngineBridge\Operators\SampleFrame.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\Sample.cs">
-      <Link>UnityEngineBridge\Operators\Sample.cs</Link>
-    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Operators\SubscribeOnMainThread.cs">
       <Link>UnityEngineBridge\Operators\SubscribeOnMainThread.cs</Link>
     </Compile>
