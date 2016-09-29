@@ -596,7 +596,7 @@ namespace UniRx
                 }
             }
         }
-   
+
         public static IObservable<T> FromCoroutine<T>(Func<IObserver<T>, CancellationToken, IEnumerator> coroutine)
         {
             return new UniRx.Operators.FromCoroutineObservable<T>(coroutine);
@@ -812,6 +812,11 @@ namespace UniRx
         {
             if (frameCount < 0) throw new ArgumentOutOfRangeException("frameCount");
             return new UniRx.Operators.DelayFrameObservable<T>(source, frameCount, frameCountType);
+        }
+
+        public static IObservable<T> Sample<T, T2>(this IObservable<T> source, IObservable<T2> sampler)
+        {
+            return new UniRx.Operators.SampleObservable<T, T2>(source, sampler);
         }
 
         public static IObservable<T> SampleFrame<T>(this IObservable<T> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
