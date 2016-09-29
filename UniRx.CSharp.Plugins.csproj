@@ -12,14 +12,12 @@
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile></TargetFrameworkProfile>
     <CompilerResponseFile>Assets\smcs.rsp</CompilerResponseFile>
     <UnityProjectType>GamePlugins:3</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.5.0xMono-Runtime-Upgrade-1-b4</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -125,6 +123,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Notifiers\MessageBroker.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Notifiers\ScheduledNotifier.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Observable.Aggregate.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Observable.Awaiter.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Observable.Binding.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Observable.Blocking.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Observable.Concatenate.cs" />
@@ -316,6 +315,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableUpdateTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableVisibleTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\TypedMonoBehaviour.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\UniRxSynchronizationContext.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\UnityEqualityComparer.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\UnityEventExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\UnityGraphicExtensions.cs" />
@@ -326,7 +326,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Plugins\UniRx\ReadMe.txt" />
-    <Compile Include="Assets\Plugins\UniRx\Scripts\Observable.Awaiter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

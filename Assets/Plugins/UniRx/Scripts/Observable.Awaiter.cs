@@ -1,11 +1,11 @@
-﻿using System;
+﻿#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
 
 namespace UniRx
 {
@@ -19,7 +19,7 @@ namespace UniRx
         public static AsyncSubject<TSource> GetAwaiter<TSource>(this IObservable<TSource> source)
         {
             if (source == null) throw new ArgumentNullException("source");
-
+            
             return RunAsync(source, CancellationToken.None);
         }
 

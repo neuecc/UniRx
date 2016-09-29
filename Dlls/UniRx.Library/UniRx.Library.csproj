@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UniRx</RootNamespace>
     <AssemblyName>UniRx</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\UniRx.xml</DocumentationFile>
     <NoWarn>1573,1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\UniRx.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -48,6 +50,9 @@
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Disposables\BooleanDisposable.cs">
       <Link>Disposables\BooleanDisposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Disposables\CancellationDisposable.cs">
+      <Link>Disposables\CancellationDisposable.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Disposables\CompositeDisposable.cs">
       <Link>Disposables\CompositeDisposable.cs</Link>
@@ -126,6 +131,9 @@
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Observable.Aggregate.cs">
       <Link>Observable.Aggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Observable.Awaiter.cs">
+      <Link>Observable.Awaiter.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Observable.Binding.cs">
       <Link>Observable.Binding.cs</Link>
@@ -456,6 +464,9 @@
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\System\Unit.cs">
       <Link>System\Unit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Tasks\TaskObservableExtensions.cs">
+      <Link>Tasks\TaskObservableExtensions.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\TimeInterval.cs">
       <Link>TimeInterval.cs</Link>
