@@ -3,7 +3,8 @@
 // 1. class to struct
 // 2. implements IEquatable<T1, T2,...>
 
-#if !NETFX_CORE
+// note, we need to create ValueTuple or UniRxTuple...
+#if !(NETFX_CORE || ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
 
 using System;
 using System.Collections;
