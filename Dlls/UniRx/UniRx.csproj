@@ -490,6 +490,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\CancellationToken.cs">
       <Link>UnityEngineBridge\CancellationToken.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\CoroutineAsyncBridge.cs">
+      <Link>UnityEngineBridge\CoroutineAsyncBridge.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Diagnostics\LogEntry.cs">
       <Link>UnityEngineBridge\Diagnostics\LogEntry.cs</Link>
     </Compile>
