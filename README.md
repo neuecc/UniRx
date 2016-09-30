@@ -1187,6 +1187,49 @@ Windows Store/Phone App (NETFX_CORE)
 Some interfaces, such as  `UniRx.IObservable<T>` and `System.IObservable<T>`, cause conflicts when submitting to the Windows Store App.
 Therefore, when using NETFX_CORE, please refrain from using such constructs as `UniRx.IObservable<T>` and refer to the UniRx components by their short name, without adding the namespace. This solves the conflicts.
 
+async/await Support
+---
+for the [Upgraded Mono/.Net in Editor on 5.5.0b4](https://forum.unity3d.com/threads/upgraded-mono-net-in-editor-on-5-5-0b4.433541/), Unity supports .NET 4.6 and C# 6 languages. UniRx provides `UniRxSynchronizationContext` for back to MainThread in Task multithreading.
+
+```csharp
+async Task UniRxSynchronizationContextSolves()
+{
+    Debug.Log("start delay");
+
+    // UniRxSynchronizationContext is automatically used.
+    await Task.Delay(TimeSpan.FromMilliseconds(300));
+
+    Debug.Log("from another thread, but you can touch transform position.");
+    Debug.Log(this.transform.position);
+}
+```
+
+UniRx also supports directly await Coroutine support type instad of yield return.
+
+```csharp
+async Task CoroutineBridge()
+{
+    Debug.Log("start www await");
+
+    var www = await new WWW("https://unity3d.com");
+
+    Debug.Log(www.text);
+}
+```
+
+Ofcourse, IObservable is awaitable.
+
+```csharp
+async Task AwaitOnClick()
+{
+    Debug.Log("start mousedown await");
+
+    await this.OnMouseDownAsObservable().FirstOrDefault();
+
+    Debug.Log("end mousedown await");
+}
+```
+
 DLL Separation
 ---
 If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx`, it is fullset separated project of UniRx. You should define compile symbol like  `UNITY;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol. We can not provides pre-build binary to release page, asset store because compile symbol is different each other.

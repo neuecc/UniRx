@@ -11,6 +11,41 @@ using UnityEngine;
 
 namespace UniRx
 {
+    public class CoroutineAsyncBridge : INotifyCompletion
+    {
+        Action continuation;
+        public bool IsCompleted { get; private set; }
+
+        CoroutineAsyncBridge()
+        {
+            IsCompleted = false;
+        }
+
+        public static CoroutineAsyncBridge Start<T>(T awaitTarget)
+        {
+            var bridge = new CoroutineAsyncBridge();
+            MainThreadDispatcher.StartCoroutine(bridge.Run(awaitTarget));
+            return bridge;
+        }
+
+        IEnumerator Run<T>(T target)
+        {
+            yield return target;
+            IsCompleted = true;
+            continuation();
+        }
+
+        public void OnCompleted(Action continuation)
+        {
+            this.continuation = continuation;
+        }
+
+        public void GetResult()
+        {
+            if (!IsCompleted) throw new InvalidOperationException("coroutine not yet completed");
+        }
+    }
+
     public class CoroutineAsyncBridge<T> : INotifyCompletion
     {
         readonly T result;
@@ -56,9 +91,9 @@ namespace UniRx
             return CoroutineAsyncBridge<WWW>.Start(www);
         }
 
-        public static CoroutineAsyncBridge<Coroutine> GetAwaiter(this Coroutine coroutine)
+        public static CoroutineAsyncBridge GetAwaiter(this Coroutine coroutine)
         {
-            return CoroutineAsyncBridge<Coroutine>.Start(coroutine);
+            return CoroutineAsyncBridge.Start(coroutine);
         }
 
         public static CoroutineAsyncBridge<AsyncOperation> GetAwaiter(this AsyncOperation asyncOperation)
@@ -66,9 +101,9 @@ namespace UniRx
             return CoroutineAsyncBridge<AsyncOperation>.Start(asyncOperation);
         }
 
-        public static CoroutineAsyncBridge<IEnumerator> GetAwaiter(this IEnumerator coroutine)
+        public static CoroutineAsyncBridge GetAwaiter(this IEnumerator coroutine)
         {
-            return CoroutineAsyncBridge<IEnumerator>.Start(coroutine);
+            return CoroutineAsyncBridge.Start(coroutine);
         }
     }
 }

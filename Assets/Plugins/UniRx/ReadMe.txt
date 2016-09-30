@@ -1,4 +1,4 @@
-﻿UniRx - Reactive Extensions for Unity / ver 5.4.1
+﻿UniRx - Reactive Extensions for Unity / Ver 5.5.0
 ===
 Created by Yoshifumi Kawai(neuecc)
 
@@ -11,6 +11,8 @@ UniRx (Reactive Extensions for Unity) is a reimplementation of the .NET Reactive
 UniRx is available on the Unity Asset Store (FREE) - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
 
 Presentation - http://www.slideshare.net/neuecc/unirx-reactive-extensions-for-unityen
+
+Blog for update info - https://medium.com/@neuecc
 
 Support thread on the Unity Forums: Ask me any question - http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity
 
@@ -952,7 +954,76 @@ eventTrigger.OnBeginDragAsObservable()
 > Note:
 > PresenterBase works enough, but too complex.  
 > You can use simple `Initialize` method and call parent to child, it works for most scenario.  
-> So I don't recommend using `PresenterBase`, sorry.
+> So I don't recommend using `PresenterBase`, sorry.   
+
+ReactiveCommand, AsyncReactiveCommand
+----
+ReactiveCommand abstraction of button command with boolean interactable.
+             
+```csharp
+public class Player
+{		
+   public ReactiveProperty<int> Hp;		
+   public ReactiveCommand Resurrect;		
+		
+   public Player()
+   {		
+        Hp = new ReactiveProperty<int>(1000);		
+        		
+        // If dead, can not execute.		
+        Resurrect = Hp.Select(x => x <= 0).ToReactiveCommand();		
+        // Execute when clicked		
+        Resurrect.Subscribe(_ =>		
+        {		
+             Hp.Value = 1000;		
+        }); 		
+    }		
+}		
+		
+public class Presenter : MonoBehaviour		
+{		
+    public Button resurrectButton;		
+		
+    Player player;		
+		
+    void Start()
+    {		
+      player = new Player();		
+		
+      // If Hp <= 0, can't press button.		
+      player.Resurrect.BindTo(resurrectButton);		
+    }		
+}		
+```		
+		
+AsyncReactiveCommand is a variation of ReactiveCommand that `CanExecute`(in many cases bind to button's interactable) is changed to false until asynchronous execution was finished.		
+		
+```csharp		
+public class Presenter : MonoBehaviour		
+{		
+    public UnityEngine.UI.Button button;		
+		
+    void Start()
+    {		
+        var command = new AsyncReactiveCommand();		
+		
+        command.Subscribe(_ =>		
+        {		
+            // heavy, heavy, heavy method....		
+            return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();		
+        });		
+		
+        // after clicked, button shows disable for 3 seconds		
+        command.BindTo(button);		
+		
+        // Note:shortcut extension, bind aync onclick directly		
+        button.BindToOnClick(_ =>		
+        {		
+            return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();		
+        });		
+    }		
+}		
+```
 
 `AsyncReactiveCommand` has three constructor.
 
@@ -1116,6 +1187,49 @@ Windows Store/Phone App (NETFX_CORE)
 Some interfaces, such as  `UniRx.IObservable<T>` and `System.IObservable<T>`, cause conflicts when submitting to the Windows Store App.
 Therefore, when using NETFX_CORE, please refrain from using such constructs as `UniRx.IObservable<T>` and refer to the UniRx components by their short name, without adding the namespace. This solves the conflicts.
 
+async/await Support
+---
+for the [Upgraded Mono/.Net in Editor on 5.5.0b4](https://forum.unity3d.com/threads/upgraded-mono-net-in-editor-on-5-5-0b4.433541/), Unity supports .NET 4.6 and C# 6 languages. UniRx provides `UniRxSynchronizationContext` for back to MainThread in Task multithreading.
+
+```csharp
+async Task UniRxSynchronizationContextSolves()
+{
+    Debug.Log("start delay");
+
+    // UniRxSynchronizationContext is automatically used.
+    await Task.Delay(TimeSpan.FromMilliseconds(300));
+
+    Debug.Log("from another thread, but you can touch transform position.");
+    Debug.Log(this.transform.position);
+}
+```
+
+UniRx also supports directly await Coroutine support type instad of yield return.
+
+```csharp
+async Task CoroutineBridge()
+{
+    Debug.Log("start www await");
+
+    var www = await new WWW("https://unity3d.com");
+
+    Debug.Log(www.text);
+}
+```
+
+Ofcourse, IObservable is awaitable.
+
+```csharp
+async Task AwaitOnClick()
+{
+    Debug.Log("start mousedown await");
+
+    await this.OnMouseDownAsObservable().FirstOrDefault();
+
+    Debug.Log("end mousedown await");
+}
+```
+
 DLL Separation
 ---
 If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx`, it is fullset separated project of UniRx. You should define compile symbol like  `UNITY;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol. We can not provides pre-build binary to release page, asset store because compile symbol is different each other.
@@ -1189,7 +1303,8 @@ Grani is a top social game developer in Japan.
 He is awarding Microsoft MVP for Visual C# since 2011.  
 He is known as the creator of [linq.js](http://linqjs.codeplex.com/)(LINQ to Objects for JavaScript)
 
-Blog: http://neue.cc/ (Japanese)  
+Blog: https://medium.com/@neuecc (English)
+Blog: http://neue.cc/ (Japanese) 
 Twitter: https://twitter.com/neuecc (Japanese)
 
 License

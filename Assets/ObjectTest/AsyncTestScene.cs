@@ -1,6 +1,7 @@
 ﻿#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
 
 using System;
+using UniRx.Triggers;
 using System.Collections;
 using System.Threading.Tasks;
 using UniRx;
@@ -90,7 +91,7 @@ namespace Assets.ObjectTest
         {
             Debug.Log("start ienumerator await");
 
-            var www = await CustomCoroutine();
+            await CustomCoroutine();
 
             Debug.Log("end ienumerator await");
         }
