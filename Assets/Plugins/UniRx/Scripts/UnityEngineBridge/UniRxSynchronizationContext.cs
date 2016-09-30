@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,13 +23,35 @@ namespace UniRx
             }
             else
             {
-                MainThreadDispatcher.Post(x => d(x), state);
+                MainThreadDispatcher.Post(x =>
+                {
+                    var pair = (Pair)x;
+                    pair.Callback(pair.State);
+                }, new Pair(d, state));
             }
         }
 
         public override void Send(SendOrPostCallback d, object state)
         {
-            MainThreadDispatcher.Send(x => d(x), state);
+            MainThreadDispatcher.Send(x =>
+            {
+                var pair = (Pair)x;
+                pair.Callback(pair.State);
+            }, new Pair(d, state));
+        }
+
+        struct Pair
+        {
+            public readonly SendOrPostCallback Callback;
+            public readonly object State;
+
+            public Pair(SendOrPostCallback callback, object state)
+            {
+                this.Callback = callback;
+                this.State = state;
+            }
         }
     }
 }
+
+#endif
