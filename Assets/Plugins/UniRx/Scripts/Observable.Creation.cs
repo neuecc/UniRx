@@ -163,6 +163,14 @@ namespace UniRx
         }
 
         /// <summary>
+        /// Return single sequence Immediately, optimized for Int32.
+        /// </summary>
+        public static IObservable<Int32> Return(int value)
+        {
+            return ImmutableReturnInt32Observable.GetInt32Observable(value);
+        }
+
+        /// <summary>
         /// Same as Observable.Return(Unit.Default); but no allocate memory.
         /// </summary>
         public static IObservable<Unit> ReturnUnit()

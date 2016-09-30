@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("5.4.1.0")]
 [assembly: AssemblyFileVersion("5.4.1.0")]
 
-[assembly: InternalsVisibleTo("UniRx.Unity")]
+[assembly: InternalsVisibleTo("UniRx.Tests")]
