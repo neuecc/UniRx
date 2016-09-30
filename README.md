@@ -1220,13 +1220,14 @@ async Task CoroutineBridge()
 Ofcourse, IObservable is awaitable.
 
 ```csharp
-async Task AwaitOnClick()
+async Task AwaitObservable()
 {
-    Debug.Log("start mousedown await");
+    Debug.Log("start await observable");
 
-    await this.OnMouseDownAsObservable().FirstOrDefault();
+    await Observable.NextFrame();   // like yield return null
+    await Observable.TimerFrame(5); // await 5 frame
 
-    Debug.Log("end mousedown await");
+    Debug.Log("end await observable");
 }
 ```
 
