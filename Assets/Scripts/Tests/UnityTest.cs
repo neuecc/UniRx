@@ -18,7 +18,8 @@ namespace UniRx.Tests
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Register()
         {
-            UnitTest.RegisterAllMethods<UnityTest>();
+            // no more register...
+            // UnitTest.RegisterAllMethods<UnityTest>();
         }
 
         public UnityTest()
