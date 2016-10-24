@@ -19,7 +19,7 @@ namespace RuntimeUnitTestToolkit
     public partial class UnitTestLoader
     {
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class AggregateTest
         {
             void SetScehdulerForImport()
@@ -34,7 +34,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void Aggregate()
         {
             SetScehdulerForImport();
@@ -48,7 +48,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Scan()
         {
             SetScehdulerForImport();
@@ -64,7 +64,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ContinueWithTest
         {
             void SetScehdulerForImport()
@@ -79,7 +79,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void ContinueWith()
         {
             SetScehdulerForImport();
@@ -96,7 +96,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ContinueWith2()
         {
             SetScehdulerForImport();
@@ -117,7 +117,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ConversionTest
         {
             void SetScehdulerForImport()
@@ -132,7 +132,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void AsObservable()
         {
             SetScehdulerForImport();
@@ -141,7 +141,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void AsSingleUnitObservable()
         {
             SetScehdulerForImport();
@@ -158,7 +158,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void AsUnitObservable()
         {
             SetScehdulerForImport();
@@ -167,7 +167,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Cast()
         {
             SetScehdulerForImport();
@@ -176,7 +176,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void OfType()
         {
             SetScehdulerForImport();
@@ -192,7 +192,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ToObservable()
         {
             SetScehdulerForImport();
@@ -206,7 +206,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class DisposableTest
         {
             void SetScehdulerForImport()
@@ -221,7 +221,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void Boolean()
         {
             SetScehdulerForImport();
@@ -233,7 +233,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void MultipleAssignment()
         {
             SetScehdulerForImport();
@@ -280,7 +280,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Serial()
         {
             SetScehdulerForImport();
@@ -331,7 +331,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SingleAssignment()
         {
             SetScehdulerForImport();
@@ -376,7 +376,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class DoTest
         {
             void SetScehdulerForImport()
@@ -391,7 +391,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void Do()
         {
             SetScehdulerForImport();
@@ -408,7 +408,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void DoObserver()
         {
             SetScehdulerForImport();
@@ -425,7 +425,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void DoOnCancel()
         {
             SetScehdulerForImport();
@@ -457,7 +457,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void DoOnCompleted()
         {
             SetScehdulerForImport();
@@ -474,7 +474,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void DoOnError()
         {
             SetScehdulerForImport();
@@ -491,7 +491,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void DoOnSubscribe()
         {
             SetScehdulerForImport();
@@ -514,7 +514,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void DoOnTerminate()
         {
             SetScehdulerForImport();
@@ -534,7 +534,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class DurabilityTest
         {
             void SetScehdulerForImport()
@@ -549,7 +549,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void Durability()
         {
             SetScehdulerForImport();
@@ -593,7 +593,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void FromEventPattern()
         {
             SetScehdulerForImport();
@@ -620,7 +620,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void FromEventUnity()
         {
             SetScehdulerForImport();
@@ -666,7 +666,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void FromEventUnityLike()
         {
             SetScehdulerForImport();
@@ -715,7 +715,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ErrorHandlingTest
         {
             void SetScehdulerForImport()
@@ -730,7 +730,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void Catch()
         {
             SetScehdulerForImport();
@@ -745,7 +745,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void CatchEnumerable()
         {
             SetScehdulerForImport();
@@ -782,7 +782,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Finally()
         {
             SetScehdulerForImport();
@@ -808,7 +808,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class MicroCoroutineTest
         {
             void SetScehdulerForImport()
@@ -823,7 +823,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void EnumerationCycle()
         {
             SetScehdulerForImport();
@@ -862,7 +862,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void EnumerationCycleBlank()
         {
             SetScehdulerForImport();
@@ -887,7 +887,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void EnumerationCycleFull()
         {
             SetScehdulerForImport();
@@ -926,7 +926,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void EnumerationCycleRandom()
         {
             SetScehdulerForImport();
@@ -1020,7 +1020,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ObservableConcatTest
         {
             void SetScehdulerForImport()
@@ -1035,7 +1035,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void CombineLatest()
         {
             SetScehdulerForImport();
@@ -1066,7 +1066,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void CombineLatest2()
         {
             SetScehdulerForImport();
@@ -1086,7 +1086,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void CombineLatest3()
         {
             SetScehdulerForImport();
@@ -1106,7 +1106,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void CombineLatest4()
         {
             SetScehdulerForImport();
@@ -1125,7 +1125,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void CombineLatestMulti()
         {
             SetScehdulerForImport();
@@ -1156,7 +1156,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void CombineLatestMulti2()
         {
             SetScehdulerForImport();
@@ -1174,7 +1174,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void CombineLatestMulti3()
         {
             SetScehdulerForImport();
@@ -1194,7 +1194,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void CombineLatestMulti4()
         {
             SetScehdulerForImport();
@@ -1213,7 +1213,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Concat()
         {
             SetScehdulerForImport();
@@ -1225,7 +1225,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Merge()
         {
             SetScehdulerForImport();
@@ -1251,7 +1251,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void MergeConcurrent()
         {
             SetScehdulerForImport();
@@ -1278,7 +1278,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void StartWith()
         {
             SetScehdulerForImport();
@@ -1294,7 +1294,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Switch()
         {
             SetScehdulerForImport();
@@ -1319,7 +1319,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void WhenAll()
         {
             SetScehdulerForImport();
@@ -1346,7 +1346,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void WithLatestFrom()
         {
             SetScehdulerForImport();
@@ -1379,7 +1379,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Zip()
         {
             SetScehdulerForImport();
@@ -1402,7 +1402,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Zip2()
         {
             SetScehdulerForImport();
@@ -1423,7 +1423,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ZipLatest()
         {
             SetScehdulerForImport();
@@ -1451,7 +1451,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ZipLatest2()
         {
             SetScehdulerForImport();
@@ -1481,7 +1481,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ZipLatest2Ex()
         {
             SetScehdulerForImport();
@@ -1501,7 +1501,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ZipLatestMulti()
         {
             SetScehdulerForImport();
@@ -1524,7 +1524,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ZipLatestMulti2()
         {
             SetScehdulerForImport();
@@ -1549,7 +1549,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ZipLatestNth()
         {
             SetScehdulerForImport();
@@ -1580,7 +1580,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ZipMulti()
         {
             SetScehdulerForImport();
@@ -1603,7 +1603,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ZipMulti2()
         {
             SetScehdulerForImport();
@@ -1624,7 +1624,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ZipNth()
         {
             SetScehdulerForImport();
@@ -1652,7 +1652,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ObservableConcurrencyTest
         {
             void SetScehdulerForImport()
@@ -1667,7 +1667,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void AmbMultiTest()
         {
             SetScehdulerForImport();
@@ -1696,7 +1696,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void AmbTest()
         {
             SetScehdulerForImport();
@@ -1722,7 +1722,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ObserveOnTest()
         {
             SetScehdulerForImport();
@@ -1746,7 +1746,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ObservableEventsTest
         {
             void SetScehdulerForImport()
@@ -1761,7 +1761,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void FromEvent()
         {
             SetScehdulerForImport();
@@ -1874,7 +1874,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void FromEventPattern()
         {
             SetScehdulerForImport();
@@ -1925,7 +1925,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ObservableGeneratorTest
         {
             void SetScehdulerForImport()
@@ -1940,7 +1940,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void Empty()
         {
             SetScehdulerForImport();
@@ -1950,7 +1950,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Never()
         {
             SetScehdulerForImport();
@@ -1960,7 +1960,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void OptimizeReturnTest()
         {
             SetScehdulerForImport();
@@ -1981,7 +1981,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Range()
         {
             SetScehdulerForImport();
@@ -1990,7 +1990,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Repeat()
         {
             SetScehdulerForImport();
@@ -2006,7 +2006,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Repeat2()
         {
             SetScehdulerForImport();
@@ -2015,7 +2015,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void RepeatStatic()
         {
             SetScehdulerForImport();
@@ -2025,7 +2025,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Return()
         {
             SetScehdulerForImport();
@@ -2034,7 +2034,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Throw()
         {
             SetScehdulerForImport();
@@ -2044,7 +2044,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ToObservable()
         {
             SetScehdulerForImport();
@@ -2085,7 +2085,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ObservablePagingTest
         {
             void SetScehdulerForImport()
@@ -2100,7 +2100,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void Buffer()
         {
             SetScehdulerForImport();
@@ -2116,7 +2116,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Buffer3()
         {
             SetScehdulerForImport();
@@ -2129,7 +2129,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BufferComplete2()
         {
             SetScehdulerForImport();
@@ -2143,7 +2143,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BufferEmpty()
         {
             SetScehdulerForImport();
@@ -2156,7 +2156,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BufferSkip()
         {
             SetScehdulerForImport();
@@ -2200,7 +2200,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BufferTime()
         {
             SetScehdulerForImport();
@@ -2216,7 +2216,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BufferTimeAndCount()
         {
             SetScehdulerForImport();
@@ -2275,7 +2275,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BufferTimeAndCountTimeSide()
         {
             SetScehdulerForImport();
@@ -2287,7 +2287,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BufferTimeComplete()
         {
             SetScehdulerForImport();
@@ -2304,7 +2304,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BufferTimeEmptyBuffer()
         {
             SetScehdulerForImport();
@@ -2321,7 +2321,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BufferTimeEmptyComplete()
         {
             SetScehdulerForImport();
@@ -2334,7 +2334,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BufferWindowBoundaries()
         {
             SetScehdulerForImport();
@@ -2354,7 +2354,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void First()
         {
             SetScehdulerForImport();
@@ -2411,7 +2411,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void FirstOrDefault()
         {
             SetScehdulerForImport();
@@ -2469,7 +2469,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void GroupBy()
         {
             SetScehdulerForImport();
@@ -2506,7 +2506,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Last()
         {
             SetScehdulerForImport();
@@ -2571,7 +2571,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void LastOrDefault()
         {
             SetScehdulerForImport();
@@ -2637,7 +2637,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Pairwise()
         {
             SetScehdulerForImport();
@@ -2647,7 +2647,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Pairwise2()
         {
             SetScehdulerForImport();
@@ -2660,7 +2660,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Single()
         {
             SetScehdulerForImport();
@@ -2745,7 +2745,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SingleOrDefault()
         {
             SetScehdulerForImport();
@@ -2841,7 +2841,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Skip()
         {
             SetScehdulerForImport();
@@ -2861,7 +2861,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SkipTime()
         {
             SetScehdulerForImport();
@@ -2889,7 +2889,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SkipUntil()
         {
             SetScehdulerForImport();
@@ -2925,7 +2925,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SkipWhile()
         {
             SetScehdulerForImport();
@@ -2938,7 +2938,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SkipWhileIndex()
         {
             SetScehdulerForImport();
@@ -2951,7 +2951,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void TakeLast()
         {
             SetScehdulerForImport();
@@ -2969,7 +2969,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void TakeLastDuration()
         {
             SetScehdulerForImport();
@@ -2987,7 +2987,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void TakeUntil()
         {
             SetScehdulerForImport();
@@ -3025,7 +3025,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void TakeWhile()
         {
             SetScehdulerForImport();
@@ -3041,7 +3041,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ObservableTest
         {
             void SetScehdulerForImport()
@@ -3056,7 +3056,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void DefaultIfEmpty()
         {
             SetScehdulerForImport();
@@ -3066,7 +3066,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Dematerialize()
         {
             SetScehdulerForImport();
@@ -3083,7 +3083,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Distinct()
         {
             SetScehdulerForImport();
@@ -3108,7 +3108,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void DistinctUntilChanged()
         {
             SetScehdulerForImport();
@@ -3141,7 +3141,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ForEachAsync()
         {
             SetScehdulerForImport();
@@ -3169,7 +3169,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void IgnoreElements()
         {
             SetScehdulerForImport();
@@ -3179,7 +3179,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Materialize()
         {
             SetScehdulerForImport();
@@ -3199,7 +3199,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Select()
         {
             SetScehdulerForImport();
@@ -3251,7 +3251,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SelectMany()
         {
             SetScehdulerForImport();
@@ -3268,7 +3268,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ToArray()
         {
             SetScehdulerForImport();
@@ -3284,7 +3284,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ToArray_Dispose()
         {
             SetScehdulerForImport();
@@ -3301,7 +3301,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Wait()
         {
             SetScehdulerForImport();
@@ -3319,7 +3319,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Where()
         {
             SetScehdulerForImport();
@@ -3378,7 +3378,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ObservableTimeTest
         {
             void SetScehdulerForImport()
@@ -3393,7 +3393,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void DelayTest()
         {
             SetScehdulerForImport();
@@ -3413,7 +3413,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SampleTest()
         {
             SetScehdulerForImport();
@@ -3432,7 +3432,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ThrottleFirstTest()
         {
             SetScehdulerForImport();
@@ -3461,7 +3461,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ThrottleTest()
         {
             SetScehdulerForImport();
@@ -3488,7 +3488,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void TimeInterval()
         {
             SetScehdulerForImport();
@@ -3510,7 +3510,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void TimeoutTest()
         {
             SetScehdulerForImport();
@@ -3531,7 +3531,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void TimeoutTestOffset()
         {
             SetScehdulerForImport();
@@ -3554,7 +3554,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void TimerTest()
         {
             SetScehdulerForImport();
@@ -3626,7 +3626,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Timestamp()
         {
             SetScehdulerForImport();
@@ -3652,7 +3652,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class QueueWorkerTest
         {
             void SetScehdulerForImport()
@@ -3667,7 +3667,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void Enq()
         {
             SetScehdulerForImport();
@@ -3742,7 +3742,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class RangeTest
         {
             void SetScehdulerForImport()
@@ -3757,7 +3757,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void Range()
         {
             SetScehdulerForImport();
@@ -3773,7 +3773,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ReactivePropertyTest
         {
             void SetScehdulerForImport()
@@ -3788,7 +3788,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void ClassType()
         {
             SetScehdulerForImport();
@@ -3824,7 +3824,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void FinishedSourceToReactiveProperty()
         {
             SetScehdulerForImport();
@@ -3871,7 +3871,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void FinishedSourceToReadOnlyReactiveProperty()
         {
             SetScehdulerForImport();
@@ -3913,7 +3913,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ToReadOnlyReactivePropertyClassType()
         {
             SetScehdulerForImport();
@@ -3985,7 +3985,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ToReadOnlyReactivePropertyValueType()
         {
             SetScehdulerForImport();
@@ -4049,7 +4049,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ValueType()
         {
             SetScehdulerForImport();
@@ -4083,7 +4083,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void WithLastTest()
         {
             SetScehdulerForImport();
@@ -4098,7 +4098,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class SchedulerTest
         {
             void SetScehdulerForImport()
@@ -4113,7 +4113,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void CurrentThread()
         {
             SetScehdulerForImport();
@@ -4123,7 +4123,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void CurrentThread2()
         {
             SetScehdulerForImport();
@@ -4146,7 +4146,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void CurrentThread3()
         {
             SetScehdulerForImport();
@@ -4170,7 +4170,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Immediate()
         {
             SetScehdulerForImport();
@@ -4183,7 +4183,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class SelectMany
         {
             void SetScehdulerForImport()
@@ -4198,7 +4198,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void ResultSelector()
         {
             SetScehdulerForImport();
@@ -4266,7 +4266,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ResultSelectorEnumerable()
         {
             SetScehdulerForImport();
@@ -4300,7 +4300,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ResultSelectorEnumerableWithIndex()
         {
             SetScehdulerForImport();
@@ -4334,7 +4334,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ResultSelectorWithIndex()
         {
             SetScehdulerForImport();
@@ -4402,7 +4402,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Selector()
         {
             SetScehdulerForImport();
@@ -4490,7 +4490,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SelectorEnumerable()
         {
             SetScehdulerForImport();
@@ -4524,7 +4524,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SelectorEnumerableWithIndex()
         {
             SetScehdulerForImport();
@@ -4558,7 +4558,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SelectorWithIndex()
         {
             SetScehdulerForImport();
@@ -4629,7 +4629,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class SelectWhereOptimizeTest
         {
             void SetScehdulerForImport()
@@ -4644,7 +4644,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
+        [Preserve]
         public void SelectSelect()
         {
             SetScehdulerForImport();
@@ -4656,7 +4656,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
+        [Preserve]
         public void SelectWhere()
         {
             SetScehdulerForImport();
@@ -4674,7 +4674,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
+        [Preserve]
         public void WhereSelect()
         {
             SetScehdulerForImport();
@@ -4692,7 +4692,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
+        [Preserve]
         public void WhereWhere()
         {
             SetScehdulerForImport();
@@ -4711,7 +4711,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class SubjectTests
         {
             void SetScehdulerForImport()
@@ -4726,7 +4726,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void AsyncSubjectTest()
         {
             SetScehdulerForImport();
@@ -4791,7 +4791,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void BehaviorSubject()
         {
             SetScehdulerForImport();
@@ -4866,7 +4866,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ReplaySubject()
         {
             SetScehdulerForImport();
@@ -4940,7 +4940,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ReplaySubjectWindowReplay()
         {
             SetScehdulerForImport();
@@ -4979,7 +4979,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void Subject()
         {
             SetScehdulerForImport();
@@ -5048,7 +5048,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void SubjectSubscribeTest()
         {
             SetScehdulerForImport();
@@ -5109,7 +5109,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class TakeTest
         {
             void SetScehdulerForImport()
@@ -5124,7 +5124,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void TakeCount()
         {
             SetScehdulerForImport();
@@ -5140,7 +5140,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class ToTest
         {
             void SetScehdulerForImport()
@@ -5155,7 +5155,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void ToArray()
         {
             SetScehdulerForImport();
@@ -5166,7 +5166,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void ToList()
         {
             SetScehdulerForImport();
@@ -5180,7 +5180,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
+        [Preserve(AllMembers = true)]
         public partial class WhenAllTest
         {
             void SetScehdulerForImport()
@@ -5195,7 +5195,7 @@ namespace RuntimeUnitTestToolkit
 
 
 
-        [TestMethod]
+        [Preserve]
         public void WhenAll()
         {
             SetScehdulerForImport();
@@ -5209,7 +5209,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void WhenAllEmpty()
         {
             SetScehdulerForImport();
@@ -5221,7 +5221,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void WhenAllEnumerable()
         {
             SetScehdulerForImport();
@@ -5235,7 +5235,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void WhenAllUnit()
         {
             SetScehdulerForImport();
@@ -5249,7 +5249,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void WhenAllUnitEmpty()
         {
             SetScehdulerForImport();
@@ -5261,7 +5261,7 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        [TestMethod]
+        [Preserve]
         public void WhenAllUnitEnumerable()
         {
             SetScehdulerForImport();
