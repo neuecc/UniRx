@@ -38,10 +38,10 @@ namespace RuntimeUnitTestToolkit
         public static void RegisterAllMethods<T>()
             where T : new()
         {
-            try
-            {
+            //try
+            //{
             // test, only new
-            var test = new T();
+            // var test = new T();
             /*
             var methods = typeof(T).GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
             foreach (var item in methods)
@@ -60,11 +60,11 @@ namespace RuntimeUnitTestToolkit
                 }
             }
             */
-            }
-            catch
-            {
+            //}
+            //catch
+            //{
                 // LogException...
-            }
+            //}
         }
     }
 
