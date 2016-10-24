@@ -8,8 +8,8 @@ using UniRx;
 
 namespace RuntimeUnitTestToolkit
 {
-    public partial class UnitTestLoader
-    {
+    //public partial class UnitTestLoader
+    //{
         public partial class SchedulerTest
         {
             private static string[] ScheduleTasks(IScheduler scheduler)
@@ -76,7 +76,7 @@ namespace RuntimeUnitTestToolkit
                 return (int)tail.GetValue(mc);
             }
         }
-    }
+    //}
 
 
 

@@ -10,7 +10,8 @@ namespace RuntimeUnitTestToolkit
 {
     public class UnitTestRoot : MonoBehaviour
     {
-        static Dictionary<string, List<KeyValuePair<string, Action>>> tests = new Dictionary<string, List<KeyValuePair<string, Action>>>();
+        // object is IEnumerator or Func<IEnumerator>
+        static Dictionary<string, List<KeyValuePair<string, object>>> tests = new Dictionary<string, List<KeyValuePair<string, object>>>();
 
         public Button clearButton;
         public RectTransform list;
@@ -70,16 +71,38 @@ namespace RuntimeUnitTestToolkit
             return newButton;
         }
 
+        public static void AddTest(Action test)
+        {
+            AddTest(test.Target.GetType().Name, test.Method.Name, test);
+        }
+
         public static void AddTest(string group, string title, Action test)
         {
-            List<KeyValuePair<string, Action>> list;
+            List<KeyValuePair<string, object>> list;
             if (!tests.TryGetValue(group, out list))
             {
-                list = new List<KeyValuePair<string, Action>>();
+                list = new List<KeyValuePair<string, object>>();
                 tests[group] = list;
             }
 
-            list.Add(new KeyValuePair<string, Action>(title, test));
+            list.Add(new KeyValuePair<string, object>(title, test));
+        }
+
+        public static void AddAsyncTest(Func<IEnumerator> asyncTestCoroutine)
+        {
+            AddAsyncTest(asyncTestCoroutine.Target.GetType().Name, asyncTestCoroutine.Method.Name, asyncTestCoroutine);
+        }
+
+        public static void AddAsyncTest(string group, string title, Func<IEnumerator> asyncTestCoroutine)
+        {
+            List<KeyValuePair<string, object>> list;
+            if (!tests.TryGetValue(group, out list))
+            {
+                list = new List<KeyValuePair<string, object>>();
+                tests[group] = list;
+            }
+
+            list.Add(new KeyValuePair<string, object>(title, asyncTestCoroutine));
         }
 
         System.Collections.IEnumerator ScrollLogToEndNextFrame()
@@ -89,7 +112,7 @@ namespace RuntimeUnitTestToolkit
             logScrollBar.value = 0;
         }
 
-        IEnumerator RunTestInCoroutine(KeyValuePair<string, List<KeyValuePair<string, Action>>> actionList)
+        IEnumerator RunTestInCoroutine(KeyValuePair<string, List<KeyValuePair<string, object>>> actionList)
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             foreach (var btn in list.GetComponentsInChildren<Button>()) btn.interactable = false;
@@ -101,19 +124,40 @@ namespace RuntimeUnitTestToolkit
             {
                 logText.text += "<color=teal>" + item2.Key + "</color>\n";
                 yield return null;
-                try
+
+                var v = item2.Value;
+
+                Exception exception = null;
+                if (v is Action)
                 {
-                    item2.Value();
-                    logText.text += "OK" + "\n";
+                    try
+                    {
+                        ((Action)v).Invoke();
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ex;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    // found match line...
-                    var line = string.Join("\n", ex.StackTrace.Split('\n').Where(x => x.Contains(actionList.Key) || x.Contains(item2.Key)).ToArray());
-                    logText.text += "<color=red>" + ex.Message + "\n" + line + "</color>\n";
+                    var coroutineFactory = (Func<IEnumerator>)v;
+                    yield return StartCoroutine(UnwrapEnumerator(coroutineFactory(), ex =>
+                    {
+                        exception = ex;
+                    }));
                 }
 
-                yield return null;
+                if (exception == null)
+                {
+                    logText.text += "OK" + "\n";
+                }
+                else
+                {
+                    // found match line...
+                    var line = string.Join("\n", exception.StackTrace.Split('\n').Where(x => x.Contains(actionList.Key) || x.Contains(item2.Key)).ToArray());
+                    logText.text += "<color=red>" + exception.Message + "\n" + line + "</color>\n";
+                }
             }
 
             sw.Stop();
@@ -128,6 +172,28 @@ namespace RuntimeUnitTestToolkit
             foreach (var item in tests)
             {
                 yield return item();
+            }
+        }
+
+        IEnumerator UnwrapEnumerator(IEnumerator enumerator, Action<Exception> exceptionCallback)
+        {
+            var hasNext = true;
+            while (hasNext)
+            {
+                try
+                {
+                    hasNext = enumerator.MoveNext();
+                }
+                catch (Exception ex)
+                {
+                    exceptionCallback(ex);
+                    hasNext = false;
+                }
+
+                if (hasNext)
+                {
+                    yield return enumerator.Current;
+                }
             }
         }
     }

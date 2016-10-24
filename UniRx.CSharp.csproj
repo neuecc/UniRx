@@ -104,6 +104,7 @@
       <DependentUpon>TestImporter.tt</DependentUpon>
     </Compile>
     <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\UnitTestRoot.cs" />
+    <Compile Include="Assets\Scripts\Tests\UnityTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\Tests\Imported\TestImporter.tt">

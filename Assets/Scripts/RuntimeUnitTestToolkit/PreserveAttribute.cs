@@ -5,9 +5,9 @@ using System.Text;
 
 namespace RuntimeUnitTestToolkit
 {
-    public sealed class PreserveAttribute : Attribute
-    {
-        public bool AllMembers;
-        public bool Conditional;
-    }
+    //public sealed class PreserveAttribute : Attribute
+    //{
+    //    public bool AllMembers;
+    //    public bool Conditional;
+    //}
 }
