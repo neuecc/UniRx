@@ -16,21 +16,25 @@ using RuntimeUnitTestToolkit;
 namespace RuntimeUnitTestToolkit
 {
 
-    //public partial class UnitTestLoader
-    //{
-
-        // [Preserve(AllMembers = true)]
-        public partial class AggregateTest
+    public partial class AggregateTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new AggregateTest();
+            UnitTest.AddTest(test.Aggregate);
+            UnitTest.AddTest(test.Scan);
+        }
 
 
 
@@ -64,18 +68,25 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ContinueWithTest
+    public partial class ContinueWithTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ContinueWithTest();
+            UnitTest.AddTest(test.ContinueWith);
+            UnitTest.AddTest(test.ContinueWith2);
+        }
 
 
 
@@ -117,18 +128,29 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ConversionTest
+    public partial class ConversionTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ConversionTest();
+            UnitTest.AddTest(test.AsObservable);
+            UnitTest.AddTest(test.AsSingleUnitObservable);
+            UnitTest.AddTest(test.AsUnitObservable);
+            UnitTest.AddTest(test.Cast);
+            UnitTest.AddTest(test.OfType);
+            UnitTest.AddTest(test.ToObservable);
+        }
 
 
 
@@ -206,18 +228,27 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class DisposableTest
+    public partial class DisposableTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new DisposableTest();
+            UnitTest.AddTest(test.Boolean);
+            UnitTest.AddTest(test.MultipleAssignment);
+            UnitTest.AddTest(test.Serial);
+            UnitTest.AddTest(test.SingleAssignment);
+        }
 
 
 
@@ -376,18 +407,30 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class DoTest
+    public partial class DoTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new DoTest();
+            UnitTest.AddTest(test.Do);
+            UnitTest.AddTest(test.DoObserver);
+            UnitTest.AddTest(test.DoOnCancel);
+            UnitTest.AddTest(test.DoOnCompleted);
+            UnitTest.AddTest(test.DoOnError);
+            UnitTest.AddTest(test.DoOnSubscribe);
+            UnitTest.AddTest(test.DoOnTerminate);
+        }
 
 
 
@@ -534,18 +577,27 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class DurabilityTest
+    public partial class DurabilityTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new DurabilityTest();
+            UnitTest.AddTest(test.Durability);
+            UnitTest.AddTest(test.FromEventPattern);
+            UnitTest.AddTest(test.FromEventUnity);
+            UnitTest.AddTest(test.FromEventUnityLike);
+        }
 
 
 
@@ -715,18 +767,26 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ErrorHandlingTest
+    public partial class ErrorHandlingTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ErrorHandlingTest();
+            UnitTest.AddTest(test.Catch);
+            UnitTest.AddTest(test.CatchEnumerable);
+            UnitTest.AddTest(test.Finally);
+        }
 
 
 
@@ -808,18 +868,27 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class MicroCoroutineTest
+    public partial class MicroCoroutineTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new MicroCoroutineTest();
+            UnitTest.AddTest(test.EnumerationCycle);
+            UnitTest.AddTest(test.EnumerationCycleBlank);
+            UnitTest.AddTest(test.EnumerationCycleFull);
+            UnitTest.AddTest(test.EnumerationCycleRandom);
+        }
 
 
 
@@ -1020,18 +1089,49 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ObservableConcatTest
+    public partial class ObservableConcatTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ObservableConcatTest();
+            UnitTest.AddTest(test.CombineLatest);
+            UnitTest.AddTest(test.CombineLatest2);
+            UnitTest.AddTest(test.CombineLatest3);
+            UnitTest.AddTest(test.CombineLatest4);
+            UnitTest.AddTest(test.CombineLatestMulti);
+            UnitTest.AddTest(test.CombineLatestMulti2);
+            UnitTest.AddTest(test.CombineLatestMulti3);
+            UnitTest.AddTest(test.CombineLatestMulti4);
+            UnitTest.AddTest(test.Concat);
+            UnitTest.AddTest(test.Merge);
+            UnitTest.AddTest(test.MergeConcurrent);
+            UnitTest.AddTest(test.StartWith);
+            UnitTest.AddTest(test.Switch);
+            UnitTest.AddTest(test.WhenAll);
+            UnitTest.AddTest(test.WithLatestFrom);
+            UnitTest.AddTest(test.Zip);
+            UnitTest.AddTest(test.Zip2);
+            UnitTest.AddTest(test.ZipLatest);
+            UnitTest.AddTest(test.ZipLatest2);
+            UnitTest.AddTest(test.ZipLatest2Ex);
+            UnitTest.AddTest(test.ZipLatestMulti);
+            UnitTest.AddTest(test.ZipLatestMulti2);
+            UnitTest.AddTest(test.ZipLatestNth);
+            UnitTest.AddTest(test.ZipMulti);
+            UnitTest.AddTest(test.ZipMulti2);
+            UnitTest.AddTest(test.ZipNth);
+        }
 
 
 
@@ -1652,18 +1752,26 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ObservableConcurrencyTest
+    public partial class ObservableConcurrencyTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ObservableConcurrencyTest();
+            UnitTest.AddTest(test.AmbMultiTest);
+            UnitTest.AddTest(test.AmbTest);
+            UnitTest.AddTest(test.ObserveOnTest);
+        }
 
 
 
@@ -1746,18 +1854,25 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ObservableEventsTest
+    public partial class ObservableEventsTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ObservableEventsTest();
+            UnitTest.AddTest(test.FromEvent);
+            UnitTest.AddTest(test.FromEventPattern);
+        }
 
 
 
@@ -1925,18 +2040,33 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ObservableGeneratorTest
+    public partial class ObservableGeneratorTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ObservableGeneratorTest();
+            UnitTest.AddTest(test.Empty);
+            UnitTest.AddTest(test.Never);
+            UnitTest.AddTest(test.OptimizeReturnTest);
+            UnitTest.AddTest(test.Range);
+            UnitTest.AddTest(test.Repeat);
+            UnitTest.AddTest(test.Repeat2);
+            UnitTest.AddTest(test.RepeatStatic);
+            UnitTest.AddTest(test.Return);
+            UnitTest.AddTest(test.Throw);
+            UnitTest.AddTest(test.ToObservable);
+        }
 
 
 
@@ -2085,18 +2215,53 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ObservablePagingTest
+    public partial class ObservablePagingTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ObservablePagingTest();
+            UnitTest.AddTest(test.Buffer);
+            UnitTest.AddTest(test.Buffer3);
+            UnitTest.AddTest(test.BufferComplete2);
+            UnitTest.AddTest(test.BufferEmpty);
+            UnitTest.AddTest(test.BufferSkip);
+            UnitTest.AddTest(test.BufferTime);
+            UnitTest.AddTest(test.BufferTimeAndCount);
+            UnitTest.AddTest(test.BufferTimeAndCountTimeSide);
+            UnitTest.AddTest(test.BufferTimeComplete);
+            UnitTest.AddTest(test.BufferTimeEmptyBuffer);
+            UnitTest.AddTest(test.BufferTimeEmptyComplete);
+            UnitTest.AddTest(test.BufferWindowBoundaries);
+            UnitTest.AddTest(test.First);
+            UnitTest.AddTest(test.FirstOrDefault);
+            UnitTest.AddTest(test.GroupBy);
+            UnitTest.AddTest(test.Last);
+            UnitTest.AddTest(test.LastOrDefault);
+            UnitTest.AddTest(test.Pairwise);
+            UnitTest.AddTest(test.Pairwise2);
+            UnitTest.AddTest(test.Single);
+            UnitTest.AddTest(test.SingleOrDefault);
+            UnitTest.AddTest(test.Skip);
+            UnitTest.AddTest(test.SkipTime);
+            UnitTest.AddTest(test.SkipUntil);
+            UnitTest.AddTest(test.SkipWhile);
+            UnitTest.AddTest(test.SkipWhileIndex);
+            UnitTest.AddTest(test.TakeLast);
+            UnitTest.AddTest(test.TakeLastDuration);
+            UnitTest.AddTest(test.TakeUntil);
+            UnitTest.AddTest(test.TakeWhile);
+        }
 
 
 
@@ -3041,18 +3206,36 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ObservableTest
+    public partial class ObservableTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ObservableTest();
+            UnitTest.AddTest(test.DefaultIfEmpty);
+            UnitTest.AddTest(test.Dematerialize);
+            UnitTest.AddTest(test.Distinct);
+            UnitTest.AddTest(test.DistinctUntilChanged);
+            UnitTest.AddTest(test.ForEachAsync);
+            UnitTest.AddTest(test.IgnoreElements);
+            UnitTest.AddTest(test.Materialize);
+            UnitTest.AddTest(test.Select);
+            UnitTest.AddTest(test.SelectMany);
+            UnitTest.AddTest(test.ToArray);
+            UnitTest.AddTest(test.ToArray_Dispose);
+            UnitTest.AddTest(test.Wait);
+            UnitTest.AddTest(test.Where);
+        }
 
 
 
@@ -3378,18 +3561,32 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ObservableTimeTest
+    public partial class ObservableTimeTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ObservableTimeTest();
+            UnitTest.AddTest(test.DelayTest);
+            UnitTest.AddTest(test.SampleTest);
+            UnitTest.AddTest(test.ThrottleFirstTest);
+            UnitTest.AddTest(test.ThrottleTest);
+            UnitTest.AddTest(test.TimeInterval);
+            UnitTest.AddTest(test.TimeoutTest);
+            UnitTest.AddTest(test.TimeoutTestOffset);
+            UnitTest.AddTest(test.TimerTest);
+            UnitTest.AddTest(test.Timestamp);
+        }
 
 
 
@@ -3652,18 +3849,24 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class QueueWorkerTest
+    public partial class QueueWorkerTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new QueueWorkerTest();
+            UnitTest.AddTest(test.Enq);
+        }
 
 
 
@@ -3742,18 +3945,24 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class RangeTest
+    public partial class RangeTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new RangeTest();
+            UnitTest.AddTest(test.Range);
+        }
 
 
 
@@ -3773,18 +3982,30 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ReactivePropertyTest
+    public partial class ReactivePropertyTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ReactivePropertyTest();
+            UnitTest.AddTest(test.ClassType);
+            UnitTest.AddTest(test.FinishedSourceToReactiveProperty);
+            UnitTest.AddTest(test.FinishedSourceToReadOnlyReactiveProperty);
+            UnitTest.AddTest(test.ToReadOnlyReactivePropertyClassType);
+            UnitTest.AddTest(test.ToReadOnlyReactivePropertyValueType);
+            UnitTest.AddTest(test.ValueType);
+            UnitTest.AddTest(test.WithLastTest);
+        }
 
 
 
@@ -4098,18 +4319,27 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class SchedulerTest
+    public partial class SchedulerTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new SchedulerTest();
+            UnitTest.AddTest(test.CurrentThread);
+            UnitTest.AddTest(test.CurrentThread2);
+            UnitTest.AddTest(test.CurrentThread3);
+            UnitTest.AddTest(test.Immediate);
+        }
 
 
 
@@ -4183,18 +4413,31 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class SelectMany
+    public partial class SelectMany
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new SelectMany();
+            UnitTest.AddTest(test.ResultSelector);
+            UnitTest.AddTest(test.ResultSelectorEnumerable);
+            UnitTest.AddTest(test.ResultSelectorEnumerableWithIndex);
+            UnitTest.AddTest(test.ResultSelectorWithIndex);
+            UnitTest.AddTest(test.Selector);
+            UnitTest.AddTest(test.SelectorEnumerable);
+            UnitTest.AddTest(test.SelectorEnumerableWithIndex);
+            UnitTest.AddTest(test.SelectorWithIndex);
+        }
 
 
 
@@ -4629,18 +4872,27 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class SelectWhereOptimizeTest
+    public partial class SelectWhereOptimizeTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new SelectWhereOptimizeTest();
+            UnitTest.AddTest(test.SelectSelect);
+            UnitTest.AddTest(test.SelectWhere);
+            UnitTest.AddTest(test.WhereSelect);
+            UnitTest.AddTest(test.WhereWhere);
+        }
 
 
 
@@ -4711,18 +4963,29 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class SubjectTests
+    public partial class SubjectTests
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new SubjectTests();
+            UnitTest.AddTest(test.AsyncSubjectTest);
+            UnitTest.AddTest(test.BehaviorSubject);
+            UnitTest.AddTest(test.ReplaySubject);
+            UnitTest.AddTest(test.ReplaySubjectWindowReplay);
+            UnitTest.AddTest(test.Subject);
+            UnitTest.AddTest(test.SubjectSubscribeTest);
+        }
 
 
 
@@ -5109,18 +5372,24 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class TakeTest
+    public partial class TakeTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new TakeTest();
+            UnitTest.AddTest(test.TakeCount);
+        }
 
 
 
@@ -5140,18 +5409,25 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class ToTest
+    public partial class ToTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new ToTest();
+            UnitTest.AddTest(test.ToArray);
+            UnitTest.AddTest(test.ToList);
+        }
 
 
 
@@ -5180,18 +5456,29 @@ namespace RuntimeUnitTestToolkit
         }
 
 
-        // [Preserve(AllMembers = true)]
-        public partial class WhenAllTest
+    public partial class WhenAllTest
+    {
+        void SetScehdulerForImport()
         {
-            void SetScehdulerForImport()
-            {
         
-                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
-                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
-            }
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new WhenAllTest();
+            UnitTest.AddTest(test.WhenAll);
+            UnitTest.AddTest(test.WhenAllEmpty);
+            UnitTest.AddTest(test.WhenAllEnumerable);
+            UnitTest.AddTest(test.WhenAllUnit);
+            UnitTest.AddTest(test.WhenAllUnitEmpty);
+            UnitTest.AddTest(test.WhenAllUnitEnumerable);
+        }
 
 
 
@@ -5277,8 +5564,6 @@ namespace RuntimeUnitTestToolkit
 
         }
 
-
-    //}
 }
 
 #pragma warning restore 168

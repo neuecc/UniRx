@@ -76,34 +76,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\ObjectTest\AsyncTestScene.cs" />
-    <Compile Include="Assets\ObjectTest\Clicker.cs" />
-    <Compile Include="Assets\ObjectTest\CountOnly.cs" />
-    <Compile Include="Assets\ObjectTest\DispatcherCullingTest.cs" />
-    <Compile Include="Assets\ObjectTest\EditorBehaviourTest.cs" />
-    <Compile Include="Assets\ObjectTest\GameObjectDisplacer.cs" />
-    <Compile Include="Assets\ObjectTest\IntervalTest.cs" />
-    <Compile Include="Assets\ObjectTest\LoadLevelTest.cs" />
-    <Compile Include="Assets\ObjectTest\MyStateMachine.cs" />
-    <Compile Include="Assets\ObjectTest\PostBuildProcessor.cs" />
-    <Compile Include="Assets\ObjectTest\RotateGameObject.cs" />
-    <Compile Include="Assets\ObjectTest\Sandbox2.cs" />
-    <Compile Include="Assets\ObjectTest\SimpleMultiline.cs" />
-    <Compile Include="Assets\ObjectTest\UniRxTestSandbox.cs" />
-    <Compile Include="Assets\ObjectTest\WorkerThreadTest.cs" />
-    <Compile Include="Assets\ObjectTest\YieldTest.cs" />
     <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\ChainingAssertion.Unity.cs" />
-    <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\PreserveAttribute.cs" />
-    <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\UnitTestLoader.cs" />
-    <Compile Include="Assets\Scripts\Tests\Imported\Shim.cs" />
-    <Compile Include="Assets\Scripts\Tests\Imported\TestUtil.cs" />
+    <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\UnitTestRoot.cs" />
     <Compile Include="Assets\Scripts\Tests\Imported\Container.cs" />
+    <Compile Include="Assets\Scripts\Tests\Imported\Shim.cs" />
     <Compile Include="Assets\Scripts\Tests\Imported\TestImporter.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TestImporter.tt</DependentUpon>
     </Compile>
-    <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\UnitTestRoot.cs" />
+    <Compile Include="Assets\Scripts\Tests\Imported\TestUtil.cs" />
     <Compile Include="Assets\Scripts\Tests\UnityTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +98,5 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

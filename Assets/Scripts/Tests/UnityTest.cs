@@ -1,24 +1,25 @@
 ﻿#if !(UNITY_4_5 || UNITY_4_6 || UNITY_4_7)
 
+using UnityEngine;
 using RuntimeUnitTestToolkit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine.UI;
 
 namespace UniRx.Tests
 {
     public class UnityTest
     {
-
-        //[UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
-        //public static void Register()
-        //{
-        //    var test = new UnityTest();
-        //    UnitTestRoot.AddTest(test.SyncTest);
-        //    UnitTestRoot.AddAsyncTest(test.AsyncTest);
-        //}
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Register()
+        {
+            var test = new UnityTest();
+            UnitTest.AddTest(test.SyncTest);
+            UnitTest.AddAsyncTest(test.AsyncTest);
+        }
 
         public void SyncTest()
         {

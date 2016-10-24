@@ -8,77 +8,72 @@ using UniRx;
 
 namespace RuntimeUnitTestToolkit
 {
-    //public partial class UnitTestLoader
-    //{
-        public partial class SchedulerTest
+    public partial class SchedulerTest
+    {
+        private static string[] ScheduleTasks(IScheduler scheduler)
         {
-            private static string[] ScheduleTasks(IScheduler scheduler)
+            var list = new List<string>();
+
+            Action leafAction = () => list.Add("----leafAction.");
+            Action innerAction = () =>
             {
-                var list = new List<string>();
+                list.Add("--innerAction start.");
+                scheduler.Schedule(leafAction);
+                list.Add("--innerAction end.");
+            };
+            Action outerAction = () =>
+            {
+                list.Add("outer start.");
+                scheduler.Schedule(innerAction);
+                list.Add("outer end.");
+            };
+            scheduler.Schedule(outerAction);
 
-                Action leafAction = () => list.Add("----leafAction.");
-                Action innerAction = () =>
-                {
-                    list.Add("--innerAction start.");
-                    scheduler.Schedule(leafAction);
-                    list.Add("--innerAction end.");
-                };
-                Action outerAction = () =>
-                {
-                    list.Add("outer start.");
-                    scheduler.Schedule(innerAction);
-                    list.Add("outer end.");
-                };
-                scheduler.Schedule(outerAction);
+            return list.ToArray();
+        }
+    }
 
-                return list.ToArray();
-            }
+    public partial class MicroCoroutineTest
+    {
+        static UniRx.InternalUtil.MicroCoroutine Create()
+        {
+            return new UniRx.InternalUtil.MicroCoroutine(ex => Console.WriteLine(ex));
         }
 
-        public partial class MicroCoroutineTest
+        static int FindLast(UniRx.InternalUtil.MicroCoroutine mc)
         {
-            static UniRx.InternalUtil.MicroCoroutine Create()
-            {
-                return new UniRx.InternalUtil.MicroCoroutine(ex => Console.WriteLine(ex));
-            }
+            var coroutines = mc.GetType().GetField("coroutines", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+            var enumerators = (IEnumerator[])coroutines.GetValue(mc);
 
-            static int FindLast(UniRx.InternalUtil.MicroCoroutine mc)
+            int tail = -1;
+            for (int i = 0; i < enumerators.Length; i++)
             {
-                var coroutines = mc.GetType().GetField("coroutines", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
-                var enumerators = (IEnumerator[])coroutines.GetValue(mc);
-
-                int tail = -1;
-                for (int i = 0; i < enumerators.Length; i++)
+                if (enumerators[i] == null)
                 {
-                    if (enumerators[i] == null)
+                    if (tail == -1)
                     {
-                        if (tail == -1)
-                        {
-                            tail = i;
-                        }
-                    }
-                    else
-                    {
-                        if (tail != -1)
-                        {
-                            throw new Exception("what's happen?");
-                        }
+                        tail = i;
                     }
                 }
-
-                if (tail == -1) tail = enumerators.Length;
-                return tail;
+                else
+                {
+                    if (tail != -1)
+                    {
+                        throw new Exception("what's happen?");
+                    }
+                }
             }
 
-            static int GetTailDynamic(UniRx.InternalUtil.MicroCoroutine mc)
-            {
-                var tail = mc.GetType().GetField("tail", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
-                return (int)tail.GetValue(mc);
-            }
+            if (tail == -1) tail = enumerators.Length;
+            return tail;
         }
-    //}
 
-
+        static int GetTailDynamic(UniRx.InternalUtil.MicroCoroutine mc)
+        {
+            var tail = mc.GetType().GetField("tail", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+            return (int)tail.GetValue(mc);
+        }
+    }
 
     public delegate void LikeUnityAction();
     public delegate void LikeUnityAction<T0>(T0 arg0);

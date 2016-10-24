@@ -8,10 +8,41 @@ using System.Collections;
 
 namespace RuntimeUnitTestToolkit
 {
+    public static class UnitTest
+    {
+        public static void AddTest(Action test)
+        {
+            AddTest(test.Target.GetType().Name, test.Method.Name, test);
+        }
+
+        public static void AddTest(string group, string title, Action test)
+        {
+            UnitTestRoot.AddTest(group, title, test);
+        }
+
+        public static void AddAsyncTest(Func<IEnumerator> asyncTestCoroutine)
+        {
+            AddAsyncTest(asyncTestCoroutine.Target.GetType().Name, asyncTestCoroutine.Method.Name, asyncTestCoroutine);
+        }
+
+        public static void AddAsyncTest(string group, string title, Func<IEnumerator> asyncTestCoroutine)
+        {
+            UnitTestRoot.AddAsyncTest(group, title, asyncTestCoroutine);
+        }
+
+        public static void AddCustomButton(Button button)
+        {
+            UnitTestRoot.AddCustomButton(button);
+        }
+    }
+
     public class UnitTestRoot : MonoBehaviour
     {
         // object is IEnumerator or Func<IEnumerator>
         static Dictionary<string, List<KeyValuePair<string, object>>> tests = new Dictionary<string, List<KeyValuePair<string, object>>>();
+
+        static List<Button> additionalButtonsOnFirst = new List<Button>();
+
 
         public Button clearButton;
         public RectTransform list;
@@ -55,6 +86,13 @@ namespace RuntimeUnitTestToolkit
             executeAllButton.gameObject.GetComponent<Image>().color = new Color(250 / 255f, 150 / 255f, 150 / 255f, 1);
             executeAllButton.transform.SetSiblingIndex(1);
 
+            additionalButtonsOnFirst.Reverse();
+            foreach (var item in additionalButtonsOnFirst)
+            {
+                item.transform.SetParent(list);
+                item.transform.SetSiblingIndex(1);
+            }
+
             listScrollBar.value = 1;
             logScrollBar.value = 1;
         }
@@ -71,11 +109,6 @@ namespace RuntimeUnitTestToolkit
             return newButton;
         }
 
-        public static void AddTest(Action test)
-        {
-            AddTest(test.Target.GetType().Name, test.Method.Name, test);
-        }
-
         public static void AddTest(string group, string title, Action test)
         {
             List<KeyValuePair<string, object>> list;
@@ -88,11 +121,6 @@ namespace RuntimeUnitTestToolkit
             list.Add(new KeyValuePair<string, object>(title, test));
         }
 
-        public static void AddAsyncTest(Func<IEnumerator> asyncTestCoroutine)
-        {
-            AddAsyncTest(asyncTestCoroutine.Target.GetType().Name, asyncTestCoroutine.Method.Name, asyncTestCoroutine);
-        }
-
         public static void AddAsyncTest(string group, string title, Func<IEnumerator> asyncTestCoroutine)
         {
             List<KeyValuePair<string, object>> list;
@@ -103,6 +131,11 @@ namespace RuntimeUnitTestToolkit
             }
 
             list.Add(new KeyValuePair<string, object>(title, asyncTestCoroutine));
+        }
+
+        public static void AddCustomButton(Button button)
+        {
+            additionalButtonsOnFirst.Add(button);
         }
 
         System.Collections.IEnumerator ScrollLogToEndNextFrame()
