@@ -24,7 +24,8 @@ namespace UniRx.Operators
         class Catch : OperatorObserverBase<T, T>
         {
             readonly CatchObservable<T, TException> parent;
-            SerialDisposable serialDisposable;
+            SingleAssignmentDisposable sourceSubscription;
+            SingleAssignmentDisposable exceptionSubscription;
 
             public Catch(CatchObservable<T, TException> parent, IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
@@ -34,10 +35,11 @@ namespace UniRx.Operators
 
             public IDisposable Run()
             {
-                this.serialDisposable = new SerialDisposable();
-                this.serialDisposable.Disposable = parent.source.Subscribe(this);
+                this.sourceSubscription = new SingleAssignmentDisposable();
+                this.exceptionSubscription = new SingleAssignmentDisposable();
 
-                return serialDisposable;
+                this.sourceSubscription.Disposable = parent.source.Subscribe(this);
+                return StableCompositeDisposable.Create(sourceSubscription, exceptionSubscription);
             }
 
             public override void OnNext(T value)
@@ -68,9 +70,7 @@ namespace UniRx.Operators
                         return;
                     }
 
-                    var d = new SingleAssignmentDisposable();
-                    serialDisposable.Disposable = d;
-                    d.Disposable = next.Subscribe(observer);
+                    exceptionSubscription.Disposable = next.Subscribe(observer);
                 }
                 else
                 {
