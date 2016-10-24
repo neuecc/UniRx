@@ -19,6 +19,7 @@ namespace RuntimeUnitTestToolkit
                 foreach (var type in typeof(UnitTestLoader).GetNestedTypes().OrderBy(x => x.Name))
 #endif
                 {
+                    /*
                     if (type.Name.StartsWith("<")) continue;
                     
                     var test = Activator.CreateInstance(type);
@@ -35,6 +36,7 @@ namespace RuntimeUnitTestToolkit
                         var m = method;
                         UnitTestRoot.AddTest(type.Name, m.Name, () => m.Invoke(test, Type.EmptyTypes));
                     }
+                    */
                 }
             }
             catch (Exception ex)
