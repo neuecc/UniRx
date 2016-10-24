@@ -125,8 +125,8 @@ namespace RuntimeUnitTestToolkit
 
         void Start()
         {
-            // register unexpected log
 #if !(UNITY_4_5 || UNITY_4_6 || UNITY_4_7)
+            // register unexpected log
             Application.logMessageReceived += (string condition, string stackTrace, LogType type) =>
             {
                 if (type == LogType.Error || type == LogType.Exception)
