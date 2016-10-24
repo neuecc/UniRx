@@ -10,14 +10,14 @@ namespace UniRx.Tests
     [TestClass]
     public class SelectWhereOptimizeTest
     {
-        // Combine selector currently disabled.
-        //[Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
-        //public void SelectSelect()
-        //{
-        //    var selectselect = Observable.Range(1, 10)
-        //        .Select(x => x)
-        //        .Select(x => x * -1);
-        //}
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
+        public void SelectSelect()
+        {
+            // Combine selector currently disabled.
+            var selectselect = Observable.Range(1, 10)
+                .Select(x => x)
+                .Select(x => x * -1);
+        }
 
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
         public void WhereWhere()

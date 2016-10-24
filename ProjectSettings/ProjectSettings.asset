@@ -3,19 +3,20 @@
 --- !u!129 &1
 PlayerSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 6
+  serializedVersion: 8
+  productGUID: b286933f5059e50428b251ea31eb0f32
   AndroidProfiler: 0
   defaultScreenOrientation: 0
   targetDevice: 2
-  targetGlesGraphics: -1
-  targetIOSGraphics: -1
-  targetResolution: 0
+  useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: neuecc
   productName: UniRx
-  cloudProjectId: 
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
+  m_SplashScreenStyle: 0
+  m_ShowUnitySplashScreen: 1
+  m_VirtualRealitySplashScreen: {fileID: 0}
   defaultScreenWidth: 1024
   defaultScreenHeight: 768
   defaultScreenWidthWeb: 960
@@ -25,12 +26,12 @@ PlayerSettings:
   m_ActiveColorSpace: 0
   m_MTRendering: 1
   m_MobileMTRendering: 0
-  m_UseDX11: 1
-  m_Stereoscopic3D: 0
+  m_StackTraceTypes: 010000000100000001000000010000000100000001000000
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
   iosAppInBackgroundBehavior: 0
   displayResolutionDialog: 1
+  iosAllowHTTPDownload: 1
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 1
   allowedAutorotateToLandscapeRight: 1
@@ -51,23 +52,41 @@ PlayerSettings:
   resizableWindow: 0
   useMacAppStoreValidation: 0
   gpuSkinning: 0
+  graphicsJobs: 0
   xboxPIXTextureCapture: 0
   xboxEnableAvatar: 0
   xboxEnableKinect: 0
   xboxEnableKinectAutoTracking: 0
   xboxEnableFitness: 0
   visibleInBackground: 0
+  allowFullscreenSwitch: 1
   macFullscreenMode: 2
   d3d9FullscreenMode: 1
   d3d11FullscreenMode: 1
   xboxSpeechDB: 0
   xboxEnableHeadOrientation: 0
   xboxEnableGuest: 0
+  xboxEnablePIXSampling: 0
+  n3dsDisableStereoscopicView: 0
+  n3dsEnableSharedListOpt: 1
+  n3dsEnableVSync: 0
+  uiUse16BitDepthBuffer: 0
+  ignoreAlphaClear: 0
   xboxOneResolution: 0
+  xboxOneMonoLoggingLevel: 0
   ps3SplashScreen: {fileID: 0}
   videoMemoryForVertexBuffers: 0
   psp2PowerMode: 0
   psp2AcquireBGM: 1
+  wiiUTVResolution: 0
+  wiiUGamePadMSAA: 1
+  wiiUSupportsNunchuk: 0
+  wiiUSupportsClassicController: 0
+  wiiUSupportsBalanceBoard: 0
+  wiiUSupportsMotionPlus: 0
+  wiiUSupportsProController: 0
+  wiiUAllowScreenCapture: 1
+  wiiUControllerCount: 0
   m_SupportedAspectRatios:
     4:3: 1
     5:4: 1
@@ -78,26 +97,34 @@ PlayerSettings:
   bundleVersion: 1.0
   preloadedAssets: []
   metroEnableIndependentInputSource: 0
-  metroEnableLowLatencyPresentationAPI: 0
   xboxOneDisableKinectGpuReservation: 0
-  productGUID: b286933f5059e50428b251ea31eb0f32
+  singlePassStereoRendering: 0
+  protectGraphicsMemory: 0
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 9
   AndroidPreferredInstallLocation: 1
   aotOptions: 
   apiCompatibilityLevel: 1
+  stripEngineCode: 1
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 1
+  iPhoneBuildNumber: 0
   ForceInternetPermission: 0
   ForceSDCardPermission: 0
   CreateWallpaper: 0
   APKExpansionFiles: 0
   preloadShaders: 0
   StripUnusedMeshComponents: 0
+  VertexChannelCompressionMask:
+    serializedVersion: 2
+    m_Bits: 238
   iPhoneSdkVersion: 988
   iPhoneTargetOSVersion: 22
+  tvOSSdkVersion: 0
+  tvOSTargetOSVersion: 900
   uIPrerenderedIcon: 0
   uIRequiresPersistentWiFi: 0
+  uIRequiresFullScreen: 1
   uIStatusBarHidden: 1
   uIExitOnSuspend: 0
   uIStatusBarStyle: 0
@@ -111,6 +138,10 @@ PlayerSettings:
   iPadHighResPortraitSplashScreen: {fileID: 0}
   iPadLandscapeSplashScreen: {fileID: 0}
   iPadHighResLandscapeSplashScreen: {fileID: 0}
+  appleTVSplashScreen: {fileID: 0}
+  tvOSSmallIconLayers: []
+  tvOSLargeIconLayers: []
+  tvOSTopShelfImageLayers: []
   iOSLaunchScreenType: 0
   iOSLaunchScreenPortrait: {fileID: 0}
   iOSLaunchScreenLandscape: {fileID: 0}
@@ -118,9 +149,21 @@ PlayerSettings:
     serializedVersion: 2
     rgba: 0
   iOSLaunchScreenFillPct: 100
+  iOSLaunchScreenSize: 100
   iOSLaunchScreenCustomXibPath: 
+  iOSLaunchScreeniPadType: 0
+  iOSLaunchScreeniPadImage: {fileID: 0}
+  iOSLaunchScreeniPadBackgroundColor:
+    serializedVersion: 2
+    rgba: 0
+  iOSLaunchScreeniPadFillPct: 100
+  iOSLaunchScreeniPadSize: 100
+  iOSLaunchScreeniPadCustomXibPath: 
+  iOSDeviceRequirements: []
+  iOSURLSchemes: []
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
+  androidSplashScreen: {fileID: 0}
   AndroidKeystoreName: 
   AndroidKeyaliasName: 
   AndroidTVCompatibility: 1
@@ -130,15 +173,36 @@ PlayerSettings:
   - width: 320
     height: 180
     banner: {fileID: 0}
+  androidGamepadSupportLevel: 0
   resolutionDialogBanner: {fileID: 0}
   m_BuildTargetIcons:
   - m_BuildTarget: 
     m_Icons:
-    - m_Icon: {fileID: 0}
-      m_Size: 1
+    - serializedVersion: 2
+      m_Icon: {fileID: 0}
+      m_Width: 1
+      m_Height: 1
   m_BuildTargetBatching: []
+  m_BuildTargetGraphicsAPIs: []
   webPlayerTemplate: APPLICATION:Default
   m_TemplateCustomTags: {}
+  wiiUTitleID: 0005000011000000
+  wiiUGroupID: 00010000
+  wiiUCommonSaveSize: 4096
+  wiiUAccountSaveSize: 2048
+  wiiUOlvAccessKey: 0
+  wiiUTinCode: 0
+  wiiUJoinGameId: 0
+  wiiUJoinGameModeMask: 0000000000000000
+  wiiUCommonBossSize: 0
+  wiiUAccountBossSize: 0
+  wiiUAddOnUniqueIDs: []
+  wiiUMainThreadStackSize: 3072
+  wiiULoaderThreadStackSize: 1024
+  wiiUSystemHeapSize: 128
+  wiiUTVStartupScreen: {fileID: 0}
+  wiiUGamePadStartupScreen: {fileID: 0}
+  wiiUProfilerLibPath: 
   actionOnDotNetUnhandledException: 1
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
@@ -189,26 +253,51 @@ PlayerSettings:
   ps4BackgroundImagePath: 
   ps4StartupImagePath: 
   ps4SaveDataImagePath: 
+  ps4SdkOverride: 
   ps4BGMPath: 
   ps4ShareFilePath: 
+  ps4ShareOverlayImagePath: 
+  ps4PrivacyGuardImagePath: 
   ps4NPtitleDatPath: 
   ps4RemotePlayKeyAssignment: -1
+  ps4RemotePlayKeyMappingDir: 
+  ps4PlayTogetherPlayerCount: 0
   ps4EnterButtonAssignment: 1
   ps4ApplicationParam1: 0
   ps4ApplicationParam2: 0
   ps4ApplicationParam3: 0
   ps4ApplicationParam4: 0
+  ps4DownloadDataSize: 0
+  ps4GarlicHeapSize: 2048
   ps4Passcode: eaoEiIgxIX4a2dREbbSqWy6yhKIDCdJO
+  ps4UseDebugIl2cppLibs: 0
   ps4pnSessions: 1
   ps4pnPresence: 1
   ps4pnFriends: 1
   ps4pnGameCustomData: 1
   playerPrefsSupport: 0
+  ps4ReprojectionSupport: 0
+  ps4UseAudio3dBackend: 0
+  ps4SocialScreenEnabled: 0
+  ps4Audio3dVirtualSpeakerCount: 14
+  ps4attribCpuUsage: 0
+  ps4PatchPkgPath: 
+  ps4PatchLatestPkgPath: 
+  ps4PatchChangeinfoPath: 
+  ps4PatchDayOne: 0
+  ps4attribUserManagement: 0
+  ps4attribMoveSupport: 0
+  ps4attrib3DSupport: 0
+  ps4attribShareSupport: 0
+  ps4attribExclusiveVR: 0
+  ps4disableAutoHideSplash: 0
+  ps4IncludedModules: []
   monoEnv: 
   psp2Splashimage: {fileID: 0}
   psp2NPTrophyPackPath: 
   psp2NPSupportGBMorGJP: 0
   psp2NPAgeRating: 12
+  psp2NPTitleDatPath: 
   psp2NPCommsID: 
   psp2NPCommunicationsID: 
   psp2NPCommsPassphrase: 
@@ -223,6 +312,7 @@ PlayerSettings:
   psp2PatchOriginalPackage: 
   psp2PackagePassword: F69AzBlax3CF3EDNhm3soLBPh71Yexui
   psp2KeystoneFile: 
+  psp2MemoryExpansionMode: 0
   psp2DRMType: 0
   psp2StorageType: 0
   psp2MediaCapacity: 0
@@ -249,15 +339,12 @@ PlayerSettings:
   psp2UseLibLocation: 0
   psp2InfoBarOnStartup: 0
   psp2InfoBarColor: 0
+  psp2UseDebugIl2cppLibs: 0
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
   scriptingDefineSymbols:
     4: Exception
   metroPackageName: UnityRx
-  metroPackageLogo: 
-  metroPackageLogo140: 
-  metroPackageLogo180: 
-  metroPackageLogo240: 
   metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
@@ -265,44 +352,7 @@ PlayerSettings:
   metroCertificateIssuer: neuecc
   metroCertificateNotAfter: 8094c35e0586d201
   metroApplicationDescription: UnityRx
-  metroStoreTileLogo80: 
-  metroStoreTileLogo: 
-  metroStoreTileLogo140: 
-  metroStoreTileLogo180: 
-  metroStoreTileWideLogo80: 
-  metroStoreTileWideLogo: 
-  metroStoreTileWideLogo140: 
-  metroStoreTileWideLogo180: 
-  metroStoreTileSmallLogo80: 
-  metroStoreTileSmallLogo: 
-  metroStoreTileSmallLogo140: 
-  metroStoreTileSmallLogo180: 
-  metroStoreSmallTile80: 
-  metroStoreSmallTile: 
-  metroStoreSmallTile140: 
-  metroStoreSmallTile180: 
-  metroStoreLargeTile80: 
-  metroStoreLargeTile: 
-  metroStoreLargeTile140: 
-  metroStoreLargeTile180: 
-  metroStoreSplashScreenImage: 
-  metroStoreSplashScreenImage140: 
-  metroStoreSplashScreenImage180: 
-  metroPhoneAppIcon: 
-  metroPhoneAppIcon140: 
-  metroPhoneAppIcon240: 
-  metroPhoneSmallTile: 
-  metroPhoneSmallTile140: 
-  metroPhoneSmallTile240: 
-  metroPhoneMediumTile: 
-  metroPhoneMediumTile140: 
-  metroPhoneMediumTile240: 
-  metroPhoneWideTile: 
-  metroPhoneWideTile140: 
-  metroPhoneWideTile240: 
-  metroPhoneSplashScreenImage: 
-  metroPhoneSplashScreenImage140: 
-  metroPhoneSplashScreenImage240: 
+  wsaImages: {}
   metroTileShortName: 
   metroCommandLineArgsFile: 
   metroTileShowName: 1
@@ -319,30 +369,22 @@ PlayerSettings:
   metroFTAFileTypes: []
   metroProtocolName: 
   metroCompilationOverrides: 1
-  blackberryDeviceAddress: 
-  blackberryDevicePassword: 
-  blackberryTokenPath: 
-  blackberryTokenExires: 
-  blackberryTokenAuthor: 
-  blackberryTokenAuthorId: 
-  blackberryCskPassword: 
-  blackberrySaveLogPath: 
-  blackberrySharedPermissions: 0
-  blackberryCameraPermissions: 0
-  blackberryGPSPermissions: 0
-  blackberryDeviceIDPermissions: 0
-  blackberryMicrophonePermissions: 0
-  blackberryGamepadSupport: 0
-  blackberryBuildId: 0
-  blackberryLandscapeSplashScreen: {fileID: 0}
-  blackberryPortraitSplashScreen: {fileID: 0}
-  blackberrySquareSplashScreen: {fileID: 0}
   tizenProductDescription: 
   tizenProductURL: 
-  tizenCertificatePath: 
-  tizenCertificatePassword: 
+  tizenSigningProfileName: 
   tizenGPSPermissions: 0
   tizenMicrophonePermissions: 0
+  n3dsUseExtSaveData: 0
+  n3dsCompressStaticMem: 1
+  n3dsExtSaveDataNumber: 0x12345
+  n3dsStackSize: 131072
+  n3dsTargetPlatform: 2
+  n3dsRegion: 7
+  n3dsMediaSize: 0
+  n3dsLogoStyle: 3
+  n3dsTitle: GameName
+  n3dsProductCode: 
+  n3dsApplicationId: 0xFF3FF
   stvDeviceAddress: 
   stvProductDescription: 
   stvProductAuthor: 
@@ -359,6 +401,7 @@ PlayerSettings:
   XboxOnePackagingOverridePath: 
   XboxOneAppManifestOverridePath: 
   XboxOnePackageEncryption: 0
+  XboxOnePackageUpdateGranularity: 2
   XboxOneDescription: 
   XboxOneIsContentPackage: 0
   XboxOneEnableGPUVariability: 0
@@ -367,7 +410,9 @@ PlayerSettings:
   XboxOneAllowedProductIds: []
   XboxOnePersistentLocalStorageSize: 0
   intPropertyNames:
+  - Android::ScriptingBackend
   - Metro::ScriptingBackend
+  - Standalone::ScriptingBackend
   - WP8::ScriptingBackend
   - WebGL::ScriptingBackend
   - WebGL::audioCompressionFormat
@@ -375,7 +420,9 @@ PlayerSettings:
   - WebGL::memorySize
   - iOS::Architecture
   - iOS::ScriptingBackend
+  Android::ScriptingBackend: 0
   Metro::ScriptingBackend: 2
+  Standalone::ScriptingBackend: 0
   WP8::ScriptingBackend: 2
   WebGL::ScriptingBackend: 1
   WebGL::audioCompressionFormat: 4
@@ -384,11 +431,104 @@ PlayerSettings:
   iOS::Architecture: 2
   iOS::ScriptingBackend: 0
   boolPropertyNames:
+  - Android::VR::enable
+  - Metro::VR::enable
+  - N3DS::VR::enable
+  - PS3::VR::enable
+  - PS4::VR::enable
+  - PSM::VR::enable
+  - PSP2::VR::enable
+  - SamsungTV::VR::enable
+  - Standalone::VR::enable
+  - Tizen::VR::enable
+  - WebGL::VR::enable
   - WebGL::dataCaching
+  - WebPlayer::VR::enable
+  - WiiU::VR::enable
+  - Xbox360::VR::enable
+  - XboxOne::VR::enable
+  - iOS::VR::enable
+  - tvOS::VR::enable
+  Android::VR::enable: 0
+  Metro::VR::enable: 0
+  N3DS::VR::enable: 0
+  PS3::VR::enable: 0
+  PS4::VR::enable: 0
+  PSM::VR::enable: 0
+  PSP2::VR::enable: 0
+  SamsungTV::VR::enable: 0
+  Standalone::VR::enable: 0
+  Tizen::VR::enable: 0
+  WebGL::VR::enable: 0
   WebGL::dataCaching: 0
+  WebPlayer::VR::enable: 0
+  WiiU::VR::enable: 0
+  Xbox360::VR::enable: 0
+  XboxOne::VR::enable: 0
+  iOS::VR::enable: 0
+  tvOS::VR::enable: 0
   stringPropertyNames:
+  - Analytics_ServiceEnabled::Analytics_ServiceEnabled
+  - Build_ServiceEnabled::Build_ServiceEnabled
+  - Collab_ServiceEnabled::Collab_ServiceEnabled
+  - ErrorHub_ServiceEnabled::ErrorHub_ServiceEnabled
+  - Game_Performance_ServiceEnabled::Game_Performance_ServiceEnabled
+  - Hub_ServiceEnabled::Hub_ServiceEnabled
+  - Purchasing_ServiceEnabled::Purchasing_ServiceEnabled
+  - UNet_ServiceEnabled::UNet_ServiceEnabled
+  - Unity_Ads_ServiceEnabled::Unity_Ads_ServiceEnabled
   - WebGL::emscriptenArgs
   - WebGL::template
+  Analytics_ServiceEnabled::Analytics_ServiceEnabled: False
+  Build_ServiceEnabled::Build_ServiceEnabled: False
+  Collab_ServiceEnabled::Collab_ServiceEnabled: False
+  ErrorHub_ServiceEnabled::ErrorHub_ServiceEnabled: False
+  Game_Performance_ServiceEnabled::Game_Performance_ServiceEnabled: False
+  Hub_ServiceEnabled::Hub_ServiceEnabled: False
+  Purchasing_ServiceEnabled::Purchasing_ServiceEnabled: False
+  UNet_ServiceEnabled::UNet_ServiceEnabled: False
+  Unity_Ads_ServiceEnabled::Unity_Ads_ServiceEnabled: False
   WebGL::emscriptenArgs: 
   WebGL::template: APPLICATION:Default
-  firstStreamedLevelWithResources: 0
+  vectorPropertyNames:
+  - Android::VR::enabledDevices
+  - Metro::VR::enabledDevices
+  - N3DS::VR::enabledDevices
+  - PS3::VR::enabledDevices
+  - PS4::VR::enabledDevices
+  - PSM::VR::enabledDevices
+  - PSP2::VR::enabledDevices
+  - SamsungTV::VR::enabledDevices
+  - Standalone::VR::enabledDevices
+  - Tizen::VR::enabledDevices
+  - WebGL::VR::enabledDevices
+  - WebPlayer::VR::enabledDevices
+  - WiiU::VR::enabledDevices
+  - Xbox360::VR::enabledDevices
+  - XboxOne::VR::enabledDevices
+  - iOS::VR::enabledDevices
+  - tvOS::VR::enabledDevices
+  Android::VR::enabledDevices:
+  - Oculus
+  Metro::VR::enabledDevices: []
+  N3DS::VR::enabledDevices: []
+  PS3::VR::enabledDevices: []
+  PS4::VR::enabledDevices:
+  - PlayStationVR
+  PSM::VR::enabledDevices: []
+  PSP2::VR::enabledDevices: []
+  SamsungTV::VR::enabledDevices: []
+  Standalone::VR::enabledDevices:
+  - Oculus
+  Tizen::VR::enabledDevices: []
+  WebGL::VR::enabledDevices: []
+  WebPlayer::VR::enabledDevices: []
+  WiiU::VR::enabledDevices: []
+  Xbox360::VR::enabledDevices: []
+  XboxOne::VR::enabledDevices: []
+  iOS::VR::enabledDevices: []
+  tvOS::VR::enabledDevices: []
+  cloudProjectId: 
+  projectName: 
+  organizationId: 
+  cloudEnabled: 0

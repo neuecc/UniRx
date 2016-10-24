@@ -1,34 +1,84 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using UniRx;
 
-namespace UniRx.Tests
+namespace RuntimeUnitTestToolkit
 {
-    public partial class SchedulerTest
+    public partial class UnitTestLoader
     {
-        private static string[] ScheduleTasks(IScheduler scheduler)
+        public partial class SchedulerTest
         {
-            var list = new List<string>();
-
-            Action leafAction = () => list.Add("----leafAction.");
-            Action innerAction = () =>
+            private static string[] ScheduleTasks(IScheduler scheduler)
             {
-                list.Add("--innerAction start.");
-                scheduler.Schedule(leafAction);
-                list.Add("--innerAction end.");
-            };
-            Action outerAction = () =>
-            {
-                list.Add("outer start.");
-                scheduler.Schedule(innerAction);
-                list.Add("outer end.");
-            };
-            scheduler.Schedule(outerAction);
+                var list = new List<string>();
 
-            return list.ToArray();
+                Action leafAction = () => list.Add("----leafAction.");
+                Action innerAction = () =>
+                {
+                    list.Add("--innerAction start.");
+                    scheduler.Schedule(leafAction);
+                    list.Add("--innerAction end.");
+                };
+                Action outerAction = () =>
+                {
+                    list.Add("outer start.");
+                    scheduler.Schedule(innerAction);
+                    list.Add("outer end.");
+                };
+                scheduler.Schedule(outerAction);
+
+                return list.ToArray();
+            }
+        }
+
+        public partial class MicroCoroutineTest
+        {
+            static UniRx.InternalUtil.MicroCoroutine Create()
+            {
+                return new UniRx.InternalUtil.MicroCoroutine(ex => Console.WriteLine(ex));
+            }
+
+            static int FindLast(UniRx.InternalUtil.MicroCoroutine mc)
+            {
+                var coroutines = mc.GetType().GetField("coroutines", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+                var enumerators = (IEnumerator[])coroutines.GetValue(mc);
+
+                int tail = -1;
+                for (int i = 0; i < enumerators.Length; i++)
+                {
+                    if (enumerators[i] == null)
+                    {
+                        if (tail == -1)
+                        {
+                            tail = i;
+                        }
+                    }
+                    else
+                    {
+                        if (tail != -1)
+                        {
+                            throw new Exception("what's happen?");
+                        }
+                    }
+                }
+
+                if (tail == -1) tail = enumerators.Length;
+                return tail;
+            }
+
+            static int GetTailDynamic(UniRx.InternalUtil.MicroCoroutine mc)
+            {
+                var tail = mc.GetType().GetField("tail", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+                return (int)tail.GetValue(mc);
+            }
         }
     }
+
+
 
     public delegate void LikeUnityAction();
     public delegate void LikeUnityAction<T0>(T0 arg0);

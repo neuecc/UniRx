@@ -25,6 +25,7 @@
     var projPath = targetProj.FullName;
     var classNames = GetClassNamesAsync(projPath).Result.OrderBy(x => x.ClassName).ThenBy(x => x.MethodName);
 #>
+#pragma warning disable 168
 #if !UNITY_METRO && !UNITY_4_5
 using System;
 using System.Collections;
@@ -35,74 +36,29 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnityEngine;
 using UnityEngine.UI;
+using UniRx.Tests;
+using UniRx;
+using RuntimeUnitTestToolkit;
 
-namespace UniRx.Tests
+namespace RuntimeUnitTestToolkit
 {
 
-    public static partial class UnitTests
+    public partial class UnitTestLoader
     {
-        public static void Clear(GameObject resultVertical)
-        {
-            foreach (Transform child in resultVertical.transform)
-            {
-                GameObject.Destroy(child.gameObject);
-            }
-        }
-
-        public static void SetButtons(Button buttonPrefab, GameObject buttonVertical, Result resultPrefab, GameObject resultVertical)
-        {
-<# foreach(var item in classNames.GroupBy(x => x.ClassName)) { #>
-            {
-                var button = GameObject.Instantiate(buttonPrefab) as Button;
-                button.GetComponentInChildren<Text>().text = "<#= item.Key #>(<#= item.Count() #>)";
-                button.OnClickAsObservable().Subscribe(_ =>
-                {
-                    Clear(resultVertical);
-                    MainThreadDispatcher.StartCoroutine(<#= item.Key #>.Run(resultPrefab, resultVertical));
-                });
-                button.transform.SetParent(buttonVertical.transform, true);
-            }
-<# } #>
-        }
-    }
-
-
 <# foreach(var item in classNames.GroupBy(x => x.ClassName)) { #>
 
-    public partial class <#= item.Key #>
-    {
-        public static IEnumerator Run(Result resultPrefab, GameObject resultVertical)
+        // [Preserve(AllMembers = true)]
+        public partial class <#= item.Key #>
         {
-            var test = new <#= item.Key #>();
-<# foreach(var m in item) { #>
+            void SetScehdulerForImport()
             {
-                var r = GameObject.Instantiate(resultPrefab) as Result;
-                r.ForceInitialize();
-                r.gameObject.transform.SetParent(resultVertical.transform, true);
-                r.Message.Value = "<#= m.MethodName #>";
-                r.Color.Value = UnityEngine.Color.gray;
-                yield return null;
-                try
-                {
-                    var sw = System.Diagnostics.Stopwatch.StartNew();
-                    test.<#= m.MethodName #>();
-                    r.Message.Value = "<#= m.MethodName #> OK " + sw.Elapsed.TotalMilliseconds + "ms";
-                    r.Color.Value = UnityEngine.Color.green;
-                }
-                catch (AssertFailedException ex)
-                {
-                    r.Message.Value = "<#= m.MethodName #> NG\r\n" + ex.Message;
-                    r.Color.Value = UnityEngine.Color.red;
-                }
-                catch (Exception ex)
-                {
-                    r.Message.Value = "<#= m.MethodName #> NG\r\n" + ex.ToString();
-                    r.Color.Value = UnityEngine.Color.red;
-                }
+        
+                Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+                Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+                Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+                Scheduler.DefaultSchedulers.TimeBasedOperations = Scheduler.ThreadPool;
+                Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
             }
-            yield return null;
-<# } #>
-        }
 
 
 <# foreach(var m in item) { #>
@@ -111,11 +67,14 @@ namespace UniRx.Tests
 
 <# } #>
 
-    }
+        }
 
 <# } #>
 
+    }
 }
+
+#pragma warning restore 168
 #endif
 <#+
     class UnitTestCode
@@ -150,11 +109,21 @@ namespace UniRx.Tests
                 .Where(x => x.GetAttributes().Any(y => y.ToString() == "Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute"))
                 .SelectMany(x => x.GetMembers(), (klass, member) => new { klass, member })
                 .Where(x => x.member.GetAttributes().Any(y => y.ToString() == "Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute"))
-                .Select(x => new UnitTestCode
+                .Select(x =>
                 {
-                    ClassName = x.klass.Name,
-                    MethodName = x.member.Name,
-                    Code = x.member.DeclaringSyntaxReferences[0].GetSyntax().ToFullString()
+                    var code = x.member.DeclaringSyntaxReferences[0].GetSyntax().ToFullString(); // .Replace("[TestMethod]", "[Preserve]").Replace("[Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]", "[Preserve]");
+                    var slice = code.Split(new[]{"\r\n"}, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    // [Attr]:0 class:1 {:2
+                    // }: last
+                    slice.Insert(3, "            SetScehdulerForImport();");
+                    slice.Insert(slice.Count - 1, "            UniRx.Scheduler.SetDefaultForUnity();");
+
+                    return new UnitTestCode
+                    {
+                        ClassName = x.klass.Name,
+                        MethodName = x.member.Name,
+                        Code = string.Join(Environment.NewLine, slice)
+                    };
                 });
 
             testCodes.AddRange(testMethods);

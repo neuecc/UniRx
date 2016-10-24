@@ -1,1 +1,2 @@
-m_EditorVersion: 5.5.0xMono-Runtime-Upgrade-1-b4
+m_EditorVersion: 5.4.0p2
+m_StandardAssetsVersion: 0
