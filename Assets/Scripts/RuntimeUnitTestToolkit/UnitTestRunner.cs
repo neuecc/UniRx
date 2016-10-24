@@ -12,60 +12,96 @@ namespace RuntimeUnitTestToolkit
     {
         public static void AddTest(Action test)
         {
-            AddTest(test.Target.GetType().Name, test.Method.Name, test);
+            try
+            {
+                AddTest(test.Target.GetType().Name, test.Method.Name, test);
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
         }
 
         public static void AddTest(string group, string title, Action test)
         {
-            UnitTestRunner.AddTest(group, title, test);
+            try
+            {
+                UnitTestRunner.AddTest(group, title, test);
+            }
+            catch(Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
         }
 
         public static void AddAsyncTest(Func<IEnumerator> asyncTestCoroutine)
         {
-            AddAsyncTest(asyncTestCoroutine.Target.GetType().Name, asyncTestCoroutine.Method.Name, asyncTestCoroutine);
+            try
+            {
+                AddAsyncTest(asyncTestCoroutine.Target.GetType().Name, asyncTestCoroutine.Method.Name, asyncTestCoroutine);
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
         }
 
         public static void AddAsyncTest(string group, string title, Func<IEnumerator> asyncTestCoroutine)
         {
-            UnitTestRunner.AddAsyncTest(group, title, asyncTestCoroutine);
+            try
+            {
+                UnitTestRunner.AddAsyncTest(group, title, asyncTestCoroutine);
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
         }
 
         public static void AddCustomButton(Button button)
         {
-            UnitTestRunner.AddCustomButton(button);
-        }
-
-        public static void RegisterAllMethods<T>()
-            where T : new()
-        {
-            //try
-            //{
-            // test, only new
-            // var test = new T();
-            /*
-            var methods = typeof(T).GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            foreach (var item in methods)
+            try
             {
-                if (item.GetParameters().Length != 0) continue;
-
-                if (item.ReturnType == typeof(IEnumerator))
-                {
-                    var factory = (Func<IEnumerator>)Delegate.CreateDelegate(typeof(Func<IEnumerator>), test, item);
-                    AddAsyncTest(factory);
-                }
-                else if (item.ReturnType == typeof(void))
-                {
-                    var invoke = (Action)Delegate.CreateDelegate(typeof(Action), test, item);
-                    AddTest(invoke);
-                }
+                UnitTestRunner.AddCustomButton(button);
             }
-            */
-            //}
-            //catch
-            //{
-                // LogException...
-            //}
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
         }
+
+        // no register system...
+        //public static void RegisterAllMethods<T>()
+        //  where T : new()
+        //{
+        //try
+        //{
+        // test, only new
+        // var test = new T();
+        /*
+        var methods = typeof(T).GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+        foreach (var item in methods)
+        {
+            if (item.GetParameters().Length != 0) continue;
+
+            if (item.ReturnType == typeof(IEnumerator))
+            {
+                var factory = (Func<IEnumerator>)Delegate.CreateDelegate(typeof(Func<IEnumerator>), test, item);
+                AddAsyncTest(factory);
+            }
+            else if (item.ReturnType == typeof(void))
+            {
+                var invoke = (Action)Delegate.CreateDelegate(typeof(Action), test, item);
+                AddTest(invoke);
+            }
+        }
+        */
+        //}
+        //catch
+        //{
+        // LogException...
+        //}
+        //}
     }
 
     public class UnitTestRunner : MonoBehaviour
@@ -90,6 +126,7 @@ namespace RuntimeUnitTestToolkit
         void Start()
         {
             // register unexpected log
+#if !(UNITY_4_5 || UNITY_4_6 || UNITY_4_7)
             Application.logMessageReceived += (string condition, string stackTrace, LogType type) =>
             {
                 if (type == LogType.Error || type == LogType.Exception)
@@ -101,6 +138,7 @@ namespace RuntimeUnitTestToolkit
                     logText.text += condition + "\n";
                 }
             };
+#endif
 
             var executeAll = new List<Func<Coroutine>>();
             foreach (var ___item in tests)

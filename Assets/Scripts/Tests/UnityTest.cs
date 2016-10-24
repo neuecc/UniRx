@@ -12,7 +12,7 @@ using UnityEngine.Scripting;
 
 namespace UniRx.Tests
 {
-    [Preserve] // (AllMembers = true)
+    //[Preserve] // (AllMembers = true)
     public class UnityTest
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -27,13 +27,13 @@ namespace UniRx.Tests
             
         }
 
-        [Preserve]
+        //[Preserve]
         public void SyncTest()
         {
             int.Parse("100").Is(100);
         }
 
-        [Preserve]
+        //[Preserve]
         public IEnumerator AsyncTest()
         {
             var yi = Observable.Return(10).Delay(TimeSpan.FromSeconds(2)).ToYieldInstruction();

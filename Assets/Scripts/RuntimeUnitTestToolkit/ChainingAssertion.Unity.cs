@@ -8,7 +8,6 @@ using System.Linq;
 
 namespace RuntimeUnitTestToolkit
 {
-    [System.Diagnostics.DebuggerStepThroughAttribute]
     public static partial class AssertExtensions
     {
         /// <summary>Assert.AreEqual.</summary>
