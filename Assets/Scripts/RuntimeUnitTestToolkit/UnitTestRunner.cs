@@ -71,37 +71,35 @@ namespace RuntimeUnitTestToolkit
         }
 
         // no register system...
-        //public static void RegisterAllMethods<T>()
-        //  where T : new()
-        //{
-        //try
-        //{
-        // test, only new
-        // var test = new T();
-        /*
-        var methods = typeof(T).GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-        foreach (var item in methods)
+        public static void RegisterAllMethods<T>()
+          where T : new()
         {
-            if (item.GetParameters().Length != 0) continue;
+            try
+            {
+                var test = new T();
+                
+                var methods = typeof(T).GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                foreach (var item in methods)
+                {
+                    if (item.GetParameters().Length != 0) continue;
 
-            if (item.ReturnType == typeof(IEnumerator))
-            {
-                var factory = (Func<IEnumerator>)Delegate.CreateDelegate(typeof(Func<IEnumerator>), test, item);
-                AddAsyncTest(factory);
+                    if (item.ReturnType == typeof(IEnumerator))
+                    {
+                        var factory = (Func<IEnumerator>)Delegate.CreateDelegate(typeof(Func<IEnumerator>), test, item);
+                        AddAsyncTest(factory);
+                    }
+                    else if (item.ReturnType == typeof(void))
+                    {
+                        var invoke = (Action)Delegate.CreateDelegate(typeof(Action), test, item);
+                        AddTest(invoke);
+                    }
+                }
             }
-            else if (item.ReturnType == typeof(void))
+            catch(Exception ex)
             {
-                var invoke = (Action)Delegate.CreateDelegate(typeof(Action), test, item);
-                AddTest(invoke);
+                Debug.LogException(ex);
             }
         }
-        */
-        //}
-        //catch
-        //{
-        // LogException...
-        //}
-        //}
     }
 
     public class UnitTestRunner : MonoBehaviour
