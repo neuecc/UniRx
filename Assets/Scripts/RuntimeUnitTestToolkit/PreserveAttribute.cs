@@ -2,9 +2,9 @@
 
 namespace RuntimeUnitTestToolkit
 {
-    public sealed class PreserveAttribute : Attribute
+    public class PreserveAttribute : Attribute
     {
-        public bool AllMembers;
-        public bool Conditional;
+        //public bool AllMembers;
+        //public bool Conditional;
     }
 }

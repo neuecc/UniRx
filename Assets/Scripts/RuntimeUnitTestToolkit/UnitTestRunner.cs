@@ -17,7 +17,7 @@ namespace RuntimeUnitTestToolkit
 
         public static void AddTest(string group, string title, Action test)
         {
-            UnitTestRoot.AddTest(group, title, test);
+            UnitTestRunner.AddTest(group, title, test);
         }
 
         public static void AddAsyncTest(Func<IEnumerator> asyncTestCoroutine)
@@ -27,12 +27,12 @@ namespace RuntimeUnitTestToolkit
 
         public static void AddAsyncTest(string group, string title, Func<IEnumerator> asyncTestCoroutine)
         {
-            UnitTestRoot.AddAsyncTest(group, title, asyncTestCoroutine);
+            UnitTestRunner.AddAsyncTest(group, title, asyncTestCoroutine);
         }
 
         public static void AddCustomButton(Button button)
         {
-            UnitTestRoot.AddCustomButton(button);
+            UnitTestRunner.AddCustomButton(button);
         }
 
         public static void RegisterAllMethods<T>()
@@ -58,7 +58,7 @@ namespace RuntimeUnitTestToolkit
         }
     }
 
-    public class UnitTestRoot : MonoBehaviour
+    public class UnitTestRunner : MonoBehaviour
     {
         // object is IEnumerator or Func<IEnumerator>
         static Dictionary<string, List<KeyValuePair<string, object>>> tests = new Dictionary<string, List<KeyValuePair<string, object>>>();
@@ -203,6 +203,7 @@ namespace RuntimeUnitTestToolkit
 
                 var v = item2.Value;
 
+                var methodStopwatch = System.Diagnostics.Stopwatch.StartNew();
                 Exception exception = null;
                 if (v is Action)
                 {
@@ -226,7 +227,8 @@ namespace RuntimeUnitTestToolkit
 
                 if (exception == null)
                 {
-                    logText.text += "OK" + "\n";
+                    methodStopwatch.Stop();
+                    logText.text += "OK, " + methodStopwatch.Elapsed.TotalMilliseconds.ToString("0.00") + "ms\n";
                 }
                 else
                 {
@@ -238,7 +240,7 @@ namespace RuntimeUnitTestToolkit
             }
 
             sw.Stop();
-            logText.text += "[" + actionList.Key + " Complete]" + sw.Elapsed.TotalMilliseconds + "ms\n\n";
+            logText.text += "[" + actionList.Key + "]" + sw.Elapsed.TotalMilliseconds.ToString("0.00") + "ms\n\n";
             foreach (var btn in list.GetComponentsInChildren<Button>()) btn.interactable = true;
             if (self != null)
             {

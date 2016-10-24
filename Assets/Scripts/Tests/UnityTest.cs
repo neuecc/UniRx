@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace UniRx.Tests
 {
-    [PreserveAttribute(AllMembers = true)]
+    [PreserveAttribute] // (AllMembers = true)
     public class UnityTest
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -20,11 +20,19 @@ namespace UniRx.Tests
             UnitTest.RegisterAllMethods<UnityTest>();
         }
 
+        [Preserve]
+        public UnityTest()
+        {
+
+        }
+
+        [Preserve]
         public void SyncTest()
         {
             int.Parse("100").Is(100);
         }
 
+        [Preserve]
         public IEnumerator AsyncTest()
         {
             var yi = Observable.Return(10).Delay(TimeSpan.FromSeconds(2)).ToYieldInstruction();
