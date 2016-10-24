@@ -78,7 +78,6 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\Assert.cs" />
     <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\ChainingAssertion.Unity.cs" />
-    <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\PreserveAttribute.cs" />
     <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\UnitTestRunner.cs" />
     <Compile Include="Assets\Scripts\Tests\Imported\Container.cs" />
     <Compile Include="Assets\Scripts\Tests\Imported\Shim.cs" />

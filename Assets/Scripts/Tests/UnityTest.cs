@@ -8,10 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine.UI;
+using UnityEngine.Scripting;
 
 namespace UniRx.Tests
 {
-    [PreserveAttribute] // (AllMembers = true)
+    [Preserve] // (AllMembers = true)
     public class UnityTest
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -20,10 +21,9 @@ namespace UniRx.Tests
             UnitTest.RegisterAllMethods<UnityTest>();
         }
 
-        [Preserve]
         public UnityTest()
         {
-
+            
         }
 
         [Preserve]
