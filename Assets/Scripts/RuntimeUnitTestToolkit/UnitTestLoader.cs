@@ -14,20 +14,20 @@ namespace RuntimeUnitTestToolkit
             try
             {
 #if NETFX_CORE
-			    foreach (var type in typeof(UnitTestLoader).GetTypeInfo().GetNestedTypes(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).OrderBy(x=>x.Name))
+			    foreach (var type in typeof(UnitTestLoader).GetTypeInfo().GetNestedTypes().OrderBy(x=>x.Name))
 #else
-                foreach (var type in typeof(UnitTestLoader).GetNestedTypes(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).OrderBy(x => x.Name))
+                foreach (var type in typeof(UnitTestLoader).GetNestedTypes().OrderBy(x => x.Name))
 #endif
                 {
                     if (type.Name.StartsWith("<")) continue;
-
+                    
                     var test = Activator.CreateInstance(type);
 
 
 #if NETFX_CORE
-                    foreach (var method in type.GetTypeInfo().GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).OrderBy(x=>x.Name))
+                    foreach (var method in type.GetTypeInfo().GetMethods().OrderBy(x=>x.Name))
 #else
-                    foreach (var method in type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).OrderBy(x => x.Name))
+                    foreach (var method in type.GetMethods().OrderBy(x => x.Name))
 #endif
                     {
                         if (method.Name == "Equals" || method.Name == "GetHashCode" || method.Name == "ToString" || method.Name == "GetType") continue;
