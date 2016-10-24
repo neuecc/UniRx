@@ -11,14 +11,13 @@ using UnityEngine.UI;
 
 namespace UniRx.Tests
 {
+    [PreserveAttribute(AllMembers = true)]
     public class UnityTest
     {
-        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Register()
         {
-            var test = new UnityTest();
-            UnitTest.AddTest(test.SyncTest);
-            UnitTest.AddAsyncTest(test.AsyncTest);
+            UnitTest.RegisterAllMethods<UnityTest>();
         }
 
         public void SyncTest()
@@ -28,7 +27,7 @@ namespace UniRx.Tests
 
         public IEnumerator AsyncTest()
         {
-            var yi = Observable.Return(10).Delay(TimeSpan.FromSeconds(5)).ToYieldInstruction();
+            var yi = Observable.Return(10).Delay(TimeSpan.FromSeconds(2)).ToYieldInstruction();
             yield return yi;
 
             yi.Result.Is(10);

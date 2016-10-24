@@ -34,6 +34,28 @@ namespace RuntimeUnitTestToolkit
         {
             UnitTestRoot.AddCustomButton(button);
         }
+
+        public static void RegisterAllMethods<T>()
+            where T : new()
+        {
+            var test = new T();
+            var methods = typeof(T).GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var item in methods)
+            {
+                if (item.GetParameters().Length != 0) continue;
+
+                if (item.ReturnType == typeof(IEnumerator))
+                {
+                    var factory = (Func<IEnumerator>)Delegate.CreateDelegate(typeof(Func<IEnumerator>), test, item);
+                    AddAsyncTest(factory);
+                }
+                else if (item.ReturnType == typeof(void))
+                {
+                    var invoke = (Action)Delegate.CreateDelegate(typeof(Action), test, item);
+                    AddTest(invoke);
+                }
+            }
+        }
     }
 
     public class UnitTestRoot : MonoBehaviour
@@ -51,6 +73,10 @@ namespace RuntimeUnitTestToolkit
         public Text logText;
         public Scrollbar logScrollBar;
 
+        readonly Color passColor = new Color(0f, 1f, 0f, 1f); // green
+        readonly Color failColor = new Color(1f, 0f, 0f, 1f); // red
+        readonly Color normalColor = new Color(1f, 1f, 1f, 1f); // white
+
         void Start()
         {
             // register unexpected log
@@ -65,11 +91,6 @@ namespace RuntimeUnitTestToolkit
                     logText.text += condition + "\n";
                 }
             };
-
-            clearButton.onClick.AddListener(() =>
-            {
-                logText.text = "";
-            });
 
             var executeAll = new List<Func<Coroutine>>();
             foreach (var ___item in tests)
@@ -92,6 +113,17 @@ namespace RuntimeUnitTestToolkit
                 item.transform.SetParent(list);
                 item.transform.SetSiblingIndex(1);
             }
+
+            clearButton.onClick.AddListener(() =>
+            {
+                logText.text = "";
+                foreach (var btn in list.GetComponentsInChildren<Button>())
+                {
+                    btn.interactable = true;
+                    btn.GetComponent<Image>().color = normalColor;
+                }
+                executeAllButton.gameObject.GetComponent<Image>().color = new Color(250 / 255f, 150 / 255f, 150 / 255f, 1);
+            });
 
             listScrollBar.value = 1;
             logScrollBar.value = 1;
@@ -148,7 +180,18 @@ namespace RuntimeUnitTestToolkit
         IEnumerator RunTestInCoroutine(KeyValuePair<string, List<KeyValuePair<string, object>>> actionList)
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            foreach (var btn in list.GetComponentsInChildren<Button>()) btn.interactable = false;
+            Button self = null;
+            foreach (var btn in list.GetComponentsInChildren<Button>())
+            {
+                btn.interactable = false;
+                if (btn.name == actionList.Key) self = btn;
+            }
+            if (self != null)
+            {
+                self.GetComponent<Image>().color = normalColor;
+            }
+
+            var allGreen = true;
 
             logText.text += "<color=yellow>" + actionList.Key + "</color>\n";
             yield return null;
@@ -190,12 +233,17 @@ namespace RuntimeUnitTestToolkit
                     // found match line...
                     var line = string.Join("\n", exception.StackTrace.Split('\n').Where(x => x.Contains(actionList.Key) || x.Contains(item2.Key)).ToArray());
                     logText.text += "<color=red>" + exception.Message + "\n" + line + "</color>\n";
+                    allGreen = false;
                 }
             }
 
             sw.Stop();
             logText.text += "[" + actionList.Key + " Complete]" + sw.Elapsed.TotalMilliseconds + "ms\n\n";
             foreach (var btn in list.GetComponentsInChildren<Button>()) btn.interactable = true;
+            if (self != null)
+            {
+                self.GetComponent<Image>().color = allGreen ? passColor : failColor;
+            }
 
             yield return StartCoroutine(ScrollLogToEndNextFrame());
         }
