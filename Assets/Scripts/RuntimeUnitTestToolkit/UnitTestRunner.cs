@@ -160,6 +160,8 @@ namespace RuntimeUnitTestToolkit
                 item.transform.SetSiblingIndex(1);
             }
 
+#if !(UNITY_4_5 || UNITY_4_6 || UNITY_4_7)
+
             clearButton.onClick.AddListener(() =>
             {
                 logText.text = "";
@@ -170,6 +172,8 @@ namespace RuntimeUnitTestToolkit
                 }
                 executeAllButton.gameObject.GetComponent<Image>().color = new Color(250 / 255f, 150 / 255f, 150 / 255f, 1);
             });
+
+#endif
 
             listScrollBar.value = 1;
             logScrollBar.value = 1;
