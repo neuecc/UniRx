@@ -70,7 +70,6 @@ namespace RuntimeUnitTestToolkit
             }
         }
 
-        // no register system...
         public static void RegisterAllMethods<T>()
           where T : new()
         {
