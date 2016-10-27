@@ -28,7 +28,7 @@ namespace RuntimeUnitTestToolkit
             {
                 UnitTestRunner.AddTest(group, title, test);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 UnityEngine.Debug.LogException(ex);
             }
@@ -76,7 +76,7 @@ namespace RuntimeUnitTestToolkit
             try
             {
                 var test = new T();
-                
+
                 var methods = typeof(T).GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
                 foreach (var item in methods)
                 {
@@ -94,7 +94,7 @@ namespace RuntimeUnitTestToolkit
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogException(ex);
             }
@@ -122,23 +122,8 @@ namespace RuntimeUnitTestToolkit
 
         void Start()
         {
-#if !(UNITY_4_5 || UNITY_4_6 || UNITY_4_7)
-            // register unexpected log
-            Application.logMessageReceived += (string condition, string stackTrace, LogType type) =>
-            {
-                if (type == LogType.Error || type == LogType.Exception)
-                {
-                    logText.text += "<color=red>" + condition + "\n" + stackTrace + "</color>\n";
-                }
-                else
-                {
-                    logText.text += condition + "\n";
-                }
-            };
-#endif
-
             var executeAll = new List<Func<Coroutine>>();
-            foreach (var ___item in tests)
+            foreach (var ___item in tests.OrderBy(x => x.Key))
             {
                 var actionList = ___item; // be careful, capture in lambda
 
@@ -228,7 +213,6 @@ namespace RuntimeUnitTestToolkit
 
         IEnumerator RunTestInCoroutine(KeyValuePair<string, List<KeyValuePair<string, object>>> actionList)
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
             Button self = null;
             foreach (var btn in list.GetComponentsInChildren<Button>())
             {
@@ -245,6 +229,7 @@ namespace RuntimeUnitTestToolkit
             logText.text += "<color=yellow>" + actionList.Key + "</color>\n";
             yield return null;
 
+            var totalExecutionTime = new List<double>();
             foreach (var item2 in actionList.Value)
             {
                 logText.text += "<color=teal>" + item2.Key + "</color>\n";
@@ -274,9 +259,10 @@ namespace RuntimeUnitTestToolkit
                     }));
                 }
 
+                methodStopwatch.Stop();
+                totalExecutionTime.Add(methodStopwatch.Elapsed.TotalMilliseconds);
                 if (exception == null)
                 {
-                    methodStopwatch.Stop();
                     logText.text += "OK, " + methodStopwatch.Elapsed.TotalMilliseconds.ToString("0.00") + "ms\n";
                 }
                 else
@@ -288,8 +274,7 @@ namespace RuntimeUnitTestToolkit
                 }
             }
 
-            sw.Stop();
-            logText.text += "[" + actionList.Key + "]" + sw.Elapsed.TotalMilliseconds.ToString("0.00") + "ms\n\n";
+            logText.text += "[" + actionList.Key + "]" + totalExecutionTime.Sum().ToString("0.00") + "ms\n\n";
             foreach (var btn in list.GetComponentsInChildren<Button>()) btn.interactable = true;
             if (self != null)
             {
