@@ -1278,6 +1278,7 @@ Libraries
 - [EcsRx](https://github.com/grofit/ecsrx) - A simple framework for unity using the ECS paradigm but with unirx for fully reactive systems.
 - [ActionStreetMap Demo](https://github.com/ActionStreetMap/demo) - ASM is an engine for building real city environment dynamically using OSM data.
 - [utymap](https://github.com/reinterpretcat/utymap) - UtyMap is library for building real city environment dynamically using various data sources (mostly, OpenStreetMap and Natural Earth).
+- [Submarine](https://github.com/shiwano/submarine) - A mobile game that is made with Unity3D and RoR, WebSocket server written in Go.
 
 If you use UniRx, please comment to [UniRx/issues/152](https://github.com/neuecc/UniRx/issues/152).
 
