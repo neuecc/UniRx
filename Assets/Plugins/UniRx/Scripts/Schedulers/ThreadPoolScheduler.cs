@@ -12,7 +12,7 @@ namespace UniRx
     {
         public static readonly IScheduler ThreadPool = new ThreadPoolScheduler();
 
-        class ThreadPoolScheduler : IScheduler, ISchedulerPeriodic, ISchedulerQueueing
+        class ThreadPoolScheduler : IScheduler, ISchedulerPeriodic
         {
             public ThreadPoolScheduler()
             {
