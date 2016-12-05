@@ -1267,9 +1267,17 @@ Intro slide by [@torisoup](https://github.com/torisoup)
 
 Intro slide and sample game by [@Xerios](https://github.com/Xerios)
 
+* [GDC 2016 Sessions of Adventure Capialist](https://www.youtube.com/watch?v=j3YhG91mPsU&feature=youtu.be&t=9m12s)
+
+How to integrate with PlayFab API
+
 What game or library is using UniRx?
 ---
 Games
+- [Farm Away!][(http://www.farmawaygame.com/)
+- [Build Away!](http://www.buildawaygame.com/)
+- [AdVenture Capitalist](http://hyperhippo.ca/games/adventure-capitalist/)
+- [AdVenture Communist](http://hyperhippo.ca/games/adventure-communist/)
 
 Libraries
 
