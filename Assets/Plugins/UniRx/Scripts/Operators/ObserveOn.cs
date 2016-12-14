@@ -140,12 +140,16 @@ namespace UniRx.Operators
             readonly BooleanDisposable isDisposed;
             readonly Action<T> onNext;
 
+            readonly Queue<Action> queuedActions;
+            bool busy;
+
             public ObserveOn_(ObserveOnObservable<T> parent, ISchedulerQueueing scheduler, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
                 this.scheduler = scheduler;
                 this.isDisposed = new BooleanDisposable();
                 this.onNext = new Action<T>(OnNext_); // cache delegate
+                this.queuedActions = new Queue<Action>();
             }
 
             public IDisposable Run()
@@ -157,6 +161,7 @@ namespace UniRx.Operators
             void OnNext_(T value)
             {
                 base.observer.OnNext(value);
+                ProcessNext();
             }
 
             void OnError_(Exception error)
@@ -171,17 +176,60 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                scheduler.ScheduleQueueing(isDisposed, value, onNext);
+                lock (queuedActions)
+                {
+                    if (busy)
+                    {
+                        queuedActions.Enqueue(() => OnNext(value));
+                    }
+                    else
+                    {
+                        busy = true;
+                        scheduler.ScheduleQueueing(isDisposed, value, onNext);
+                    }
+                }
             }
 
             public override void OnError(Exception error)
             {
-                scheduler.ScheduleQueueing(isDisposed, error, OnError_);
+                lock (queuedActions)
+                {
+                    if (busy)
+                    {
+                        queuedActions.Enqueue(() => OnError(error));
+                    }
+                    else
+                    {
+                        scheduler.ScheduleQueueing(isDisposed, error, OnError_);
+                    }
+                }
             }
 
             public override void OnCompleted()
             {
-                scheduler.ScheduleQueueing(isDisposed, Unit.Default, OnCompleted_);
+                lock (queuedActions)
+                {
+                    if (busy)
+                    {
+                        queuedActions.Enqueue(OnCompleted);
+                    }
+                    else
+                    {
+                        scheduler.ScheduleQueueing(isDisposed, Unit.Default, OnCompleted_);
+                    }
+                }
+            }
+
+            private void ProcessNext()
+            {
+                lock (queuedActions)
+                {
+                    busy = false;
+                    if (queuedActions.Count > 0)
+                    {
+                        queuedActions.Dequeue()();
+                    }
+                }
             }
         }
     }
