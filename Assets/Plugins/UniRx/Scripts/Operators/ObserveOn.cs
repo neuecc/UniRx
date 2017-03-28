@@ -73,7 +73,11 @@ namespace UniRx.Operators
                         isDisposed = true;
 
                         while (actions.Count > 0)
+						{
+							// Dispose will both cancel the action (if not already running)
+							// and remove it from 'actions'
                             actions.First.Value.Dispose();
+						}
                     }
                 }));
             }
