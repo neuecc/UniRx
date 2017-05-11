@@ -181,6 +181,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Observable.Time.cs">
       <Link>Observable.Time.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Observable.Using.cs">
+      <Link>Observable.Using.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Observer.cs">
       <Link>Observer.cs</Link>
     </Compile>

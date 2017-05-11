@@ -70,6 +70,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="MicroCoroutineTest.cs" />
+    <Compile Include="Observable.UsingTest.cs" />
     <Compile Include="ReactivePropertyTest.cs" />
     <Compile Include="ContinueWithTest.cs" />
     <Compile Include="SelectWhereOptimizeTest.cs" />
