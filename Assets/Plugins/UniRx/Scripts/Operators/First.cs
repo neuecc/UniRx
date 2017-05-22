@@ -6,22 +6,25 @@ namespace UniRx.Operators
     internal class FirstObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
-        readonly bool useDefault;
+        readonly bool publishOnError;
+        readonly bool publishDefaultValue;
         readonly Func<T, bool> predicate;
 
-        public FirstObservable(IObservable<T> source, bool useDefault)
+        public FirstObservable(IObservable<T> source, bool publishOnError, bool publishDefaultValue)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.useDefault = useDefault;
+            this.publishOnError = publishOnError;
+            this.publishDefaultValue = publishDefaultValue;
         }
 
-        public FirstObservable(IObservable<T> source, Func<T, bool> predicate, bool useDefault)
+        public FirstObservable(IObservable<T> source, Func<T, bool> predicate, bool publishOnError, bool publishDefaultValue)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.predicate = predicate;
-            this.useDefault = useDefault;
+            this.publishOnError = publishOnError;
+            this.publishDefaultValue = publishDefaultValue;
         }
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
@@ -67,9 +70,9 @@ namespace UniRx.Operators
 
             public override void OnCompleted()
             {
-                if (parent.useDefault)
+                if (!parent.publishOnError)
                 {
-                    if (notPublished)
+                    if (notPublished && parent.publishDefaultValue)
                     {
                         observer.OnNext(default(T));
                     }
@@ -138,9 +141,9 @@ namespace UniRx.Operators
 
             public override void OnCompleted()
             {
-                if (parent.useDefault)
+                if (!parent.publishOnError)
                 {
-                    if (notPublished)
+                    if (notPublished && parent.publishDefaultValue)
                     {
                         observer.OnNext(default(T));
                     }

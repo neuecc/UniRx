@@ -233,21 +233,31 @@ namespace UniRx
 
         public static IObservable<T> First<T>(this IObservable<T> source)
         {
-            return new FirstObservable<T>(source, false);
+            return new FirstObservable<T>(source, publishOnError: true, publishDefaultValue: false);
         }
         public static IObservable<T> First<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return new FirstObservable<T>(source, predicate, false);
+            return new FirstObservable<T>(source, predicate, publishOnError: true, publishDefaultValue: false);
         }
 
         public static IObservable<T> FirstOrDefault<T>(this IObservable<T> source)
         {
-            return new FirstObservable<T>(source, true);
+            return new FirstObservable<T>(source, publishOnError: false, publishDefaultValue: true);
         }
 
         public static IObservable<T> FirstOrDefault<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
-            return new FirstObservable<T>(source, predicate, true);
+            return new FirstObservable<T>(source, predicate, publishOnError: false, publishDefaultValue: true);
+        }
+
+        public static IObservable<T> FirstOrEmpty<T>(this IObservable<T> source)
+        {
+            return new FirstObservable<T>(source, publishOnError: false, publishDefaultValue: false);
+        }
+
+        public static IObservable<T> FirstOrEmpty<T>(this IObservable<T> source, Func<T, bool> predicate)
+        {
+            return new FirstObservable<T>(source, predicate, publishOnError: false, publishDefaultValue: false);
         }
 
         public static IObservable<T> Single<T>(this IObservable<T> source)
