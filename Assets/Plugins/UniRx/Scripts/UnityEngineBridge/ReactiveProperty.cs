@@ -22,6 +22,9 @@ namespace UniRx
     /// </summary>
     [Serializable]
     public class ReactiveProperty<T> : IReactiveProperty<T>, IDisposable, IOptimizedObservable<T>
+#if !UniRxLibrary
+    , ISerializationCallbackReceiver
+#endif
     {
 #if !UniRxLibrary
         static readonly IEqualityComparer<T> defaultEqualityComparer = UnityEqualityComparer.GetDefault<T>();
@@ -36,6 +39,13 @@ namespace UniRx
         bool isDisposed = false;
 
 #if !UniRxLibrary
+        public void OnBeforeSerialize() { }
+        public void OnAfterDeserialize()
+        {
+            // Deserialize should trigger a publish
+            // set Value through the property to trigger initial OnNext
+            Value = value;
+        }
         [SerializeField]
 #endif
         T value = default(T);
@@ -61,6 +71,10 @@ namespace UniRx
         {
             get
             {
+                if(!HasValue)
+                {
+                    throw new InvalidOperationException("!HasValue");
+                }
                 return value;
             }
             set
@@ -102,10 +116,7 @@ namespace UniRx
         }
 
         public ReactiveProperty()
-            : this(default(T))
         {
-            // default constructor 'can' publish value on subscribe.
-            // because sometimes value is deserialized from UnityEngine.
         }
 
         public ReactiveProperty(T initialValue)
