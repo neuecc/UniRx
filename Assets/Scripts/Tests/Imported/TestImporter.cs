@@ -3847,7 +3847,7 @@ namespace RuntimeUnitTestToolkit
                 }
                 // immediate
                 {
-                    var ex = new Exception();
+                    // var ex = new Exception();
                     var source = new Subject<int>();
                     var rxProp = source.ToReactiveProperty();
                     var record = rxProp.Record();
@@ -3892,7 +3892,7 @@ namespace RuntimeUnitTestToolkit
                 }
                 // immediate
                 {
-                    var ex = new Exception();
+                    // var ex = new Exception();
                     var source = new Subject<int>();
                     var rxProp = source.ToReadOnlyReactiveProperty();
                     var record = rxProp.Record();
@@ -4637,9 +4637,9 @@ namespace RuntimeUnitTestToolkit
         {
             SetScehdulerForImport();
             // Combine selector currently disabled.
-            var selectselect = Observable.Range(1, 10)
-                .Select(x => x)
-                .Select(x => x * -1);
+            //var selectselect = Observable.Range(1, 10)
+            //    .Select(x => x)
+            //    .Select(x => x * -1);
             UniRx.Scheduler.SetDefaultForUnity();
         }
 
