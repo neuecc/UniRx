@@ -482,7 +482,7 @@ namespace UniRx
                 mainThreadToken = new object();
                 initialized = true;
 
-#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+#if (NET_4_6)
                 if (UniRxSynchronizationContext.AutoInstall)
                 {
                     SynchronizationContext.SetSynchronizationContext(new UniRxSynchronizationContext());

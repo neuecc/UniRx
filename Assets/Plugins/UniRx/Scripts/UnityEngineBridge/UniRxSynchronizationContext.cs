@@ -1,4 +1,4 @@
-﻿#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+﻿#if (NET_4_6)
 
 using System;
 using System.Collections.Generic;
@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace UniRx
 {
+    // Check more details, if does not need this, remove this file.
     public class UniRxSynchronizationContext : SynchronizationContext
     {
-        static bool autoInstall = true;
+        static bool autoInstall = false;
         public static bool AutoInstall { get { return autoInstall; } set { autoInstall = value; } }
 
         public override void Post(SendOrPostCallback d, object state)

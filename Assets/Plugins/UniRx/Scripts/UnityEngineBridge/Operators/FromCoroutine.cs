@@ -18,7 +18,7 @@ namespace UniRx.Operators
         {
             var fromCoroutineObserver = new FromCoroutine(observer, cancel);
 
-#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+#if (NET_4_6)
             var moreCancel = new CancellationDisposable();
             var token = moreCancel.Token;
 #else
@@ -80,7 +80,7 @@ namespace UniRx.Operators
         {
             var microCoroutineObserver = new FromMicroCoroutine(observer, cancel);
 
-#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+#if (NET_4_6)
             var moreCancel = new CancellationDisposable();
             var token = moreCancel.Token;
 #else

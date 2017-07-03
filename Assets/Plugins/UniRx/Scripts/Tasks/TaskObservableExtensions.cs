@@ -1,6 +1,6 @@
 ﻿// this code is borrowed from RxOfficial(rx.codeplex.com) and modified
 
-#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+#if (NET_4_6)
 
 using System;
 using System.Threading.Tasks;

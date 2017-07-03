@@ -1,5 +1,5 @@
 ﻿// LazyTask is only for before MONO_BLEEDING_EDGE
-#if !(ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+#if !(NET_4_6)
 
 using System;
 using System.Collections;

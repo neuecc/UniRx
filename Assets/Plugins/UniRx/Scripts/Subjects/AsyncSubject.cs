@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UniRx.InternalUtil;
 
-#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+#if (NET_4_6)
 using System.Runtime.CompilerServices;
 using System.Threading;
 #endif
@@ -10,7 +10,7 @@ using System.Threading;
 namespace UniRx
 {
     public sealed class AsyncSubject<T> : ISubject<T>, IOptimizedObservable<T>, IDisposable
-#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+#if (NET_4_6)
         , INotifyCompletion
 #endif
     {
@@ -219,7 +219,7 @@ namespace UniRx
         }
 
 
-#if (ENABLE_MONO_BLEEDING_EDGE_EDITOR || ENABLE_MONO_BLEEDING_EDGE_STANDALONE)
+#if (NET_4_6)
 
         /// <summary>
         /// Gets an awaitable object for the current AsyncSubject.
