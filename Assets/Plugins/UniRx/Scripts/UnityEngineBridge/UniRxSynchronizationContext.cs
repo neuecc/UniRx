@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 namespace UniRx
 {
     // Check more details, if does not need this, remove this file.
+    // I've found UnityEngine.UnitySynchronizationContext.
+
     public class UniRxSynchronizationContext : SynchronizationContext
     {
         static bool autoInstall = false;
