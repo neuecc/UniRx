@@ -146,6 +146,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Distinct.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\DistinctUntilChanged.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Do.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\DoAfterSubscribe.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Empty.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Finally.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\First.cs" />
