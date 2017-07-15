@@ -30,8 +30,29 @@ namespace UniRx.Operators
 
         class ObserveOn : OperatorObserverBase<T, T>
         {
+            class SchedulableAction : IDisposable
+            {
+                public Notification<T> data;
+                public LinkedListNode<SchedulableAction> node;
+                public IDisposable schedule;
+
+                public void Dispose()
+                {
+                    if (schedule != null)
+                        schedule.Dispose();
+                    schedule = null;
+
+                    if (node.List != null)
+                    {
+                        node.List.Remove(node);
+                    }
+                }
+
+                public bool IsScheduled { get { return schedule != null; } }
+            }
+
             readonly ObserveOnObservable<T> parent;
-            readonly LinkedList<IDisposable> scheduleDisposables = new LinkedList<IDisposable>();
+            readonly LinkedList<SchedulableAction> actions = new LinkedList<SchedulableAction>();
             bool isDisposed;
 
             public ObserveOn(ObserveOnObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
@@ -47,89 +68,90 @@ namespace UniRx.Operators
 
                 return StableCompositeDisposable.Create(sourceDisposable, Disposable.Create(() =>
                 {
-                    lock (scheduleDisposables)
+                    lock (actions)
                     {
                         isDisposed = true;
 
-                        foreach (var item in scheduleDisposables)
-                        {
-                            item.Dispose();
-                        }
-                        scheduleDisposables.Clear();
+                        while (actions.Count > 0)
+						{
+							// Dispose will both cancel the action (if not already running)
+							// and remove it from 'actions'
+                            actions.First.Value.Dispose();
+						}
                     }
                 }));
             }
 
             public override void OnNext(T value)
             {
-                var self = new SingleAssignmentDisposable();
-                LinkedListNode<IDisposable> node;
-                lock (scheduleDisposables)
-                {
-                    if (isDisposed) return;
-
-                    node = scheduleDisposables.AddLast(self);
-                }
-                self.Disposable = parent.scheduler.Schedule(() =>
-                {
-                    self.Dispose();
-                    lock (scheduleDisposables)
-                    {
-                        if (node.List != null)
-                        {
-                            node.List.Remove(node);
-                        }
-                    }
-                    base.observer.OnNext(value);
-                });
+                QueueAction(new Notification<T>.OnNextNotification(value));
             }
 
             public override void OnError(Exception error)
             {
-                var self = new SingleAssignmentDisposable();
-                LinkedListNode<IDisposable> node;
-                lock (scheduleDisposables)
-                {
-                    if (isDisposed) return;
-
-                    node = scheduleDisposables.AddLast(self);
-                }
-                self.Disposable = parent.scheduler.Schedule(() =>
-                {
-                    self.Dispose();
-                    lock (scheduleDisposables)
-                    {
-                        if (node.List != null)
-                        {
-                            node.List.Remove(node);
-                        }
-                    }
-                    try { observer.OnError(error); } finally { Dispose(); };
-                });
+                QueueAction(new Notification<T>.OnErrorNotification(error));
             }
 
             public override void OnCompleted()
             {
-                var self = new SingleAssignmentDisposable();
-                LinkedListNode<IDisposable> node;
-                lock (scheduleDisposables)
+                QueueAction(new Notification<T>.OnCompletedNotification());
+            }
+
+            private void QueueAction(Notification<T> data)
+            {
+                var action = new SchedulableAction { data = data };
+                lock (actions)
                 {
                     if (isDisposed) return;
 
-                    node = scheduleDisposables.AddLast(self);
+                    action.node = actions.AddLast(action);
+                    ProcessNext();
                 }
-                self.Disposable = parent.scheduler.Schedule(() =>
+            }
+
+            private void ProcessNext()
+            {
+                lock (actions)
                 {
-                    self.Dispose();
-                    lock (scheduleDisposables)
+                    if (actions.Count == 0 || isDisposed)
+                        return;
+
+                    var action = actions.First.Value;
+
+                    if (action.IsScheduled)
+                        return;
+
+                    action.schedule = parent.scheduler.Schedule(() =>
                     {
-                        if (node.List != null)
+                        try
                         {
-                            node.List.Remove(node);
+                            switch (action.data.Kind)
+                            {
+                                case NotificationKind.OnNext:
+                                    observer.OnNext(action.data.Value);
+                                    break;
+                                case NotificationKind.OnError:
+                                    observer.OnError(action.data.Exception);
+                                    break;
+                                case NotificationKind.OnCompleted:
+                                    observer.OnCompleted();
+                                    break;
+                            }
                         }
-                    }
-                    try { observer.OnCompleted(); } finally { Dispose(); };
-                });
+                        finally
+                        {
+                            lock (actions)
+                            {
+                                action.Dispose();
+                            }
+
+                            if (action.data.Kind == NotificationKind.OnNext)
+                                ProcessNext();
+                            else
+                                Dispose();
+                        }
+                    });
+                }
             }
         }
 
