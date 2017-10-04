@@ -13,7 +13,7 @@ namespace UniRx.Toolkit
     public abstract class ObjectPool<T> : IDisposable
         where T : UnityEngine.Component
     {
-        bool disposedValue = false;
+        bool isDisposed = false;
         Queue<T> q;
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace UniRx.Toolkit
         /// </summary>
         public T Rent()
         {
-            if (disposedValue) throw new ObjectDisposedException("ObjectPool was already disposed.");
+            if (isDisposed) throw new ObjectDisposedException("ObjectPool was already disposed.");
             if (q == null) q = new Queue<T>();
 
             var instance = (q.Count > 0)
@@ -93,7 +93,7 @@ namespace UniRx.Toolkit
         /// </summary>
         public void Return(T instance)
         {
-            if (disposedValue) throw new ObjectDisposedException("ObjectPool was already disposed.");
+            if (isDisposed) throw new ObjectDisposedException("ObjectPool was already disposed.");
             if (instance == null) throw new ArgumentNullException("instance");
 
             if (q == null) q = new Queue<T>();
@@ -161,7 +161,7 @@ namespace UniRx.Toolkit
         public IDisposable StartShrinkTimer(TimeSpan checkInterval, float instanceCountRatio, int minSize, bool callOnBeforeRent = false)
         {
             return Observable.Interval(checkInterval)
-                .TakeWhile(_ => disposedValue)
+                .TakeWhile(_ => !isDisposed)
                 .Subscribe(_ =>
                 {
                     Shrink(instanceCountRatio, minSize, callOnBeforeRent);
@@ -213,14 +213,14 @@ namespace UniRx.Toolkit
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!isDisposed)
             {
                 if (disposing)
                 {
                     Clear(false);
                 }
 
-                disposedValue = true;
+                isDisposed = true;
             }
         }
 
@@ -238,7 +238,7 @@ namespace UniRx.Toolkit
     public abstract class AsyncObjectPool<T> : IDisposable
         where T : UnityEngine.Component
     {
-        bool disposedValue = false;
+        bool isDisposed = false;
         Queue<T> q;
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace UniRx.Toolkit
         /// </summary>
         public IObservable<T> RentAsync()
         {
-            if (disposedValue) throw new ObjectDisposedException("ObjectPool was already disposed.");
+            if (isDisposed) throw new ObjectDisposedException("ObjectPool was already disposed.");
             if (q == null) q = new Queue<T>();
 
             if (q.Count > 0)
@@ -323,7 +323,7 @@ namespace UniRx.Toolkit
         /// </summary>
         public void Return(T instance)
         {
-            if (disposedValue) throw new ObjectDisposedException("ObjectPool was already disposed.");
+            if (isDisposed) throw new ObjectDisposedException("ObjectPool was already disposed.");
             if (instance == null) throw new ArgumentNullException("instance");
 
             if (q == null) q = new Queue<T>();
@@ -374,7 +374,7 @@ namespace UniRx.Toolkit
         public IDisposable StartShrinkTimer(TimeSpan checkInterval, float instanceCountRatio, int minSize, bool callOnBeforeRent = false)
         {
             return Observable.Interval(checkInterval)
-                .TakeWhile(_ => disposedValue)
+                .TakeWhile(_ => !isDisposed)
                 .Subscribe(_ =>
                 {
                     Shrink(instanceCountRatio, minSize, callOnBeforeRent);
@@ -451,14 +451,14 @@ namespace UniRx.Toolkit
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!isDisposed)
             {
                 if (disposing)
                 {
                     Clear(false);
                 }
 
-                disposedValue = true;
+                isDisposed = true;
             }
         }
 
