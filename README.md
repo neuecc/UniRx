@@ -1074,6 +1074,9 @@ MessageBroker.Default.Receive<TestArgs>().Subscribe(x => UnityEngine.Debug.Log(x
 
 // Publish message
 MessageBroker.Default.Publish(new TestArgs { Value = 1000 });
+
+// Unsubscribe message on global-scope.
+MessageBroker.Default.Ignore<TestArgs>();
 ```
 
 AsyncMessageBroker is variation of MessageBroker, can await Publish call.
