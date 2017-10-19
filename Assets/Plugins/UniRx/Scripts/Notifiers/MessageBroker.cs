@@ -18,6 +18,11 @@ namespace UniRx
         /// Subscribe typed message.
         /// </summary>
         IObservable<T> Receive<T>();
+
+        /// <summary>
+        /// Unsubscribe to typed message
+        /// </summary>
+        void Ignore<T>();
     }
 
     public interface IMessageBroker : IMessagePublisher, IMessageReceiver
@@ -38,6 +43,11 @@ namespace UniRx
         /// Subscribe typed message.
         /// </summary>
         IDisposable Subscribe<T>(Func<T, IObservable<Unit>> asyncMessageReceiver);
+
+        /// <summary>
+        /// Unsubscribe to typed message
+        /// </summary>
+        void Ignore<T>();
     }
 
     public interface IAsyncMessageBroker : IAsyncMessagePublisher, IAsyncMessageReceiver
@@ -88,6 +98,20 @@ namespace UniRx
             }
 
             return ((IObservable<T>)notifier).AsObservable();
+        }
+
+        public void Ignore<T>()
+        {
+            lock (notifiers)
+            {
+                if (isDisposed) throw new ObjectDisposedException("MessageBroker");
+
+                object notifier;
+                if (notifiers.TryGetValue(typeof(T), out notifier))
+                {
+                    notifiers.Remove(typeof(T));
+                }
+            }
         }
 
         public void Dispose()
@@ -165,6 +189,20 @@ namespace UniRx
             }
 
             return new Subscription<T>(this, asyncMessageReceiver);
+        }
+
+        public void Ignore<T>()
+        {
+            lock (notifiers)
+            {
+                if (isDisposed) throw new ObjectDisposedException("MessageBroker");
+
+                object notifier;
+                if (notifiers.TryGetValue(typeof(T), out notifier))
+                {
+                    notifiers.Remove(typeof(T));
+                }
+            }
         }
 
         public void Dispose()
