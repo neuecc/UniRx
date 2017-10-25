@@ -36,7 +36,7 @@ namespace UniRx.Operators
                 }
             }
 
-            if (ex != null) throw ex;
+            if (ex != null) throw new Exception(null, ex);
             if (!seenValue) throw new InvalidOperationException("No Elements.");
 
             return value;

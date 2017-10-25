@@ -29,7 +29,7 @@ namespace UniRx
             {
                 ThrowIfDisposed();
                 if (!isStopped) throw new InvalidOperationException("AsyncSubject is not completed yet");
-                if (lastError != null) throw lastError;
+                if (lastError != null) throw new Exception(null, lastError);
                 return lastValue;
             }
         }
@@ -315,7 +315,7 @@ namespace UniRx
 
             if (lastError != null)
             {
-                throw lastError;
+                throw new Exception(null, lastError);
             }
 
             if (!hasValue)

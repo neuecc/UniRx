@@ -270,7 +270,7 @@ namespace UniRx
             /// <summary>
             /// Throws the exception.
             /// </summary>
-            public override T Value { get { throw exception; } }
+            public override T Value { get { throw new Exception(null, exception); } }
 
             /// <summary>
             /// Returns the exception.

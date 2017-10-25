@@ -99,7 +99,7 @@ namespace UniRx.InternalUtil
 
         public void OnError(Exception error)
         {
-            throw error;
+            throw new Exception(null, error);
         }
 
         public void OnNext(T value)
