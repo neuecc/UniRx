@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UniRx.InternalUtil;
 using UniRx.Triggers;
 using UnityEngine;
 using System.Threading;
@@ -156,7 +157,8 @@ namespace UniRx
             {
                 if (reThrowOnError && HasError)
                 {
-                    throw new Exception(null, Error);
+                    Error.Rethrow();
+                    throw Error;
                 }
 
                 return false;
@@ -1147,7 +1149,7 @@ namespace UniRx
         internal static class Stubs
         {
             public static readonly Action Nop = () => { };
-            public static readonly Action<Exception> Throw = ex => { throw new Exception(null, ex); };
+            public static readonly Action<Exception> Throw = ex => { ex.Rethrow(); throw ex; };
 
             // Stubs<T>.Ignore can't avoid iOS AOT problem.
             public static void Ignore<T>(T t)
