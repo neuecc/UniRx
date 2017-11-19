@@ -227,7 +227,7 @@ namespace UniRx
             lock (_gate)
             {
                 var disArray = new List<IDisposable>();
-                foreach (var item in disArray)
+                foreach (var item in _disposables)
                 {
                     if (item != null) disArray.Add(item);
                 }

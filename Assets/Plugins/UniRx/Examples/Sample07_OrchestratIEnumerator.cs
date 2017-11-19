@@ -1,4 +1,5 @@
 ﻿#pragma warning disable 0168
+#pragma warning disable 0219
 
 using System;
 using System.Collections;
@@ -40,5 +41,5 @@ namespace UniRx.Examples
     }
 }
 
-
+#pragma warning restore 0219
 #pragma warning restore 0168

@@ -79,7 +79,14 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Empty<T>(IScheduler scheduler)
         {
-            return new EmptyObservable<T>(scheduler);
+            if (scheduler == Scheduler.Immediate)
+            {
+                return ImmutableEmptyObservable<T>.Instance;
+            }
+            else
+            {
+                return new EmptyObservable<T>(scheduler);
+            }
         }
 
         /// <summary>
@@ -103,7 +110,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Never<T>()
         {
-            return new NeverObservable<T>();
+            return ImmutableNeverObservable<T>.Instance;
         }
 
         /// <summary>
@@ -111,7 +118,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Never<T>(T witness)
         {
-            return Never<T>();
+            return ImmutableNeverObservable<T>.Instance;
         }
 
         /// <summary>
@@ -127,15 +134,48 @@ namespace UniRx
         /// </summary>
         public static IObservable<T> Return<T>(T value, IScheduler scheduler)
         {
-            return new ReturnObservable<T>(value, scheduler);
+            if (scheduler == Scheduler.Immediate)
+            {
+                return new ImmediateReturnObservable<T>(value);
+            }
+            else
+            {
+                return new ReturnObservable<T>(value, scheduler);
+            }
         }
 
         /// <summary>
-        /// Same as Observable.Return(Unit.Default);
+        /// Return single sequence Immediately, optimized for Unit(no allocate memory).
+        /// </summary>
+        public static IObservable<Unit> Return(Unit value)
+        {
+            return ImmutableReturnUnitObservable.Instance;
+        }
+
+        /// <summary>
+        /// Return single sequence Immediately, optimized for Boolean(no allocate memory).
+        /// </summary>
+        public static IObservable<bool> Return(bool value)
+        {
+            return (value == true)
+                ? (IObservable<bool>)ImmutableReturnTrueObservable.Instance
+                : (IObservable<bool>)ImmutableReturnFalseObservable.Instance;
+        }
+
+        /// <summary>
+        /// Return single sequence Immediately, optimized for Int32.
+        /// </summary>
+        public static IObservable<Int32> Return(int value)
+        {
+            return ImmutableReturnInt32Observable.GetInt32Observable(value);
+        }
+
+        /// <summary>
+        /// Same as Observable.Return(Unit.Default); but no allocate memory.
         /// </summary>
         public static IObservable<Unit> ReturnUnit()
         {
-            return Return(Unit.Default);
+            return ImmutableReturnUnitObservable.Instance;
         }
 
         /// <summary>

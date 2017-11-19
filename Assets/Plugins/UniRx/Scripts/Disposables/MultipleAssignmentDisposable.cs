@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace UniRx
 {
-    public class MultipleAssignmentDisposable : IDisposable, ICancelable
+    public sealed class MultipleAssignmentDisposable : IDisposable, ICancelable
     {
         static readonly BooleanDisposable True = new BooleanDisposable(true);
 

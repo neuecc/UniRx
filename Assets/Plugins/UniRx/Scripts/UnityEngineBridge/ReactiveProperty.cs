@@ -46,6 +46,9 @@ namespace UniRx
         [NonSerialized]
         IDisposable sourceConnection = null;
 
+        [NonSerialized]
+        Exception lastException = null;
+
         protected virtual IEqualityComparer<T> EqualityComparer
         {
             get
@@ -117,7 +120,6 @@ namespace UniRx
             // because there ReactiveProeprty is `Future/Task/Promise`.
 
             canPublishValueOnSubscribe = false;
-            publisher = new Subject<T>();
             sourceConnection = source.Subscribe(new ReactivePropertyObserver(this));
         }
 
@@ -125,7 +127,6 @@ namespace UniRx
         {
             canPublishValueOnSubscribe = false;
             Value = initialValue; // Value set canPublishValueOnSubcribe = true
-            publisher = new Subject<T>();
             sourceConnection = source.Subscribe(new ReactivePropertyObserver(this));
         }
 
@@ -149,6 +150,12 @@ namespace UniRx
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
+            if (lastException != null)
+            {
+                observer.OnError(lastException);
+                return Disposable.Empty;
+            }
+
             if (isDisposed)
             {
                 observer.OnCompleted();
@@ -178,7 +185,6 @@ namespace UniRx
                 return Disposable.Empty;
             }
         }
-
 
         public void Dispose()
         {
@@ -216,7 +222,7 @@ namespace UniRx
 
         public override string ToString()
         {
-            return (value == null) ? "null" : value.ToString();
+            return (value == null) ? "(null)" : value.ToString();
         }
 
         public bool IsRequiredSubscribeOnCurrentThread()
@@ -243,7 +249,13 @@ namespace UniRx
             {
                 if (System.Threading.Interlocked.Increment(ref isStopped) == 1)
                 {
-                    parent.publisher.OnError(error);
+                    parent.lastException = error;
+                    var p = parent.publisher;
+                    if (p != null)
+                    {
+                        p.OnError(error);
+                    }
+                    parent.Dispose(); // complete subscription
                 }
             }
 
@@ -251,7 +263,13 @@ namespace UniRx
             {
                 if (System.Threading.Interlocked.Increment(ref isStopped) == 1)
                 {
-                    parent.publisher.OnCompleted();
+                    // source was completed but can publish from .Value yet.
+                    var sc = parent.sourceConnection;
+                    parent.sourceConnection = null;
+                    if (sc != null)
+                    {
+                        sc.Dispose();
+                    }
                 }
             }
         }
@@ -262,15 +280,27 @@ namespace UniRx
     /// </summary>
     public class ReadOnlyReactiveProperty<T> : IReadOnlyReactiveProperty<T>, IDisposable, IOptimizedObservable<T>
     {
+#if !UniRxLibrary
+        static readonly IEqualityComparer<T> defaultEqualityComparer = UnityEqualityComparer.GetDefault<T>();
+#else
+        static readonly IEqualityComparer<T> defaultEqualityComparer = EqualityComparer<T>.Default;
+#endif
+
+        readonly bool distinctUntilChanged = true;
+
         bool canPublishValueOnSubscribe = false;
 
         bool isDisposed = false;
+
+        Exception lastException = null;
 
         T value = default(T);
 
         Subject<T> publisher = null;
 
         IDisposable sourceConnection = null;
+
+        bool isSourceCompleted = false;
 
         public T Value
         {
@@ -288,27 +318,69 @@ namespace UniRx
             }
         }
 
+        protected virtual IEqualityComparer<T> EqualityComparer
+        {
+            get
+            {
+                return defaultEqualityComparer;
+            }
+        }
+
         public ReadOnlyReactiveProperty(IObservable<T> source)
         {
-            publisher = new Subject<T>();
-            sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
+            this.sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
+        }
+
+        public ReadOnlyReactiveProperty(IObservable<T> source, bool distinctUntilChanged)
+        {
+            this.distinctUntilChanged = distinctUntilChanged;
+            this.sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
         }
 
         public ReadOnlyReactiveProperty(IObservable<T> source, T initialValue)
         {
-            value = initialValue;
-            canPublishValueOnSubscribe = true;
-            publisher = new Subject<T>();
-            sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
+            this.value = initialValue;
+            this.canPublishValueOnSubscribe = true;
+            this.sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
+        }
+
+        public ReadOnlyReactiveProperty(IObservable<T> source, T initialValue, bool distinctUntilChanged)
+        {
+            this.distinctUntilChanged = distinctUntilChanged;
+            this.value = initialValue;
+            this.canPublishValueOnSubscribe = true;
+            this.sourceConnection = source.Subscribe(new ReadOnlyReactivePropertyObserver(this));
         }
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
+            if (lastException != null)
+            {
+                observer.OnError(lastException);
+                return Disposable.Empty;
+            }
+
             if (isDisposed)
             {
                 observer.OnCompleted();
                 return Disposable.Empty;
             }
+
+            if (isSourceCompleted)
+            {
+                if (canPublishValueOnSubscribe)
+                {
+                    observer.OnNext(value);
+                    observer.OnCompleted();
+                    return Disposable.Empty;
+                }
+                else
+                {
+                    observer.OnCompleted();
+                    return Disposable.Empty;
+                }
+            }
+
 
             if (publisher == null)
             {
@@ -371,7 +443,7 @@ namespace UniRx
 
         public override string ToString()
         {
-            return (value == null) ? "null" : value.ToString();
+            return (value == null) ? "(null)" : value.ToString();
         }
 
         public bool IsRequiredSubscribeOnCurrentThread()
@@ -391,16 +463,42 @@ namespace UniRx
 
             public void OnNext(T value)
             {
-                parent.value = value;
-                parent.canPublishValueOnSubscribe = true;
-                parent.publisher.OnNext(value);
+                if (parent.distinctUntilChanged && parent.canPublishValueOnSubscribe)
+                {
+                    if (!parent.EqualityComparer.Equals(parent.value, value))
+                    {
+                        parent.value = value;
+                        var p = parent.publisher;
+                        if (p != null)
+                        {
+                            p.OnNext(value);
+                        }
+                    }
+                }
+                else
+                {
+                    parent.value = value;
+                    parent.canPublishValueOnSubscribe = true;
+
+                    var p = parent.publisher;
+                    if (p != null)
+                    {
+                        p.OnNext(value);
+                    }
+                }
             }
 
             public void OnError(Exception error)
             {
                 if (System.Threading.Interlocked.Increment(ref isStopped) == 1)
                 {
-                    parent.publisher.OnError(error);
+                    parent.lastException = error;
+                    var p = parent.publisher;
+                    if (p != null)
+                    {
+                        p.OnError(error);
+                    }
+                    parent.Dispose(); // complete subscription
                 }
             }
 
@@ -408,7 +506,27 @@ namespace UniRx
             {
                 if (System.Threading.Interlocked.Increment(ref isStopped) == 1)
                 {
-                    parent.publisher.OnCompleted();
+                    parent.isSourceCompleted = true;
+                    var sc = parent.sourceConnection;
+                    parent.sourceConnection = null;
+                    if (sc != null)
+                    {
+                        sc.Dispose();
+                    }
+
+                    var p = parent.publisher;
+                    parent.publisher = null;
+                    if (p != null)
+                    {
+                        try
+                        {
+                            p.OnCompleted();
+                        }
+                        finally
+                        {
+                            p.Dispose();
+                        }
+                    }
                 }
             }
         }
@@ -434,9 +552,25 @@ namespace UniRx
             return new ReadOnlyReactiveProperty<T>(source);
         }
 
+        /// <summary>
+        /// Create ReadOnlyReactiveProperty with distinctUntilChanged: false.
+        /// </summary>
+        public static ReadOnlyReactiveProperty<T> ToSequentialReadOnlyReactiveProperty<T>(this IObservable<T> source)
+        {
+            return new ReadOnlyReactiveProperty<T>(source, distinctUntilChanged: false);
+        }
+
         public static ReadOnlyReactiveProperty<T> ToReadOnlyReactiveProperty<T>(this IObservable<T> source, T initialValue)
         {
             return new ReadOnlyReactiveProperty<T>(source, initialValue);
+        }
+
+        /// <summary>
+        /// Create ReadOnlyReactiveProperty with distinctUntilChanged: false.
+        /// </summary>
+        public static ReadOnlyReactiveProperty<T> ToSequentialReadOnlyReactiveProperty<T>(this IObservable<T> source, T initialValue)
+        {
+            return new ReadOnlyReactiveProperty<T>(source, initialValue, distinctUntilChanged: false);
         }
 
         public static IObservable<T> SkipLatestValueOnSubscribe<T>(this IReadOnlyReactiveProperty<T> source)

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>UniRx</id>
-        <version>5.2.0</version>
+        <version>5.4.1.0</version>
         <title>UniRx</title>
         <authors>neuecc</authors>
         <owners>neuecc</owners>
@@ -10,18 +10,14 @@
         <description>Reactive Extensions for Unity. This is .NET 3.5 subset of UniRx.</description>
         <releaseNotes>
             <![CDATA[
-Add : ReactiveProperty, ReactiveCollection, ReactiveDictionary
-Add : Observable.Pairwise overload(returns Pair[T])
-Add : Observable.ContinueWith
-Add : Observable.Share
-Add : Observable.ZipLatest
-Add : Observable.WithLatestFrom
-Add : Observable.TakeLast
-Add : Observable.GroupBy
-Add : IObserver.Synchronize
-Add : ISubject.Synchronize
-Fix : Subscribe() throw exception on OnError (this is degraded from UniRx 5.0)
-Breaking Changes : Buffer(windowBoundaries), Buffer(timeSpan, count) should publish value when buffer is empty.
+Improvement: Where().Select(), Select().Where() peformance was optimized that combine funcs at internal
+Improvement: Observable.Return performance was optimized that reduced memory cost
+Improvement: Observable.Return(bool) was optimzied perofmrance that allocate zero memory
+Improvement: Observable.ReturnUnit was optimzied perofmrance that allocate zero memory
+Improvement: Observable.Empty was optimzied perofmrance that allocate zero memory
+Improvement: Observable.Never was optimzied perofmrance that allocate zero memory
+Improvement: ReactiveCollection, ReactiveDictionary implements dispose pattern
+Fix: Remove indexer.set of IReadOnlyReactiveDictionary
             ]]>
         </releaseNotes>
         <language>en-US</language>

@@ -293,17 +293,33 @@ namespace UniRx
             }
         }
 
+        #region IDisposable Support
+
+        private bool disposedValue = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    DisposeSubject(ref collectionReset);
+                    DisposeSubject(ref collectionAdd);
+                    DisposeSubject(ref collectionMove);
+                    DisposeSubject(ref collectionRemove);
+                    DisposeSubject(ref collectionReplace);
+                }
+
+                disposedValue = true;
+            }
+        }
+
         public void Dispose()
         {
-            if (isDisposed) return;
-            isDisposed = true;
-
-            DisposeSubject(ref collectionReset);
-            DisposeSubject(ref collectionAdd);
-            DisposeSubject(ref collectionMove);
-            DisposeSubject(ref collectionRemove);
-            DisposeSubject(ref collectionReplace);
+            Dispose(true);
         }
+        
+        #endregion
     }
 
     public static partial class ReactiveCollectionExtensions

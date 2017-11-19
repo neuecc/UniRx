@@ -7,7 +7,7 @@ namespace UniRx.Operators
 {
     // Do, DoOnError, DoOnCompleted, DoOnTerminate, DoOnSubscribe, DoOnCancel
 
-    public class DoObservable<T> : OperatorObservableBase<T>
+    internal class DoObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly Action<T> onNext;
@@ -87,7 +87,7 @@ namespace UniRx.Operators
         }
     }
 
-    public class DoObserverObservable<T> : OperatorObservableBase<T>
+    internal class DoObserverObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly IObserver<T> observer;
@@ -169,7 +169,7 @@ namespace UniRx.Operators
         }
     }
 
-    public class DoOnErrorObservable<T> : OperatorObservableBase<T>
+    internal class DoOnErrorObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly Action<Exception> onError;
@@ -231,7 +231,7 @@ namespace UniRx.Operators
         }
     }
 
-    public class DoOnCompletedObservable<T> : OperatorObservableBase<T>
+    internal class DoOnCompletedObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly Action onCompleted;
@@ -290,7 +290,7 @@ namespace UniRx.Operators
         }
     }
 
-    public class DoOnTerminateObservable<T> : OperatorObservableBase<T>
+    internal class DoOnTerminateObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly Action onTerminate;
@@ -358,7 +358,7 @@ namespace UniRx.Operators
         }
     }
 
-    public class DoOnSubscribeObservable<T> : OperatorObservableBase<T>
+    internal class DoOnSubscribeObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly Action onSubscribe;
@@ -417,7 +417,7 @@ namespace UniRx.Operators
         }
     }
 
-    public class DoOnCancelObservable<T> : OperatorObservableBase<T>
+    internal class DoOnCancelObservable<T> : OperatorObservableBase<T>
     {
         readonly IObservable<T> source;
         readonly Action onCancel;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UniRx.Diagnostics
 {
-    public class LogEntry
+    public struct LogEntry
     {
         // requires
         public string LoggerName { get; private set; }
@@ -25,6 +25,7 @@ namespace UniRx.Diagnostics
         public object State { get; private set; }
 
         public LogEntry(string loggerName, LogType logType, DateTime timestamp, string message, UnityEngine.Object context = null, Exception exception = null, string stackTrace = null, object state = null)
+            : this()
         {
             this.LoggerName = loggerName;
             this.LogType = logType;

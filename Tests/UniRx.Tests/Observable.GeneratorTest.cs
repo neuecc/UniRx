@@ -103,5 +103,23 @@ namespace UniRx.Tests
             var ex = new Exception();
             Observable.Throw<string>(ex).Materialize().ToArray().Wait().IsCollection(Notification.CreateOnError<string>(ex));
         }
+
+        [TestMethod]
+        public void OptimizeReturnTest()
+        {
+            for (int i = -1; i <= 9; i++)
+            {
+                var r = Observable.Return(i);
+                var xs = r.Record();
+                xs.Values[0].Is(i);
+                r.GetType().FullName.Contains("ImmutableReturnInt32Observable").IsTrue();
+            }
+            foreach (var i in new[] { -2, 10, 100 })
+            {
+                var r = Observable.Return(i);
+                r.Record().Values[0].Is(i);
+                r.GetType().FullName.Contains("ImmediateReturnObservable").IsTrue();
+            }
+        }
     }
 }

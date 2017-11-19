@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !UNITY_5_5_OR_NEWER
+
+using System;
 using UnityEngine;
 
 namespace UniRx
@@ -385,20 +387,6 @@ namespace UniRx
         public IObservable<float> OnJointBreakAsObservable()
         {
             return onJointBreak ?? (onJointBreak = new Subject<float>());
-        }
-
-        Subject<int> onLevelWasLoaded;
-
-        /// <summary>This function is called after a new level was loaded.</summary>
-        public override void OnLevelWasLoaded(int level)
-        {
-            if (onLevelWasLoaded != null) onLevelWasLoaded.OnNext(level);
-        }
-
-        /// <summary>This function is called after a new level was loaded.</summary>
-        public IObservable<int> OnLevelWasLoadedAsObservable()
-        {
-            return onLevelWasLoaded ?? (onLevelWasLoaded = new Subject<int>());
         }
 
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
@@ -876,6 +864,7 @@ namespace UniRx
     }
 }
 
+#endif
 
 // above code is generated from template
 

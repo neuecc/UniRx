@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using UnityEngine;
+using System.Collections.Generic;
 
 namespace UniRx.Operators
 {
@@ -26,7 +26,17 @@ namespace UniRx.Operators
         class DelayFrame : OperatorObserverBase<T, T>
         {
             readonly DelayFrameObservable<T> parent;
-            BooleanDisposable coroutineKey;
+            readonly object gate = new object();
+            readonly QueuePool pool = new QueuePool();
+            int runningEnumeratorCount;
+            bool readyDrainEnumerator;
+            bool running;
+            IDisposable sourceSubscription;
+            Queue<T> currentQueueReference;
+            bool calledCompleted;
+            bool hasError;
+            Exception error;
+            BooleanDisposable cancelationToken;
 
             public DelayFrame(DelayFrameObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
@@ -35,54 +45,125 @@ namespace UniRx.Operators
 
             public IDisposable Run()
             {
-                coroutineKey = new BooleanDisposable();
-                var sourceSubscription = parent.source.Subscribe(this);
-                return StableCompositeDisposable.Create(coroutineKey, sourceSubscription);
+                cancelationToken = new BooleanDisposable();
+
+                var _sourceSubscription = new SingleAssignmentDisposable();
+                sourceSubscription = _sourceSubscription;
+                _sourceSubscription.Disposable = parent.source.Subscribe(this);
+
+                return StableCompositeDisposable.Create(cancelationToken, sourceSubscription);
             }
 
-            IEnumerator OnNextDelay(T value)
+            IEnumerator DrainQueue(Queue<T> q, int frameCount)
             {
-                var frameCount = parent.frameCount;
-                while (!coroutineKey.IsDisposed && frameCount-- != 0)
+                lock (gate)
+                {
+                    readyDrainEnumerator = false; // use next queue.
+                    running = false;
+                }
+
+                while (!cancelationToken.IsDisposed && frameCount-- != 0)
                 {
                     yield return null;
                 }
-                if (!coroutineKey.IsDisposed)
-                {
-                    observer.OnNext(value);
-                }
-            }
 
-            IEnumerator OnCompletedDelay()
-            {
-                var frameCount = parent.frameCount;
-                while (!coroutineKey.IsDisposed && frameCount-- != 0)
+                try
                 {
-                    yield return null;
-                }
-                if (!coroutineKey.IsDisposed)
-                {
-                    coroutineKey.Dispose();
+                    if (q != null)
+                    {
+                        while (q.Count > 0 && !hasError)
+                        {
+                            if (cancelationToken.IsDisposed) break;
 
-                    try { observer.OnCompleted(); }
-                    finally { Dispose(); }
+                            lock (gate)
+                            {
+                                running = true;
+                            }
+
+                            var value = q.Dequeue();
+                            observer.OnNext(value);
+
+                            lock (gate)
+                            {
+                                running = false;
+                            }
+                        }
+
+                        if (q.Count == 0)
+                        {
+                            pool.Return(q);
+                        }
+                    }
+
+                    if (hasError)
+                    {
+                        if (!cancelationToken.IsDisposed)
+                        {
+                            cancelationToken.Dispose();
+
+                            try { observer.OnError(error); } finally { Dispose(); }
+                        }
+                    }
+                    else if (calledCompleted)
+                    {
+                        lock (gate)
+                        {
+                            // not self only
+                            if (runningEnumeratorCount != 1) yield break;
+                        }
+
+                        if (!cancelationToken.IsDisposed)
+                        {
+                            cancelationToken.Dispose();
+
+                            try { observer.OnCompleted(); }
+                            finally { Dispose(); }
+                        }
+                    }
+                }
+                finally
+                {
+                    lock (gate)
+                    {
+                        runningEnumeratorCount--;
+                    }
                 }
             }
 
             public override void OnNext(T value)
             {
-                if (coroutineKey.IsDisposed) return;
+                if (cancelationToken.IsDisposed) return;
+
+                Queue<T> targetQueue = null;
+                lock (gate)
+                {
+                    if (!readyDrainEnumerator)
+                    {
+                        readyDrainEnumerator = true;
+                        runningEnumeratorCount++;
+                        targetQueue = currentQueueReference = pool.Get();
+                        targetQueue.Enqueue(value);
+                    }
+                    else
+                    {
+                        if (currentQueueReference != null) // null - if doesn't start OnNext and start OnCompleted
+                        {
+                            currentQueueReference.Enqueue(value);
+                        }
+                        return;
+                    }
+                }
 
                 switch (parent.frameCountType)
                 {
                     case FrameCountType.Update:
-                        MainThreadDispatcher.StartUpdateMicroCoroutine(OnNextDelay(value));
+                        MainThreadDispatcher.StartUpdateMicroCoroutine(DrainQueue(targetQueue, parent.frameCount));
                         break;
                     case FrameCountType.FixedUpdate:
-                        MainThreadDispatcher.StartFixedUpdateMicroCoroutine(OnNextDelay(value));
+                        MainThreadDispatcher.StartFixedUpdateMicroCoroutine(DrainQueue(targetQueue, parent.frameCount));
                         break;
                     case FrameCountType.EndOfFrame:
-                        MainThreadDispatcher.StartEndOfFrameMicroCoroutine(OnNextDelay(value));
+                        MainThreadDispatcher.StartEndOfFrameMicroCoroutine(DrainQueue(targetQueue, parent.frameCount));
                         break;
                     default:
                         throw new ArgumentException("Invalid FrameCountType:" + parent.frameCountType);
@@ -91,29 +172,87 @@ namespace UniRx.Operators
 
             public override void OnError(Exception error)
             {
-                if (coroutineKey.IsDisposed) return;
+                sourceSubscription.Dispose(); // stop subscription
 
-                coroutineKey.Dispose();
+                if (cancelationToken.IsDisposed) return;
+
+                lock (gate)
+                {
+                    if (running)
+                    {
+                        hasError = true;
+                        this.error = error;
+                        return;
+                    }
+                }
+
+                cancelationToken.Dispose();
                 try { base.observer.OnError(error); } finally { Dispose(); }
             }
 
             public override void OnCompleted()
             {
-                if (coroutineKey.IsDisposed) return;
+                sourceSubscription.Dispose(); // stop subscription
+
+                if (cancelationToken.IsDisposed) return;
+
+                lock (gate)
+                {
+                    calledCompleted = true;
+
+                    if (!readyDrainEnumerator)
+                    {
+                        readyDrainEnumerator = true;
+                        runningEnumeratorCount++;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
 
                 switch (parent.frameCountType)
                 {
                     case FrameCountType.Update:
-                        MainThreadDispatcher.StartUpdateMicroCoroutine(OnCompletedDelay());
+                        MainThreadDispatcher.StartUpdateMicroCoroutine(DrainQueue(null, parent.frameCount));
                         break;
                     case FrameCountType.FixedUpdate:
-                        MainThreadDispatcher.StartFixedUpdateMicroCoroutine(OnCompletedDelay());
+                        MainThreadDispatcher.StartFixedUpdateMicroCoroutine(DrainQueue(null, parent.frameCount));
                         break;
                     case FrameCountType.EndOfFrame:
-                        MainThreadDispatcher.StartEndOfFrameMicroCoroutine(OnCompletedDelay());
+                        MainThreadDispatcher.StartEndOfFrameMicroCoroutine(DrainQueue(null, parent.frameCount));
                         break;
                     default:
                         throw new ArgumentException("Invalid FrameCountType:" + parent.frameCountType);
+                }
+            }
+        }
+
+        class QueuePool
+        {
+            readonly object gate = new object();
+            readonly Queue<Queue<T>> pool = new Queue<Queue<T>>(2);
+
+            public Queue<T> Get()
+            {
+                lock (gate)
+                {
+                    if (pool.Count == 0)
+                    {
+                        return new Queue<T>(2);
+                    }
+                    else
+                    {
+                        return pool.Dequeue();
+                    }
+                }
+            }
+
+            public void Return(Queue<T> q)
+            {
+                lock (gate)
+                {
+                    pool.Enqueue(q);
                 }
             }
         }

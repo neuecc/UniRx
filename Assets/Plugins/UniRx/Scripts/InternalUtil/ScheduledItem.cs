@@ -10,7 +10,7 @@ namespace UniRx.InternalUtil
     /// <summary>
     /// Abstract base class for scheduled work items.
     /// </summary>
-    public class ScheduledItem : IComparable<ScheduledItem>
+    internal class ScheduledItem : IComparable<ScheduledItem>
     {
         private readonly BooleanDisposable _disposable = new BooleanDisposable();
         private readonly TimeSpan _dueTime;
@@ -181,7 +181,7 @@ namespace UniRx.InternalUtil
     /// </summary>
     /// <remarks>This type is not thread safe; users should ensure proper synchronization.</remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "But it *is* a queue!")]
-    public class SchedulerQueue
+    internal class SchedulerQueue
     {
         private readonly PriorityQueue<ScheduledItem> _queue;
 

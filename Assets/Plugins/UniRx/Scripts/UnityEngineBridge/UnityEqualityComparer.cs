@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UniRx;
 using UnityEngine;
 
 namespace UniRx
@@ -17,17 +14,30 @@ namespace UniRx
         public static readonly IEqualityComparer<Bounds> Bounds = new BoundsEqualityComparer();
         public static readonly IEqualityComparer<Quaternion> Quaternion = new QuaternionEqualityComparer();
 
+        static readonly RuntimeTypeHandle vector2Type = typeof(Vector2).TypeHandle;
+        static readonly RuntimeTypeHandle vector3Type = typeof(Vector3).TypeHandle;
+        static readonly RuntimeTypeHandle vector4Type = typeof(Vector4).TypeHandle;
+        static readonly RuntimeTypeHandle colorType = typeof(Color).TypeHandle;
+        static readonly RuntimeTypeHandle rectType = typeof(Rect).TypeHandle;
+        static readonly RuntimeTypeHandle boundsType = typeof(Bounds).TypeHandle;
+        static readonly RuntimeTypeHandle quaternionType = typeof(Quaternion).TypeHandle;
+
+        static class RuntimeTypeHandlerCache<T>
+        {
+            public static readonly RuntimeTypeHandle TypeHandle = typeof(T).TypeHandle;
+        }
+
         public static IEqualityComparer<T> GetDefault<T>()
         {
-            var t = typeof(T);
+            var t = RuntimeTypeHandlerCache<T>.TypeHandle;
 
-            if (t == typeof(Vector2)) return (IEqualityComparer<T>)UnityEqualityComparer.Vector2;
-            if (t == typeof(Vector3)) return (IEqualityComparer<T>)UnityEqualityComparer.Vector3;
-            if (t == typeof(Vector4)) return (IEqualityComparer<T>)UnityEqualityComparer.Vector4;
-            if (t == typeof(Color)) return (IEqualityComparer<T>)UnityEqualityComparer.Color;
-            if (t == typeof(Rect)) return (IEqualityComparer<T>)UnityEqualityComparer.Rect;
-            if (t == typeof(Bounds)) return (IEqualityComparer<T>)UnityEqualityComparer.Bounds;
-            if (t == typeof(Quaternion)) return (IEqualityComparer<T>)UnityEqualityComparer.Quaternion;
+            if (t.Equals(vector2Type)) return (IEqualityComparer<T>)UnityEqualityComparer.Vector2;
+            if (t.Equals(vector3Type)) return (IEqualityComparer<T>)UnityEqualityComparer.Vector3;
+            if (t.Equals(vector4Type)) return (IEqualityComparer<T>)UnityEqualityComparer.Vector4;
+            if (t.Equals(colorType)) return (IEqualityComparer<T>)UnityEqualityComparer.Color;
+            if (t.Equals(rectType)) return (IEqualityComparer<T>)UnityEqualityComparer.Rect;
+            if (t.Equals(boundsType)) return (IEqualityComparer<T>)UnityEqualityComparer.Bounds;
+            if (t.Equals(quaternionType)) return (IEqualityComparer<T>)UnityEqualityComparer.Quaternion;
 
             return EqualityComparer<T>.Default;
         }

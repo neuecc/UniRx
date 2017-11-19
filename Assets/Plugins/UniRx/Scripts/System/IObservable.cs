@@ -2,7 +2,7 @@
 
 using System;
 
-#if !NETFX_CORE
+#if !(NETFX_CORE || NET_4_6)
 
 namespace UniRx
 {

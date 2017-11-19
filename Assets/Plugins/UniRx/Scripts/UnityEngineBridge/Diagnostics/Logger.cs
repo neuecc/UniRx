@@ -133,10 +133,7 @@ namespace UniRx.Diagnostics
         /// <summary>Publish raw LogEntry.</summary>
         public virtual void Raw(LogEntry logEntry)
         {
-            if (logEntry != null)
-            {
-                logPublisher(logEntry);
-            }
+            logPublisher(logEntry);
         }
     }
 }
