@@ -373,13 +373,21 @@ namespace UniRx
 #if SupportCustomYieldInstruction
                     var current = enumerator.Current;
                     var customHandler = current as ICustomYieldInstructionErrorHandler;
+                    if (customHandler == null)
+                    {
+                        IEnumerator currentAsEnumerator = current as IEnumerator;
+                        if (currentAsEnumerator != null)
+                        {
+                            customHandler = currentAsEnumerator.ToYieldInstruction();
+                        }
+                    }
                     if (customHandler != null && customHandler.IsReThrowOnError)
                     {
                         // If throws exception in Custom YieldInsrtuction, can't handle parent coroutine.
                         // It is C# limitation.
                         // so store error info and retrieve from parent.
                         customHandler.ForceDisableRethrowOnError();
-                        yield return current;
+                        yield return customHandler;
                         customHandler.ForceEnableRethrowOnError();
 
                         if (customHandler.HasError)
