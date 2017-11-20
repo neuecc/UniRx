@@ -106,7 +106,7 @@ parallel.Subscribe(xs =>
 Progress information is available:
 
 ```csharp
-// notifier for progress use ScheudledNotifier or new Progress<float>(/* action */)
+// notifier for progress use ScheduledNotifier or new Progress<float>(/* action */)
 var progressNotifier = new ScheduledNotifier<float>();
 progressNotifier.Subscribe(x => Debug.Log(x)); // write www.progress
 
