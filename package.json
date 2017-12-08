@@ -2,5 +2,6 @@
   "name": "unirx",
   "version": "5.5.0",
   "description": "Reactive Extensions for Unity Edit",
+  "keywords": "unity3d-package",
   "license": "MIT"
 }
