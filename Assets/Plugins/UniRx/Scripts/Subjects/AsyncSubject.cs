@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UniRx.InternalUtil;
+using System.Runtime.ExceptionServices;
 
 #if (NET_4_6)
 using System.Runtime.CompilerServices;
@@ -29,7 +30,13 @@ namespace UniRx
             {
                 ThrowIfDisposed();
                 if (!isStopped) throw new InvalidOperationException("AsyncSubject is not completed yet");
-                if (lastError != null) throw lastError;
+                if (lastError != null)
+                {
+#if NET_4_6
+                    ExceptionDispatchInfo.Capture(lastError).Throw();
+#endif
+                    throw lastError;
+                }
                 return lastValue;
             }
         }
@@ -315,6 +322,9 @@ namespace UniRx
 
             if (lastError != null)
             {
+#if NET_4_6
+                ExceptionDispatchInfo.Capture(lastError).Throw();
+#endif
                 throw lastError;
             }
 
