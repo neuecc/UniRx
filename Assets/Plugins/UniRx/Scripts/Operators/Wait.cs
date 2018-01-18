@@ -1,5 +1,8 @@
 using System;
+
+#if NET_4_6
 using System.Runtime.ExceptionServices;
+#endif
 
 namespace UniRx.Operators
 {

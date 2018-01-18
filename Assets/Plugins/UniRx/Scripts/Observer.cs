@@ -1,6 +1,9 @@
 using System;
 using System.Threading;
+
+#if NET_4_6
 using System.Runtime.ExceptionServices;
+#endif
 
 namespace UniRx
 {

@@ -8,7 +8,10 @@ using System.Collections.Generic;
 using UniRx.Triggers;
 using UnityEngine;
 using System.Threading;
+
+#if NET_4_6
 using System.Runtime.ExceptionServices;
+#endif
 
 #if !UniRxLibrary
 using SchedulerUnity = UniRx.Scheduler;

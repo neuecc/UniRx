@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using UniRx.InternalUtil;
-using System.Runtime.ExceptionServices;
 
 #if (NET_4_6)
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Runtime.ExceptionServices;
 #endif
 
 namespace UniRx

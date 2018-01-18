@@ -1,7 +1,10 @@
-﻿using System;
-using System.Runtime.ExceptionServices;
+using System;
 using System.Collections.Generic;
 using System.Text;
+
+#if NET_4_6
+using System.Runtime.ExceptionServices;
+#endif
 
 namespace UniRx.InternalUtil
 {
