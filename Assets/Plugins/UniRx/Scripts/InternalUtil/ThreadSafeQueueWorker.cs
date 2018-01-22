@@ -62,6 +62,35 @@ namespace UniRx.InternalUtil
                 }
             }
         }
+        
+        public void RemoveActionByState(object state)
+        {
+            lock (gate)
+            {
+                Action<object>[] targetList;
+                object[] targetStates;
+                
+                if (dequing)
+                {
+                    targetList = waitingList;
+                    targetStates = waitingStates;
+                }
+                else
+                {
+                    targetList = actionList;
+                    targetStates = actionStates;
+                }
+                
+                for (int i = 0; i < targetList.Length; i++)
+                {
+                    if (targetStates[i] == state)
+                    {
+                        targetList[i] = null;
+                        targetStates[i] = null;
+                    }
+                }
+            }
+        }
 
         public void ExecuteAll(Action<Exception> unhandledExceptionCallback)
         {
@@ -78,7 +107,10 @@ namespace UniRx.InternalUtil
                 var state = actionStates[i];
                 try
                 {
-                    action(state);
+                    if (action != null)
+                    {
+                        action(state);
+                    }
                 }
                 catch (Exception ex)
                 {

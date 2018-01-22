@@ -62,6 +62,8 @@ namespace UniRx
 
             ThreadSafeQueueWorker editorQueueWorker = new ThreadSafeQueueWorker();
 
+            Dictionary<IEnumerator, object> routineIdMap = new Dictionary<IEnumerator, object>(); 
+
             EditorThreadDispatcher()
             {
                 UnityEditor.EditorApplication.update += Update;
@@ -98,15 +100,24 @@ namespace UniRx
 
             public void PseudoStartCoroutine(IEnumerator routine)
             {
-                editorQueueWorker.Enqueue(_ => ConsumeEnumerator(routine), null);
+                var routineId = new object();
+                routineIdMap[routine] = routineId;
+                editorQueueWorker.Enqueue(id => ConsumeEnumerator(routine, id), routineId);
             }
 
+            public void PseudoStopCoroutine(IEnumerator routine)
+            {
+                var routineId = routineIdMap[routine];
+                editorQueueWorker.RemoveActionByState(routineId);
+                routineIdMap.Remove(routine);
+            }
+            
             void Update()
             {
                 editorQueueWorker.ExecuteAll(x => Debug.LogException(x));
             }
 
-            void ConsumeEnumerator(IEnumerator routine)
+            void ConsumeEnumerator(IEnumerator routine, object routineId)
             {
                 if (routine.MoveNext())
                 {
@@ -120,13 +131,13 @@ namespace UniRx
                     if (type == typeof(WWW))
                     {
                         var www = (WWW)current;
-                        editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitWWW(www, routine)), null);
+                        editorQueueWorker.Enqueue(id => ConsumeEnumerator(UnwrapWaitWWW(www, routine, id), id), routineId);
                         return;
                     }
                     else if (type == typeof(AsyncOperation))
                     {
                         var asyncOperation = (AsyncOperation)current;
-                        editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitAsyncOperation(asyncOperation, routine)), null);
+                        editorQueueWorker.Enqueue(id => ConsumeEnumerator(UnwrapWaitAsyncOperation(asyncOperation, routine, id), id), routineId);
                         return;
                     }
                     else if (type == typeof(WaitForSeconds))
@@ -134,7 +145,7 @@ namespace UniRx
                         var waitForSeconds = (WaitForSeconds)current;
                         var accessor = typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic);
                         var second = (float)accessor.GetValue(waitForSeconds);
-                        editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitForSeconds(second, routine)), null);
+                        editorQueueWorker.Enqueue(id => ConsumeEnumerator(UnwrapWaitForSeconds(second, routine, id), id), routineId);
                         return;
                     }
                     else if (type == typeof(Coroutine))
@@ -146,35 +157,35 @@ namespace UniRx
                     else if (current is IEnumerator)
                     {
                         var enumerator = (IEnumerator)current;
-                        editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapEnumerator(enumerator, routine)), null);
+                        editorQueueWorker.Enqueue(id => ConsumeEnumerator(UnwrapEnumerator(enumerator, routine, id), id), routineId);
                         return;
                     }
 #endif
 
                     ENQUEUE:
-                    editorQueueWorker.Enqueue(_ => ConsumeEnumerator(routine), null); // next update
+                    editorQueueWorker.Enqueue(id => ConsumeEnumerator(routine, id), routineId); // next update
                 }
             }
 
-            IEnumerator UnwrapWaitWWW(WWW www, IEnumerator continuation)
+            IEnumerator UnwrapWaitWWW(WWW www, IEnumerator continuation, object routineId)
             {
                 while (!www.isDone)
                 {
                     yield return null;
                 }
-                ConsumeEnumerator(continuation);
+                ConsumeEnumerator(continuation, routineId);
             }
 
-            IEnumerator UnwrapWaitAsyncOperation(AsyncOperation asyncOperation, IEnumerator continuation)
+            IEnumerator UnwrapWaitAsyncOperation(AsyncOperation asyncOperation, IEnumerator continuation, object routineId)
             {
                 while (!asyncOperation.isDone)
                 {
                     yield return null;
                 }
-                ConsumeEnumerator(continuation);
+                ConsumeEnumerator(continuation, routineId);
             }
 
-            IEnumerator UnwrapWaitForSeconds(float second, IEnumerator continuation)
+            IEnumerator UnwrapWaitForSeconds(float second, IEnumerator continuation, object routineId)
             {
                 var startTime = DateTimeOffset.UtcNow;
                 while (true)
@@ -187,16 +198,16 @@ namespace UniRx
                         break;
                     }
                 };
-                ConsumeEnumerator(continuation);
+                ConsumeEnumerator(continuation, routineId);
             }
 
-            IEnumerator UnwrapEnumerator(IEnumerator enumerator, IEnumerator continuation)
+            IEnumerator UnwrapEnumerator(IEnumerator enumerator, IEnumerator continuation, object routineId)
             {
                 while (enumerator.MoveNext())
                 {
                     yield return null;
                 }
-                ConsumeEnumerator(continuation);
+                ConsumeEnumerator(continuation, routineId);
             }
         }
 
@@ -372,6 +383,19 @@ namespace UniRx
             }
         }
 
+        new public static void StopCoroutine(IEnumerator routine)
+        {
+#if UNITY_EDITOR
+            if (!ScenePlaybackDetector.IsPlaying) { EditorThreadDispatcher.Instance.PseudoStopCoroutine(routine); return; }
+#endif
+            
+            var dispatcher = Instance;
+            if (dispatcher != null)
+            {
+                (dispatcher as MonoBehaviour).StopCoroutine(routine);
+            }
+        }
+        
         public static void RegisterUnhandledExceptionCallback(Action<Exception> exceptionCallback)
         {
             if (exceptionCallback == null)
