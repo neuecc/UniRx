@@ -201,6 +201,18 @@ namespace UniRx.Operators
 
                 public void OnCompleted()
                 {
+                    lock (parent.gate)
+                    {
+                        if (parent.isUpdated)
+                        {
+                            parent.isUpdated = false;
+                            parent.observer.OnNext(parent.latestValue);
+                        }
+                        if (parent.isCompleted)
+                        {
+                            try { parent.observer.OnCompleted(); } finally { parent.Dispose(); }
+                        }
+                    }
                 }
 
                 public void OnError(Exception error)
