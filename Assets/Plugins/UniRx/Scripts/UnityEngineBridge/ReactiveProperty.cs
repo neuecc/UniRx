@@ -100,6 +100,14 @@ namespace UniRx
                 return canPublishValueOnSubscribe;
             }
         }
+		
+		public bool HasValueNotNull
+        {
+            get
+            {
+                return canPublishValueOnSubscribe && value != null;
+            }
+        }
 
         public ReactiveProperty()
             : this(default(T))
