@@ -23,7 +23,7 @@ namespace UniRx
             get
             {
                 ThrowIfDisposed();
-                if (lastError != null) { lastError.Rethrow(); throw lastError; }
+                if (lastError != null) lastError.Throw();
                 return lastValue;
             }
         }

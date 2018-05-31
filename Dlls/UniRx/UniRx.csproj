@@ -100,6 +100,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\AscynLock.cs">
       <Link>InternalUtil\AscynLock.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\ExceptionExtensions.cs">
+      <Link>ExceptionExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\ImmutableList.cs">
       <Link>InternalUtil\ImmutableList.cs</Link>
     </Compile>

@@ -271,7 +271,7 @@ namespace UniRx
             /// <summary>
             /// Throws the exception.
             /// </summary>
-            public override T Value { get { exception.Rethrow(); throw exception; } }
+            public override T Value { get { exception.Throw(); throw exception; } }
 
             /// <summary>
             /// Returns the exception.

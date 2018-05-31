@@ -157,8 +157,7 @@ namespace UniRx
             {
                 if (reThrowOnError && HasError)
                 {
-                    Error.Rethrow();
-                    throw Error;
+                    Error.Throw();
                 }
 
                 return false;
@@ -1149,7 +1148,7 @@ namespace UniRx
         internal static class Stubs
         {
             public static readonly Action Nop = () => { };
-            public static readonly Action<Exception> Throw = ex => { ex.Rethrow(); throw ex; };
+            public static readonly Action<Exception> Throw = ex => { ex.Throw(); };
 
             // Stubs<T>.Ignore can't avoid iOS AOT problem.
             public static void Ignore<T>(T t)

@@ -99,8 +99,7 @@ namespace UniRx.InternalUtil
 
         public void OnError(Exception error)
         {
-            error.Rethrow();
-            throw error;
+            error.Throw();
         }
 
         public void OnNext(T value)

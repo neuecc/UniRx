@@ -4,11 +4,12 @@
 
 	static class ExceptionExtensions
 	{
-		public static void Rethrow(this Exception exception)
+		public static void Throw(this Exception exception)
 		{
 #if NET_4_6
 			System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
 #endif
+			throw exception;
 		}
 	}
 }
