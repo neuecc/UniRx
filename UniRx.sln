@@ -1,12 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.12
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.CSharp.Plugins", "UniRx.CSharp.Plugins.csproj", "{261425B8-5130-5906-0900-47C2D623D55C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.CSharp", "UniRx.CSharp.csproj", "{8D313F3E-8834-BB21-0B11-13E35DA39B9D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRxAnalyzer", "Analyzer\UniRxAnalyzer\UniRxAnalyzer\UniRxAnalyzer.csproj", "{08E3D837-5096-4CB4-84B2-149000DC691D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRxAnalyzer.Test", "Analyzer\UniRxAnalyzer\UniRxAnalyzer.Test\UniRxAnalyzer.Test.csproj", "{7CB72B4B-5866-45E6-AA99-1323D26A293F}"
@@ -21,20 +17,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Library", "Dlls\UniRx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "Dlls\UniRx\UniRx.csproj", "{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Plugins", "UniRx.Plugins.csproj", "{0B1B1D3A-D95D-417E-C8DD-F34B484BBEF7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{261425B8-5130-5906-0900-47C2D623D55C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{261425B8-5130-5906-0900-47C2D623D55C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{261425B8-5130-5906-0900-47C2D623D55C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{261425B8-5130-5906-0900-47C2D623D55C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D313F3E-8834-BB21-0B11-13E35DA39B9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D313F3E-8834-BB21-0B11-13E35DA39B9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D313F3E-8834-BB21-0B11-13E35DA39B9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D313F3E-8834-BB21-0B11-13E35DA39B9D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{08E3D837-5096-4CB4-84B2-149000DC691D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{08E3D837-5096-4CB4-84B2-149000DC691D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08E3D837-5096-4CB4-84B2-149000DC691D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,8 +53,15 @@ Global
 		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B1B1D3A-D95D-417E-C8DD-F34B484BBEF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B1B1D3A-D95D-417E-C8DD-F34B484BBEF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B1B1D3A-D95D-417E-C8DD-F34B484BBEF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B1B1D3A-D95D-417E-C8DD-F34B484BBEF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3D27B1A-B312-4838-B744-B2FAC0C6F1E8}
 	EndGlobalSection
 EndGlobal
