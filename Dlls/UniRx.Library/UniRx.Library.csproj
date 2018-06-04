@@ -237,6 +237,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\Do.cs">
       <Link>Operators\Do.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\DoAfterSubscribe.cs">
+      <Link>Operators\DoAfterSubscribe.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Operators\Empty.cs">
       <Link>Operators\Empty.cs</Link>
     </Compile>
