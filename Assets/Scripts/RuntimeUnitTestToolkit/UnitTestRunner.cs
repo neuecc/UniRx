@@ -5,7 +5,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections;
+#if CSHARP_7_OR_LATER
 using UniRx.Async;
+#endif
 
 namespace RuntimeUnitTestToolkit
 {

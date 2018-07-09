@@ -17,6 +17,7 @@ namespace RuntimeUnitTestToolkit
 {
     public static class ImportUnitTestLoader
     {
+#if !(UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Register()
         {
@@ -46,6 +47,7 @@ namespace RuntimeUnitTestToolkit
             UnitTest.RegisterAllMethods<ToTest>();
             UnitTest.RegisterAllMethods<WhenAllTest>();
         }
+#endif
     }
 
 
