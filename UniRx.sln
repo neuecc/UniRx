@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "Assembly-CSharp-firstpass.csproj", "{FC6D064E-28ED-A578-0D72-8E424343BF9A}"
+VisualStudioVersion = 15.0.27703.2000
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-firstpass", "Assembly-CSharp-firstpass.csproj", "{FC6D064E-28ED-A578-0D72-8E424343BF9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "Assembly-CSharp.csproj", "{C46B99A5-0F0F-2FEE-50C8-DAE79AA3F247}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{C46B99A5-0F0F-2FEE-50C8-DAE79AA3F247}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRxAnalyzer", "Analyzer\UniRxAnalyzer\UniRxAnalyzer\UniRxAnalyzer.csproj", "{08E3D837-5096-4CB4-84B2-149000DC691D}"
 EndProject
@@ -16,8 +18,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Tests", "Tests\UniRx.Tests\UniRx.Tests.csproj", "{BED8E326-96B5-4B12-8834-FBEB3FA11C04}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Library", "Dlls\UniRx.Library\UniRx.Library.csproj", "{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "Dlls\UniRx\UniRx.csproj", "{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,12 +57,11 @@ Global
 		{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21C57E17-D4B8-4DA4-A6A2-07D8B2E5B3BD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8AFAD8D0-5D50-4A76-8380-E99FE108A1E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A9707E9-3CC5-49EF-ACE4-219773744213}
 	EndGlobalSection
 EndGlobal
