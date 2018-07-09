@@ -1,0 +1,148 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".txt" #>
+<#
+    int MaxCount = 7;
+    Func<int, string> BuildGenerics = x => "<" + string.Join(", ", Enumerable.Range(1, x).Select(y => $"T{y}")) + ">";
+    Func<int, string> BuildArgument = x => string.Join(", ", Enumerable.Range(1, x).Select(y => $"UniTask<T{y}> task{y}"));
+    Func<int, string> BuildTuple = x => "(" + string.Join(", ", Enumerable.Range(1, x).Select(y => $"T{y} result{y}")) + ")";
+    Func<int, string> BuildMethodParam = x => string.Join(", ", Enumerable.Range(1, x).Select(y => $"task{y}"));
+    Func<int, string> BuildTupleType = x => "(" + string.Join(", ", Enumerable.Range(1, x).Select(y => $"T{y}")) + ")";
+    Func<int, string> BuildTupleResult = x => "(" + string.Join(", ", Enumerable.Range(1, x).Select(y => $"parent.result{y}")) + ")";
+#>
+#if CSHARP_7_OR_LATER
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
+using System.Threading;
+
+namespace UniRx.Async
+{
+    public partial struct UniTask
+    {
+<# for(var i = 2; i <= MaxCount; i++) { #>
+        public static async UniTask<<#= BuildTuple(i) #>> WhenAll<#= BuildGenerics(i) #>(<#= BuildArgument(i) #>)
+        {
+            return await new WhenAllPromise<#= BuildGenerics(i) #>(<#= BuildMethodParam(i) #>);
+        }
+
+<# } #>
+<# for(var i = 2; i <= MaxCount; i++) { #>
+        class WhenAllPromise<#= BuildGenerics(i) #>
+        {
+            const int MaxCount = <#= i #>;
+
+<# for(var j = 1; j <= i; j++) { #>
+            T<#= j #> result<#= j #>;
+<# } #>
+            ExceptionDispatchInfo exception;
+            int completeCount;
+            Action whenComplete;
+
+            public WhenAllPromise(<#= BuildArgument(i) #>)
+            {
+                this.completeCount = 0;
+                this.whenComplete = null;
+<# for(var j = 1; j <= i; j++) { #>
+                this.result<#= j #> = default(T<#= j #>);
+<# } #>
+                this.exception = null;
+
+<# for(var j = 1; j <= i; j++) { #>
+                RunTask<#= j #>(task<#= j #>).Forget();
+<# } #>
+            }
+
+            void TryCallContinuation()
+            {
+                var action = Interlocked.Exchange(ref whenComplete, null);
+                if (action != null)
+                {
+                    action.Invoke();
+                }
+            }
+
+<# for(var j = 1; j <= i; j++) { #>
+            async UniTaskVoid RunTask<#= j #>(UniTask<T<#= j #>> task)
+            {
+                try
+                {
+                    result<#= j #> = await task;
+                }
+                catch (Exception ex)
+                {
+                    exception = ExceptionDispatchInfo.Capture(ex);
+                    TryCallContinuation();
+                    return;
+                }
+
+                var count = Interlocked.Increment(ref completeCount);
+                if (count == MaxCount)
+                {
+                    TryCallContinuation();
+                }
+            }
+
+<# } #>
+
+            public Awaiter GetAwaiter()
+            {
+                return new Awaiter(this);
+            }
+
+            public struct Awaiter : ICriticalNotifyCompletion
+            {
+                WhenAllPromise<#= BuildGenerics(i) #> parent;
+
+                public Awaiter(WhenAllPromise<#= BuildGenerics(i) #> parent)
+                {
+                    this.parent = parent;
+                }
+
+                public bool IsCompleted
+                {
+                    get
+                    {
+                        return parent.exception != null || parent.completeCount == MaxCount;
+                    }
+                }
+
+                public <#= BuildTupleType(i) #> GetResult()
+                {
+                    if (parent.exception != null)
+                    {
+                        parent.exception.Throw();
+                    }
+
+                    return <#= BuildTupleResult(i) #>;
+                }
+
+                public void OnCompleted(Action continuation)
+                {
+                    UnsafeOnCompleted(continuation);
+                }
+
+                public void UnsafeOnCompleted(Action continuation)
+                {
+                    parent.whenComplete = continuation;
+                    if (IsCompleted)
+                    {
+                        var action = Interlocked.Exchange(ref parent.whenComplete, null);
+                        if (action != null)
+                        {
+                            action();
+                        }
+                    }
+                }
+            }
+        }
+
+<# } #>
+    }
+}
+#endif
