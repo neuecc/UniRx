@@ -2,6 +2,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -86,6 +87,11 @@ namespace UniRx.Async
             return new UniTask(promise);
         }
 
+        public static IEnumerator ToCoroutine(this UniTask task)
+        {
+            return new ToCoroutineEnumerator(task);
+        }
+
         public static async UniTask<T> Timeout<T>(this UniTask<T> task, TimeSpan timeout, CancellationTokenSource cancellationTokenSource = null)
         {
             if (cancellationTokenSource == null)
@@ -103,6 +109,40 @@ namespace UniRx.Async
 
             cancellationTokenSource.Cancel();
             return value;
+        }
+
+        class ToCoroutineEnumerator : IEnumerator
+        {
+            bool completed;
+
+            public ToCoroutineEnumerator(UniTask task)
+            {
+                completed = false;
+                RunTask(task).Forget();
+            }
+
+            async UniTaskVoid RunTask(UniTask task)
+            {
+                try
+                {
+                    await task;
+                }
+                finally
+                {
+                    completed = true;
+                }
+            }
+
+            public object Current => null;
+
+            public bool MoveNext()
+            {
+                return !completed;
+            }
+
+            public void Reset()
+            {
+            }
         }
     }
 }

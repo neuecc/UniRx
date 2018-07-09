@@ -15,6 +15,7 @@ namespace UniRx.Tests
         public static void Register()
         {
             UnitTest.RegisterAllMethods<_ManualyTest>();
+            UnitTest.RegisterAllMethods<_AsyncTest>();
         }
     }
 }

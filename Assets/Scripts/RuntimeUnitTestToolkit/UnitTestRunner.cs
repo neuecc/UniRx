@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections;
+using UniRx.Async;
 
 namespace RuntimeUnitTestToolkit
 {
@@ -50,13 +51,26 @@ namespace RuntimeUnitTestToolkit
         {
             try
             {
-                UnitTestRunner.AddAsyncTest(group, title, asyncTestCoroutine);
+                UnitTestRunner.AddTest(group, title, asyncTestCoroutine);
             }
             catch (Exception ex)
             {
                 UnityEngine.Debug.LogException(ex);
             }
         }
+#if CSHARP_7_OR_LATER
+        public static void AddAsyncTest(Func<UniTask> asyncTest)
+        {
+            try
+            {
+                UnitTestRunner.AddTest(asyncTest.Target.GetType().Name, asyncTest.Method.Name, asyncTest);
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
+        }
+#endif
 
         public static void AddCustomButton(Button button)
         {
@@ -87,6 +101,13 @@ namespace RuntimeUnitTestToolkit
                         var factory = (Func<IEnumerator>)Delegate.CreateDelegate(typeof(Func<IEnumerator>), test, item);
                         AddAsyncTest(factory);
                     }
+#if CSHARP_7_OR_LATER
+                    else if (item.ReturnType == typeof(UniTask))
+                    {
+                        var factory = (Func<UniTask>)Delegate.CreateDelegate(typeof(Func<UniTask>), test, item);
+                        AddAsyncTest(factory);
+                    }
+#endif
                     else if (item.ReturnType == typeof(void))
                     {
                         var invoke = (Action)Delegate.CreateDelegate(typeof(Action), test, item);
@@ -175,7 +196,7 @@ namespace RuntimeUnitTestToolkit
             return newButton;
         }
 
-        public static void AddTest(string group, string title, Action test)
+        public static void AddTest(string group, string title, object test)
         {
             List<KeyValuePair<string, object>> list;
             if (!tests.TryGetValue(group, out list))
@@ -185,18 +206,6 @@ namespace RuntimeUnitTestToolkit
             }
 
             list.Add(new KeyValuePair<string, object>(title, test));
-        }
-
-        public static void AddAsyncTest(string group, string title, Func<IEnumerator> asyncTestCoroutine)
-        {
-            List<KeyValuePair<string, object>> list;
-            if (!tests.TryGetValue(group, out list))
-            {
-                list = new List<KeyValuePair<string, object>>();
-                tests[group] = list;
-            }
-
-            list.Add(new KeyValuePair<string, object>(title, asyncTestCoroutine));
         }
 
         public static void AddCustomButton(Button button)
@@ -250,6 +259,16 @@ namespace RuntimeUnitTestToolkit
                         exception = ex;
                     }
                 }
+#if CSHARP_7_OR_LATER
+                else if (v is Func<UniTask>)
+                {
+                    var awaiter = (Func<UniTask>)v;
+                    yield return StartCoroutine(UnwrapEnumerator(awaiter().ToCoroutine(), ex =>
+                    {
+                        exception = ex;
+                    }));
+                }
+#endif
                 else
                 {
                     var coroutineFactory = (Func<IEnumerator>)v;
