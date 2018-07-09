@@ -30,11 +30,6 @@ namespace UniRx
         EndOfFrame,
         GameObjectUpdate,
         LateUpdate,
-#if SupportCustomYieldInstruction
-        /// <summary>[Obsolete]Same as Update</summary>
-        [Obsolete]
-        AfterUpdate
-#endif
     }
 
     public static class FrameCountTypeExtensions
@@ -986,12 +981,6 @@ namespace UniRx
                     return source.SelectMany(_ => MainThreadDispatcher.UpdateAsObservable().Take(1), (x, _) => x);
                 case MainThreadDispatchType.LateUpdate:
                     return source.SelectMany(_ => MainThreadDispatcher.LateUpdateAsObservable().Take(1), (x, _) => x);
-#if SupportCustomYieldInstruction
-#pragma warning disable 612 // Type or member is obsolete
-                case MainThreadDispatchType.AfterUpdate:
-                    return source.SelectMany(_ => EveryAfterUpdate().Take(1), (x, _) => x);
-#pragma warning restore 612 // Type or member is obsolete
-#endif
                 default:
                     throw new ArgumentException("type is invalid");
             }

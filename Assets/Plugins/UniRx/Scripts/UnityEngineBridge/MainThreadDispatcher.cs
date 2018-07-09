@@ -482,13 +482,6 @@ namespace UniRx
                 mainThreadToken = new object();
                 initialized = true;
 
-#if (NET_4_6)
-                if (UniRxSynchronizationContext.AutoInstall)
-                {
-                    SynchronizationContext.SetSynchronizationContext(new UniRxSynchronizationContext());
-                }
-#endif
-
                 updateMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
                 fixedUpdateMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));
                 endOfFrameMicroCoroutine = new MicroCoroutine(ex => unhandledExceptionCallback(ex));

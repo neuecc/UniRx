@@ -3,7 +3,7 @@
 
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
-#if (NET_4_6)
+#if (NETFX_CORE || NET_4_6 || UNITY_WSA_10_0)
 
 using System;
 using System.Threading;

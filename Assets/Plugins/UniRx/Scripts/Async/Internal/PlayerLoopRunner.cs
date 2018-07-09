@@ -1,4 +1,4 @@
-﻿#if CSHARP_7_OR_LATER
+﻿#if UNITY_2018_1_OR_NEWER
 
 using System;
 using System.Collections.Generic;
