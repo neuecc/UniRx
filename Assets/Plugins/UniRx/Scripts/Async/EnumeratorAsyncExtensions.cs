@@ -1,4 +1,4 @@
-﻿#if NET_4_6 && UNITY_2018_1_OR_NEWER
+﻿#if (NET_4_6 || NET_STANDARD_2_0) && UNITY_2018_1_OR_NEWER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;

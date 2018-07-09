@@ -1,4 +1,4 @@
-﻿#if !(NETFX_CORE || NET_4_6 || UNITY_WSA_10_0)
+﻿#if !(NETFX_CORE || NET_4_6 || NET_STANDARD_2_0 || UNITY_WSA_10_0)
 
 using System;
 
