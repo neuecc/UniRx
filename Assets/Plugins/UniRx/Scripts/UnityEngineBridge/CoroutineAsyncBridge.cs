@@ -96,6 +96,10 @@ namespace UniRx
             return CoroutineAsyncBridge.Start(coroutine);
         }
 
+#if !CSHARP_7_OR_LATER
+
+        // should use UniRx.Async in C# 7.0
+
         public static CoroutineAsyncBridge<AsyncOperation> GetAwaiter(this AsyncOperation asyncOperation)
         {
             return CoroutineAsyncBridge<AsyncOperation>.Start(asyncOperation);
@@ -105,6 +109,8 @@ namespace UniRx
         {
             return CoroutineAsyncBridge.Start(coroutine);
         }
+
+#endif
     }
 }
 

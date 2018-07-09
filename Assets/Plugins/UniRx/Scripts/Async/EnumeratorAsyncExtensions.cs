@@ -44,6 +44,11 @@ namespace UniRx.Async
                 this.cancellationToken = cancellationToken;
             }
 
+            public EnumeratorAwaiter GetAwaiter()
+            {
+                return this;
+            }
+
             public bool IsCompleted
             {
                 get

@@ -93,6 +93,11 @@ namespace UniRx.Async
                 this.continuation = null;
             }
 
+            public AsyncOperationConfiguredAwaiter GetAwaiter()
+            {
+                return this;
+            }
+
             public bool IsCompleted
             {
                 get
@@ -183,6 +188,11 @@ namespace UniRx.Async
                 this.progress = progress;
                 this.cancellationToken = cancellationToken;
                 this.continuation = null;
+            }
+
+            public ResourceRequestConfiguredAwaiter GetAwaiter()
+            {
+                return this;
             }
 
             public bool IsCompleted
@@ -278,6 +288,11 @@ namespace UniRx.Async
                 this.progress = progress;
                 this.cancellationToken = cancellationToken;
                 this.continuation = null;
+            }
+
+            public UnityWebRequestAsyncOperationConfiguredAwaiter GetAwaiter()
+            {
+                return this;
             }
 
             public bool IsCompleted

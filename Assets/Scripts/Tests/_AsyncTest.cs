@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine.UI;
 using UnityEngine.Scripting;
+using UniRx;
 using UniRx.Async;
 
 namespace UniRx.Tests
@@ -49,6 +50,21 @@ namespace UniRx.Tests
             a2.result0.Is(999);
             b2.hasResult.IsFalse();
             c2.hasResult.IsFalse();
+        }
+
+        public async UniTask BothEnumeratorCheck()
+        {
+            await Test(); // wait 5 frame:)
+            await Test().ConfigureAwait(PlayerLoopTiming.PostLateUpdate);
+        }
+
+        IEnumerator Test()
+        {
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
         }
 
 #endif
