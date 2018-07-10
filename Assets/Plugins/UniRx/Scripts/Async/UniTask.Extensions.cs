@@ -41,7 +41,7 @@ namespace UniRx.Async
                 switch (x.Status)
                 {
                     case TaskStatus.Canceled:
-                        p.SetCanceled();
+                        p.SetCancel();
                         break;
                     case TaskStatus.Faulted:
                         p.SetException(x.Exception);
@@ -60,7 +60,7 @@ namespace UniRx.Async
         /// <summary>
         /// Convert Task -> UniTask.
         /// </summary>
-        public static UniTask AsUniTask<T>(this Task task)
+        public static UniTask AsUniTask(this Task task)
         {
             var promise = new Promise<AsyncUnit>();
 
@@ -71,7 +71,7 @@ namespace UniRx.Async
                 switch (x.Status)
                 {
                     case TaskStatus.Canceled:
-                        p.SetCanceled();
+                        p.SetCancel();
                         break;
                     case TaskStatus.Faulted:
                         p.SetException(x.Exception);
@@ -87,9 +87,14 @@ namespace UniRx.Async
             return new UniTask(promise);
         }
 
-        public static IEnumerator ToCoroutine(this UniTask task)
+        public static IEnumerator ToCoroutine<T>(this UniTask<T> task, Action<T> resultHandler = null, Action<Exception> exceptionHandler = null)
         {
-            return new ToCoroutineEnumerator(task);
+            return new ToCoroutineEnumerator<T>(task, resultHandler, exceptionHandler);
+        }
+
+        public static IEnumerator ToCoroutine(this UniTask task, Action<Exception> exceptionHandler = null)
+        {
+            return new ToCoroutineEnumerator(task, exceptionHandler);
         }
 
         public static async UniTask<T> Timeout<T>(this UniTask<T> task, TimeSpan timeout, CancellationTokenSource cancellationTokenSource = null)
@@ -114,11 +119,15 @@ namespace UniRx.Async
         class ToCoroutineEnumerator : IEnumerator
         {
             bool completed;
+            UniTask task;
+            Action<Exception> exceptionHandler = null;
+            bool isStarted = false;
 
-            public ToCoroutineEnumerator(UniTask task)
+            public ToCoroutineEnumerator(UniTask task, Action<Exception> exceptionHandler)
             {
                 completed = false;
-                RunTask(task).Forget();
+                this.exceptionHandler = exceptionHandler;
+                this.task = task;
             }
 
             async UniTaskVoid RunTask(UniTask task)
@@ -126,6 +135,17 @@ namespace UniRx.Async
                 try
                 {
                     await task;
+                }
+                catch (Exception ex)
+                {
+                    if (exceptionHandler != null)
+                    {
+                        exceptionHandler(ex);
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
                 finally
                 {
@@ -137,6 +157,12 @@ namespace UniRx.Async
 
             public bool MoveNext()
             {
+                if (isStarted)
+                {
+                    isStarted = true;
+                    RunTask(task).Forget();
+                }
+
                 return !completed;
             }
 
@@ -144,6 +170,70 @@ namespace UniRx.Async
             {
             }
         }
+
+        class ToCoroutineEnumerator<T> : IEnumerator
+        {
+            bool completed;
+            Action<T> resultHandler = null;
+            Action<Exception> exceptionHandler = null;
+            bool isStarted = false;
+            UniTask<T> task;
+            object current = null;
+
+            public ToCoroutineEnumerator(UniTask<T> task, Action<T> resultHandler, Action<Exception> exceptionHandler)
+            {
+                completed = false;
+                this.task = task;
+                this.resultHandler = resultHandler;
+                this.exceptionHandler = exceptionHandler;
+            }
+
+            async UniTaskVoid RunTask(UniTask<T> task)
+            {
+                try
+                {
+                    var value = await task;
+                    current = value;
+                    if (resultHandler != null)
+                    {
+                        resultHandler(value);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (exceptionHandler != null)
+                    {
+                        exceptionHandler(ex);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                finally
+                {
+                    completed = true;
+                }
+            }
+
+            public object Current => current;
+
+            public bool MoveNext()
+            {
+                if (isStarted)
+                {
+                    isStarted = true;
+                    RunTask(task).Forget();
+                }
+
+                return !completed;
+            }
+
+            public void Reset()
+            {
+            }
+        }
+
     }
 }
 #endif

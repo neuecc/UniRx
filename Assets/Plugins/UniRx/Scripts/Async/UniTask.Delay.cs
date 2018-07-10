@@ -55,7 +55,7 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    SetCanceled();
+                    SetCancel();
                     return false;
                 }
 
@@ -84,7 +84,7 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    SetCanceled();
+                    SetCancel();
                     return false;
                 }
 
@@ -119,7 +119,7 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    SetCanceled();
+                    SetCancel();
                     return false;
                 }
 

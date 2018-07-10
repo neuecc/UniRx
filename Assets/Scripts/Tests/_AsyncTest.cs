@@ -12,6 +12,10 @@ using UnityEngine.UI;
 using UnityEngine.Scripting;
 using UniRx;
 using UniRx.Async;
+using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
+using UnityEngine.Networking;
+using UnityEngine.Experimental.LowLevel;
 
 namespace UniRx.Tests
 {
@@ -54,11 +58,11 @@ namespace UniRx.Tests
 
         public async UniTask BothEnumeratorCheck()
         {
-            await Test(); // wait 5 frame:)
-            await Test().ConfigureAwait(PlayerLoopTiming.PostLateUpdate);
+            await ToaruCoroutineEnumerator(); // wait 5 frame:)
+            await ToaruCoroutineEnumerator().ConfigureAwait(PlayerLoopTiming.PostLateUpdate);
         }
 
-        IEnumerator Test()
+        IEnumerator ToaruCoroutineEnumerator()
         {
             yield return null;
             yield return null;
@@ -67,7 +71,110 @@ namespace UniRx.Tests
             yield return null;
         }
 
+        // to public, sandbox of testing.
+        async UniTask Do()
+        {
+            await DemoAsync();
+        }
+
+        // You can return type as struct UniTask<T>, it is unity specialized lightweight alternative of Task<T>
+        // no(or less) allocation and fast excution for zero overhead async/await integrate with Unity
+        async UniTask<string> DemoAsync()
+        {
+            // You can await Unity's AsyncObject
+            var asset = await Resources.LoadAsync<TextAsset>("foo");
+
+            // .ConfigureAwait accepts progress callback
+            await SceneManager.LoadSceneAsync("scene2").ConfigureAwait(new Progress<float>(x => Debug.Log(x)));
+
+            // await frame-based operation(You can also pass TimeSpan, it is same as calculate frame-based)
+            await UniTask.Delay(100); // be careful, arg is not millisecond, is frame count
+
+            // like 'yield return WaitForEndOfFrame', or Rx's ObserveOn(scheduler)
+            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+
+            // You can await standard task
+            await Task.Run(() => 100);
+
+            // You can await IEnumerator coroutine
+            await ToaruCoroutineEnumerator();
+
+            // get async webrequest
+            async UniTask<string> GetTextAsync(UnityWebRequest req)
+            {
+                var op = await req.SendWebRequest();
+                return op.downloadHandler.text;
+            }
+
+            var task1 = GetTextAsync(UnityWebRequest.Get("http://google.com"));
+            var task2 = GetTextAsync(UnityWebRequest.Get("http://bing.com"));
+            var task3 = GetTextAsync(UnityWebRequest.Get("http://yahoo.com"));
+
+            // concurrent async-wait and get result easily by tuple syntax
+            var (google, bing, yahoo) = await UniTask.WhenAll(task1, task2, task3);
+
+            // You can handle timeout easily
+            await GetTextAsync(UnityWebRequest.Get("http://unity.com")).Timeout(TimeSpan.FromMilliseconds(300));
+
+            // return async-value.(or you can use `UniTask`(no result), `UniTaskVoid`(fire and forget)).
+            return (asset as TextAsset)?.text ?? throw new InvalidOperationException("Asset not found");
+        }
+
+
+
+
+
 #endif
+    }
+
+    // ...for readme
+
+    public class SceneAssets
+    {
+        public readonly UniTask<Sprite> Front;
+        public readonly UniTask<Sprite> Background;
+        public readonly UniTask<Sprite> Effect;
+
+        public SceneAssets()
+        {
+            // ctor(Func) overload is AsyncLazy, initialized once when await.
+            // and after it, await returns zero-allocation value immediately.
+            Front = new UniTask<Sprite>(() => LoadAsSprite("foo"));
+            Background = new UniTask<Sprite>(() => LoadAsSprite("bar"));
+            Effect = new UniTask<Sprite>(() => LoadAsSprite("baz"));
+        }
+
+        async UniTask<Sprite> LoadAsSprite(string path)
+        {
+            var resource = await Resources.LoadAsync<Sprite>(path);
+            return (resource as Sprite);
+        }
+    }
+
+    public class MyClass
+    {
+        public UniTask<int> WrapByPromise1()
+        {
+            var promise = new Promise<int>((resolve, reject) =>
+            {
+                // when complete, call resolve.SetResult();
+                // when failed, call reject.SetException();
+            });
+
+            return new UniTask<int>(promise);
+        }
+
+        public UniTask<int> WrapByPromise2()
+        {
+            // also allows outer methods(no use constructor resolve/reject).
+            var promise = new Promise<int>();
+
+            // when complete, call promise.SetResult();
+            // when failed, call promise.SetException();
+            // when cancel, call promise.SetCancel();
+
+            return new UniTask<int>(promise);
+        }
     }
 }
 

@@ -12,23 +12,32 @@ namespace UniRx.Async
 {
     public static class UnityAsyncExtensions
     {
+        static void ThrowIfNull(string name)
+        {
+            throw new ArgumentNullException(name);
+        }
+
         public static AsyncOperationAwaiter GetAwaiter(this AsyncOperation asyncOperation)
         {
+            if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
             return new AsyncOperationAwaiter(asyncOperation);
         }
 
         public static AsyncOperationConfiguredAwaiter ConfigureAwait(this AsyncOperation asyncOperation, IProgress<float> progress = null, CancellationToken cancellation = default(CancellationToken))
         {
+            if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
             return new AsyncOperationConfiguredAwaiter(asyncOperation, progress, cancellation);
         }
 
         public static ResourceRequestAwaiter GetAwaiter(this ResourceRequest asyncOperation)
         {
+            if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
             return new ResourceRequestAwaiter(asyncOperation);
         }
 
         public static ResourceRequestConfiguredAwaiter ConfigureAwait(this ResourceRequest asyncOperation, IProgress<float> progress = null, CancellationToken cancellation = default(CancellationToken))
         {
+            if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
             return new ResourceRequestConfiguredAwaiter(asyncOperation, progress, cancellation);
         }
 
@@ -36,11 +45,13 @@ namespace UniRx.Async
 
         public static UnityWebRequestAsyncOperationAwaiter GetAwaiter(this UnityWebRequestAsyncOperation asyncOperation)
         {
+            if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
             return new UnityWebRequestAsyncOperationAwaiter(asyncOperation);
         }
 
         public static UnityWebRequestAsyncOperationConfiguredAwaiter ConfigureAwait(this UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress = null, CancellationToken cancellation = default(CancellationToken))
         {
+            if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
             return new UnityWebRequestAsyncOperationConfiguredAwaiter(asyncOperation, progress, cancellation);
         }
 

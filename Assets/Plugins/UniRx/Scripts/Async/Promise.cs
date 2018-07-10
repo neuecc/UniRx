@@ -167,7 +167,7 @@ namespace UniRx.Async
             }
         }
 
-        public void SetCanceled()
+        public void SetCancel()
         {
             if (Interlocked.CompareExchange(ref state, Rejected, Pending) == Pending)
             {

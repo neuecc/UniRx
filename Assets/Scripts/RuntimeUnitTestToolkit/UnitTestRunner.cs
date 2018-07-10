@@ -264,11 +264,27 @@ namespace RuntimeUnitTestToolkit
 #if CSHARP_7_OR_LATER
                 else if (v is Func<UniTask>)
                 {
-                    var awaiter = (Func<UniTask>)v;
-                    yield return StartCoroutine(UnwrapEnumerator(awaiter().ToCoroutine(), ex =>
+                    IEnumerator iterator = null;
+                    try
                     {
-                        exception = ex;
-                    }));
+                        var awaiter = (Func<UniTask>)v;
+                        iterator = awaiter().ToCoroutine(ex =>
+                        {
+                            exception = ex;
+                        });
+                    }
+                    catch (Exception ex2)
+                    {
+                        exception = ex2;
+                    }
+
+                    if (exception == null)
+                    {
+                        yield return StartCoroutine(UnwrapEnumerator(iterator, ex =>
+                        {
+                            exception = ex;
+                        }));
+                    }
                 }
 #endif
                 else

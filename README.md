@@ -2,15 +2,14 @@ UniRx - Reactive Extensions for Unity
 ===
 Created by Yoshifumi Kawai(neuecc)
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/neuecc/UniRx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/neuecc/UniRx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)  
+[![Become as Backer](https://opencollective.com/unirx/tiers/backers.svg?avatarHeight=50)](https://opencollective.com/unirx) [![Become as Sponsor](https://opencollective.com/unirx/tiers/sponsors.svg?avatarHeight=50)](https://opencollective.com/unirx)
 
 What is UniRx?
 ---
-UniRx (Reactive Extensions for Unity) is a reimplementation of the .NET Reactive Extensions. The Official Rx implementation is great but doesn't work on Unity and has issues with iOS IL2CPP compatibility. This library fixes those issues and adds some specific utilities for Unity. Supported platforms are PC/Mac/Android/iOS/WP8/WindowsStore/etc and the library is fully supported on both Unity 5 and 4.6.   
+UniRx (Reactive Extensions for Unity) is a reimplementation of the .NET Reactive Extensions. The Official Rx implementation is great but doesn't work on Unity and has issues with iOS IL2CPP compatibility. This library fixes those issues and adds some specific utilities for Unity. Supported platforms are PC/Mac/Android/iOS/WebGL/WindowsStore/etc and the library.
 
 UniRx is available on the Unity Asset Store (FREE) - http://u3d.as/content/neuecc/uni-rx-reactive-extensions-for-unity/7tT
-
-Presentation - http://www.slideshare.net/neuecc/unirx-reactive-extensions-for-unityen
 
 Blog for update info - https://medium.com/@neuecc
 
@@ -18,7 +17,7 @@ Support thread on the Unity Forums: Ask me any question - http://forum.unity3d.c
 
 Release Notes, see [UniRx/releases](https://github.com/neuecc/UniRx/releases)
 
-UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/etc) 
+UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/etc) + async/await integration(UniRx.Async)
 
 Why Rx?
 ---
@@ -36,7 +35,9 @@ The game loop (every Update, OnCollisionEnter, etc), sensor data (Kinect, Leap M
 Unity is generally single threaded but UniRx facilitates multithreading for joins, cancels, accessing GameObjects, etc.
 
 UniRx helps UI programming with uGUI. All UI events (clicked, valuechanged, etc) can be converted to UniRx event streams. 
-        
+
+Unity supports async/await from 2017 with C# upgrades, UniRx provides more lightweight, more powerful async/await integration with Unity. Please see [UniRx.Async](https://github.com/neuecc/UniRx/#unirxasync) section.
+
 Introduction
 ---
 Great introduction to Rx article: [The introduction to Reactive Programming you've been missing](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754).
@@ -1187,39 +1188,133 @@ Windows Store/Phone App (NETFX_CORE)
 Some interfaces, such as  `UniRx.IObservable<T>` and `System.IObservable<T>`, cause conflicts when submitting to the Windows Store App.
 Therefore, when using NETFX_CORE, please refrain from using such constructs as `UniRx.IObservable<T>` and refer to the UniRx components by their short name, without adding the namespace. This solves the conflicts.
 
-async/await Support
+UniRx.Async
 ---
-for the [Upgraded Mono/.Net in Editor on 5.5.0b4](https://forum.unity3d.com/threads/upgraded-mono-net-in-editor-on-5-5-0b4.433541/), Unity supports .NET 4.6 and C# 6 languages. UniRx provides `UniRxSynchronizationContext` for back to MainThread in Task multithreading.
+`UniRx.Async` is the custom async/await support utilities.
 
 ```csharp
-async Task UniRxSynchronizationContextSolves()
+// extension awaiter/methods can be used by this namespace
+using UniRx.Async;
+
+// You can return type as struct UniTask<T>, it is unity specialized lightweight alternative of Task<T>
+// no(or less) allocation and fast excution for zero overhead async/await integrate with Unity
+async UniTask<string> DemoAsync()
 {
-    Debug.Log("start delay");
+    // You can await Unity's AsyncObject
+    var asset = await Resources.LoadAsync<TextAsset>("foo");
 
-    // UniRxSynchronizationContext is automatically used.
-    await Task.Delay(TimeSpan.FromMilliseconds(300));
+    // .ConfigureAwait accepts progress callback
+    await SceneManager.LoadSceneAsync("scene2").ConfigureAwait(new Progress<float>(x => Debug.Log(x)));
 
-    Debug.Log("from another thread, but you can touch transform position.");
-    Debug.Log(this.transform.position);
+    // await frame-based operation(You can also pass TimeSpan, it is same as calculate frame-based)
+    await UniTask.Delay(100); // be careful, arg is not millisecond, is frame count
+
+    // like 'yield return WaitForEndOfFrame', or Rx's ObserveOn(scheduler)
+    await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+
+    // You can await standard task
+    await Task.Run(() => 100);
+
+    // You can await IEnumerator coroutine
+    await ToaruCoroutineEnumerator();
+
+    // get async webrequest
+    async UniTask<string> GetTextAsync(UnityWebRequest req)
+    {
+        var op = await req.SendWebRequest();
+        return op.downloadHandler.text;
+    }
+
+    var task1 = GetTextAsync(UnityWebRequest.Get("http://google.com"));
+    var task2 = GetTextAsync(UnityWebRequest.Get("http://bing.com"));
+    var task3 = GetTextAsync(UnityWebRequest.Get("http://yahoo.com"));
+
+    // concurrent async-wait and get result easily by tuple syntax
+    var (google, bing, yahoo) = await UniTask.WhenAll(task1, task2, task3);
+
+    // You can handle timeout easily
+    await GetTextAsync(UnityWebRequest.Get("http://unity.com")).Timeout(TimeSpan.FromMilliseconds(300));
+
+    // return async-value.(or you can use `UniTask`(no result), `UniTaskVoid`(fire and forget)).
+    return (asset as TextAsset)?.text ?? throw new InvalidOperationException("Asset not found");
 }
 ```
 
-UniRx also supports directly await Coroutine support type instad of yield return.
+This module does not depend on `UniRx` so you can use separate `UniRx.Async` package without `UniRx`(You can download from [UniRx/releases](https://github.com/neuecc/UniRx/releases) page).
+
+UniTask feature rely on C# 7.0([task-like custom async method builder feature](https://github.com/dotnet/roslyn/blob/master/docs/features/task-types.md)) so you should enable Unity Incremental C# Compiler at first.
+
+![image](https://user-images.githubusercontent.com/46207/42524447-7586b728-84ab-11e8-8b3d-f48b73db3ae4.png)
+
+Why UniTask(custom task-like object) is required? Because Task is too heavy, not matched to Unity threading(single-thread). UniTask does not use thread and SynchronizationContext because almost Unity's asynchronous object is automaticaly dispatched by Unity's engine layer. It acquires more fast and more less allocation, completely integrated with Unity.
+
+You can await `AsyncOperation`, `ResourceRequest`, `UnityWebRequestAsyncOperation`, `IEnumerator` when using `UniRx.Async`.
+
+ `UniTask.Delay`, `UniTask.Yield`, `UniTask.Timeout` that is frame-based timer operators(no uses thread so works on WebGL publish) driven by custom PlayerLoop(Unity 2018 experimental feature). In default, UniTask initialize automatically when application begin, but it is override all. If you want to append PlayerLoop, please call `PlayerLoopHelper.Initialize(ref yourCustomizedPlayerLoop)` manually.
+
+`UniTask.WhenAll`, `UniTask.WhenAny` is like Task.WhenAll/WhenAny but return type is more useful.
+
+`UniTask.ctor(Func<UniTask>)` is like the embeded [`AsyncLazy<T>`](https://blogs.msdn.microsoft.com/pfxteam/2011/01/15/asynclazyt/)
 
 ```csharp
-async Task CoroutineBridge()
+public class SceneAssets
 {
-    Debug.Log("start www await");
+    public readonly UniTask<Sprite> Front;
+    public readonly UniTask<Sprite> Background;
+    public readonly UniTask<Sprite> Effect;
 
-    var www = await new WWW("https://unity3d.com");
+    public SceneAssets()
+    {
+        // ctor(Func) overload is AsyncLazy, initialized once when await.
+        // and after it, await returns zero-allocation value immediately.
+        Front = new UniTask<Sprite>(() => LoadAsSprite("foo"));
+        Background = new UniTask<Sprite>(() => LoadAsSprite("bar"));
+        Effect = new UniTask<Sprite>(() => LoadAsSprite("baz"));
+    }
 
-    Debug.Log(www.text);
+    async UniTask<Sprite> LoadAsSprite(string path)
+    {
+        var resource = await Resources.LoadAsync<Sprite>(path);
+        return (resource as Sprite);
+    }
 }
 ```
+
+If you want to convert callback to UniTask, you can use `Promise<T>` that is the lightweight edition of `TaskCompletionSource<T>`. The API is same as EcmaScript's Promise.
+
+```csharp
+public UniTask<int> WrapByPromise1()
+{
+    var promise = new Promise<int>((resolve, reject) =>
+    {
+        // when complete, call resolve.SetResult();
+        // when failed, call reject.SetException();
+    });
+
+    return new UniTask<int>(promise);
+}
+
+public UniTask<int> WrapByPromise2()
+{
+    // also allows outer methods(no use constructor resolve/reject).
+    var promise = new Promise<int>();
+
+    // when complete, call promise.SetResult();
+    // when failed, call promise.SetException();
+    // when cancel, call promise.SetCancel();
+
+    return new UniTask<int>(promise);
+}
+```
+
+You can convert Task -> UniTask: `AsUniTask`, `UniTask` -> `UniTask<AsyncUnit>`: `AsAsyncUnitUniTask(this is useful to use WhenAll/WhenAny), `UniTask<T>` -> `UniTask`: `AsUniTask`.
+
+If you want to convert async to coroutine, you can use `UniTask.ToCoroutine`, this is useful to use only allow coroutine system.
 
 Ofcourse, IObservable is awaitable.
 
 ```csharp
+// You can use Task(C# 6) or UniTask(C# 7)
 async Task AwaitObservable()
 {
     Debug.Log("start await observable");
@@ -1234,10 +1329,6 @@ async Task AwaitObservable()
 DLL Separation
 ---
 If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx`, it is fullset separated project of UniRx. You should define compile symbol like  `UNITY;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol. We can not provides pre-build binary to release page, asset store because compile symbol is different each other.
-
-If you want to use UniRx for .NET 3.5 normal CLR application, you can use `UniRx.Library`. `UniRx.Library` is splitted UnityEngine dependency, build `UniRx.Library` needs to define `UniRxLibrary` symbol. pre-build `UniRx.Library` binary, it avilable in NuGet.
-
-[Install-Package UniRx](https://www.nuget.org/packages/UniRx)
 
 Reference
 ---
@@ -1294,10 +1385,11 @@ Help & Contribute
 ---
 Support thread on the Unity forum. Ask me any question - [http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity](http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity)  
 
+Become a backer, Sponsored, one time donation are welcome, we're using [Open Collective - UniRx](https://opencollective.com/unirx/#)
+
 We welcome any contributions, be they bug reports, requests or pull request.  
 Please consult and submit your reports or requests on GitHub issues.  
 Source code is available in `Assets/Plugins/UniRx/Scripts`.  
-This project is using Visual Studio with [UnityVS](http://unityvs.com/).
 
 Author's other Unity + LINQ Assets
 ---
@@ -1308,17 +1400,15 @@ Author's other Unity + LINQ Assets
 Author Info
 ---
 Yoshifumi Kawai(a.k.a. neuecc) is a software developer in Japan.  
-He is the Director/CTO at Grani, Inc.  
-Grani is a top social game developer in Japan.  
+Currently founded consulting company [New World, Inc.](http://new-world.co/)  
 He is awarding Microsoft MVP for Visual C# since 2011.  
-He is known as the creator of [linq.js](http://linqjs.codeplex.com/)(LINQ to Objects for JavaScript)
 
-Blog: https://medium.com/@neuecc (English)
-Blog: http://neue.cc/ (Japanese) 
+Blog: https://medium.com/@neuecc (English)  
+Blog: http://neue.cc/ (Japanese)   
 Twitter: https://twitter.com/neuecc (Japanese)
 
 License
 ---
 This library is under the MIT License.
 
-Some code is borrowed from [Rx.NET](https://rx.codeplex.com/) and [mono/mcs](https://github.com/mono/mono).
+Some code is borrowed from [Rx.NET](https://github.com/dotnet/reactive/) and [mono/mcs](https://github.com/mono/mono).
