@@ -63,7 +63,7 @@ namespace UniRx.Examples
     {
         public IReactiveProperty<long> CurrentHp { get; private set; }
 
-        public IReactiveProperty<bool> IsDead { get; private set; }
+        public IReadOnlyReactiveProperty<bool> IsDead { get; private set; }
 
         public Enemy(int initialHp)
         {

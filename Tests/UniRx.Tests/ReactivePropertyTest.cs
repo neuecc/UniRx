@@ -271,59 +271,59 @@ namespace UniRx.Tests
             }
         }
 
-        [TestMethod]
-        public void FinishedSourceToReactiveProperty()
-        {
-            // pattern of OnCompleted
-            {
-                var source = Observable.Return(9);
-                var rxProp = source.ToReactiveProperty();
+        //[TestMethod]
+        //public void FinishedSourceToReactiveProperty()
+        //{
+        //    // pattern of OnCompleted
+        //    {
+        //        var source = Observable.Return(9);
+        //        var rxProp = source.ToReactiveProperty();
 
-                var notifications = rxProp.Record().Notifications;
-                notifications.IsCollection(Notification.CreateOnNext(9));
+        //        var notifications = rxProp.Record().Notifications;
+        //        notifications.IsCollection(Notification.CreateOnNext(9));
 
-                rxProp.Value = 9999;
-                notifications.IsCollection(Notification.CreateOnNext(9), Notification.CreateOnNext(9999));
-                rxProp.Record().Values.IsCollection(9999);
-            }
+        //        rxProp.Value = 9999;
+        //        notifications.IsCollection(Notification.CreateOnNext(9), Notification.CreateOnNext(9999));
+        //        rxProp.Record().Values.IsCollection(9999);
+        //    }
 
-            // pattern of OnError
-            {
-                // after
-                {
-                    var ex = new Exception();
-                    var source = Observable.Throw<int>(ex);
-                    var rxProp = source.ToReactiveProperty();
+        //    // pattern of OnError
+        //    {
+        //        // after
+        //        {
+        //            var ex = new Exception();
+        //            var source = Observable.Throw<int>(ex);
+        //            var rxProp = source.ToReactiveProperty();
 
-                    var notifications = rxProp.Record().Notifications;
-                    notifications.IsCollection(Notification.CreateOnError<int>(ex));
+        //            var notifications = rxProp.Record().Notifications;
+        //            notifications.IsCollection(Notification.CreateOnError<int>(ex));
 
-                    rxProp.Value = 9999;
-                    notifications.IsCollection(Notification.CreateOnError<int>(ex));
-                    rxProp.Record().Notifications.IsCollection(Notification.CreateOnError<int>(ex));
-                }
-                // immediate
-                {
+        //            rxProp.Value = 9999;
+        //            notifications.IsCollection(Notification.CreateOnError<int>(ex));
+        //            rxProp.Record().Notifications.IsCollection(Notification.CreateOnError<int>(ex));
+        //        }
+        //        // immediate
+        //        {
 
-                    var ex = new Exception();
-                    var source = new Subject<int>();
-                    var rxProp = source.ToReactiveProperty();
+        //            var ex = new Exception();
+        //            var source = new Subject<int>();
+        //            var rxProp = source.ToReactiveProperty();
 
-                    var record = rxProp.Record();
+        //            var record = rxProp.Record();
 
-                    source.OnError(new Exception());
+        //            source.OnError(new Exception());
 
-                    var notifications = record.Notifications;
-                    notifications.Count.Is(1);
-                    notifications[0].Kind.Is(NotificationKind.OnError);
+        //            var notifications = record.Notifications;
+        //            notifications.Count.Is(1);
+        //            notifications[0].Kind.Is(NotificationKind.OnError);
 
-                    rxProp.Value = 9999;
-                    notifications.Count.Is(1);
-                    notifications[0].Kind.Is(NotificationKind.OnError);
-                    rxProp.Record().Notifications[0].Kind.Is(NotificationKind.OnError);
-                }
-            }
-        }
+        //            rxProp.Value = 9999;
+        //            notifications.Count.Is(1);
+        //            notifications[0].Kind.Is(NotificationKind.OnError);
+        //            rxProp.Record().Notifications[0].Kind.Is(NotificationKind.OnError);
+        //        }
+        //    }
+        //}
 
         [TestMethod]
         public void FinishedSourceToReadOnlyReactiveProperty()

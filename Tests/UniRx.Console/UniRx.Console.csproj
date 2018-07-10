@@ -56,6 +56,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="UniTask.WhenAll.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UniTask.WhenAll.Generated.txt</LastGenOutput>
+    </Content>
+    <Content Include="UniTask.WhenAll.Generated.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UniTask.WhenAll.Generated.tt</DependentUpon>
+    </Content>
+    <Content Include="UniTask.WhenAny.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UniTask.WhenAny.Generated.txt</LastGenOutput>
+    </Content>
+    <Content Include="UniTask.WhenAny.Generated.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UniTask.WhenAny.Generated.tt</DependentUpon>
+    </Content>
     <Content Include="ZipLatestGenerator.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ZipLatestGenerator.txt</LastGenOutput>
