@@ -1,4 +1,8 @@
-﻿using System;
+using System;
+
+#if NET_4_6
+using System.Runtime.ExceptionServices;
+#endif
 
 namespace UniRx.Operators
 {
@@ -36,7 +40,13 @@ namespace UniRx.Operators
                 }
             }
 
-            if (ex != null) throw ex;
+            if (ex != null)
+            {
+#if NET_4_6
+                ExceptionDispatchInfo.Capture(ex).Throw();
+#endif
+                throw ex;
+            }
             if (!seenValue) throw new InvalidOperationException("No Elements.");
 
             return value;

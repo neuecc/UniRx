@@ -1,6 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
+
+#if NET_4_6
+using System.Runtime.ExceptionServices;
+#endif
 
 namespace UniRx.InternalUtil
 {
@@ -99,6 +103,9 @@ namespace UniRx.InternalUtil
 
         public void OnError(Exception error)
         {
+#if NET_4_6
+            ExceptionDispatchInfo.Capture(error).Throw();
+#endif
             throw error;
         }
 
