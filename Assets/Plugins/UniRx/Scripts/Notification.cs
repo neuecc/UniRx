@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
 using System;
+using UniRx.InternalUtil;
 
 #pragma warning disable 0659
 #pragma warning disable 0661
@@ -270,7 +271,7 @@ namespace UniRx
             /// <summary>
             /// Throws the exception.
             /// </summary>
-            public override T Value { get { throw exception; } }
+            public override T Value { get { exception.Throw(); throw exception; } }
 
             /// <summary>
             /// Returns the exception.
