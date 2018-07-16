@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{FC6D064E-28ED-A578-0D72-8E424343BF9A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -93,6 +94,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTaskVoid.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.Jobs.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.ResourceManagement.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.uGUI.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Asynchronous\WebRequestExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Disposables\BooleanDisposable.cs" />
@@ -318,17 +320,26 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityWinRTBridge\Thread.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityWinRTBridge\ThreadPoolScheduler_UnityWinRT.cs" />
     <None Include="Assets\Plugins\UniRx\ReadMe.txt" />
-    <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+    <Reference Include="Unity.ResourceManager.Editor">
+      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.ResourceManager.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
       <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro.Editor">
+      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ResourceManager">
+      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.StandardEvents">
+      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="com.unity.resourcemanager">
+      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/com.unity.resourcemanager.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -888,7 +899,7 @@
   -->
   <PropertyGroup>
     <IncrementalCompiler>true</IncrementalCompiler>
-    <CscToolPath>C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.incrementalcompiler@0.0.42-preview.1\.bin</CscToolPath>
+    <CscToolPath>C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.incrementalcompiler@0.0.42-preview.14\.bin</CscToolPath>
     <DocumentationFile>12345</DocumentationFile>
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
   </PropertyGroup>
