@@ -308,6 +308,7 @@ namespace UniRx
                     DisposeSubject(ref collectionMove);
                     DisposeSubject(ref collectionRemove);
                     DisposeSubject(ref collectionReplace);
+                    DisposeSubject(ref countChanged);
                 }
 
                 disposedValue = true;
