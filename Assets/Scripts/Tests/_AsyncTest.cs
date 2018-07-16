@@ -16,6 +16,8 @@ using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
 using UnityEngine.Experimental.LowLevel;
+using Unity.Jobs;
+using Unity.Collections;
 
 namespace UniRx.Tests
 {
@@ -23,11 +25,28 @@ namespace UniRx.Tests
     {
 #if CSHARP_7_OR_LATER
 
+        public struct MyJob : IJob
+        {
+            public int loopCount;
+            public NativeArray<int> inOut;
+            public int result;
+
+            public void Execute()
+            {
+                result = 0;
+                for (int i = 0; i < loopCount; i++)
+                {
+                    result++;
+                }
+                inOut[0] = result;
+            }
+        }
+
         public async UniTask DelayAnd()
         {
             await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
-            var x = await UniTask.Delay(100);
-            x.Is(100);
+            var x = await UniTask.Delay(3);
+            x.Is(3);
         }
 
         public async UniTask WhenAll()
@@ -60,6 +79,14 @@ namespace UniRx.Tests
         {
             await ToaruCoroutineEnumerator(); // wait 5 frame:)
             await ToaruCoroutineEnumerator().ConfigureAwait(PlayerLoopTiming.PostLateUpdate);
+        }
+
+        public async UniTask JobSystem()
+        {
+            var job = new MyJob() { loopCount = 999, inOut = new NativeArray<int>(1, Allocator.TempJob) };
+            await job.Schedule();
+            job.inOut[0].Is(999);
+            job.inOut.Dispose();
         }
 
         IEnumerator ToaruCoroutineEnumerator()
@@ -121,6 +148,11 @@ namespace UniRx.Tests
         }
 
 
+        public async Task<string> GetTextAsync(string path)
+        {
+            var asset = await Resources.LoadAsync<TextAsset>(path);
+            return (asset as TextAsset).text;
+        }
 
 
 
