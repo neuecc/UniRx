@@ -171,6 +171,8 @@ namespace RuntimeUnitTestToolkit
 
             clearButton.onClick.AddListener(() =>
             {
+                GC.Collect();
+
                 logText.text = "";
                 foreach (var btn in list.GetComponentsInChildren<Button>())
                 {

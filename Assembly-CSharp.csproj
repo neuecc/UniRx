@@ -60,10 +60,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\myscene.cs" />
     <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\Assert.cs" />
     <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\ChainingAssertion.Unity.cs" />
     <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\UnitTestRunner.cs" />
+    <Compile Include="Assets\Scripts\Sandbox\SandboxScene.cs" />
     <Compile Include="Assets\Scripts\Tests\_AsyncTest.cs" />
     <Compile Include="Assets\Scripts\Tests\_ManualyTest.cs" />
     <Compile Include="Assets\Scripts\Tests\Imported\Container.cs" />
