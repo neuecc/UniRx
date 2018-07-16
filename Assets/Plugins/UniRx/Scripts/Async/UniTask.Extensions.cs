@@ -41,7 +41,7 @@ namespace UniRx.Async
                 switch (x.Status)
                 {
                     case TaskStatus.Canceled:
-                        p.SetCancel();
+                        p.SetCanceled();
                         break;
                     case TaskStatus.Faulted:
                         p.SetException(x.Exception);
@@ -71,7 +71,7 @@ namespace UniRx.Async
                 switch (x.Status)
                 {
                     case TaskStatus.Canceled:
-                        p.SetCancel();
+                        p.SetCanceled();
                         break;
                     case TaskStatus.Faulted:
                         p.SetException(x.Exception);
@@ -157,7 +157,7 @@ namespace UniRx.Async
 
             public bool MoveNext()
             {
-                if (isStarted)
+                if (!isStarted)
                 {
                     isStarted = true;
                     RunTask(task).Forget();

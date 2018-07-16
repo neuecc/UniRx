@@ -10,7 +10,7 @@ using UnityEngine.Networking;
 
 namespace UniRx.Async
 {
-    public static class UnityAsyncExtensions
+    public static partial class UnityAsyncExtensions
     {
         static void ThrowIfNull(string name)
         {
@@ -41,7 +41,7 @@ namespace UniRx.Async
             return new ResourceRequestConfiguredAwaiter(asyncOperation, progress, cancellation);
         }
 
-#if ENABLE_UNITYWEBREQUEST
+    #if ENABLE_UNITYWEBREQUEST
 
         public static UnityWebRequestAsyncOperationAwaiter GetAwaiter(this UnityWebRequestAsyncOperation asyncOperation)
         {
@@ -55,7 +55,7 @@ namespace UniRx.Async
             return new UnityWebRequestAsyncOperationConfiguredAwaiter(asyncOperation, progress, cancellation);
         }
 
-#endif
+    #endif
 
         public struct AsyncOperationAwaiter : ICriticalNotifyCompletion
         {
@@ -251,7 +251,7 @@ namespace UniRx.Async
             }
         }
 
-#if ENABLE_UNITYWEBREQUEST
+    #if ENABLE_UNITYWEBREQUEST
 
         public struct UnityWebRequestAsyncOperationAwaiter : ICriticalNotifyCompletion
         {
@@ -352,7 +352,7 @@ namespace UniRx.Async
         }
 
 
-#endif
+    #endif
     }
 }
 #endif
