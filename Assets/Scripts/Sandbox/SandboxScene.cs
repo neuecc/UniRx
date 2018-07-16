@@ -10,7 +10,6 @@ public class SandboxScene : MonoBehaviour
 {
     public Button buttonA;
     public Button buttonB;
-    CancellationTokenSource onDispose;
 
     void Start()
     {

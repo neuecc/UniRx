@@ -45,15 +45,46 @@ namespace UniRx.Tests
         public async UniTask DelayAnd()
         {
             await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
-            var x = await UniTask.Delay(3);
-            x.Is(3);
+
+            var time = Time.realtimeSinceStartup;
+
+            Time.timeScale = 0.5f;
+            try
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(3));
+
+                var elapsed = Time.realtimeSinceStartup - time;
+                ((int)Math.Round(TimeSpan.FromSeconds(elapsed).TotalSeconds, MidpointRounding.ToEven)).Is(6);
+            }
+            finally
+            {
+                Time.timeScale = 1.0f;
+            }
+        }
+
+        public async UniTask DelayIgnore()
+        {
+            var time = Time.realtimeSinceStartup;
+
+            Time.timeScale = 0.5f;
+            try
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(3), ignoreTimeScale: true);
+
+                var elapsed = Time.realtimeSinceStartup - time;
+                ((int)Math.Round(TimeSpan.FromSeconds(elapsed).TotalSeconds, MidpointRounding.ToEven)).Is(3);
+            }
+            finally
+            {
+                Time.timeScale = 1.0f;
+            }
         }
 
         public async UniTask WhenAll()
         {
             var a = UniTask.FromResult(999);
             var b = UniTask.Yield().AsAsyncUnitUniTask();
-            var c = UniTask.Delay(99);
+            var c = UniTask.DelayFrame(99);
 
             var (a2, b2, c2) = await UniTask.WhenAll(a, b, c);
             a2.Is(999);
@@ -65,7 +96,7 @@ namespace UniRx.Tests
         {
             var a = UniTask.FromResult(999);
             var b = UniTask.Yield().AsAsyncUnitUniTask();
-            var c = UniTask.Delay(99);
+            var c = UniTask.DelayFrame(99);
 
             var (win, a2, b2, c2) = await UniTask.WhenAny(a, b, c);
             win.Is(0);
