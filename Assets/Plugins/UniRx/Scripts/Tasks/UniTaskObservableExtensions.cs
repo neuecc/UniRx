@@ -9,7 +9,7 @@ namespace UniRx
 {
     public static class UniTaskObservableExtensions
     {
-        public static UniTask<T> ToUniTask<T>(this IObservable<T> source, CancellationToken cancellationToken, bool useFirstValue = false)
+        public static UniTask<T> ToUniTask<T>(this IObservable<T> source, CancellationToken cancellationToken = default(CancellationToken), bool useFirstValue = false)
         {
             var promise = new Promise<T>();
             var disposable = new SingleAssignmentDisposable();

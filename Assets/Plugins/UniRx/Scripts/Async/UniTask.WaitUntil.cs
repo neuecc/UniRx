@@ -23,7 +23,7 @@ namespace UniRx.Async
             return promise.Task;
         }
 
-        public UniTask<U> WaitUntilValueChanged<T, U>(T target, Func<T, U> monitorFunction, PlayerLoopTiming monitorTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask<U> WaitUntilValueChanged<T, U>(T target, Func<T, U> monitorFunction, PlayerLoopTiming monitorTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
           where T : class
         {
             var promise = new WaitUntilValueChangedAwaiter<T, U>(target, monitorFunction, null);
@@ -131,7 +131,7 @@ namespace UniRx.Async
             {
                 this.target = target;
                 this.monitorFunction = monitorFunction;
-                this.equalityComparer = equalityComparer;
+                this.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
                 this.initialValue = monitorFunction(target);
             }
 

@@ -18,6 +18,7 @@ using UnityEngine.Networking;
 using UnityEngine.Experimental.LowLevel;
 using Unity.Jobs;
 using Unity.Collections;
+using System.Threading;
 
 namespace UniRx.Tests
 {
@@ -118,6 +119,78 @@ namespace UniRx.Tests
             await job.Schedule();
             job.inOut[0].Is(999);
             job.inOut.Dispose();
+        }
+
+        class MyMyClass
+        {
+            public int MyProperty { get; set; }
+        }
+
+        public async UniTask WaitUntil()
+        {
+            bool t = false;
+
+            Observable.TimerFrame(10, FrameCountType.EndOfFrame).Subscribe(_ => t = true);
+
+            var startFrame = Time.frameCount;
+            await UniTask.WaitUntil(() => t, PlayerLoopTiming.EarlyUpdate);
+
+            var diff = Time.frameCount - startFrame;
+            diff.Is(11);
+        }
+
+        public async UniTask WaitWhile()
+        {
+            bool t = true;
+
+            Observable.TimerFrame(10, FrameCountType.EndOfFrame).Subscribe(_ => t = false);
+
+            var startFrame = Time.frameCount;
+            await UniTask.WaitWhile(() => t, PlayerLoopTiming.EarlyUpdate);
+
+            var diff = Time.frameCount - startFrame;
+            diff.Is(11);
+        }
+
+        public async UniTask WaitUntilValueChanged()
+        {
+            var v = new MyMyClass { MyProperty = 99 };
+
+            Observable.TimerFrame(10, FrameCountType.EndOfFrame).Subscribe(_ => v.MyProperty = 1000);
+
+            var startFrame = Time.frameCount;
+            await UniTask.WaitUntilValueChanged(v, x => x.MyProperty, PlayerLoopTiming.EarlyUpdate);
+
+            var diff = Time.frameCount - startFrame;
+            diff.Is(11);
+        }
+
+        public async UniTask SwitchTo()
+        {
+            var currentThreadId = Thread.CurrentThread.ManagedThreadId;
+
+            await UniTask.SwitchToThreadPool();
+
+            var switchedThreadId = Thread.CurrentThread.ManagedThreadId;
+
+            await UniTask.Yield();
+
+            currentThreadId.IsNot(switchedThreadId);
+        }
+
+        public async UniTask ObservableConversion()
+        {
+            var v = await Observable.Range(1, 10).ToUniTask();
+            v.Is(10);
+
+            v = await Observable.Range(1, 10).ToUniTask(useFirstValue: true);
+            v.Is(1);
+
+            v = await UniTask.DelayFrame(10).ToObservable().ToTask();
+            v.Is(10);
+
+            v = await UniTask.FromResult(99).ToObservable();
+            v.Is(99);
         }
 
         IEnumerator ToaruCoroutineEnumerator()

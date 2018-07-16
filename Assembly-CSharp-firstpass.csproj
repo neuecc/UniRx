@@ -113,6 +113,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Disposables\StableCompositeDisposable.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\EventPattern.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\AscynLock.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\ExceptionExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\ImmutableList.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\ListObserver.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\MicroCoroutine.cs" />

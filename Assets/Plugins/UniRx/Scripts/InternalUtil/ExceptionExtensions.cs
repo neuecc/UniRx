@@ -2,14 +2,14 @@
 {
 	using System;
 
-	static class ExceptionExtensions
+	internal static class ExceptionExtensions
 	{
 		public static void Throw(this Exception exception)
 		{
-#if NET_4_6
+#if (NET_4_6 || NET_STANDARD_2_0)
 			System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
 #endif
-			throw exception;
+            throw exception;
 		}
 	}
 }
