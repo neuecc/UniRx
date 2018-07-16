@@ -46,15 +46,33 @@ namespace UniRx.Async
             return awaiter;
         }
 
+        public static WWWConfiguredAwaiter GetAwaiter(this WWW www)
+        {
+            return ConfigureAwait(www);
+        }
+
+        public static WWWConfiguredAwaiter ConfigureAwait(this WWW www, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        {
+            if (www == null) ThrowIfNull(nameof(www));
+            var awaiter = new WWWConfiguredAwaiter(www, progress, cancellation);
+            PlayerLoopHelper.AddAction(timing, awaiter);
+            return awaiter;
+        }
+
 #if ENABLE_WWW
 
-        //public static UnityWebRequestAsyncOperationAwaiter GetAwaiter(this UnityWebRequestAsyncOperation asyncOperation)
-        //{
-        //    if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
-        //    return new UnityWebRequestAsyncOperationAwaiter(asyncOperation);
+        public static WWWConfiguredAwaiter GetAwaiter(this WWW www)
+        {
+            return ConfigureAwait(www);
+        }
 
-
-        //}
+        public static WWWConfiguredAwaiter ConfigureAwait(this WWW www, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        {
+            if (www == null) ThrowIfNull(nameof(www));
+            var awaiter = new WWWConfiguredAwaiter(www, progress, cancellation);
+            PlayerLoopHelper.AddAction(timing, awaiter);
+            return awaiter;
+        }
 
 #endif
 
@@ -274,6 +292,76 @@ namespace UniRx.Async
             }
         }
 
+#if ENABLE_WWW
+
+        public class WWWConfiguredAwaiter : ICriticalNotifyCompletion, IPlayerLoopItem
+        {
+            readonly WWW request;
+            readonly IProgress<float> progress;
+            CancellationToken cancellationToken;
+            Action continuation;
+
+            public WWWConfiguredAwaiter(WWW request, IProgress<float> progress, CancellationToken cancellationToken)
+            {
+                this.request = request;
+                this.progress = progress;
+                this.cancellationToken = cancellationToken;
+                this.continuation = null;
+            }
+
+            public WWWConfiguredAwaiter GetAwaiter()
+            {
+                return this;
+            }
+
+            public bool IsCompleted
+            {
+                get
+                {
+                    return cancellationToken.IsCancellationRequested || request.isDone;
+                }
+            }
+
+            public void GetResult()
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            public bool MoveNext()
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    this.continuation?.Invoke();
+                    return false;
+                }
+
+                if (progress != null)
+                {
+                    progress.Report(request.progress);
+                }
+
+                if (request.isDone)
+                {
+                    this.continuation?.Invoke();
+                    return false;
+                }
+
+                return true;
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                this.continuation = continuation;
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                this.continuation = continuation;
+            }
+        }
+
+#endif
+
 #if ENABLE_UNITYWEBREQUEST
 
         public struct UnityWebRequestAsyncOperationAwaiter : ICriticalNotifyCompletion
@@ -375,7 +463,6 @@ namespace UniRx.Async
                 this.continuation = continuation;
             }
         }
-
 
 #endif
     }
