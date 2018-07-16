@@ -44,7 +44,7 @@ Great introduction to Rx article: [The introduction to Reactive Programming you'
 
 The following code implements the double click detection example from the article in UniRx:
 
-```
+```csharp
 var clickStream = Observable.EveryUpdate()
     .Where(_ => Input.GetMouseButtonDown(0));
 
