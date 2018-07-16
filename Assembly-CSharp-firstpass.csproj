@@ -219,6 +219,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Zip.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\ZipLatest.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Pair.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Progress.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Schedulers\ImmediateScheduler.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Schedulers\IScheduler.cs" />
