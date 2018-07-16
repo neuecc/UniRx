@@ -1,0 +1,10 @@
+{
+    "name": "UniRx",
+    "references": [
+        "UniRx.Async"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

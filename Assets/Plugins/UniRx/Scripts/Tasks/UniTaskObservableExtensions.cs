@@ -36,7 +36,7 @@ namespace UniRx
             {
                 try
                 {
-                    return Observable.Return<T>(task.GetResult());
+                    return Observable.Return<T>(task.GetAwaiter().GetResult());
                 }
                 catch (Exception ex)
                 {

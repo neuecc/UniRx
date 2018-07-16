@@ -9,10 +9,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{FC6D064E-28ED-A578-0D72-8E424343BF9A}</ProjectGuid>
+    <ProjectGuid>{089999BB-1900-31E8-673F-067C92198C6A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
+    <AssemblyName>UniRx.Async</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -47,7 +47,7 @@
   <PropertyGroup>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Unity/VSTU</UnityProjectGenerator>
-    <UnityProjectType>GamePlugins:3</UnityProjectType>
+    <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>2018.1.6f1</UnityVersion>
   </PropertyGroup>
@@ -60,41 +60,31 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample01_ObservableWWW.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample02_ObservableTriggers.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample03_GameObjectAsObservable.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample04_ConvertFromUnityCallback.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample05_ConvertFromCoroutine.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample06_ConvertToCoroutine.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample07_OrchestratIEnumerator.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample08_DetectDoubleClick.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample09_EventHandling.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample10_MainThreadDispatcher.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample11_Logger.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample12_ReactiveProperty.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Examples\Sample13_ToDoApp.cs" />
-    <None Include="Assets\Plugins\UniRx\ReadMe.txt" />
-    <Reference Include="Unity.ResourceManager.Editor">
-      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.ResourceManager.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ResourceManager">
-      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
-    </Reference>
-    <Reference Include="com.unity.resourcemanager">
-      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/com.unity.resourcemanager.dll</HintPath>
-    </Reference>
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\AsyncUnit.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncMethodBuilderAttribute.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncUniTaskMethodBuilder.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncUniTaskVoidMethodBuilder.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\EnumeratorAsyncExtensions.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\Hack.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\PlayerLoopRunner.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\PlayerLoopHelper.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Promise.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Delay.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Extensions.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Factory.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Threading.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WaitUntil.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAll.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAll.Generated.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAny.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAny.Generated.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTaskVoid.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.Jobs.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.ResourceManagement.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.uGUI.cs" />
+    <None Include="Assets\Plugins\UniRx\Scripts\Async\UniRx.Async.asmdef" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
     </Reference>
@@ -272,29 +262,92 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.UI">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.Networking">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Networking">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/Networking/Editor/UnityEditor.Networking.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Timeline">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.Timeline">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/Timeline/Editor/UnityEditor.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.TreeEditor">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/TreeEditor/Editor/UnityEditor.TreeEditor.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UIAutomation">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/UIAutomation/UnityEngine.UIAutomation.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.UIAutomation">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/UIAutomation/Editor/UnityEditor.UIAutomation.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.GoogleAudioSpatializer">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/Editor/UnityEditor.GoogleAudioSpatializer.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.GoogleAudioSpatializer">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/RuntimeEditor/UnityEngine.GoogleAudioSpatializer.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.HoloLens">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/UnityHoloLens/Editor/UnityEditor.HoloLens.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.SpatialTracking">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/Editor/UnityEditor.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.VR">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/UnityExtensions/Unity/UnityVR/Editor/UnityEditor.VR.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Graphs">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Android.Extensions">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.WSA.Extensions">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.WSA.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.WebGL.Extensions">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.WindowsStandalone.Extensions">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="AssetStoreTools">
+      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Assets/AssetStoreTools/Editor/AssetStoreTools.dll</HintPath>
+    </Reference>
+    <Reference Include="AssetStoreToolsExtra">
+      <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Assets/AssetStoreTools/Editor/AssetStoreToolsExtra.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Advertisements">
+      <HintPath>C:/Users/neuecc/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.Analytics">
       <HintPath>C:/Users/neuecc/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.Analytics">
+      <HintPath>C:/Users/neuecc/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/Editor/UnityEditor.Analytics.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Purchasing">
+      <HintPath>C:/Users/neuecc/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.StandardEvents">
       <HintPath>C:/Users/neuecc/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
+      <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
@@ -641,16 +694,6 @@
     <Reference Include="System.Xml.Serialization">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.6f1/Editor/Data/NetStandard/compat/2.0.0/shims/netfx/System.Xml.Serialization.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="UniRx.Async.csproj">
-      <Project>{089999BB-1900-31E8-673F-067C92198C6A}</Project>
-      <Name>UniRx.Async</Name>
-    </ProjectReference>
-    <ProjectReference Include="UniRx.csproj">
-      <Project>{DA6F13A8-9704-59D0-8E13-D8BA6037F97A}</Project>
-      <Name>UniRx</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

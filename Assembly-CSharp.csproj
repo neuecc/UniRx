@@ -647,6 +647,14 @@
       <Project>{FC6D064E-28ED-A578-0D72-8E424343BF9A}</Project>
       <Name>Assembly-CSharp-firstpass</Name>
     </ProjectReference>
+    <ProjectReference Include="UniRx.Async.csproj">
+      <Project>{089999BB-1900-31E8-673F-067C92198C6A}</Project>
+      <Name>UniRx.Async</Name>
+    </ProjectReference>
+    <ProjectReference Include="UniRx.csproj">
+      <Project>{DA6F13A8-9704-59D0-8E13-D8BA6037F97A}</Project>
+      <Name>UniRx</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
