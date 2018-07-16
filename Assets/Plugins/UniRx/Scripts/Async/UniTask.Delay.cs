@@ -16,26 +16,40 @@ namespace UniRx.Async
             return source.Task;
         }
 
-        public static UniTask<int> Delay(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask Delay(int millisecondsDelay, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (delayFrameCount < 0)
-            {
-                throw new ArgumentOutOfRangeException("Delay does not allow minus delayFrameCount. delayFrameCount:" + delayFrameCount);
-            }
-
-            var source = new DelayPromise(delayFrameCount, cancellationToken);
-            PlayerLoopHelper.AddAction(delayTiming, source);
-            return source.Task;
+            return Delay(TimeSpan.FromMilliseconds(millisecondsDelay), ignoreTimeScale, delayTiming, cancellationToken);
         }
 
-        public static UniTask Delay(TimeSpan delayTimeSpan, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask Delay(TimeSpan delayTimeSpan, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (delayTimeSpan < TimeSpan.Zero)
             {
                 throw new ArgumentOutOfRangeException("Delay does not allow minus delayFrameCount. delayTimeSpan:" + delayTimeSpan);
             }
 
-            var source = new DelayTimeSpanPromise(delayTimeSpan, cancellationToken);
+            if (ignoreTimeScale)
+            {
+                var source = new DelayIgnoreTimeScalePromise(delayTimeSpan, cancellationToken);
+                PlayerLoopHelper.AddAction(delayTiming, source);
+                return source.Task;
+            }
+            else
+            {
+                var source = new DelayPromise(delayTimeSpan, cancellationToken);
+                PlayerLoopHelper.AddAction(delayTiming, source);
+                return source.Task;
+            }
+        }
+
+        public static UniTask<int> DelayFrame(int delayFrameCount, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (delayFrameCount < 0)
+            {
+                throw new ArgumentOutOfRangeException("Delay does not allow minus delayFrameCount. delayFrameCount:" + delayFrameCount);
+            }
+
+            var source = new DelayFramePromise(delayFrameCount, cancellationToken);
             PlayerLoopHelper.AddAction(delayTiming, source);
             return source.Task;
         }
@@ -64,7 +78,7 @@ namespace UniRx.Async
             }
         }
 
-        class DelayPromise : Promise<int>, IPlayerLoopItem
+        class DelayFramePromise : Promise<int>, IPlayerLoopItem
         {
             readonly int delayFrameCount;
             CancellationToken cancellation;
@@ -73,7 +87,7 @@ namespace UniRx.Async
 
             public UniTask<int> Task => new UniTask<int>(this);
 
-            public DelayPromise(int delayFrameCount, CancellationToken cancellation)
+            public DelayFramePromise(int delayFrameCount, CancellationToken cancellation)
             {
                 this.delayFrameCount = delayFrameCount;
                 this.cancellation = cancellation;
@@ -99,20 +113,19 @@ namespace UniRx.Async
             }
         }
 
-        class DelayTimeSpanPromise : Promise<AsyncUnit>, IPlayerLoopItem
+        class DelayPromise : Promise<AsyncUnit>, IPlayerLoopItem
         {
-            readonly double delayFrameTimeSpan;
+            readonly float delayFrameTimeSpan;
+            float elapsed;
             CancellationToken cancellation;
-
-            float initialTime;
 
             public UniTask Task => new UniTask(this);
 
-            public DelayTimeSpanPromise(TimeSpan delayFrameTimeSpan, CancellationToken cancellation)
+            public DelayPromise(TimeSpan delayFrameTimeSpan, CancellationToken cancellation)
             {
-                this.delayFrameTimeSpan = delayFrameTimeSpan.TotalSeconds;
+                this.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
                 this.cancellation = cancellation;
-                this.initialTime = Time.realtimeSinceStartup;
+                this.elapsed = 0.0f;
             }
 
             public bool MoveNext()
@@ -123,9 +136,44 @@ namespace UniRx.Async
                     return false;
                 }
 
-                var diff = Time.realtimeSinceStartup - initialTime;
+                elapsed += Time.deltaTime;
 
-                if (diff >= delayFrameTimeSpan)
+                if (elapsed >= delayFrameTimeSpan)
+                {
+                    SetResult(default(AsyncUnit));
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        class DelayIgnoreTimeScalePromise : Promise<AsyncUnit>, IPlayerLoopItem
+        {
+            readonly float delayFrameTimeSpan;
+            float elapsed;
+            CancellationToken cancellation;
+
+            public UniTask Task => new UniTask(this);
+
+            public DelayIgnoreTimeScalePromise(TimeSpan delayFrameTimeSpan, CancellationToken cancellation)
+            {
+                this.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
+                this.cancellation = cancellation;
+                this.elapsed = 0.0f;
+            }
+
+            public bool MoveNext()
+            {
+                if (cancellation.IsCancellationRequested)
+                {
+                    SetCanceled();
+                    return false;
+                }
+
+                elapsed += Time.unscaledDeltaTime;
+
+                if (elapsed >= delayFrameTimeSpan)
                 {
                     SetResult(default(AsyncUnit));
                     return false;
