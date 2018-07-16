@@ -86,6 +86,12 @@ namespace UniRx
 
     public static class CoroutineAsyncExtensions
     {
+
+#if !CSHARP_7_OR_LATER
+
+        // should use UniRx.Async in C# 7.0
+
+        
         public static CoroutineAsyncBridge<WWW> GetAwaiter(this WWW www)
         {
             return CoroutineAsyncBridge<WWW>.Start(www);
@@ -95,10 +101,6 @@ namespace UniRx
         {
             return CoroutineAsyncBridge.Start(coroutine);
         }
-
-#if !CSHARP_7_OR_LATER
-
-        // should use UniRx.Async in C# 7.0
 
         public static CoroutineAsyncBridge<AsyncOperation> GetAwaiter(this AsyncOperation asyncOperation)
         {

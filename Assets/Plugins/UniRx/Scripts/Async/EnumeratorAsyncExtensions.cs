@@ -53,12 +53,14 @@ namespace UniRx.Async
             {
                 get
                 {
-                    return completeState != Unfinished;
+                    return cancellationToken.IsCancellationRequested || (completeState != Unfinished);
                 }
             }
 
             public void GetResult()
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if (completeState == Success)
                 {
                     return;

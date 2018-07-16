@@ -60,13 +60,13 @@ namespace UniRx.Async
             {
                 get
                 {
-                    return jobHandle.IsCompleted;
+                    return false; // always async do.
                 }
             }
 
             public void GetResult()
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
             }
 
             public bool MoveNext()
@@ -77,6 +77,7 @@ namespace UniRx.Async
                     if (!calledComplete)
                     {
                         PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, new JobHandleAwaiter(jobHandle, CancellationToken.None));
+                        this.continuation?.Invoke();
                     }
 
                     return false;
@@ -91,7 +92,7 @@ namespace UniRx.Async
 
                         this.continuation?.Invoke();
                     }
-                    
+
                     return false;
                 }
 

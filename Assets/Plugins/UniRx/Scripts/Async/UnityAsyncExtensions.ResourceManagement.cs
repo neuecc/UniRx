@@ -21,10 +21,12 @@ namespace UniRx.Async
             return new InterfaceAsyncOperationAwaiter(asyncOperation);
         }
 
-        public static InterfaceAsyncOperationConfiguredAwaiter ConfigureAwait(this IAsyncOperation asyncOperation, IProgress<float> progress = null, CancellationToken cancellation = default(CancellationToken))
+        public static InterfaceAsyncOperationConfiguredAwaiter ConfigureAwait(this IAsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
         {
             if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
-            return new InterfaceAsyncOperationConfiguredAwaiter(asyncOperation, progress, cancellation);
+            var awaiter = new InterfaceAsyncOperationConfiguredAwaiter(asyncOperation, progress, cancellation);
+            PlayerLoopHelper.AddAction(timing, awaiter);
+            return awaiter;
         }
 
         public static InterfaceAsyncOperationAwaiter<T> GetAwaiter<T>(IAsyncOperation<T> asyncOperation)
@@ -33,10 +35,12 @@ namespace UniRx.Async
             return new InterfaceAsyncOperationAwaiter<T>(asyncOperation);
         }
 
-        public static InterfaceAsyncOperationConfiguredAwaiter<T> ConfigureAwait<T>(this IAsyncOperation<T> asyncOperation, IProgress<float> progress = null, CancellationToken cancellation = default(CancellationToken))
+        public static InterfaceAsyncOperationConfiguredAwaiter<T> ConfigureAwait<T>(this IAsyncOperation<T> asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
         {
             if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
-            return new InterfaceAsyncOperationConfiguredAwaiter<T>(asyncOperation, progress, cancellation);
+            var awaiter = new InterfaceAsyncOperationConfiguredAwaiter<T>(asyncOperation, progress, cancellation);
+            PlayerLoopHelper.AddAction(timing, awaiter);
+            return awaiter;
         }
 
         public struct InterfaceAsyncOperationAwaiter : ICriticalNotifyCompletion
@@ -71,7 +75,7 @@ namespace UniRx.Async
             }
         }
 
-        public struct InterfaceAsyncOperationConfiguredAwaiter : ICriticalNotifyCompletion, IPlayerLoopItem
+        public class InterfaceAsyncOperationConfiguredAwaiter : ICriticalNotifyCompletion, IPlayerLoopItem
         {
             readonly IAsyncOperation asyncOperation;
             readonly IProgress<float> progress;
@@ -95,19 +99,20 @@ namespace UniRx.Async
             {
                 get
                 {
-                    return asyncOperation.IsDone;
+                    return cancellationToken.IsCancellationRequested || asyncOperation.IsDone;
                 }
             }
 
             public void GetResult()
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
             }
 
             public bool MoveNext()
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
+                    this.continuation?.Invoke();
                     return false;
                 }
 
@@ -169,7 +174,7 @@ namespace UniRx.Async
             }
         }
 
-        public struct InterfaceAsyncOperationConfiguredAwaiter<T> : ICriticalNotifyCompletion, IPlayerLoopItem
+        public class InterfaceAsyncOperationConfiguredAwaiter<T> : ICriticalNotifyCompletion, IPlayerLoopItem
         {
             readonly IAsyncOperation<T> asyncOperation;
             readonly IProgress<float> progress;
@@ -193,13 +198,13 @@ namespace UniRx.Async
             {
                 get
                 {
-                    return asyncOperation.IsDone;
+                    return cancellationToken.IsCancellationRequested || asyncOperation.IsDone;
                 }
             }
 
             public T GetResult()
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 return asyncOperation.Result;
             }
 
@@ -207,6 +212,7 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
+                    this.continuation?.Invoke();
                     return false;
                 }
 
