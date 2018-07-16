@@ -97,22 +97,26 @@ namespace UniRx.Async
             return new ToCoroutineEnumerator(task, exceptionHandler);
         }
 
-        public static async UniTask<T> Timeout<T>(this UniTask<T> task, TimeSpan timeout, CancellationTokenSource cancellationTokenSource = null)
+        public static async UniTask<T> Timeout<T>(this UniTask<T> task, TimeSpan timeout, CancellationTokenSource taskCancellationTokenSource = null)
         {
-            if (cancellationTokenSource == null)
-            {
-                cancellationTokenSource = new CancellationTokenSource();
-            }
-
-            var timeoutTask = UniTask.Delay(timeout, cancellationToken: cancellationTokenSource.Token);
+            var delayCancellationTokenSource = new CancellationTokenSource();
+            var timeoutTask = UniTask.Delay(timeout, cancellationToken: delayCancellationTokenSource.Token);
 
             var (hasValue, value) = await UniTask.WhenAny(task, timeoutTask);
             if (!hasValue)
             {
+                if (taskCancellationTokenSource != null)
+                {
+                    taskCancellationTokenSource.Cancel();
+                }
+
                 throw new TimeoutException();
             }
+            else
+            {
+                delayCancellationTokenSource.Cancel();
+            }
 
-            cancellationTokenSource.Cancel();
             return value;
         }
 
