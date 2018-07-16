@@ -86,7 +86,9 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Delay.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Extensions.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Threading.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Factory.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WaitUntil.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAll.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAll.Generated.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAny.cs" />
