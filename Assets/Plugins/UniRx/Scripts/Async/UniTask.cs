@@ -169,6 +169,15 @@ namespace UniRx.Async
         }
 
         [DebuggerHidden]
+        public bool IsStaticValueUnion
+        {
+            get
+            {
+                return continuation == null;
+            }
+        }
+
+        [DebuggerHidden]
         internal T GetResult()
         {
             if (continuation == null)

@@ -16,7 +16,7 @@ namespace UniRx.Async
             return new AnonymousProgress<T>(handler);
         }
 
-        class NullProgress<T> : IProgress<T>
+        sealed class NullProgress<T> : IProgress<T>
         {
             public static readonly IProgress<T> Instance = new NullProgress<T>();
 
@@ -30,7 +30,7 @@ namespace UniRx.Async
             }
         }
 
-        class AnonymousProgress<T> : IProgress<T>
+        sealed class AnonymousProgress<T> : IProgress<T>
         {
             readonly Action<T> action;
 
@@ -41,7 +41,7 @@ namespace UniRx.Async
 
             public void Report(T value)
             {
-                throw new NotImplementedException();
+                action(value);
             }
         }
     }

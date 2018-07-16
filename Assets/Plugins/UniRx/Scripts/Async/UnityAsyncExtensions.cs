@@ -46,19 +46,6 @@ namespace UniRx.Async
             return awaiter;
         }
 
-        public static WWWConfiguredAwaiter GetAwaiter(this WWW www)
-        {
-            return ConfigureAwait(www);
-        }
-
-        public static WWWConfiguredAwaiter ConfigureAwait(this WWW www, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
-        {
-            if (www == null) ThrowIfNull(nameof(www));
-            var awaiter = new WWWConfiguredAwaiter(www, progress, cancellation);
-            PlayerLoopHelper.AddAction(timing, awaiter);
-            return awaiter;
-        }
-
 #if ENABLE_WWW
 
         public static WWWConfiguredAwaiter GetAwaiter(this WWW www)
