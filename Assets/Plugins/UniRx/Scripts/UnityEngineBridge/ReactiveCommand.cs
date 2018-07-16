@@ -312,7 +312,7 @@ namespace UniRx
 #if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
 
         /// <summary>
-        /// Bind RaectiveCommand to button's interactable and onClick.
+        /// Bind ReactiveCommand to button's interactable and onClick.
         /// </summary>
         public static IDisposable BindTo(this ReactiveCommand<Unit> command, UnityEngine.UI.Button button)
         {
@@ -322,7 +322,7 @@ namespace UniRx
         }
 
         /// <summary>
-        /// Bind RaectiveCommand to button's interactable and onClick and register onClick action to command.
+        /// Bind ReactiveCommand to button's interactable and onClick and register onClick action to command.
         /// </summary>
         public static IDisposable BindToOnClick(this ReactiveCommand<Unit> command, UnityEngine.UI.Button button, Action<Unit> onClick)
         {
