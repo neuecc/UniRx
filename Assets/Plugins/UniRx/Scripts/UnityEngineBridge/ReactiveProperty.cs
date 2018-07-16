@@ -369,6 +369,7 @@ namespace UniRx
         protected virtual void Dispose(bool disposing)
         {
             if (isDisposed) return;
+            sourceConnection.Dispose();
 
             var node = root;
             root = last = null;
