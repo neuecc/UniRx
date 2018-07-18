@@ -1,14 +1,26 @@
 ﻿using System;
+using System.Threading;
+#if (NET_4_6 || NET_STANDARD_2_0)
+using UniRx.Async;
+#endif
+
+#pragma warning disable CS1591
 
 namespace UniRx
 {
     public interface IReactiveCommand<T> : IObservable<T>
+#if (NET_4_6 || NET_STANDARD_2_0)
+        , UniRx.Async.IAwaitable<T>
+#endif
     {
         IReadOnlyReactiveProperty<bool> CanExecute { get; }
         bool Execute(T parameter);
     }
 
     public interface IAsyncReactiveCommand<T>
+#if (NET_4_6 || NET_STANDARD_2_0)
+        : UniRx.Async.IAwaitable<T>
+#endif
     {
         IReadOnlyReactiveProperty<bool> CanExecute { get; }
         IDisposable Execute(T parameter);
@@ -89,7 +101,24 @@ namespace UniRx
         {
             if (canExecute.Value)
             {
+#if (NET_4_6 || NET_STANDARD_2_0)
+                ReactivePropertyAwaiter<T> continuation = null;
+                if (awaiter != null)
+                {
+                    continuation = Interlocked.Exchange(ref awaiter, null);
+                }
+#endif
+
                 trigger.OnNext(parameter);
+
+#if (NET_4_6 || NET_STANDARD_2_0)
+                if (continuation != null)
+                {
+                    continuation.InvokeContinuation(ref parameter);
+                    Interlocked.CompareExchange(ref awaiter, continuation, null);
+                }
+#endif
+
                 return true;
             }
             else
@@ -123,6 +152,23 @@ namespace UniRx
             trigger.Dispose();
             canExecuteSubscription.Dispose();
         }
+
+#if (NET_4_6 || NET_STANDARD_2_0)
+
+        ReactivePropertyAwaiter<T> awaiter;
+
+        public IAwaiter<T> GetAwaiter()
+        {
+            if (awaiter != null) return awaiter;
+            Interlocked.CompareExchange(ref awaiter, new ReactivePropertyAwaiter<T>(), null);
+            return awaiter;
+        }
+        
+        IAwaiter IAwaitable.GetAwaiter()
+        {
+            return GetAwaiter();
+        }
+#endif
     }
 
     /// <summary>
@@ -216,12 +262,28 @@ namespace UniRx
         {
             if (canExecute.Value)
             {
+#if (NET_4_6 || NET_STANDARD_2_0)
+                ReactivePropertyAwaiter<T> continuation = null;
+                if (awaiter != null)
+                {
+                    continuation = Interlocked.Exchange(ref awaiter, null);
+                }
+#endif
+
                 canExecuteSource.Value = false;
                 var a = asyncActions.Data;
                 if (a.Length == 1)
                 {
                     try
                     {
+#if (NET_4_6 || NET_STANDARD_2_0)
+                        if (continuation != null)
+                        {
+                            continuation.InvokeContinuation(ref parameter);
+                            Interlocked.CompareExchange(ref awaiter, continuation, null);
+                        }
+#endif
+
                         var asyncState = a[0].Invoke(parameter) ?? Observable.ReturnUnit();
                         return asyncState.Finally(() => canExecuteSource.Value = true).Subscribe();
                     }
@@ -236,6 +298,14 @@ namespace UniRx
                     var xs = new IObservable<Unit>[a.Length];
                     try
                     {
+#if (NET_4_6 || NET_STANDARD_2_0)
+                        if (continuation != null)
+                        {
+                            continuation.InvokeContinuation(ref parameter);
+                            Interlocked.CompareExchange(ref awaiter, continuation, null);
+                        }
+#endif
+
                         for (int i = 0; i < a.Length; i++)
                         {
                             xs[i] = a[i].Invoke(parameter) ?? Observable.ReturnUnit();
@@ -266,6 +336,24 @@ namespace UniRx
 
             return new Subscription(this, asyncAction);
         }
+
+#if (NET_4_6 || NET_STANDARD_2_0)
+
+        ReactivePropertyAwaiter<T> awaiter;
+
+        public IAwaiter<T> GetAwaiter()
+        {
+            if (awaiter != null) return awaiter;
+            Interlocked.CompareExchange(ref awaiter, new ReactivePropertyAwaiter<T>(), null);
+            return awaiter;
+        }
+
+        IAwaiter IAwaitable.GetAwaiter()
+        {
+            return GetAwaiter();
+        }
+
+#endif
 
         class Subscription : IDisposable
         {
@@ -370,7 +458,7 @@ namespace UniRx
         {
             var d1 = command.CanExecute.SubscribeToInteractable(button);
             var d2 = button.OnClickAsObservable().SubscribeWithState(command, (x, c) => c.Execute(x));
-            
+
             return StableCompositeDisposable.Create(d1, d2);
         }
 

@@ -193,6 +193,28 @@ namespace UniRx.Tests
             v.Is(99);
         }
 
+        public async UniTask AwaitableReactiveProperty()
+        {
+            var rp1 = new ReactiveProperty<int>(99);
+
+            UniTask.DelayFrame(100).ContinueWith(x => rp1.Value = x).Forget();
+
+            await rp1;
+
+            rp1.Value.Is(100);
+        }
+
+        public async UniTask AwaitableReactiveCommand()
+        {
+            var rc = new ReactiveCommand<int>();
+
+            UniTask.DelayFrame(100).ContinueWith(x => rc.Execute(x)).Forget();
+
+            var v = await rc;
+
+            v.Is(100);
+        }
+
         IEnumerator ToaruCoroutineEnumerator()
         {
             yield return null;

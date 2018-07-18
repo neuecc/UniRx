@@ -1,13 +1,21 @@
-﻿using System;
+﻿#pragma warning disable CS1591
+
+using System;
 using System.Collections.Generic;
 using System.Threading;
 #if !UniRxLibrary
 using UnityEngine;
 #endif
+#if (NET_4_6 || NET_STANDARD_2_0)
+using UniRx.Async;
+#endif
 
 namespace UniRx
 {
     public interface IReadOnlyReactiveProperty<T> : IObservable<T>
+#if (NET_4_6 || NET_STANDARD_2_0)
+        , UniRx.Async.IAwaitable<T>
+#endif
     {
         T Value { get; }
         bool HasValue { get; }
@@ -108,7 +116,8 @@ namespace UniRx
                 if (!EqualityComparer.Equals(this.value, value))
                 {
                     SetValue(value);
-                    if (isDisposed) return;
+                    if (isDisposed)
+                        return;
 
                     RaiseOnNext(ref value);
                 }
@@ -137,12 +146,29 @@ namespace UniRx
 
         void RaiseOnNext(ref T value)
         {
+#if (NET_4_6 || NET_STANDARD_2_0)
+            ReactivePropertyAwaiter<T> continuation = null;
+            if (awaiter != null)
+            {
+                continuation = Interlocked.Exchange(ref awaiter, null);
+            }
+#endif
+
             var node = root;
             while (node != null)
             {
                 node.OnNext(value);
                 node = node.Next;
             }
+
+#if (NET_4_6 || NET_STANDARD_2_0)
+            if (continuation != null)
+            {
+                continuation.InvokeContinuation(ref value);
+                // reuse continuation for perf optimization if does not raise recursively.
+                Interlocked.CompareExchange(ref awaiter, continuation, null);
+            }
+#endif
         }
 
         protected virtual void SetValue(T value)
@@ -153,7 +179,8 @@ namespace UniRx
         public void SetValueAndForceNotify(T value)
         {
             SetValue(value);
-            if (isDisposed) return;
+            if (isDisposed)
+                return;
 
             RaiseOnNext(ref value);
         }
@@ -213,7 +240,8 @@ namespace UniRx
 
         protected virtual void Dispose(bool disposing)
         {
-            if (isDisposed) return;
+            if (isDisposed)
+                return;
 
             var node = root;
             root = last = null;
@@ -235,6 +263,25 @@ namespace UniRx
         {
             return false;
         }
+
+
+#if (NET_4_6 || NET_STANDARD_2_0)
+
+        ReactivePropertyAwaiter<T> awaiter;
+
+        public IAwaiter<T> GetAwaiter()
+        {
+            if (awaiter != null) return awaiter;
+            Interlocked.CompareExchange(ref awaiter, new ReactivePropertyAwaiter<T>(), null);
+            return awaiter;
+        }
+
+        IAwaiter IAwaitable.GetAwaiter()
+        {
+            return GetAwaiter();
+        }
+
+#endif
     }
 
     /// <summary>
@@ -420,6 +467,13 @@ namespace UniRx
             // SetValue
             this.latestValue = value;
 
+#if (NET_4_6 || NET_STANDARD_2_0)
+            ReactivePropertyAwaiter<T> continuation = null;
+            if (awaiter != null)
+            {
+                continuation = Interlocked.Exchange(ref awaiter, null);
+            }
+#endif
             // call source.OnNext
             var node = root;
             while (node != null)
@@ -427,6 +481,15 @@ namespace UniRx
                 node.OnNext(value);
                 node = node.Next;
             }
+
+#if (NET_4_6 || NET_STANDARD_2_0)
+            if (continuation != null)
+            {
+                continuation.InvokeContinuation(ref value);
+                // reuse continuation for perf optimization if does not raise recursively.
+                Interlocked.CompareExchange(ref awaiter, continuation, null);
+            }
+#endif
         }
 
         void IObserver<T>.OnError(Exception error)
@@ -459,6 +522,24 @@ namespace UniRx
         {
             return false;
         }
+
+#if (NET_4_6 || NET_STANDARD_2_0)
+
+        ReactivePropertyAwaiter<T> awaiter;
+
+        public IAwaiter<T> GetAwaiter()
+        {
+            if (awaiter != null) return awaiter;
+            Interlocked.CompareExchange(ref awaiter, new ReactivePropertyAwaiter<T>(), null);
+            return awaiter;
+        }
+
+        IAwaiter IAwaitable.GetAwaiter()
+        {
+            return GetAwaiter();
+        }
+
+#endif
     }
 
     /// <summary>
@@ -518,7 +599,8 @@ namespace UniRx
             {
                 foreach (var item in xs)
                 {
-                    if (item == false) return false;
+                    if (item == false)
+                        return false;
                 }
                 return true;
             });
@@ -534,7 +616,8 @@ namespace UniRx
             {
                 foreach (var item in xs)
                 {
-                    if (item == true) return false;
+                    if (item == true)
+                        return false;
                 }
                 return true;
             });
