@@ -257,60 +257,7 @@ namespace UniRx.Tests
             var asset = await Resources.LoadAsync<TextAsset>(path);
             return (asset as TextAsset).text;
         }
-
-
-
 #endif
-    }
-
-    // ...for readme
-
-    public class SceneAssets
-    {
-        public readonly UniTask<Sprite> Front;
-        public readonly UniTask<Sprite> Background;
-        public readonly UniTask<Sprite> Effect;
-
-        public SceneAssets()
-        {
-            // ctor(Func) overload is AsyncLazy, initialized once when await.
-            // and after it, await returns zero-allocation value immediately.
-            Front = new UniTask<Sprite>(() => LoadAsSprite("foo"));
-            Background = new UniTask<Sprite>(() => LoadAsSprite("bar"));
-            Effect = new UniTask<Sprite>(() => LoadAsSprite("baz"));
-        }
-
-        async UniTask<Sprite> LoadAsSprite(string path)
-        {
-            var resource = await Resources.LoadAsync<Sprite>(path);
-            return (resource as Sprite);
-        }
-    }
-
-    public class MyClass
-    {
-        public UniTask<int> WrapByPromise1()
-        {
-            var promise = new Promise<int>((resolve, reject) =>
-            {
-                // when complete, call resolve.SetResult();
-                // when failed, call reject.SetException();
-            });
-
-            return new UniTask<int>(promise);
-        }
-
-        public UniTask<int> WrapByPromise2()
-        {
-            // also allows outer methods(no use constructor resolve/reject).
-            var promise = new Promise<int>();
-
-            // when complete, call promise.SetResult();
-            // when failed, call promise.SetException();
-            // when cancel, call promise.SetCancel();
-
-            return new UniTask<int>(promise);
-        }
     }
 }
 

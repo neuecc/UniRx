@@ -1,5 +1,5 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
+#if CSHARP_7_OR_LATER
 using System.Threading;
 using UniRx.Async;
 using UnityEngine;
@@ -43,3 +43,4 @@ public class SandboxScene : MonoBehaviour
         }
     }
 }
+#endif

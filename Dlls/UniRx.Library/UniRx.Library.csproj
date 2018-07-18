@@ -108,9 +108,6 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\PriorityQueue.cs">
       <Link>InternalUtil\PriorityQueue.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\ReflectionAccessor.cs">
-      <Link>InternalUtil\ReflectionAccessor.cs</Link>
-    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\InternalUtil\ScheduledItem.cs">
       <Link>InternalUtil\ScheduledItem.cs</Link>
     </Compile>
