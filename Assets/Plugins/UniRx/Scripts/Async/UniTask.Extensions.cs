@@ -87,6 +87,22 @@ namespace UniRx.Async
             return new UniTask(promise);
         }
 
+        /// <summary>
+        /// Convert IAwaitable[T] -> UniTask[T].
+        /// </summary>
+        public static async UniTask<T> AsUniTask<T>(this IAwaitable<T> task)
+        {
+            return await task;
+        }
+
+        /// <summary>
+        /// Convert IAwaitable -> UniTask.
+        /// </summary>
+        public static async UniTask AsUniTask<T>(this IAwaitable task)
+        {
+            await task;
+        }
+
         public static IEnumerator ToCoroutine<T>(this UniTask<T> task, Action<T> resultHandler = null, Action<Exception> exceptionHandler = null)
         {
             return new ToCoroutineEnumerator<T>(task, resultHandler, exceptionHandler);
@@ -118,6 +134,169 @@ namespace UniRx.Async
             }
 
             return value;
+        }
+
+        public static void Forget(this IAwaitable task, Action<Exception> exceptionHandler = null)
+        {
+            ForgetCore(task, exceptionHandler).Forget();
+        }
+
+        static async UniTaskVoid ForgetCore(IAwaitable task, Action<Exception> exceptionHandler)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception ex)
+            {
+                if (exceptionHandler != null)
+                {
+                    exceptionHandler(ex);
+                    return;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        public static void Forget(this UniTask task, Action<Exception> exceptionHandler = null)
+        {
+            ForgetCore(task, exceptionHandler).Forget();
+        }
+
+        static async UniTaskVoid ForgetCore(UniTask task, Action<Exception> exceptionHandler)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception ex)
+            {
+                if (exceptionHandler != null)
+                {
+                    exceptionHandler(ex);
+                    return;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        public static void Forget<T>(this UniTask<T> task, Action<Exception> exceptionHandler = null)
+        {
+            ForgetCore(task, exceptionHandler).Forget();
+        }
+
+        static async UniTaskVoid ForgetCore<T>(UniTask<T> task, Action<Exception> exceptionHandler)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception ex)
+            {
+                if (exceptionHandler != null)
+                {
+                    exceptionHandler(ex);
+                    return;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        public static async UniTask ContinueWith<T>(this UniTask<T> task, Action<T> continuationFunction)
+        {
+            continuationFunction(await task);
+        }
+
+        public static async UniTask ContinueWith<T>(this UniTask<T> task, Func<T, UniTask> continuationFunction)
+        {
+            await continuationFunction(await task);
+        }
+
+        public static async UniTask<TR> ContinueWith<T, TR>(this UniTask<T> task, Func<T, TR> continuationFunction)
+        {
+            return continuationFunction(await task);
+        }
+
+        public static async UniTask<TR> ContinueWith<T, TR>(this UniTask<T> task, Func<T, UniTask<TR>> continuationFunction)
+        {
+            return await continuationFunction(await task);
+        }
+
+        public static async UniTask ContinueWith(this UniTask task, Action continuationFunction)
+        {
+            await task;
+            continuationFunction();
+        }
+
+        public static async UniTask ContinueWith(this UniTask task, Func<UniTask> continuationFunction)
+        {
+            await task;
+            await continuationFunction();
+        }
+
+        public static async UniTask<T> ContinueWith<T>(this UniTask task, Func<T> continuationFunction)
+        {
+            await task;
+            return continuationFunction();
+        }
+
+        public static async UniTask<T> ContinueWith<T>(this UniTask task, Func<UniTask<T>> continuationFunction)
+        {
+            await task;
+            return await continuationFunction();
+        }
+
+        public static async UniTask ContinueWith<T>(this IAwaitable<T> task, Action<T> continuationFunction)
+        {
+            continuationFunction(await task);
+        }
+
+        public static async UniTask ContinueWith<T>(this IAwaitable<T> task, Func<T, UniTask> continuationFunction)
+        {
+            await continuationFunction(await task);
+        }
+
+        public static async UniTask<TR> ContinueWith<T, TR>(this IAwaitable<T> task, Func<T, TR> continuationFunction)
+        {
+            return continuationFunction(await task);
+        }
+
+        public static async UniTask<TR> ContinueWith<T, TR>(this IAwaitable<T> task, Func<T, UniTask<TR>> continuationFunction)
+        {
+            return await continuationFunction(await task);
+        }
+
+        public static async UniTask ContinueWith(this IAwaitable task, Action continuationFunction)
+        {
+            await task;
+            continuationFunction();
+        }
+
+        public static async UniTask ContinueWith(this IAwaitable task, Func<UniTask> continuationFunction)
+        {
+            await task;
+            await continuationFunction();
+        }
+
+        public static async UniTask<T> ContinueWith<T>(this IAwaitable task, Func<T> continuationFunction)
+        {
+            await task;
+            return continuationFunction();
+        }
+
+        public static async UniTask<T> ContinueWith<T>(this IAwaitable task, Func<UniTask<T>> continuationFunction)
+        {
+            await task;
+            return await continuationFunction();
         }
 
         class ToCoroutineEnumerator : IEnumerator
