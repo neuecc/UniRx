@@ -8,6 +8,7 @@
     int MaxCount = 7;
     Func<int, string> BuildGenerics = x => "<" + string.Join(", ", Enumerable.Range(0, x + 1).Select(y => $"T{y}")) + ">";
     Func<int, string> BuildArgument = x => string.Join(", ", Enumerable.Range(0, x + 1).Select(y => $"UniTask<T{y}> task{y}"));
+    Func<int, string> BuildArgumentBoxed = x => string.Join(", ", Enumerable.Range(0, x + 1).Select(y => $"IAwaitable<T{y}> task{y}"));
     Func<int, string> BuildTuple = x => "(int winArgumentIndex, " + string.Join(", ", Enumerable.Range(0, x + 1).Select(y => $"(bool hasResult, T{y} result{y})")) + ")";
     Func<int, string> BuildMethodParam = x => string.Join(", ", Enumerable.Range(0, x + 1).Select(y => $"task{y}"));
     Func<int, string> BuildTupleType = x => "(int, " + string.Join(", ", Enumerable.Range(0, x + 1).Select(y => $"(bool, T{y})")) + ")";
@@ -29,6 +30,11 @@ namespace UniRx.Async
         public static async UniTask<<#= BuildTuple(i) #>> WhenAny<#= BuildGenerics(i) #>(<#= BuildArgument(i) #>)
         {
             return await new WhenAnyPromise<#= BuildGenerics(i) #>(<#= BuildMethodParam(i) #>);
+        }
+		
+        public static async UniTask<<#= BuildTuple(i) #>> WhenAny<#= BuildGenerics(i) #>(<#= BuildArgumentBoxed(i) #>)
+        {
+            return await new BoxedWhenAnyPromise<#= BuildGenerics(i) #>(<#= BuildMethodParam(i) #>);
         }
 
 <# } #>
@@ -105,6 +111,121 @@ namespace UniRx.Async
                 WhenAnyPromise<#= BuildGenerics(i) #> parent;
 
                 public Awaiter(WhenAnyPromise<#= BuildGenerics(i) #> parent)
+                {
+                    this.parent = parent;
+                }
+
+                public bool IsCompleted
+                {
+                    get
+                    {
+                        return parent.IsCompleted;
+                    }
+                }
+
+                public <#= BuildTupleType(i) #> GetResult()
+                {
+                    if (parent.exception != null)
+                    {
+                        parent.exception.Throw();
+                    }
+
+                    var i = parent.winArgumentIndex;
+                    return <#= BuildTupleResult(i) #>;
+                }
+
+                public void OnCompleted(Action continuation)
+                {
+                    UnsafeOnCompleted(continuation);
+                }
+
+                public void UnsafeOnCompleted(Action continuation)
+                {
+                    parent.whenComplete = continuation;
+                    if (IsCompleted)
+                    {
+                        var action = Interlocked.Exchange(ref parent.whenComplete, null);
+                        if (action != null)
+                        {
+                            action();
+                        }
+                    }
+                }
+            }
+        }
+
+		class BoxedWhenAnyPromise<#= BuildGenerics(i) #>
+        {
+<# for(var j = 0; j <= i; j++) { #>
+            T<#= j #> result<#= j #>;
+<# } #>
+            ExceptionDispatchInfo exception;
+            Action whenComplete;
+            int completeCount;
+            int winArgumentIndex;
+
+            bool IsCompleted => exception != null || Volatile.Read(ref winArgumentIndex) != -1;
+
+            public BoxedWhenAnyPromise(<#= BuildArgumentBoxed(i) #>)
+            {
+                this.whenComplete = null;
+                this.exception = null;
+                this.completeCount = 0;
+                this.winArgumentIndex = -1;
+<# for(var j = 0; j <= i; j++) { #>
+                this.result<#= j #> = default(T<#= j #>);
+<# } #>
+
+<# for(var j = 0; j <= i; j++) { #>
+                RunTask<#= j #>(task<#= j #>).Forget();
+<# } #>
+            }
+
+            void TryCallContinuation()
+            {
+                var action = Interlocked.Exchange(ref whenComplete, null);
+                if (action != null)
+                {
+                    action.Invoke();
+                }
+            }
+
+<# for(var j = 0; j <= i; j++) { #>
+            async UniTaskVoid RunTask<#= j #>(IAwaitable<T<#= j #>> task)
+            {
+                T<#= j #> value;
+                try
+                {
+                    value = await task;
+                }
+                catch (Exception ex)
+                {
+                    exception = ExceptionDispatchInfo.Capture(ex);
+                    TryCallContinuation();
+                    return;
+                }
+
+                var count = Interlocked.Increment(ref completeCount);
+                if (count == 1)
+                {
+                    result<#= j #> = value;
+                    Volatile.Write(ref winArgumentIndex, <#= j #>);
+                    TryCallContinuation();
+                }
+            }
+
+<# } #>
+
+            public Awaiter GetAwaiter()
+            {
+                return new Awaiter(this);
+            }
+
+            public struct Awaiter : ICriticalNotifyCompletion
+            {
+                BoxedWhenAnyPromise<#= BuildGenerics(i) #> parent;
+
+                public Awaiter(BoxedWhenAnyPromise<#= BuildGenerics(i) #> parent)
                 {
                     this.parent = parent;
                 }

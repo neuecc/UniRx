@@ -65,6 +65,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncUniTaskMethodBuilder.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncUniTaskVoidMethodBuilder.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\EnumeratorAsyncExtensions.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\IAwaitable.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\Hack.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\PlayerLoopRunner.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\PlayerLoopHelper.cs" />
@@ -82,7 +83,6 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTaskVoid.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.Jobs.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.ResourceManagement.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.uGUI.cs" />
     <None Include="Assets\Plugins\UniRx\Scripts\Async\UniRx.Async.asmdef" />
     <Reference Include="UnityEngine.AIModule">

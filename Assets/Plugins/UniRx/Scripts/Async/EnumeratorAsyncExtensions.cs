@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 
@@ -11,19 +10,19 @@ namespace UniRx.Async
 {
     public static class EnumeratorAsyncExtensions
     {
-        public static EnumeratorAwaiter GetAwaiter(this IEnumerator enumerator)
+        public static IAwaiter GetAwaiter(this IEnumerator enumerator)
         {
-            return enumerator.ConfigureAwait();
+            return enumerator.ConfigureAwait().GetAwaiter();
         }
 
-        public static EnumeratorAwaiter ConfigureAwait(this IEnumerator enumerator, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static IAwaitable ConfigureAwait(this IEnumerator enumerator, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             var awaiter = new EnumeratorAwaiter(enumerator, cancellationToken);
             PlayerLoopHelper.AddAction(timing, awaiter);
             return awaiter;
         }
 
-        public class EnumeratorAwaiter : ICriticalNotifyCompletion, IPlayerLoopItem
+        class EnumeratorAwaiter : IAwaitable, IAwaiter, IPlayerLoopItem
         {
             const int Unfinished = 0;
             const int Success = 1;
@@ -44,7 +43,7 @@ namespace UniRx.Async
                 this.cancellationToken = cancellationToken;
             }
 
-            public EnumeratorAwaiter GetAwaiter()
+            public IAwaiter GetAwaiter()
             {
                 return this;
             }

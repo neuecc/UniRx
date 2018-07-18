@@ -84,6 +84,27 @@
     <Reference Include="Unity.TextMeshPro">
       <HintPath>C:/Users/S02811/Documents/UniRx/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.ScriptableBuildPipeline.Editor">
+      <HintPath>C:/Users/S02811/Documents/UniRx/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ResourceManager">
+      <HintPath>C:/Users/S02811/Documents/UniRx/Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Addressables.Editor">
+      <HintPath>C:/Users/S02811/Documents/UniRx/Library/ScriptAssemblies/Unity.Addressables.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ResourceManager.Editor">
+      <HintPath>C:/Users/S02811/Documents/UniRx/Library/ScriptAssemblies/Unity.ResourceManager.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Addressables">
+      <HintPath>C:/Users/S02811/Documents/UniRx/Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.CacheServer.Client.Editor">
+      <HintPath>C:/Users/S02811/Documents/UniRx/Library/ScriptAssemblies/Unity.CacheServer.Client.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="com.unity.resourcemanager">
+      <HintPath>C:/Users/S02811/Documents/UniRx/Library/ScriptAssemblies/com.unity.resourcemanager.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.2.0f2/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
     </Reference>

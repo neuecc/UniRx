@@ -10,7 +10,6 @@ using UnityEngine.Networking;
 
 namespace UniRx.Async
 {
-
     public static partial class UnityAsyncExtensions
     {
         static void ThrowIfNull(string name)
@@ -24,10 +23,16 @@ namespace UniRx.Async
             return new AsyncOperationAwaiter(asyncOperation);
         }
 
-        public static AsyncOperationConfiguredAwaiter ConfigureAwait(this AsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        public static IAwaitable ToAwaitable(this AsyncOperation asyncOperation)
         {
             if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
-            var awaiter = new AsyncOperationConfiguredAwaiter(asyncOperation, progress, cancellation);
+            return new AsyncOperationAwaitable(asyncOperation);
+        }
+
+        public static IAwaitable ConfigureAwait(this AsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        {
+            if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
+            var awaiter = new AsyncOperationConfiguredAwaitable(asyncOperation, progress, cancellation);
             PlayerLoopHelper.AddAction(timing, awaiter);
             return awaiter;
         }
@@ -38,25 +43,36 @@ namespace UniRx.Async
             return new ResourceRequestAwaiter(asyncOperation);
         }
 
-        public static ResourceRequestConfiguredAwaiter ConfigureAwait(this ResourceRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        public static IAwaitable<UnityEngine.Object> ToAwaitable(this ResourceRequest asyncOperation)
         {
             if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
-            var awaiter = new ResourceRequestConfiguredAwaiter(asyncOperation, progress, cancellation);
+            return new ResourceRequestAwaitable(asyncOperation);
+        }
+
+        public static IAwaitable<UnityEngine.Object> ConfigureAwait(this ResourceRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        {
+            if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
+            var awaiter = new ResourceRequestConfiguredAwaitable(asyncOperation, progress, cancellation);
             PlayerLoopHelper.AddAction(timing, awaiter);
             return awaiter;
         }
 
 #if ENABLE_WWW
 
-        public static WWWConfiguredAwaiter GetAwaiter(this WWW www)
+        public static IAwaiter GetAwaiter(this WWW www)
+        {
+            return ConfigureAwait(www).GetAwaiter();
+        }
+
+        public static IAwaitable ToAwaitable(this WWW www)
         {
             return ConfigureAwait(www);
         }
 
-        public static WWWConfiguredAwaiter ConfigureAwait(this WWW www, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        public static IAwaitable ConfigureAwait(this WWW www, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
         {
             if (www == null) ThrowIfNull(nameof(www));
-            var awaiter = new WWWConfiguredAwaiter(www, progress, cancellation);
+            var awaiter = new WWWConfiguredAwaitable(www, progress, cancellation);
             PlayerLoopHelper.AddAction(timing, awaiter);
             return awaiter;
         }
@@ -71,17 +87,23 @@ namespace UniRx.Async
             return new UnityWebRequestAsyncOperationAwaiter(asyncOperation);
         }
 
-        public static UnityWebRequestAsyncOperationConfiguredAwaiter ConfigureAwait(this UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        public static IAwaitable<UnityWebRequest> ToAwaitable(this UnityWebRequestAsyncOperation asyncOperation)
         {
             if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
-            var awaiter = new UnityWebRequestAsyncOperationConfiguredAwaiter(asyncOperation, progress, cancellation);
+            return new UnityWebRequestAsyncOperationAwaitable(asyncOperation);
+        }
+
+        public static IAwaitable<UnityWebRequest> ConfigureAwait(this UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
+        {
+            if (asyncOperation == null) ThrowIfNull(nameof(asyncOperation));
+            var awaiter = new UnityWebRequestAsyncOperationConfiguredAwaitable(asyncOperation, progress, cancellation);
             PlayerLoopHelper.AddAction(timing, awaiter);
             return awaiter;
         }
 
 #endif
 
-        public struct AsyncOperationAwaiter : ICriticalNotifyCompletion
+        public struct AsyncOperationAwaiter : IAwaiter
         {
             readonly AsyncOperation asyncOperation;
 
@@ -113,14 +135,51 @@ namespace UniRx.Async
             }
         }
 
-        public class AsyncOperationConfiguredAwaiter : ICriticalNotifyCompletion, IPlayerLoopItem
+        class AsyncOperationAwaitable : IAwaitable, IAwaiter
+        {
+            readonly AsyncOperation asyncOperation;
+
+            public AsyncOperationAwaitable(AsyncOperation asyncOperation)
+            {
+                this.asyncOperation = asyncOperation;
+            }
+
+            public bool IsCompleted
+            {
+                get
+                {
+                    return asyncOperation.isDone;
+                }
+            }
+
+            public IAwaiter GetAwaiter()
+            {
+                return this;
+            }
+
+            public void GetResult()
+            {
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
+            }
+        }
+
+        class AsyncOperationConfiguredAwaitable : IAwaitable, IAwaiter, IPlayerLoopItem
         {
             readonly AsyncOperation asyncOperation;
             readonly IProgress<float> progress;
             CancellationToken cancellationToken;
             Action continuation;
 
-            public AsyncOperationConfiguredAwaiter(AsyncOperation asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
+            public AsyncOperationConfiguredAwaitable(AsyncOperation asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
                 this.asyncOperation = asyncOperation;
                 this.progress = progress;
@@ -128,7 +187,7 @@ namespace UniRx.Async
                 this.continuation = null;
             }
 
-            public AsyncOperationConfiguredAwaiter GetAwaiter()
+            public IAwaiter GetAwaiter()
             {
                 return this;
             }
@@ -179,7 +238,7 @@ namespace UniRx.Async
             }
         }
 
-        public struct ResourceRequestAwaiter : ICriticalNotifyCompletion
+        public struct ResourceRequestAwaiter : IAwaiter<UnityEngine.Object>
         {
             readonly ResourceRequest request;
 
@@ -201,6 +260,11 @@ namespace UniRx.Async
                 return request.asset;
             }
 
+            void IAwaiter.GetResult()
+            {
+                // do nothing(no throw)
+            }
+
             public void OnCompleted(Action continuation)
             {
                 request.completed += continuation.AsFuncOfT<AsyncOperation>();
@@ -212,14 +276,62 @@ namespace UniRx.Async
             }
         }
 
-        public class ResourceRequestConfiguredAwaiter : ICriticalNotifyCompletion, IPlayerLoopItem
+        class ResourceRequestAwaitable : IAwaitable<UnityEngine.Object>, IAwaiter<UnityEngine.Object>
+        {
+            readonly ResourceRequest request;
+
+            public ResourceRequestAwaitable(ResourceRequest request)
+            {
+                this.request = request;
+            }
+
+            public bool IsCompleted
+            {
+                get
+                {
+                    return request.isDone;
+                }
+            }
+
+            public UnityEngine.Object GetResult()
+            {
+                return request.asset;
+            }
+
+            void IAwaiter.GetResult()
+            {
+                // do nothing(no throw)
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                request.completed += continuation.AsFuncOfT<AsyncOperation>();
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                request.completed += continuation.AsFuncOfT<AsyncOperation>();
+            }
+
+            public IAwaiter<UnityEngine.Object> GetAwaiter()
+            {
+                return this;
+            }
+
+            IAwaiter IAwaitable.GetAwaiter()
+            {
+                return this;
+            }
+        }
+
+        class ResourceRequestConfiguredAwaitable : IAwaitable<UnityEngine.Object>, IAwaiter<UnityEngine.Object>, IPlayerLoopItem
         {
             readonly ResourceRequest request;
             readonly IProgress<float> progress;
             CancellationToken cancellationToken;
             Action continuation;
 
-            public ResourceRequestConfiguredAwaiter(ResourceRequest request, IProgress<float> progress, CancellationToken cancellationToken)
+            public ResourceRequestConfiguredAwaitable(ResourceRequest request, IProgress<float> progress, CancellationToken cancellationToken)
             {
                 this.request = request;
                 this.progress = progress;
@@ -227,7 +339,12 @@ namespace UniRx.Async
                 this.continuation = null;
             }
 
-            public ResourceRequestConfiguredAwaiter GetAwaiter()
+            IAwaiter IAwaitable.GetAwaiter()
+            {
+                return GetAwaiter();
+            }
+
+            public IAwaiter<UnityEngine.Object> GetAwaiter()
             {
                 return this;
             }
@@ -244,6 +361,11 @@ namespace UniRx.Async
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 return request.asset;
+            }
+
+            void IAwaiter.GetResult()
+            {
+                GetResult();
             }
 
             public bool MoveNext()
@@ -281,14 +403,14 @@ namespace UniRx.Async
 
 #if ENABLE_WWW
 
-        public class WWWConfiguredAwaiter : ICriticalNotifyCompletion, IPlayerLoopItem
+        class WWWConfiguredAwaitable : IAwaitable, IAwaiter, IPlayerLoopItem
         {
             readonly WWW request;
             readonly IProgress<float> progress;
             CancellationToken cancellationToken;
             Action continuation;
 
-            public WWWConfiguredAwaiter(WWW request, IProgress<float> progress, CancellationToken cancellationToken)
+            public WWWConfiguredAwaitable(WWW request, IProgress<float> progress, CancellationToken cancellationToken)
             {
                 this.request = request;
                 this.progress = progress;
@@ -296,7 +418,7 @@ namespace UniRx.Async
                 this.continuation = null;
             }
 
-            public WWWConfiguredAwaiter GetAwaiter()
+            public IAwaiter GetAwaiter()
             {
                 return this;
             }
@@ -351,7 +473,7 @@ namespace UniRx.Async
 
 #if ENABLE_UNITYWEBREQUEST
 
-        public struct UnityWebRequestAsyncOperationAwaiter : ICriticalNotifyCompletion
+        public struct UnityWebRequestAsyncOperationAwaiter : IAwaiter<UnityWebRequest>
         {
             readonly UnityWebRequestAsyncOperation asyncOperation;
 
@@ -373,6 +495,11 @@ namespace UniRx.Async
                 return asyncOperation.webRequest;
             }
 
+            void IAwaiter.GetResult()
+            {
+                // do nothing(no throw)
+            }
+
             public void OnCompleted(Action continuation)
             {
                 asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
@@ -384,14 +511,62 @@ namespace UniRx.Async
             }
         }
 
-        public class UnityWebRequestAsyncOperationConfiguredAwaiter : ICriticalNotifyCompletion, IPlayerLoopItem
+        class UnityWebRequestAsyncOperationAwaitable : IAwaitable<UnityWebRequest>, IAwaiter<UnityWebRequest>
+        {
+            readonly UnityWebRequestAsyncOperation asyncOperation;
+
+            public UnityWebRequestAsyncOperationAwaitable(UnityWebRequestAsyncOperation asyncOperation)
+            {
+                this.asyncOperation = asyncOperation;
+            }
+
+            public IAwaiter<UnityWebRequest> GetAwaiter()
+            {
+                return this;
+            }
+
+            IAwaiter IAwaitable.GetAwaiter()
+            {
+                return this;
+            }
+
+            public bool IsCompleted
+            {
+                get
+                {
+                    return asyncOperation.isDone;
+                }
+            }
+
+            public UnityWebRequest GetResult()
+            {
+                return asyncOperation.webRequest;
+            }
+
+            void IAwaiter.GetResult()
+            {
+                // do nothing(no throw)
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
+            }
+        }
+
+        class UnityWebRequestAsyncOperationConfiguredAwaitable : IAwaitable<UnityWebRequest>, IAwaiter<UnityWebRequest>, IPlayerLoopItem
         {
             readonly UnityWebRequestAsyncOperation request;
             readonly IProgress<float> progress;
             CancellationToken cancellationToken;
             Action continuation;
 
-            public UnityWebRequestAsyncOperationConfiguredAwaiter(UnityWebRequestAsyncOperation request, IProgress<float> progress, CancellationToken cancellationToken)
+            public UnityWebRequestAsyncOperationConfiguredAwaitable(UnityWebRequestAsyncOperation request, IProgress<float> progress, CancellationToken cancellationToken)
             {
                 this.request = request;
                 this.progress = progress;
@@ -399,7 +574,12 @@ namespace UniRx.Async
                 this.continuation = null;
             }
 
-            public UnityWebRequestAsyncOperationConfiguredAwaiter GetAwaiter()
+            public IAwaiter<UnityWebRequest> GetAwaiter()
+            {
+                return this;
+            }
+
+            IAwaiter IAwaitable.GetAwaiter()
             {
                 return this;
             }
@@ -416,6 +596,11 @@ namespace UniRx.Async
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 return request.webRequest;
+            }
+
+            void IAwaiter.GetResult()
+            {
+                GetResult();
             }
 
             public bool MoveNext()

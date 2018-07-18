@@ -13,7 +13,7 @@ namespace UniRx.Async
     /// Lightweight unity specified task-like object.
     /// </summary>
     [AsyncMethodBuilder(typeof(AsyncUniTaskMethodBuilder))]
-    public partial struct UniTask : IEquatable<UniTask>
+    public partial struct UniTask : IAwaitable, IEquatable<UniTask>
     {
         readonly IPromise<AsyncUnit> continuation;
 
@@ -57,6 +57,12 @@ namespace UniRx.Async
             return new Awaiter(this);
         }
 
+        [DebuggerHidden]
+        IAwaiter IAwaitable.GetAwaiter()
+        {
+            return GetAwaiter();
+        }
+
         public bool Equals(UniTask other)
         {
             if (this.continuation == null && other.continuation == null)
@@ -85,7 +91,7 @@ namespace UniRx.Async
             }
         }
 
-        public struct Awaiter : ICriticalNotifyCompletion
+        public struct Awaiter : IAwaiter
         {
             readonly UniTask task;
 
@@ -133,7 +139,7 @@ namespace UniRx.Async
     /// Lightweight unity specified task-like object.
     /// </summary>
     [AsyncMethodBuilder(typeof(AsyncUniTaskMethodBuilder<>))]
-    public struct UniTask<T> : IEquatable<UniTask<T>>
+    public struct UniTask<T> : IAwaitable<T>, IEquatable<UniTask<T>>
     {
         readonly T result;
         readonly IPromise<T> continuation;
@@ -196,6 +202,18 @@ namespace UniRx.Async
             return new Awaiter(this);
         }
 
+        [DebuggerHidden]
+        IAwaiter<T> IAwaitable<T>.GetAwaiter()
+        {
+            return GetAwaiter();
+        }
+
+        [DebuggerHidden]
+        IAwaiter IAwaitable.GetAwaiter()
+        {
+            return GetAwaiter();
+        }
+
         public bool Equals(UniTask<T> other)
         {
             if (this.continuation == null && other.continuation == null)
@@ -226,7 +244,7 @@ namespace UniRx.Async
             }
         }
 
-        public struct Awaiter : ICriticalNotifyCompletion
+        public struct Awaiter : IAwaiter<T>
         {
             readonly UniTask<T> task;
 
@@ -238,6 +256,9 @@ namespace UniRx.Async
 
             [DebuggerHidden]
             public bool IsCompleted => task.IsCompleted;
+
+            [DebuggerHidden]
+            void IAwaiter.GetResult() => task.GetResult();
 
             [DebuggerHidden]
             public T GetResult() => task.GetResult();
@@ -270,4 +291,5 @@ namespace UniRx.Async
         }
     }
 }
+
 #endif
