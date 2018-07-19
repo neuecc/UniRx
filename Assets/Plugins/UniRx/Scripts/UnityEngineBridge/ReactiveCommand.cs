@@ -9,22 +9,24 @@ using UniRx.Async;
 namespace UniRx
 {
     public interface IReactiveCommand<T> : IObservable<T>
-#if (NET_4_6 || NET_STANDARD_2_0)
-        , UniRx.Async.IAwaitable<T>
-#endif
     {
         IReadOnlyReactiveProperty<bool> CanExecute { get; }
         bool Execute(T parameter);
+
+#if (CSHARP_7_OR_LATER)
+        UniTask<T> WaitUntilExecuteAsync();
+#endif
     }
 
     public interface IAsyncReactiveCommand<T>
-#if (NET_4_6 || NET_STANDARD_2_0)
-        : UniRx.Async.IAwaitable<T>
-#endif
     {
         IReadOnlyReactiveProperty<bool> CanExecute { get; }
         IDisposable Execute(T parameter);
         IDisposable Subscribe(Func<T, IObservable<Unit>> asyncAction);
+
+#if (CSHARP_7_OR_LATER)
+        UniTask<T> WaitUntilExecuteAsync();
+#endif
     }
 
     /// <summary>
@@ -101,22 +103,10 @@ namespace UniRx
         {
             if (canExecute.Value)
             {
-#if (NET_4_6 || NET_STANDARD_2_0)
-                ReactivePropertyAwaiter<T> continuation = null;
-                if (awaiter != null)
-                {
-                    continuation = Interlocked.Exchange(ref awaiter, null);
-                }
-#endif
-
                 trigger.OnNext(parameter);
 
-#if (NET_4_6 || NET_STANDARD_2_0)
-                if (continuation != null)
-                {
-                    continuation.InvokeContinuation(ref parameter);
-                    Interlocked.CompareExchange(ref awaiter, continuation, null);
-                }
+#if (CSHARP_7_OR_LATER)
+                promise?.InvokeContinuation(ref parameter);
 #endif
 
                 return true;
@@ -153,21 +143,17 @@ namespace UniRx
             canExecuteSubscription.Dispose();
         }
 
-#if (NET_4_6 || NET_STANDARD_2_0)
+#if (CSHARP_7_OR_LATER)
 
-        ReactivePropertyAwaiter<T> awaiter;
+        ReactivePropertyReusablePromise<T> promise;
 
-        public IAwaiter<T> GetAwaiter()
+        public UniTask<T> WaitUntilExecuteAsync()
         {
-            if (awaiter != null) return awaiter;
-            Interlocked.CompareExchange(ref awaiter, new ReactivePropertyAwaiter<T>(), null);
-            return awaiter;
+            if (promise != null) return promise.Task;
+            promise = new ReactivePropertyReusablePromise<T>();
+            return promise.Task;
         }
-        
-        IAwaiter IAwaitable.GetAwaiter()
-        {
-            return GetAwaiter();
-        }
+
 #endif
     }
 
@@ -262,26 +248,14 @@ namespace UniRx
         {
             if (canExecute.Value)
             {
-#if (NET_4_6 || NET_STANDARD_2_0)
-                ReactivePropertyAwaiter<T> continuation = null;
-                if (awaiter != null)
-                {
-                    continuation = Interlocked.Exchange(ref awaiter, null);
-                }
-#endif
-
                 canExecuteSource.Value = false;
                 var a = asyncActions.Data;
                 if (a.Length == 1)
                 {
                     try
                     {
-#if (NET_4_6 || NET_STANDARD_2_0)
-                        if (continuation != null)
-                        {
-                            continuation.InvokeContinuation(ref parameter);
-                            Interlocked.CompareExchange(ref awaiter, continuation, null);
-                        }
+#if (CSHARP_7_OR_LATER)
+                        promise?.InvokeContinuation(ref parameter);
 #endif
 
                         var asyncState = a[0].Invoke(parameter) ?? Observable.ReturnUnit();
@@ -298,12 +272,8 @@ namespace UniRx
                     var xs = new IObservable<Unit>[a.Length];
                     try
                     {
-#if (NET_4_6 || NET_STANDARD_2_0)
-                        if (continuation != null)
-                        {
-                            continuation.InvokeContinuation(ref parameter);
-                            Interlocked.CompareExchange(ref awaiter, continuation, null);
-                        }
+#if (CSHARP_7_OR_LATER)
+                        promise?.InvokeContinuation(ref parameter);
 #endif
 
                         for (int i = 0; i < a.Length; i++)
@@ -337,20 +307,15 @@ namespace UniRx
             return new Subscription(this, asyncAction);
         }
 
-#if (NET_4_6 || NET_STANDARD_2_0)
+#if (CSHARP_7_OR_LATER)
 
-        ReactivePropertyAwaiter<T> awaiter;
+        ReactivePropertyReusablePromise<T> promise;
 
-        public IAwaiter<T> GetAwaiter()
+        public UniTask<T> WaitUntilExecuteAsync()
         {
-            if (awaiter != null) return awaiter;
-            Interlocked.CompareExchange(ref awaiter, new ReactivePropertyAwaiter<T>(), null);
-            return awaiter;
-        }
-
-        IAwaiter IAwaitable.GetAwaiter()
-        {
-            return GetAwaiter();
+            if (promise != null) return promise.Task;
+            promise = new ReactivePropertyReusablePromise<T>();
+            return promise.Task;
         }
 
 #endif
@@ -394,6 +359,15 @@ namespace UniRx
             return new ReactiveCommand<T>(canExecuteSource, initialValue);
         }
 
+#if (CSHARP_7_OR_LATER)
+
+        public static UniTask<T>.Awaiter GetAwaiter<T>(this IReactiveCommand<T> command)
+        {
+            return command.WaitUntilExecuteAsync().GetAwaiter();
+        }
+
+#endif
+
 #if !UniRxLibrary
 
         // for uGUI(from 4.6)
@@ -402,7 +376,7 @@ namespace UniRx
         /// <summary>
         /// Bind ReactiveCommand to button's interactable and onClick.
         /// </summary>
-        public static IDisposable BindTo(this ReactiveCommand<Unit> command, UnityEngine.UI.Button button)
+        public static IDisposable BindTo(this IReactiveCommand<Unit> command, UnityEngine.UI.Button button)
         {
             var d1 = command.CanExecute.SubscribeToInteractable(button);
             var d2 = button.OnClickAsObservable().SubscribeWithState(command, (x, c) => c.Execute(x));
@@ -412,7 +386,7 @@ namespace UniRx
         /// <summary>
         /// Bind ReactiveCommand to button's interactable and onClick and register onClick action to command.
         /// </summary>
-        public static IDisposable BindToOnClick(this ReactiveCommand<Unit> command, UnityEngine.UI.Button button, Action<Unit> onClick)
+        public static IDisposable BindToOnClick(this IReactiveCommand<Unit> command, UnityEngine.UI.Button button, Action<Unit> onClick)
         {
             var d1 = command.CanExecute.SubscribeToInteractable(button);
             var d2 = button.OnClickAsObservable().SubscribeWithState(command, (x, c) => c.Execute(x));
@@ -446,6 +420,15 @@ namespace UniRx
             return new AsyncReactiveCommand<T>(sharedCanExecuteSource);
         }
 
+#if (CSHARP_7_OR_LATER)
+
+        public static UniTask<T>.Awaiter GetAwaiter<T>(this IAsyncReactiveCommand<T> command)
+        {
+            return command.WaitUntilExecuteAsync().GetAwaiter();
+        }
+
+#endif
+
 #if !UniRxLibrary
 
         // for uGUI(from 4.6)
@@ -454,7 +437,7 @@ namespace UniRx
         /// <summary>
         /// Bind AsyncRaectiveCommand to button's interactable and onClick.
         /// </summary>
-        public static IDisposable BindTo(this AsyncReactiveCommand<Unit> command, UnityEngine.UI.Button button)
+        public static IDisposable BindTo(this IAsyncReactiveCommand<Unit> command, UnityEngine.UI.Button button)
         {
             var d1 = command.CanExecute.SubscribeToInteractable(button);
             var d2 = button.OnClickAsObservable().SubscribeWithState(command, (x, c) => c.Execute(x));
@@ -465,7 +448,7 @@ namespace UniRx
         /// <summary>
         /// Bind AsyncRaectiveCommand to button's interactable and onClick and register async action to command.
         /// </summary>
-        public static IDisposable BindToOnClick(this AsyncReactiveCommand<Unit> command, UnityEngine.UI.Button button, Func<Unit, IObservable<Unit>> asyncOnClick)
+        public static IDisposable BindToOnClick(this IAsyncReactiveCommand<Unit> command, UnityEngine.UI.Button button, Func<Unit, IObservable<Unit>> asyncOnClick)
         {
             var d1 = command.CanExecute.SubscribeToInteractable(button);
             var d2 = button.OnClickAsObservable().SubscribeWithState(command, (x, c) => c.Execute(x));

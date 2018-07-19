@@ -13,12 +13,13 @@ using UniRx.Async;
 namespace UniRx
 {
     public interface IReadOnlyReactiveProperty<T> : IObservable<T>
-#if (NET_4_6 || NET_STANDARD_2_0)
-        , UniRx.Async.IAwaitable<T>
-#endif
     {
         T Value { get; }
         bool HasValue { get; }
+
+#if (CSHARP_7_OR_LATER)
+        UniTask<T> WaitUntilValueChangedAsync();
+#endif
     }
 
     public interface IReactiveProperty<T> : IReadOnlyReactiveProperty<T>
@@ -146,14 +147,6 @@ namespace UniRx
 
         void RaiseOnNext(ref T value)
         {
-#if (NET_4_6 || NET_STANDARD_2_0)
-            ReactivePropertyAwaiter<T> continuation = null;
-            if (awaiter != null)
-            {
-                continuation = Interlocked.Exchange(ref awaiter, null);
-            }
-#endif
-
             var node = root;
             while (node != null)
             {
@@ -161,13 +154,8 @@ namespace UniRx
                 node = node.Next;
             }
 
-#if (NET_4_6 || NET_STANDARD_2_0)
-            if (continuation != null)
-            {
-                continuation.InvokeContinuation(ref value);
-                // reuse continuation for perf optimization if does not raise recursively.
-                Interlocked.CompareExchange(ref awaiter, continuation, null);
-            }
+#if (CSHARP_7_OR_LATER)
+            promise?.InvokeContinuation(ref value);
 #endif
         }
 
@@ -240,8 +228,7 @@ namespace UniRx
 
         protected virtual void Dispose(bool disposing)
         {
-            if (isDisposed)
-                return;
+            if (isDisposed) return;
 
             var node = root;
             root = last = null;
@@ -265,20 +252,15 @@ namespace UniRx
         }
 
 
-#if (NET_4_6 || NET_STANDARD_2_0)
+#if (CSHARP_7_OR_LATER)
 
-        ReactivePropertyAwaiter<T> awaiter;
+        ReactivePropertyReusablePromise<T> promise;
 
-        public IAwaiter<T> GetAwaiter()
+        public UniTask<T> WaitUntilValueChangedAsync()
         {
-            if (awaiter != null) return awaiter;
-            Interlocked.CompareExchange(ref awaiter, new ReactivePropertyAwaiter<T>(), null);
-            return awaiter;
-        }
-
-        IAwaiter IAwaitable.GetAwaiter()
-        {
-            return GetAwaiter();
+            if (promise != null) return promise.Task;
+            promise = new ReactivePropertyReusablePromise<T>();
+            return promise.Task;
         }
 
 #endif
@@ -467,13 +449,6 @@ namespace UniRx
             // SetValue
             this.latestValue = value;
 
-#if (NET_4_6 || NET_STANDARD_2_0)
-            ReactivePropertyAwaiter<T> continuation = null;
-            if (awaiter != null)
-            {
-                continuation = Interlocked.Exchange(ref awaiter, null);
-            }
-#endif
             // call source.OnNext
             var node = root;
             while (node != null)
@@ -482,13 +457,8 @@ namespace UniRx
                 node = node.Next;
             }
 
-#if (NET_4_6 || NET_STANDARD_2_0)
-            if (continuation != null)
-            {
-                continuation.InvokeContinuation(ref value);
-                // reuse continuation for perf optimization if does not raise recursively.
-                Interlocked.CompareExchange(ref awaiter, continuation, null);
-            }
+#if (CSHARP_7_OR_LATER)
+            promise?.InvokeContinuation(ref value);
 #endif
         }
 
@@ -523,20 +493,15 @@ namespace UniRx
             return false;
         }
 
-#if (NET_4_6 || NET_STANDARD_2_0)
+#if (CSHARP_7_OR_LATER)
 
-        ReactivePropertyAwaiter<T> awaiter;
+        ReactivePropertyReusablePromise<T> promise;
 
-        public IAwaiter<T> GetAwaiter()
+        public UniTask<T> WaitUntilValueChangedAsync()
         {
-            if (awaiter != null) return awaiter;
-            Interlocked.CompareExchange(ref awaiter, new ReactivePropertyAwaiter<T>(), null);
-            return awaiter;
-        }
-
-        IAwaiter IAwaitable.GetAwaiter()
-        {
-            return GetAwaiter();
+            if (promise != null) return promise.Task;
+            promise = new ReactivePropertyReusablePromise<T>();
+            return promise.Task;
         }
 
 #endif
@@ -561,6 +526,16 @@ namespace UniRx
         {
             return new ReadOnlyReactiveProperty<T>(source);
         }
+
+#if (CSHARP_7_OR_LATER)
+
+        public static UniTask<T>.Awaiter GetAwaiter<T>(this IReadOnlyReactiveProperty<T> source)
+        {
+            return source.WaitUntilValueChangedAsync().GetAwaiter();
+        }
+
+#endif
+
 
         /// <summary>
         /// Create ReadOnlyReactiveProperty with distinctUntilChanged: false.

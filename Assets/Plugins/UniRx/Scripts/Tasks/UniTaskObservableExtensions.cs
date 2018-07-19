@@ -11,7 +11,7 @@ namespace UniRx
     {
         public static UniTask<T> ToUniTask<T>(this IObservable<T> source, CancellationToken cancellationToken = default(CancellationToken), bool useFirstValue = false)
         {
-            var promise = new Promise<T>();
+            var promise = new UniTaskCompletionSource<T>();
             var disposable = new SingleAssignmentDisposable();
 
             var observer = useFirstValue
@@ -24,10 +24,10 @@ namespace UniRx
             }
             catch (Exception ex)
             {
-                promise.SetException(ex);
+                promise.TrySetException(ex);
             }
 
-            return new UniTask<T>(promise);
+            return promise.Task;
         }
 
         public static IObservable<T> ToObservable<T>(this UniTask<T> task)
@@ -98,7 +98,7 @@ namespace UniRx
 
         class ToUniTaskObserver<T> : IObserver<T>
         {
-            readonly Promise<T> promise;
+            readonly UniTaskCompletionSource<T> promise;
             readonly SingleAssignmentDisposable disposable;
             readonly CancellationToken cancellationToken;
             readonly CancellationTokenRegistration registration;
@@ -106,7 +106,7 @@ namespace UniRx
             bool hasValue;
             T latestValue;
 
-            public ToUniTaskObserver(Promise<T> promise, SingleAssignmentDisposable disposable, CancellationToken cancellationToken)
+            public ToUniTaskObserver(UniTaskCompletionSource<T> promise, SingleAssignmentDisposable disposable, CancellationToken cancellationToken)
             {
                 this.promise = promise;
                 this.disposable = disposable;
@@ -121,7 +121,7 @@ namespace UniRx
             void OnCanceled()
             {
                 disposable.Dispose();
-                promise.SetCanceled();
+                promise.TrySetCanceled();
             }
 
             public void OnNext(T value)
@@ -134,7 +134,7 @@ namespace UniRx
             {
                 try
                 {
-                    promise.SetException(error);
+                    promise.TrySetException(error);
                 }
                 finally
                 {
@@ -149,11 +149,11 @@ namespace UniRx
                 {
                     if (hasValue)
                     {
-                        promise.SetResult(latestValue);
+                        promise.TrySetResult(latestValue);
                     }
                     else
                     {
-                        promise.SetException(new InvalidOperationException("Sequence has no elements"));
+                        promise.TrySetException(new InvalidOperationException("Sequence has no elements"));
                     }
                 }
                 finally
@@ -166,14 +166,14 @@ namespace UniRx
 
         class FirstValueToUniTaskObserver<T> : IObserver<T>
         {
-            readonly Promise<T> promise;
+            readonly UniTaskCompletionSource<T> promise;
             readonly SingleAssignmentDisposable disposable;
             readonly CancellationToken cancellationToken;
             readonly CancellationTokenRegistration registration;
 
             bool hasValue;
 
-            public FirstValueToUniTaskObserver(Promise<T> promise, SingleAssignmentDisposable disposable, CancellationToken cancellationToken)
+            public FirstValueToUniTaskObserver(UniTaskCompletionSource<T> promise, SingleAssignmentDisposable disposable, CancellationToken cancellationToken)
             {
                 this.promise = promise;
                 this.disposable = disposable;
@@ -188,7 +188,7 @@ namespace UniRx
             void OnCanceled()
             {
                 disposable.Dispose();
-                promise.SetCanceled();
+                promise.TrySetCanceled();
             }
 
             public void OnNext(T value)
@@ -196,7 +196,7 @@ namespace UniRx
                 hasValue = true;
                 try
                 {
-                    promise.SetResult(value);
+                    promise.TrySetResult(value);
                 }
                 finally
                 {
@@ -209,7 +209,7 @@ namespace UniRx
             {
                 try
                 {
-                    promise.SetException(error);
+                    promise.TrySetException(error);
                 }
                 finally
                 {
@@ -224,7 +224,7 @@ namespace UniRx
                 {
                     if (!hasValue)
                     {
-                        promise.SetException(new InvalidOperationException("Sequence has no elements"));
+                        promise.TrySetException(new InvalidOperationException("Sequence has no elements"));
                     }
                 }
                 finally

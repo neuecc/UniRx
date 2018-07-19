@@ -20,34 +20,26 @@ namespace UniRx.Async
         }
 
         /// <summary>
-        /// Convert UniTask[T] -> UniTask.
-        /// </summary>
-        public static async UniTask AsUniTask<T>(this UniTask<T> task)
-        {
-            await task;
-        }
-
-        /// <summary>
         /// Convert Task[T] -> UniTask[T].
         /// </summary>
         public static UniTask<T> AsUniTask<T>(this Task<T> task)
         {
-            var promise = new Promise<T>();
+            var promise = new UniTaskCompletionSource<T>();
 
             task.ContinueWith((x, state) =>
             {
-                var p = (Promise<T>)state;
+                var p = (UniTaskCompletionSource<T>)state;
 
                 switch (x.Status)
                 {
                     case TaskStatus.Canceled:
-                        p.SetCanceled();
+                        p.TrySetCanceled();
                         break;
                     case TaskStatus.Faulted:
-                        p.SetException(x.Exception);
+                        p.TrySetException(x.Exception);
                         break;
                     case TaskStatus.RanToCompletion:
-                        p.SetResult(x.Result);
+                        p.TrySetResult(x.Result);
                         break;
                     default:
                         throw new NotSupportedException();
@@ -62,22 +54,22 @@ namespace UniRx.Async
         /// </summary>
         public static UniTask AsUniTask(this Task task)
         {
-            var promise = new Promise<AsyncUnit>();
+            var promise = new UniTaskCompletionSource<AsyncUnit>();
 
             task.ContinueWith((x, state) =>
             {
-                var p = (Promise<AsyncUnit>)state;
+                var p = (UniTaskCompletionSource<AsyncUnit>)state;
 
                 switch (x.Status)
                 {
                     case TaskStatus.Canceled:
-                        p.SetCanceled();
+                        p.TrySetCanceled();
                         break;
                     case TaskStatus.Faulted:
-                        p.SetException(x.Exception);
+                        p.TrySetException(x.Exception);
                         break;
                     case TaskStatus.RanToCompletion:
-                        p.SetResult(default(AsyncUnit));
+                        p.TrySetResult(default(AsyncUnit));
                         break;
                     default:
                         throw new NotSupportedException();
@@ -85,22 +77,6 @@ namespace UniRx.Async
             }, promise);
 
             return new UniTask(promise);
-        }
-
-        /// <summary>
-        /// Convert IAwaitable[T] -> UniTask[T].
-        /// </summary>
-        public static async UniTask<T> AsUniTask<T>(this IAwaitable<T> task)
-        {
-            return await task;
-        }
-
-        /// <summary>
-        /// Convert IAwaitable -> UniTask.
-        /// </summary>
-        public static async UniTask AsUniTask<T>(this IAwaitable task)
-        {
-            await task;
         }
 
         public static IEnumerator ToCoroutine<T>(this UniTask<T> task, Action<T> resultHandler = null, Action<Exception> exceptionHandler = null)
@@ -134,31 +110,6 @@ namespace UniRx.Async
             }
 
             return value;
-        }
-
-        public static void Forget(this IAwaitable task, Action<Exception> exceptionHandler = null)
-        {
-            ForgetCore(task, exceptionHandler).Forget();
-        }
-
-        static async UniTaskVoid ForgetCore(IAwaitable task, Action<Exception> exceptionHandler)
-        {
-            try
-            {
-                await task;
-            }
-            catch (Exception ex)
-            {
-                if (exceptionHandler != null)
-                {
-                    exceptionHandler(ex);
-                    return;
-                }
-                else
-                {
-                    throw;
-                }
-            }
         }
 
         public static void Forget(this UniTask task, Action<Exception> exceptionHandler = null)
@@ -250,50 +201,6 @@ namespace UniRx.Async
         }
 
         public static async UniTask<T> ContinueWith<T>(this UniTask task, Func<UniTask<T>> continuationFunction)
-        {
-            await task;
-            return await continuationFunction();
-        }
-
-        public static async UniTask ContinueWith<T>(this IAwaitable<T> task, Action<T> continuationFunction)
-        {
-            continuationFunction(await task);
-        }
-
-        public static async UniTask ContinueWith<T>(this IAwaitable<T> task, Func<T, UniTask> continuationFunction)
-        {
-            await continuationFunction(await task);
-        }
-
-        public static async UniTask<TR> ContinueWith<T, TR>(this IAwaitable<T> task, Func<T, TR> continuationFunction)
-        {
-            return continuationFunction(await task);
-        }
-
-        public static async UniTask<TR> ContinueWith<T, TR>(this IAwaitable<T> task, Func<T, UniTask<TR>> continuationFunction)
-        {
-            return await continuationFunction(await task);
-        }
-
-        public static async UniTask ContinueWith(this IAwaitable task, Action continuationFunction)
-        {
-            await task;
-            continuationFunction();
-        }
-
-        public static async UniTask ContinueWith(this IAwaitable task, Func<UniTask> continuationFunction)
-        {
-            await task;
-            await continuationFunction();
-        }
-
-        public static async UniTask<T> ContinueWith<T>(this IAwaitable task, Func<T> continuationFunction)
-        {
-            await task;
-            return continuationFunction();
-        }
-
-        public static async UniTask<T> ContinueWith<T>(this IAwaitable task, Func<UniTask<T>> continuationFunction)
         {
             await task;
             return await continuationFunction();

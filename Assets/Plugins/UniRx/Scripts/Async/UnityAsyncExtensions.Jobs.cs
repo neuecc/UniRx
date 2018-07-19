@@ -2,7 +2,6 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using Unity.Jobs;
 
@@ -10,14 +9,14 @@ namespace UniRx.Async
 {
     public static partial class UnityAsyncExtensions
     {
-        public static IAwaiter GetAwaiter(this JobHandle jobHandle)
+        public static UniTask.Awaiter GetAwaiter(this JobHandle jobHandle)
         {
-            return ToAwaitable(jobHandle, CancellationToken.None).GetAwaiter();
+            return ToUniTask(jobHandle, CancellationToken.None).GetAwaiter();
         }
 
-        public static IAwaitable ToAwaitable(this JobHandle jobHandle, CancellationToken cancellation = default(CancellationToken))
+        public static UniTask ToUniTask(this JobHandle jobHandle, CancellationToken cancellation = default(CancellationToken))
         {
-            var awaiter = new JobHandleAwaitable(jobHandle, cancellation);
+            var awaiter = new JobHandleAwaiter(jobHandle, cancellation);
 
             PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, awaiter);
             PlayerLoopHelper.AddAction(PlayerLoopTiming.PreUpdate, awaiter);
@@ -25,35 +24,30 @@ namespace UniRx.Async
             PlayerLoopHelper.AddAction(PlayerLoopTiming.PreLateUpdate, awaiter);
             PlayerLoopHelper.AddAction(PlayerLoopTiming.PostLateUpdate, awaiter);
 
-            return awaiter;
+            return new UniTask(awaiter);
         }
 
-        public static IAwaitable ConfigureAwait(this JobHandle jobHandle, PlayerLoopTiming waitTiming, CancellationToken cancellation = default(CancellationToken))
+        public static UniTask ConfigureAwait(this JobHandle jobHandle, PlayerLoopTiming waitTiming, CancellationToken cancellation = default(CancellationToken))
         {
-            var awaiter = new JobHandleAwaitable(jobHandle, cancellation);
+            var awaiter = new JobHandleAwaiter(jobHandle, cancellation);
 
             PlayerLoopHelper.AddAction(waitTiming, awaiter);
 
-            return awaiter;
+            return new UniTask(awaiter);
         }
 
-        class JobHandleAwaitable : IAwaitable, IAwaiter, IPlayerLoopItem
+        class JobHandleAwaiter : IAwaiter, IPlayerLoopItem
         {
             readonly JobHandle jobHandle;
             CancellationToken cancellationToken;
             Action continuation;
             bool calledComplete = false;
 
-            public JobHandleAwaitable(JobHandle jobHandle, CancellationToken cancellationToken)
+            public JobHandleAwaiter(JobHandle jobHandle, CancellationToken cancellationToken)
             {
                 this.jobHandle = jobHandle;
                 this.cancellationToken = cancellationToken;
                 this.continuation = null;
-            }
-
-            public IAwaiter GetAwaiter()
-            {
-                return this;
             }
 
             public bool IsCompleted
@@ -76,7 +70,7 @@ namespace UniRx.Async
                     // Call jobHandle.Complete after finished.
                     if (!calledComplete)
                     {
-                        PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, new JobHandleAwaitable(jobHandle, CancellationToken.None));
+                        PlayerLoopHelper.AddAction(PlayerLoopTiming.EarlyUpdate, new JobHandleAwaiter(jobHandle, CancellationToken.None));
                         this.continuation?.Invoke();
                     }
 

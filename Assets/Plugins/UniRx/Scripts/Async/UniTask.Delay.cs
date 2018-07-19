@@ -54,11 +54,9 @@ namespace UniRx.Async
             return source.Task;
         }
 
-        class YieldPromise : Promise<AsyncUnit>, IPlayerLoopItem
+        class YieldPromise : UniTaskCompletionSource<AsyncUnit>, IPlayerLoopItem
         {
             CancellationToken cancellation;
-
-            public UniTask Task => new UniTask(this);
 
             public YieldPromise(CancellationToken cancellation)
             {
@@ -69,23 +67,21 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    SetCanceled();
+                    TrySetCanceled();
                     return false;
                 }
 
-                SetResult(AsyncUnit.Default);
+                TrySetResult(AsyncUnit.Default);
                 return false;
             }
         }
 
-        class DelayFramePromise : Promise<int>, IPlayerLoopItem
+        class DelayFramePromise : UniTaskCompletionSource<int>, IPlayerLoopItem
         {
             readonly int delayFrameCount;
             CancellationToken cancellation;
 
             int currentFrameCount;
-
-            public UniTask<int> Task => new UniTask<int>(this);
 
             public DelayFramePromise(int delayFrameCount, CancellationToken cancellation)
             {
@@ -98,13 +94,13 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    SetCanceled();
+                    TrySetCanceled();
                     return false;
                 }
 
                 if (currentFrameCount == delayFrameCount)
                 {
-                    SetResult(currentFrameCount);
+                    TrySetResult(currentFrameCount);
                     return false;
                 }
 
@@ -113,13 +109,11 @@ namespace UniRx.Async
             }
         }
 
-        class DelayPromise : Promise<AsyncUnit>, IPlayerLoopItem
+        class DelayPromise : UniTaskCompletionSource<AsyncUnit>, IPlayerLoopItem
         {
             readonly float delayFrameTimeSpan;
             float elapsed;
             CancellationToken cancellation;
-
-            public UniTask Task => new UniTask(this);
 
             public DelayPromise(TimeSpan delayFrameTimeSpan, CancellationToken cancellation)
             {
@@ -132,7 +126,7 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    SetCanceled();
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -140,7 +134,7 @@ namespace UniRx.Async
 
                 if (elapsed >= delayFrameTimeSpan)
                 {
-                    SetResult(default(AsyncUnit));
+                    TrySetResult(default(AsyncUnit));
                     return false;
                 }
 
@@ -148,13 +142,11 @@ namespace UniRx.Async
             }
         }
 
-        class DelayIgnoreTimeScalePromise : Promise<AsyncUnit>, IPlayerLoopItem
+        class DelayIgnoreTimeScalePromise : UniTaskCompletionSource<AsyncUnit>, IPlayerLoopItem
         {
             readonly float delayFrameTimeSpan;
             float elapsed;
             CancellationToken cancellation;
-
-            public UniTask Task => new UniTask(this);
 
             public DelayIgnoreTimeScalePromise(TimeSpan delayFrameTimeSpan, CancellationToken cancellation)
             {
@@ -167,7 +159,7 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    SetCanceled();
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -175,7 +167,7 @@ namespace UniRx.Async
 
                 if (elapsed >= delayFrameTimeSpan)
                 {
-                    SetResult(default(AsyncUnit));
+                    TrySetResult(default(AsyncUnit));
                     return false;
                 }
 

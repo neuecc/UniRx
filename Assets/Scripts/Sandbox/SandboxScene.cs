@@ -16,7 +16,7 @@ public class SandboxScene : MonoBehaviour
         HandleEvent().Forget();
     }
 
-    static async UniTask OnClick(Button button, IAsyncButtonClickEventHandler onclickHandler)
+    static async UniTask OnClick(Button button, IAsyncClickEventHandler onclickHandler)
     {
         await onclickHandler.OnClickAsync();
         button.interactable = false;

@@ -5,20 +5,6 @@ using System.Runtime.CompilerServices;
 
 namespace UniRx.Async
 {
-    // This interfaces used by UniTask.WhenAll/WhenAny
-    // If implement this interface and if awaiter/awaitable can be struct,
-    // use explicit-interface-implementation.
-
-    public interface IAwaitable
-    {
-        IAwaiter GetAwaiter();
-    }
-
-    public interface IAwaitable<out T> : IAwaitable
-    {
-        new IAwaiter<T> GetAwaiter();
-    }
-
     public interface IAwaiter : ICriticalNotifyCompletion
     {
         bool IsCompleted { get; }
@@ -29,6 +15,7 @@ namespace UniRx.Async
     {
         new T GetResult();
     }
+
 }
 
 #endif

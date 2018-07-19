@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using UniRx.Async.CompilerServices;
+using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
@@ -13,21 +14,20 @@ namespace UniRx.Async
     /// Lightweight unity specified task-like object.
     /// </summary>
     [AsyncMethodBuilder(typeof(AsyncUniTaskMethodBuilder))]
-    public partial struct UniTask : IAwaitable, IEquatable<UniTask>
+    public partial struct UniTask : IEquatable<UniTask>
     {
-        readonly IPromise<AsyncUnit> continuation;
+        readonly IAwaiter awaiter;
 
         [DebuggerHidden]
-        public UniTask(IPromise<AsyncUnit> continuation)
+        public UniTask(IAwaiter awaiter)
         {
-
-            this.continuation = continuation;
+            this.awaiter = awaiter;
         }
 
         [DebuggerHidden]
-        public UniTask(Func<UniTask<AsyncUnit>> factory)
+        public UniTask(Func<UniTask> factory)
         {
-            this.continuation = new LazyPromise<AsyncUnit>(factory);
+            this.awaiter = new LazyPromise(factory);
         }
 
         [DebuggerHidden]
@@ -35,19 +35,16 @@ namespace UniRx.Async
         {
             get
             {
-                return continuation == null ? true : continuation.IsCompleted;
+                return awaiter == null ? true : awaiter.IsCompleted;
             }
         }
 
         [DebuggerHidden]
-        internal void GetResult()
+        public void GetResult()
         {
-            if (continuation == null)
+            if (awaiter != null)
             {
-            }
-            else
-            {
-                continuation.GetResult();
+                awaiter.GetResult();
             }
         }
 
@@ -57,21 +54,15 @@ namespace UniRx.Async
             return new Awaiter(this);
         }
 
-        [DebuggerHidden]
-        IAwaiter IAwaitable.GetAwaiter()
-        {
-            return GetAwaiter();
-        }
-
         public bool Equals(UniTask other)
         {
-            if (this.continuation == null && other.continuation == null)
+            if (this.awaiter == null && other.awaiter == null)
             {
                 return true;
             }
-            else if (this.continuation != null && other.continuation != null)
+            else if (this.awaiter != null && other.awaiter != null)
             {
-                return this.continuation == other.continuation;
+                return this.awaiter == other.awaiter;
             }
             else
             {
@@ -81,13 +72,13 @@ namespace UniRx.Async
 
         public override int GetHashCode()
         {
-            if (this.continuation == null)
+            if (this.awaiter == null)
             {
                 return 0;
             }
             else
             {
-                return this.continuation.GetHashCode();
+                return this.awaiter.GetHashCode();
             }
         }
 
@@ -110,9 +101,9 @@ namespace UniRx.Async
             [DebuggerHidden]
             public void OnCompleted(Action continuation)
             {
-                if (task.continuation != null)
+                if (task.awaiter != null)
                 {
-                    task.continuation.RegisterContinuation(continuation);
+                    task.awaiter.OnCompleted(continuation);
                 }
                 else
                 {
@@ -123,9 +114,9 @@ namespace UniRx.Async
             [DebuggerHidden]
             public void UnsafeOnCompleted(Action continuation)
             {
-                if (task.continuation != null)
+                if (task.awaiter != null)
                 {
-                    task.continuation.RegisterContinuation(continuation);
+                    task.awaiter.UnsafeOnCompleted(continuation);
                 }
                 else
                 {
@@ -139,30 +130,30 @@ namespace UniRx.Async
     /// Lightweight unity specified task-like object.
     /// </summary>
     [AsyncMethodBuilder(typeof(AsyncUniTaskMethodBuilder<>))]
-    public struct UniTask<T> : IAwaitable<T>, IEquatable<UniTask<T>>
+    public struct UniTask<T> : IEquatable<UniTask<T>>
     {
         readonly T result;
-        readonly IPromise<T> continuation;
+        readonly IAwaiter<T> awaiter;
 
         [DebuggerHidden]
         public UniTask(T result)
         {
             this.result = result;
-            this.continuation = null;
+            this.awaiter = null;
         }
 
         [DebuggerHidden]
-        public UniTask(IPromise<T> continuation)
+        public UniTask(IAwaiter<T> awaiter)
         {
             this.result = default(T);
-            this.continuation = continuation;
+            this.awaiter = awaiter;
         }
 
         [DebuggerHidden]
         public UniTask(Func<UniTask<T>> factory)
         {
             this.result = default(T);
-            this.continuation = new LazyPromise<T>(factory);
+            this.awaiter = new LazyPromise<T>(factory);
         }
 
         [DebuggerHidden]
@@ -170,29 +161,23 @@ namespace UniRx.Async
         {
             get
             {
-                return continuation == null ? true : continuation.IsCompleted;
+                return awaiter == null ? true : awaiter.IsCompleted;
             }
         }
 
         [DebuggerHidden]
-        public bool IsStaticValueUnion
+        public T Result
         {
             get
             {
-                return continuation == null;
-            }
-        }
-
-        [DebuggerHidden]
-        internal T GetResult()
-        {
-            if (continuation == null)
-            {
-                return result;
-            }
-            else
-            {
-                return continuation.GetResult();
+                if (awaiter == null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return awaiter.GetResult();
+                }
             }
         }
 
@@ -202,27 +187,15 @@ namespace UniRx.Async
             return new Awaiter(this);
         }
 
-        [DebuggerHidden]
-        IAwaiter<T> IAwaitable<T>.GetAwaiter()
-        {
-            return GetAwaiter();
-        }
-
-        [DebuggerHidden]
-        IAwaiter IAwaitable.GetAwaiter()
-        {
-            return GetAwaiter();
-        }
-
         public bool Equals(UniTask<T> other)
         {
-            if (this.continuation == null && other.continuation == null)
+            if (this.awaiter == null && other.awaiter == null)
             {
                 return EqualityComparer<T>.Default.Equals(this.result, other.result);
             }
-            else if (this.continuation != null && other.continuation != null)
+            else if (this.awaiter != null && other.awaiter != null)
             {
-                return this.continuation == other.continuation;
+                return this.awaiter == other.awaiter;
             }
             else
             {
@@ -232,15 +205,26 @@ namespace UniRx.Async
 
         public override int GetHashCode()
         {
-            if (this.continuation == null)
+            if (this.awaiter == null)
             {
-                if (result == null)
-                    return 0;
+                if (result == null) return 0;
                 return result.GetHashCode();
             }
             else
             {
-                return this.continuation.GetHashCode();
+                return this.awaiter.GetHashCode();
+            }
+        }
+
+        public static implicit operator UniTask(UniTask<T> task)
+        {
+            if (task.awaiter != null)
+            {
+                return new UniTask(task.awaiter);
+            }
+            else
+            {
+                return new UniTask();
             }
         }
 
@@ -258,17 +242,17 @@ namespace UniRx.Async
             public bool IsCompleted => task.IsCompleted;
 
             [DebuggerHidden]
-            void IAwaiter.GetResult() => task.GetResult();
+            void IAwaiter.GetResult() => GetResult();
 
             [DebuggerHidden]
-            public T GetResult() => task.GetResult();
+            public T GetResult() => task.Result;
 
             [DebuggerHidden]
             public void OnCompleted(Action continuation)
             {
-                if (task.continuation != null)
+                if (task.awaiter != null)
                 {
-                    task.continuation.RegisterContinuation(continuation);
+                    task.awaiter.OnCompleted(continuation);
                 }
                 else
                 {
@@ -279,9 +263,9 @@ namespace UniRx.Async
             [DebuggerHidden]
             public void UnsafeOnCompleted(Action continuation)
             {
-                if (task.continuation != null)
+                if (task.awaiter != null)
                 {
-                    task.continuation.RegisterContinuation(continuation);
+                    task.awaiter.UnsafeOnCompleted(continuation);
                 }
                 else
                 {

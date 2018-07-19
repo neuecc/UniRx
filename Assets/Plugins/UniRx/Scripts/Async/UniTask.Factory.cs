@@ -7,10 +7,10 @@ namespace UniRx.Async
 {
     public partial struct UniTask
     {
-        static readonly UniTask FromCanceledUniTask = new Func<UniTask>(()=>
+        static readonly UniTask FromCanceledUniTask = new Func<UniTask>(() =>
         {
-            var promise = new Promise<AsyncUnit>();
-            promise.SetCanceled();
+            var promise = new UniTaskCompletionSource<AsyncUnit>();
+            promise.TrySetCanceled();
             return new UniTask(promise);
         })();
 
@@ -24,15 +24,15 @@ namespace UniRx.Async
 
         public static UniTask FromException(Exception ex)
         {
-            var promise = new Promise<AsyncUnit>();
-            promise.SetException(ex);
+            var promise = new UniTaskCompletionSource<AsyncUnit>();
+            promise.TrySetException(ex);
             return new UniTask(promise);
         }
 
         public static UniTask<T> FromException<T>(Exception ex)
         {
-            var promise = new Promise<T>();
-            promise.SetException(ex);
+            var promise = new UniTaskCompletionSource<T>();
+            promise.TrySetException(ex);
             return new UniTask<T>(promise);
         }
 
@@ -57,8 +57,8 @@ namespace UniRx.Async
 
             static FromCanceledCache()
             {
-                var promise = new Promise<T>();
-                promise.SetCanceled();
+                var promise = new UniTaskCompletionSource<T>();
+                promise.TrySetCanceled();
                 Task = new UniTask<T>(promise);
             }
         }

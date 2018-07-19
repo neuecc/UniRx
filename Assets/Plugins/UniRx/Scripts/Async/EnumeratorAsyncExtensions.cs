@@ -10,19 +10,24 @@ namespace UniRx.Async
 {
     public static class EnumeratorAsyncExtensions
     {
-        public static IAwaiter GetAwaiter(this IEnumerator enumerator)
+        public static UniTask.Awaiter GetAwaiter(this IEnumerator enumerator)
         {
             return enumerator.ConfigureAwait().GetAwaiter();
         }
 
-        public static IAwaitable ConfigureAwait(this IEnumerator enumerator, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask ToUniTask(this IEnumerator enumerator)
+        {
+            return enumerator.ConfigureAwait();
+        }
+
+        public static UniTask ConfigureAwait(this IEnumerator enumerator, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             var awaiter = new EnumeratorAwaiter(enumerator, cancellationToken);
             PlayerLoopHelper.AddAction(timing, awaiter);
-            return awaiter;
+            return new UniTask(awaiter);
         }
 
-        class EnumeratorAwaiter : IAwaitable, IAwaiter, IPlayerLoopItem
+        class EnumeratorAwaiter : IAwaiter, IPlayerLoopItem
         {
             const int Unfinished = 0;
             const int Success = 1;
@@ -41,11 +46,6 @@ namespace UniRx.Async
                 this.continuation = null;
                 this.completeState = Unfinished;
                 this.cancellationToken = cancellationToken;
-            }
-
-            public IAwaiter GetAwaiter()
-            {
-                return this;
             }
 
             public bool IsCompleted

@@ -2,6 +2,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -117,7 +118,7 @@ namespace UniRx.Async
         UniTask<T> OnEndEditAsync();
     }
 
-    public class AsyncUnityEventHandler : IPromise<AsyncUnit>, IDisposable, IAsyncClickEventHandler
+    public class AsyncUnityEventHandler : IAwaiter<AsyncUnit>, IDisposable, IAsyncClickEventHandler
     {
         readonly UnityAction action;
         readonly UnityEvent unityEvent;
@@ -153,20 +154,26 @@ namespace UniRx.Async
             }
         }
 
-        // IPromise(like IValueTaskSource on .NET Core 2.1's ValueTask/System.IO.Pipeline optimization)
+        bool IAwaiter.IsCompleted => false;
 
-        bool IPromise<AsyncUnit>.IsCompleted => false;
+        void IAwaiter.GetResult()
+        {
+        }
 
-        AsyncUnit IPromise<AsyncUnit>.GetResult()
+        public AsyncUnit GetResult()
         {
             return AsyncUnit.Default;
         }
 
-        void IPromise<AsyncUnit>.RegisterContinuation(Action action)
+        void INotifyCompletion.OnCompleted(Action action)
+        {
+            ((ICriticalNotifyCompletion)this).UnsafeOnCompleted(action);
+        }
+
+        void ICriticalNotifyCompletion.UnsafeOnCompleted(Action action)
         {
             if (continuation != null) throw new InvalidOperationException("can't add multiple continuation(await)");
-
-            continuation = action;
+            this.continuation = action;
         }
 
         // Interface events.
@@ -177,7 +184,7 @@ namespace UniRx.Async
         }
     }
 
-    public class AsyncUnityEventHandler<T> : IPromise<T>, IDisposable, IAsyncValueChangedEventHandler<T>, IAsyncEndEditEventHandler<T>
+    public class AsyncUnityEventHandler<T> : IAwaiter<T>, IDisposable, IAsyncValueChangedEventHandler<T>, IAsyncEndEditEventHandler<T>
     {
         readonly UnityAction<T> action;
         readonly UnityEvent<T> unityEvent;
@@ -216,19 +223,25 @@ namespace UniRx.Async
             }
         }
 
-        // IPromise(like IValueTaskSource on .NET Core 2.1's ValueTask/System.IO.Pipeline optimization)
+        bool IAwaiter.IsCompleted => false;
 
-        bool IPromise<T>.IsCompleted => false;
-
-        T IPromise<T>.GetResult()
+        T IAwaiter<T>.GetResult()
         {
             return eventValue;
         }
 
-        void IPromise<T>.RegisterContinuation(Action action)
+        void IAwaiter.GetResult()
+        {
+        }
+
+        void INotifyCompletion.OnCompleted(Action action)
+        {
+            ((ICriticalNotifyCompletion)this).UnsafeOnCompleted(action);
+        }
+
+        void ICriticalNotifyCompletion.UnsafeOnCompleted(Action action)
         {
             if (continuation != null) throw new InvalidOperationException("can't add multiple continuation(await)");
-
             continuation = action;
         }
 

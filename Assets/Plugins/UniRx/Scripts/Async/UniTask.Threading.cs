@@ -14,22 +14,22 @@ namespace UniRx.Async
 
         public static UniTask SwitchToThreadPool()
         {
-            var promise = new Promise<AsyncUnit>();
+            var promise = new UniTaskCompletionSource<AsyncUnit>();
             ThreadPool.UnsafeQueueUserWorkItem(switchToThreadPoolCallback, promise);
             return new UniTask(promise);
         }
 
         public static UniTask SwitchToTaskPool(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var promise = new Promise<AsyncUnit>();
+            var promise = new UniTaskCompletionSource<AsyncUnit>();
             Task.Factory.StartNew(switchToTaskPoolCallback, promise, cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
             return new UniTask(promise);
         }
 
         static void CallbackPromiseSetResult(object state)
         {
-            var promise = (Promise<AsyncUnit>)state;
-            promise.SetResult(AsyncUnit.Default);
+            var promise = (UniTaskCompletionSource<AsyncUnit>)state;
+            promise.TrySetResult(AsyncUnit.Default);
         }
     }
 }

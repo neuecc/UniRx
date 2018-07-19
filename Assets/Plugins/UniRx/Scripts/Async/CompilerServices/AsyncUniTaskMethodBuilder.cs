@@ -11,7 +11,7 @@ namespace UniRx.Async.CompilerServices
 {
     public struct AsyncUniTaskMethodBuilder
     {
-        Promise<AsyncUnit> promise;
+        UniTaskCompletionSource<AsyncUnit> promise;
         Action moveNext;
 
         // 1. Static Create method.
@@ -39,7 +39,7 @@ namespace UniRx.Async.CompilerServices
                 }
                 else
                 {
-                    promise = new Promise<AsyncUnit>();
+                    promise = new UniTaskCompletionSource<AsyncUnit>();
                     return new UniTask(promise);
                 }
             }
@@ -51,9 +51,9 @@ namespace UniRx.Async.CompilerServices
         {
             if (promise == null)
             {
-                promise = new Promise<AsyncUnit>();
+                promise = new UniTaskCompletionSource<AsyncUnit>();
             }
-            promise.SetException(exception);
+            promise.TrySetException(exception);
         }
 
         // 4. SetResult
@@ -67,9 +67,9 @@ namespace UniRx.Async.CompilerServices
             {
                 if (promise == null)
                 {
-                    promise = new Promise<AsyncUnit>();
+                    promise = new UniTaskCompletionSource<AsyncUnit>();
                 }
-                promise.SetResult(default(AsyncUnit));
+                promise.TrySetResult(default(AsyncUnit));
             }
         }
 
@@ -83,7 +83,7 @@ namespace UniRx.Async.CompilerServices
             {
                 if (promise == null)
                 {
-                    promise = new Promise<AsyncUnit>(); // built future.
+                    promise = new UniTaskCompletionSource<AsyncUnit>(); // built future.
                 }
 
                 var runner = new MoveNextRunner();
@@ -107,7 +107,7 @@ namespace UniRx.Async.CompilerServices
             {
                 if (promise == null)
                 {
-                    promise = new Promise<AsyncUnit>(); // built future.
+                    promise = new UniTaskCompletionSource<AsyncUnit>(); // built future.
                 }
 
                 var runner = new MoveNextRunner();
@@ -149,7 +149,7 @@ namespace UniRx.Async.CompilerServices
     public struct AsyncUniTaskMethodBuilder<T>
     {
         T result;
-        Promise<T> promise;
+        UniTaskCompletionSource<T> promise;
         Action moveNext;
 
         // 1. Static Create method.
@@ -177,7 +177,7 @@ namespace UniRx.Async.CompilerServices
                 }
                 else
                 {
-                    promise = new Promise<T>();
+                    promise = new UniTaskCompletionSource<T>();
                     return new UniTask<T>(promise);
                 }
             }
@@ -189,9 +189,9 @@ namespace UniRx.Async.CompilerServices
         {
             if (promise == null)
             {
-                promise = new Promise<T>();
+                promise = new UniTaskCompletionSource<T>();
             }
-            promise.SetException(exception);
+            promise.TrySetException(exception);
         }
 
         // 4. SetResult
@@ -206,9 +206,9 @@ namespace UniRx.Async.CompilerServices
             {
                 if (promise == null)
                 {
-                    promise = new Promise<T>();
+                    promise = new UniTaskCompletionSource<T>();
                 }
-                promise.SetResult(result);
+                promise.TrySetResult(result);
             }
         }
 
@@ -222,7 +222,7 @@ namespace UniRx.Async.CompilerServices
             {
                 if (promise == null)
                 {
-                    promise = new Promise<T>(); // built future.
+                    promise = new UniTaskCompletionSource<T>(); // built future.
                 }
 
                 var runner = new MoveNextRunner();
@@ -246,7 +246,7 @@ namespace UniRx.Async.CompilerServices
             {
                 if (promise == null)
                 {
-                    promise = new Promise<T>(); // built future.
+                    promise = new UniTaskCompletionSource<T>(); // built future.
                 }
 
                 var runner = new MoveNextRunner();

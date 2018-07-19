@@ -32,12 +32,10 @@ namespace UniRx.Async
             return promise.Task;
         }
 
-        class WaitUntilPromise : Promise<AsyncUnit>, IPlayerLoopItem
+        class WaitUntilPromise : UniTaskCompletionSource<AsyncUnit>, IPlayerLoopItem
         {
             readonly Func<bool> predicate;
             CancellationToken cancellation;
-
-            public UniTask Task => new UniTask(this);
 
             public WaitUntilPromise(Func<bool> predicate, CancellationToken cancellation)
             {
@@ -49,7 +47,7 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    SetCanceled();
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -60,13 +58,13 @@ namespace UniRx.Async
                 }
                 catch (Exception ex)
                 {
-                    SetException(ex);
+                    TrySetException(ex);
                     return false;
                 }
 
                 if (result)
                 {
-                    SetResult(AsyncUnit.Default);
+                    TrySetResult(AsyncUnit.Default);
                     return false;
                 }
 
@@ -74,12 +72,10 @@ namespace UniRx.Async
             }
         }
 
-        class WaitWhilePromise : Promise<AsyncUnit>, IPlayerLoopItem
+        class WaitWhilePromise : UniTaskCompletionSource<AsyncUnit>, IPlayerLoopItem
         {
             readonly Func<bool> predicate;
             CancellationToken cancellation;
-
-            public UniTask Task => new UniTask(this);
 
             public WaitWhilePromise(Func<bool> predicate, CancellationToken cancellation)
             {
@@ -91,7 +87,7 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    SetCanceled();
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -103,13 +99,13 @@ namespace UniRx.Async
                 }
                 catch (Exception ex)
                 {
-                    SetException(ex);
+                    TrySetException(ex);
                     return false;
                 }
 
                 if (!result)
                 {
-                    SetResult(AsyncUnit.Default);
+                    TrySetResult(AsyncUnit.Default);
                     return false;
                 }
 
@@ -117,7 +113,7 @@ namespace UniRx.Async
             }
         }
 
-        class WaitUntilValueChangedPromise<T, U> : Promise<U>, IPlayerLoopItem
+        class WaitUntilValueChangedPromise<T, U> : UniTaskCompletionSource<U>, IPlayerLoopItem
           where T : class
         {
             readonly T target;
@@ -125,8 +121,6 @@ namespace UniRx.Async
             readonly IEqualityComparer<U> equalityComparer;
             readonly U initialValue;
             CancellationToken cancellation;
-
-            public UniTask<U> Task => new UniTask<U>(this);
 
             public WaitUntilValueChangedPromise(T target, Func<T, U> monitorFunction, IEqualityComparer<U> equalityComparer, CancellationToken cancellation)
             {
@@ -141,7 +135,7 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    SetCanceled();
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -156,11 +150,11 @@ namespace UniRx.Async
                 }
                 catch (Exception ex)
                 {
-                    SetException(ex);
+                    TrySetException(ex);
                     return false;
                 }
 
-                SetResult(nextValue);
+                TrySetResult(nextValue);
                 return false;
             }
         }
