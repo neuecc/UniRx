@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{DA6F13A8-9704-59D0-8E13-D8BA6037F97A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -182,7 +183,6 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\Zip.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Operators\ZipLatest.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Pair.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Scripts\Progress.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Schedulers\CurrentThreadScheduler.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Schedulers\ImmediateScheduler.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Schedulers\IScheduler.cs" />

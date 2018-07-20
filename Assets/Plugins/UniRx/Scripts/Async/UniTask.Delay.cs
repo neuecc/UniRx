@@ -3,6 +3,7 @@
 
 using System;
 using System.Threading;
+using UniRx.Async.Internal;
 using UnityEngine;
 
 namespace UniRx.Async
@@ -11,9 +12,7 @@ namespace UniRx.Async
     {
         public static UniTask Yield(PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var source = new YieldPromise(cancellationToken);
-            PlayerLoopHelper.AddAction(timing, source);
-            return source.Task;
+            return new UniTask(new YieldPromise(timing, cancellationToken));
         }
 
         public static UniTask Delay(int millisecondsDelay, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
@@ -54,24 +53,43 @@ namespace UniRx.Async
             return source.Task;
         }
 
-        class YieldPromise : UniTaskCompletionSource<AsyncUnit>, IPlayerLoopItem
+        class YieldPromise : ReusablePromise<AsyncUnit>, IPlayerLoopItem
         {
+            PlayerLoopTiming timing;
             CancellationToken cancellation;
 
-            public YieldPromise(CancellationToken cancellation)
+            public YieldPromise(PlayerLoopTiming timing, CancellationToken cancellation)
             {
+                this.timing = timing;
                 this.cancellation = cancellation;
+            }
+
+            public override bool IsCompleted
+            {
+                get
+                {
+                    if (cancellation.IsCancellationRequested) return true;
+
+                    PlayerLoopHelper.AddAction(timing, this);
+                    return false;
+                }
+            }
+
+            public override AsyncUnit GetResult()
+            {
+                cancellation.ThrowIfCancellationRequested();
+                return base.GetResult();
             }
 
             public bool MoveNext()
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    TrySetCanceled();
+                    TryInvokeContinuation(AsyncUnit.Default);
                     return false;
                 }
 
-                TrySetResult(AsyncUnit.Default);
+                TryInvokeContinuation(AsyncUnit.Default);
                 return false;
             }
         }

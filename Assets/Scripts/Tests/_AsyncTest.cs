@@ -202,6 +202,10 @@ namespace UniRx.Tests
             await rp1;
 
             rp1.Value.Is(100);
+
+            var delay2 = UniTask.DelayFrame(10);
+            await UniTask.WhenAll(rp1, delay2);
+
         }
 
         public async UniTask AwaitableReactiveCommand()
