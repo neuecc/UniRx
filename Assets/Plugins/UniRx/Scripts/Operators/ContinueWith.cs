@@ -66,10 +66,6 @@ namespace UniRx.Operators
 	                {
 		                OnError(error);
 	                }
-	                finally
-	                {
-		                Dispose();
-	                }
                 }
                 else
                 {
