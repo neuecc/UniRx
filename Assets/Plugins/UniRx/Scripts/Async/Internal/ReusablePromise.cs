@@ -5,7 +5,8 @@ using System;
 
 namespace UniRx.Async.Internal
 {
-    internal class ReusablePromise<T> : IAwaiter<T>
+    // 'public', user can use this(but be careful).
+    public class ReusablePromise<T> : IAwaiter<T>
     {
         T result;
         object continuation; // Action or Queue<Action>

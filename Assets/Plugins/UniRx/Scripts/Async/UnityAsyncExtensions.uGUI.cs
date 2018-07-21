@@ -24,79 +24,79 @@ namespace UniRx.Async
             }
         }
 
-        public static IAsyncClickEventHandler GetAsyncEventHandler(this Button button)
+        public static IAsyncClickEventHandler GetAsyncClickEventHandler(this Button button)
         {
             return new AsyncUnityEventHandler(button.onClick);
         }
 
         public static async UniTask OnInvokeAsync(this Button button)
         {
-            using (var handler = button.GetAsyncEventHandler())
+            using (var handler = button.GetAsyncClickEventHandler())
             {
                 await handler.OnClickAsync();
             }
         }
 
-        public static IAsyncValueChangedEventHandler<bool> GetAsyncEventHandler(this Toggle toggle)
+        public static IAsyncValueChangedEventHandler<bool> GetAsyncValueChangedEventHandler(this Toggle toggle)
         {
             return new AsyncUnityEventHandler<bool>(toggle.onValueChanged);
         }
 
         public static async UniTask<bool> OnValueChangedAsync(this Toggle toggle)
         {
-            using (var handler = toggle.GetAsyncEventHandler())
+            using (var handler = toggle.GetAsyncValueChangedEventHandler())
             {
                 return await handler.OnValueChangedAsync();
             }
         }
 
-        public static IAsyncValueChangedEventHandler<float> GetAsyncEventHandler(this Scrollbar scrollbar)
+        public static IAsyncValueChangedEventHandler<float> GetAsyncValueChangedEventHandler(this Scrollbar scrollbar)
         {
             return new AsyncUnityEventHandler<float>(scrollbar.onValueChanged);
         }
 
         public static async UniTask<float> OnValueChangedAsync(this Scrollbar scrollbar)
         {
-            using (var handler = scrollbar.GetAsyncEventHandler())
+            using (var handler = scrollbar.GetAsyncValueChangedEventHandler())
             {
                 return await handler.OnValueChangedAsync();
             }
         }
 
-        public static IAsyncValueChangedEventHandler<Vector2> GetAsyncEventHandler(this ScrollRect scrollRect)
+        public static IAsyncValueChangedEventHandler<Vector2> GetAsyncValueChangedEventHandler(this ScrollRect scrollRect)
         {
             return new AsyncUnityEventHandler<Vector2>(scrollRect.onValueChanged);
         }
 
         public static async UniTask<Vector2> OnValueChangedAsync(this ScrollRect scrollRect)
         {
-            using (var handler = scrollRect.GetAsyncEventHandler())
+            using (var handler = scrollRect.GetAsyncValueChangedEventHandler())
             {
                 return await handler.OnValueChangedAsync();
             }
         }
 
-        public static IAsyncValueChangedEventHandler<float> GetAsyncEventHandler(this Slider slider)
+        public static IAsyncValueChangedEventHandler<float> GetAsyncValueChangedEventHandler(this Slider slider)
         {
             return new AsyncUnityEventHandler<float>(slider.onValueChanged);
         }
 
         public static async UniTask<float> OnValueChangedAsync(this Slider slider)
         {
-            using (var handler = slider.GetAsyncEventHandler())
+            using (var handler = slider.GetAsyncValueChangedEventHandler())
             {
                 return await handler.OnValueChangedAsync();
             }
         }
 
-        public static IAsyncEndEditEventHandler<string> GetAsyncEventHandler(this InputField inputField)
+        public static IAsyncEndEditEventHandler<string> GetAsyncEndEditEventHandler(this InputField inputField)
         {
             return new AsyncUnityEventHandler<string>(inputField.onEndEdit);
         }
 
         public static async UniTask<string> OnEndEditAsync(this InputField inputField)
         {
-            using (var handler = inputField.GetAsyncEventHandler())
+            using (var handler = inputField.GetAsyncEndEditEventHandler())
             {
                 return await handler.OnEndEditAsync();
             }
