@@ -16,15 +16,28 @@ public class SandboxScene : MonoBehaviour
 
     void Start()
     {
-        mc = new MyMyClass() { MyProperty = 9999 };
-        var task = UniTask.WaitUntilValueChanged(mc, x => x.MyProperty);
-        HandleObserve(task).Forget();
+        //mc = new MyMyClass() { MyProperty = 9999 };
+        //var task = UniTask.WaitUntilValueChanged(mc, x => x.MyProperty);
+        //HandleObserve(task).Forget();
 
         //HandleDestroyEvent().Forget();
-        HandleEvent().Forget();
-        HandleEventA().Forget();
-        HandleEventB().Forget();
+        //HandleEvent().Forget();
+        //HandleEventA().Forget();
+        //HandleEventB().Forget();
         // HandleUpdateLoop().Forget();
+        DelayForever().Forget();
+    }
+
+    async UniTask DelayForever()
+    {
+        Time.timeScale = 1.0f;
+        var delay = UniTask.Delay(TimeSpan.FromSeconds(1));
+        var count = 0;
+        while (this != null)
+        {
+            await delay;
+            UnityEngine.Debug.Log("delay:" + count++ + " " + Time.realtimeSinceStartup);
+        }
     }
 
     static async UniTask OnClick(Button button, IAsyncClickEventHandler onclickHandler)

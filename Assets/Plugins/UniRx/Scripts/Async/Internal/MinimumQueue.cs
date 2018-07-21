@@ -30,6 +30,12 @@ namespace UniRx.Async.Internal
             get { return size; }
         }
 
+        public T Peek()
+        {
+            if (size == 0) ThrowForEmptyQueue();
+            return array[head];
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Enqueue(T item)
         {

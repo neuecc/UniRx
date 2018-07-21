@@ -1,7 +1,6 @@
 ﻿#if UNITY_2018_1_OR_NEWER
 
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace UniRx.Async.Internal
@@ -17,7 +16,7 @@ namespace UniRx.Async.Internal
         int tail = 0;
         bool running = false;
         IPlayerLoopItem[] loopItems = new IPlayerLoopItem[InitialSize];
-        Queue<IPlayerLoopItem> waitQueue = new Queue<IPlayerLoopItem>();
+        MinimumQueue<IPlayerLoopItem> waitQueue = new MinimumQueue<IPlayerLoopItem>(InitialSize);
 
         public PlayerLoopRunner()
         {
@@ -31,6 +30,7 @@ namespace UniRx.Async.Internal
                 if (running)
                 {
                     waitQueue.Enqueue(item);
+                    return;
                 }
             }
 

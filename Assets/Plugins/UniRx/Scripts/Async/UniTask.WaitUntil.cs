@@ -88,8 +88,9 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
+                    isRunning = false;
                     TryInvokeContinuation();
-                    return isRunning = false;
+                    return false;
                 }
 
                 bool result = default(bool);
@@ -99,15 +100,17 @@ namespace UniRx.Async
                 }
                 catch (Exception ex)
                 {
+                    isRunning = false;
                     exception = ExceptionDispatchInfo.Capture(ex);
                     TryInvokeContinuation();
-                    return isRunning = false;
+                    return false;
                 }
 
                 if (result)
                 {
+                    isRunning = false;
                     TryInvokeContinuation();
-                    return isRunning = false;
+                    return false;
                 }
 
                 return true;
@@ -156,8 +159,9 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
+                    isRunning = false;
                     TryInvokeContinuation();
-                    return isRunning = false;
+                    return false;
                 }
 
 
@@ -168,15 +172,17 @@ namespace UniRx.Async
                 }
                 catch (Exception ex)
                 {
+                    isRunning = false;
                     exception = ExceptionDispatchInfo.Capture(ex);
                     TryInvokeContinuation();
-                    return isRunning = false;
+                    return false;
                 }
 
                 if (!result)
                 {
+                    isRunning = false;
                     TryInvokeContinuation();
-                    return isRunning = false;
+                    return false;
                 }
 
                 return true;
@@ -233,8 +239,9 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
+                    isRunning = false;
                     TryInvokeContinuation(default(U));
-                    return isRunning = false;
+                    return false;
                 }
 
                 U nextValue = default(U);
@@ -251,20 +258,23 @@ namespace UniRx.Async
                     }
                     catch (Exception ex)
                     {
+                        isRunning = false;
                         exception = ExceptionDispatchInfo.Capture(ex);
-                        return isRunning = false;
+                        return false;
                     }
                 }
                 else
                 {
+                    isRunning = false;
                     exception = ExceptionDispatchInfo.Capture(new InvalidOperationException("Monitoring target is already destoyed."));
                     TryInvokeContinuation(default(U));
-                    return isRunning = false;
+                    return false;
                 }
 
+                isRunning = false;
                 currentValue = nextValue;
                 TryInvokeContinuation(nextValue);
-                return isRunning = false;
+                return false;
             }
         }
 
@@ -319,8 +329,9 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
+                    isRunning = false;
                     TryInvokeContinuation((false, default(U)));
-                    return isRunning = false;
+                    return false;
                 }
 
                 U nextValue = default(U);
@@ -337,19 +348,22 @@ namespace UniRx.Async
                     }
                     catch (Exception ex)
                     {
+                        isRunning = false;
                         exception = ExceptionDispatchInfo.Capture(ex);
-                        return isRunning = false;
+                        return false;
                     }
                 }
                 else
                 {
+                    isRunning = false;
                     TryInvokeContinuation((true, default(U)));
-                    return isRunning = false;
+                    return false;
                 }
 
+                isRunning = false;
                 currentValue = nextValue;
                 TryInvokeContinuation((false, nextValue));
-                return isRunning = false;
+                return false;
             }
         }
 
@@ -405,8 +419,9 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
+                    isRunning = false;
                     TryInvokeContinuation(default(U));
-                    return isRunning = false;
+                    return false;
                 }
 
                 U nextValue = default(U);
@@ -423,20 +438,23 @@ namespace UniRx.Async
                     }
                     catch (Exception ex)
                     {
+                        isRunning = false;
                         exception = ExceptionDispatchInfo.Capture(ex);
-                        return isRunning = false;
+                        return false;
                     }
                 }
                 else
                 {
+                    isRunning = false;
                     exception = ExceptionDispatchInfo.Capture(new InvalidOperationException("Monitoring target is garbage collected."));
                     TryInvokeContinuation(default(U));
-                    return isRunning = false;
+                    return false;
                 }
 
+                isRunning = false;
                 currentValue = nextValue;
                 TryInvokeContinuation(nextValue);
-                return isRunning = false;
+                return false;
             }
         }
 

@@ -52,7 +52,7 @@ namespace UniRx.Async
 
         class YieldPromise : ReusablePromise, IPlayerLoopItem
         {
-            PlayerLoopTiming timing;
+            readonly PlayerLoopTiming timing;
             CancellationToken cancellation;
             bool isRunning = false;
 
@@ -84,14 +84,9 @@ namespace UniRx.Async
 
             public bool MoveNext()
             {
-                if (cancellation.IsCancellationRequested)
-                {
-                    TryInvokeContinuation();
-                    return isRunning = false;
-                }
-
+                isRunning = false;
                 TryInvokeContinuation();
-                return isRunning = false;
+                return false;
             }
         }
 
@@ -121,6 +116,7 @@ namespace UniRx.Async
                     if (!isRunning)
                     {
                         isRunning = true;
+                        currentFrameCount = 0;
                         PlayerLoopHelper.AddAction(timing, this);
                     }
                     return false;
@@ -137,14 +133,16 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
+                    isRunning = false;
                     TryInvokeContinuation(default(int));
-                    return isRunning = false;
+                    return false;
                 }
 
                 if (currentFrameCount == delayFrameCount)
                 {
+                    isRunning = false;
                     TryInvokeContinuation(currentFrameCount);
-                    return isRunning = false;
+                    return false;
                 }
 
                 currentFrameCount++;
@@ -177,6 +175,7 @@ namespace UniRx.Async
                     if (!isRunning)
                     {
                         isRunning = true;
+                        this.elapsed = 0.0f;
                         PlayerLoopHelper.AddAction(timing, this);
                     }
                     return false;
@@ -192,16 +191,17 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
+                    isRunning = false;
                     TryInvokeContinuation();
-                    return isRunning = false;
+                    return false;
                 }
 
                 elapsed += Time.deltaTime;
-
                 if (elapsed >= delayFrameTimeSpan)
                 {
+                    isRunning = false;
                     TryInvokeContinuation();
-                    return isRunning = false;
+                    return false;
                 }
 
                 return true;
@@ -233,6 +233,7 @@ namespace UniRx.Async
                     if (!isRunning)
                     {
                         isRunning = true;
+                        this.elapsed = 0.0f;
                         PlayerLoopHelper.AddAction(timing, this);
                     }
                     return false;
@@ -248,16 +249,18 @@ namespace UniRx.Async
             {
                 if (cancellation.IsCancellationRequested)
                 {
+                    isRunning = false;
                     TryInvokeContinuation();
-                    return isRunning = false;
+                    return false;
                 }
 
                 elapsed += Time.unscaledDeltaTime;
 
                 if (elapsed >= delayFrameTimeSpan)
                 {
+                    isRunning = false;
                     TryInvokeContinuation();
-                    return isRunning = false;
+                    return false;
                 }
 
                 return true;
