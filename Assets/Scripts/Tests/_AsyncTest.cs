@@ -27,6 +27,7 @@ namespace UniRx.Tests
     public class _AsyncTest
     {
 #if CSHARP_7_OR_LATER
+#if !UNITY_WSA
 
         public struct MyJob : IJob
         {
@@ -167,6 +168,7 @@ namespace UniRx.Tests
             diff.Is(11);
         }
 
+
         public async UniTask SwitchTo()
         {
             var currentThreadId = Thread.CurrentThread.ManagedThreadId;
@@ -220,6 +222,8 @@ namespace UniRx.Tests
 
             v.Is(100);
         }
+
+
 
         IEnumerator ToaruCoroutineEnumerator()
         {
@@ -288,5 +292,7 @@ namespace UniRx.Tests
 #endif
     }
 }
+
+#endif
 
 #endif

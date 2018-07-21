@@ -4,7 +4,7 @@ using System.Threading;
 #if !UniRxLibrary
 using UnityEngine;
 #endif
-#if (NET_4_6 || NET_STANDARD_2_0)
+#if CSHARP_7_OR_LATER
 using UniRx.Async;
 #endif
 

@@ -1,4 +1,4 @@
-﻿#if (NET_4_6 || NET_STANDARD_2_0)
+﻿#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591
 
 using System.Runtime.CompilerServices;
