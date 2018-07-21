@@ -11,7 +11,7 @@ namespace UniRx.Async.CompilerServices
 {
     public struct AsyncUniTaskMethodBuilder
     {
-        UniTaskCompletionSource<AsyncUnit> promise;
+        UniTaskCompletionSource promise;
         Action moveNext;
 
         // 1. Static Create method.
@@ -30,7 +30,7 @@ namespace UniRx.Async.CompilerServices
             {
                 if (promise != null)
                 {
-                    return new UniTask(promise);
+                    return promise.Task;
                 }
 
                 if (moveNext == null)
@@ -39,8 +39,8 @@ namespace UniRx.Async.CompilerServices
                 }
                 else
                 {
-                    promise = new UniTaskCompletionSource<AsyncUnit>();
-                    return new UniTask(promise);
+                    promise = new UniTaskCompletionSource();
+                    return promise.Task;
                 }
             }
         }
@@ -51,7 +51,7 @@ namespace UniRx.Async.CompilerServices
         {
             if (promise == null)
             {
-                promise = new UniTaskCompletionSource<AsyncUnit>();
+                promise = new UniTaskCompletionSource();
             }
             promise.TrySetException(exception);
         }
@@ -67,9 +67,9 @@ namespace UniRx.Async.CompilerServices
             {
                 if (promise == null)
                 {
-                    promise = new UniTaskCompletionSource<AsyncUnit>();
+                    promise = new UniTaskCompletionSource();
                 }
-                promise.TrySetResult(default(AsyncUnit));
+                promise.TrySetResult();
             }
         }
 
@@ -83,7 +83,7 @@ namespace UniRx.Async.CompilerServices
             {
                 if (promise == null)
                 {
-                    promise = new UniTaskCompletionSource<AsyncUnit>(); // built future.
+                    promise = new UniTaskCompletionSource(); // built future.
                 }
 
                 var runner = new MoveNextRunner();
@@ -107,7 +107,7 @@ namespace UniRx.Async.CompilerServices
             {
                 if (promise == null)
                 {
-                    promise = new UniTaskCompletionSource<AsyncUnit>(); // built future.
+                    promise = new UniTaskCompletionSource(); // built future.
                 }
 
                 var runner = new MoveNextRunner();

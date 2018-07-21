@@ -46,12 +46,13 @@ namespace UniRx.Async
             return new WaitUntilValueChangedUnityObjectWithReturnIsDestoryedPromise<T, U>(target, monitorFunction, monitorTiming, equalityComparer, cancellationToken).Task;
         }
 
-        class WaitUntilPromise : ReusablePromise<AsyncUnit>, IPlayerLoopItem
+        class WaitUntilPromise : ReusablePromise, IPlayerLoopItem
         {
             readonly Func<bool> predicate;
             readonly PlayerLoopTiming timing;
             ExceptionDispatchInfo exception;
             CancellationToken cancellation;
+            bool isRunning = false;
 
             public WaitUntilPromise(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellation)
             {
@@ -68,25 +69,27 @@ namespace UniRx.Async
                     if (cancellation.IsCancellationRequested) return true;
                     if (exception != null) return true;
 
-                    PlayerLoopHelper.AddAction(timing, this);
+                    if (!isRunning)
+                    {
+                        isRunning = true;
+                        PlayerLoopHelper.AddAction(timing, this);
+                    }
                     return false;
                 }
             }
 
-            public override AsyncUnit GetResult()
+            public override void GetResult()
             {
                 cancellation.ThrowIfCancellationRequested();
                 exception?.Throw();
-
-                return base.GetResult();
             }
 
             public bool MoveNext()
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    TryInvokeContinuation(AsyncUnit.Default);
-                    return false;
+                    TryInvokeContinuation();
+                    return isRunning = false;
                 }
 
                 bool result = default(bool);
@@ -97,26 +100,27 @@ namespace UniRx.Async
                 catch (Exception ex)
                 {
                     exception = ExceptionDispatchInfo.Capture(ex);
-                    TryInvokeContinuation(AsyncUnit.Default);
-                    return false;
+                    TryInvokeContinuation();
+                    return isRunning = false;
                 }
 
                 if (result)
                 {
-                    TryInvokeContinuation(AsyncUnit.Default);
-                    return false;
+                    TryInvokeContinuation();
+                    return isRunning = false;
                 }
 
                 return true;
             }
         }
 
-        class WaitWhilePromise : ReusablePromise<AsyncUnit>, IPlayerLoopItem
+        class WaitWhilePromise : ReusablePromise, IPlayerLoopItem
         {
             readonly Func<bool> predicate;
             readonly PlayerLoopTiming timing;
             ExceptionDispatchInfo exception;
             CancellationToken cancellation;
+            bool isRunning = false;
 
             public WaitWhilePromise(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellation)
             {
@@ -133,25 +137,27 @@ namespace UniRx.Async
                     if (cancellation.IsCancellationRequested) return true;
                     if (exception != null) return true;
 
-                    PlayerLoopHelper.AddAction(timing, this);
+                    if (!isRunning)
+                    {
+                        isRunning = true;
+                        PlayerLoopHelper.AddAction(timing, this);
+                    }
                     return false;
                 }
             }
 
-            public override AsyncUnit GetResult()
+            public override void GetResult()
             {
                 cancellation.ThrowIfCancellationRequested();
                 exception?.Throw();
-
-                return base.GetResult();
             }
 
             public bool MoveNext()
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    TryInvokeContinuation(AsyncUnit.Default);
-                    return false;
+                    TryInvokeContinuation();
+                    return isRunning = false;
                 }
 
 
@@ -163,14 +169,14 @@ namespace UniRx.Async
                 catch (Exception ex)
                 {
                     exception = ExceptionDispatchInfo.Capture(ex);
-                    TryInvokeContinuation(AsyncUnit.Default);
-                    return false;
+                    TryInvokeContinuation();
+                    return isRunning = false;
                 }
 
                 if (!result)
                 {
-                    TryInvokeContinuation(AsyncUnit.Default);
-                    return false;
+                    TryInvokeContinuation();
+                    return isRunning = false;
                 }
 
                 return true;
@@ -186,6 +192,7 @@ namespace UniRx.Async
             U currentValue;
             ExceptionDispatchInfo exception;
             CancellationToken cancellation;
+            bool isRunning = false;
 
             public WaitUntilValueChangedUnityObjectPromise(T target, Func<T, U> monitorFunction, PlayerLoopTiming timing, IEqualityComparer<U> equalityComparer, CancellationToken cancellation)
             {
@@ -205,7 +212,11 @@ namespace UniRx.Async
                     if (cancellation.IsCancellationRequested) return true;
                     if (exception != null) return true;
 
-                    PlayerLoopHelper.AddAction(timing, this);
+                    if (!isRunning)
+                    {
+                        isRunning = true;
+                        PlayerLoopHelper.AddAction(timing, this);
+                    }
                     return false;
                 }
             }
@@ -223,7 +234,7 @@ namespace UniRx.Async
                 if (cancellation.IsCancellationRequested)
                 {
                     TryInvokeContinuation(default(U));
-                    return false;
+                    return isRunning = false;
                 }
 
                 U nextValue = default(U);
@@ -241,19 +252,19 @@ namespace UniRx.Async
                     catch (Exception ex)
                     {
                         exception = ExceptionDispatchInfo.Capture(ex);
-                        return false;
+                        return isRunning = false;
                     }
                 }
                 else
                 {
                     exception = ExceptionDispatchInfo.Capture(new InvalidOperationException("Monitoring target is already destoyed."));
                     TryInvokeContinuation(default(U));
-                    return false;
+                    return isRunning = false;
                 }
 
                 currentValue = nextValue;
                 TryInvokeContinuation(nextValue);
-                return false;
+                return isRunning = false;
             }
         }
 
@@ -267,6 +278,7 @@ namespace UniRx.Async
             U currentValue;
             ExceptionDispatchInfo exception;
             CancellationToken cancellation;
+            bool isRunning = false;
 
             public WaitUntilValueChangedUnityObjectWithReturnIsDestoryedPromise(T target, Func<T, U> monitorFunction, PlayerLoopTiming timing, IEqualityComparer<U> equalityComparer, CancellationToken cancellation)
             {
@@ -286,7 +298,11 @@ namespace UniRx.Async
                     if (cancellation.IsCancellationRequested) return true;
                     if (exception != null) return true;
 
-                    PlayerLoopHelper.AddAction(timing, this);
+                    if (!isRunning)
+                    {
+                        isRunning = true;
+                        PlayerLoopHelper.AddAction(timing, this);
+                    }
                     return false;
                 }
             }
@@ -304,7 +320,7 @@ namespace UniRx.Async
                 if (cancellation.IsCancellationRequested)
                 {
                     TryInvokeContinuation((false, default(U)));
-                    return false;
+                    return isRunning = false;
                 }
 
                 U nextValue = default(U);
@@ -322,18 +338,18 @@ namespace UniRx.Async
                     catch (Exception ex)
                     {
                         exception = ExceptionDispatchInfo.Capture(ex);
-                        return false;
+                        return isRunning = false;
                     }
                 }
                 else
                 {
                     TryInvokeContinuation((true, default(U)));
-                    return false;
+                    return isRunning = false;
                 }
 
                 currentValue = nextValue;
                 TryInvokeContinuation((false, nextValue));
-                return false;
+                return isRunning = false;
             }
         }
 
@@ -347,6 +363,7 @@ namespace UniRx.Async
             readonly PlayerLoopTiming timing;
             ExceptionDispatchInfo exception;
             CancellationToken cancellation;
+            bool isRunning = false;
 
             public WaitUntilValueChangedStandardObjectPromise(T target, Func<T, U> monitorFunction, PlayerLoopTiming timing, IEqualityComparer<U> equalityComparer, CancellationToken cancellation)
             {
@@ -367,7 +384,11 @@ namespace UniRx.Async
                     if (cancellation.IsCancellationRequested) return true;
                     if (exception != null) return true;
 
-                    PlayerLoopHelper.AddAction(timing, this);
+                    if (!isRunning)
+                    {
+                        isRunning = true;
+                        PlayerLoopHelper.AddAction(timing, this);
+                    }
                     return false;
                 }
             }
@@ -385,7 +406,7 @@ namespace UniRx.Async
                 if (cancellation.IsCancellationRequested)
                 {
                     TryInvokeContinuation(default(U));
-                    return false;
+                    return isRunning = false;
                 }
 
                 U nextValue = default(U);
@@ -403,19 +424,19 @@ namespace UniRx.Async
                     catch (Exception ex)
                     {
                         exception = ExceptionDispatchInfo.Capture(ex);
-                        return false;
+                        return isRunning = false;
                     }
                 }
                 else
                 {
                     exception = ExceptionDispatchInfo.Capture(new InvalidOperationException("Monitoring target is garbage collected."));
                     TryInvokeContinuation(default(U));
-                    return false;
+                    return isRunning = false;
                 }
 
                 currentValue = nextValue;
                 TryInvokeContinuation(nextValue);
-                return false;
+                return isRunning = false;
             }
         }
 

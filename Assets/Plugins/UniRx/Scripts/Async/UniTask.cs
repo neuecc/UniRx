@@ -16,6 +16,8 @@ namespace UniRx.Async
     [AsyncMethodBuilder(typeof(AsyncUniTaskMethodBuilder))]
     public partial struct UniTask : IEquatable<UniTask>
     {
+        static readonly UniTask<AsyncUnit> DefaultAsyncUnitTask = new UniTask<AsyncUnit>(AsyncUnit.Default);
+
         readonly IAwaiter awaiter;
 
         [DebuggerHidden]
@@ -86,11 +88,19 @@ namespace UniRx.Async
         {
             if (task.awaiter != null)
             {
-                return new UniTask<AsyncUnit>(new AsyncUnitAwaiter(task.awaiter));
+                if (task.awaiter.IsCompleted)
+                {
+                    return DefaultAsyncUnitTask;
+                }
+                else
+                {
+                    // UniTask<T> -> UniTask is free but UniTask -> UniTask<T> requires wrapping cost.
+                    return new UniTask<AsyncUnit>(new AsyncUnitAwaiter(task.awaiter));
+                }
             }
             else
             {
-                return new UniTask();
+                return DefaultAsyncUnitTask;
             }
         }
 
