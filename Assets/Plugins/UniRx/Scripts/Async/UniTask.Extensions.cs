@@ -238,6 +238,19 @@ namespace UniRx.Async
             return await continuationFunction();
         }
 
+        public static async UniTask ConfigureAwait(this UniTask task, PlayerLoopTiming timing)
+        {
+            await task;
+            await UniTask.Yield(timing);
+        }
+
+        public static async UniTask<T> ConfigureAwait<T>(this UniTask<T> task, PlayerLoopTiming timing)
+        {
+            var v = await task;
+            await UniTask.Yield(timing);
+            return v;
+        }
+
         class ToCoroutineEnumerator : IEnumerator
         {
             bool completed;
