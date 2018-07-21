@@ -29,14 +29,12 @@ namespace UniRx.Async
 
             if (ignoreTimeScale)
             {
-                var source = new DelayIgnoreTimeScalePromise(delayTimeSpan, cancellationToken);
-                PlayerLoopHelper.AddAction(delayTiming, source);
+                var source = new DelayIgnoreTimeScalePromise(delayTimeSpan, delayTiming, cancellationToken);
                 return source.Task;
             }
             else
             {
-                var source = new DelayPromise(delayTimeSpan, cancellationToken);
-                PlayerLoopHelper.AddAction(delayTiming, source);
+                var source = new DelayPromise(delayTimeSpan, delayTiming, cancellationToken);
                 return source.Task;
             }
         }
@@ -48,8 +46,7 @@ namespace UniRx.Async
                 throw new ArgumentOutOfRangeException("Delay does not allow minus delayFrameCount. delayFrameCount:" + delayFrameCount);
             }
 
-            var source = new DelayFramePromise(delayFrameCount, cancellationToken);
-            PlayerLoopHelper.AddAction(delayTiming, source);
+            var source = new DelayFramePromise(delayFrameCount, delayTiming, cancellationToken);
             return source.Task;
         }
 
@@ -94,31 +91,50 @@ namespace UniRx.Async
             }
         }
 
-        class DelayFramePromise : UniTaskCompletionSource<int>, IPlayerLoopItem
+        class DelayFramePromise : ReusablePromise<int>, IPlayerLoopItem
         {
             readonly int delayFrameCount;
+            readonly PlayerLoopTiming timing;
             CancellationToken cancellation;
 
             int currentFrameCount;
 
-            public DelayFramePromise(int delayFrameCount, CancellationToken cancellation)
+            public DelayFramePromise(int delayFrameCount, PlayerLoopTiming timing, CancellationToken cancellation)
             {
                 this.delayFrameCount = delayFrameCount;
                 this.cancellation = cancellation;
+                this.timing = timing;
                 this.currentFrameCount = 0;
+            }
+
+            public override bool IsCompleted
+            {
+                get
+                {
+                    if (cancellation.IsCancellationRequested) return true;
+
+                    PlayerLoopHelper.AddAction(timing, this);
+                    return false;
+                }
+            }
+
+            public override int GetResult()
+            {
+                cancellation.ThrowIfCancellationRequested();
+                return base.GetResult();
             }
 
             public bool MoveNext()
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    TrySetCanceled();
+                    TryInvokeContinuation(default(int));
                     return false;
                 }
 
                 if (currentFrameCount == delayFrameCount)
                 {
-                    TrySetResult(currentFrameCount);
+                    TryInvokeContinuation(currentFrameCount);
                     return false;
                 }
 
@@ -127,24 +143,43 @@ namespace UniRx.Async
             }
         }
 
-        class DelayPromise : UniTaskCompletionSource<AsyncUnit>, IPlayerLoopItem
+        class DelayPromise : ReusablePromise<AsyncUnit>, IPlayerLoopItem
         {
             readonly float delayFrameTimeSpan;
+            readonly PlayerLoopTiming timing;
             float elapsed;
             CancellationToken cancellation;
 
-            public DelayPromise(TimeSpan delayFrameTimeSpan, CancellationToken cancellation)
+            public DelayPromise(TimeSpan delayFrameTimeSpan, PlayerLoopTiming timing, CancellationToken cancellation)
             {
                 this.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
+                this.timing = timing;
                 this.cancellation = cancellation;
                 this.elapsed = 0.0f;
+            }
+
+            public override bool IsCompleted
+            {
+                get
+                {
+                    if (cancellation.IsCancellationRequested) return true;
+
+                    PlayerLoopHelper.AddAction(timing, this);
+                    return false;
+                }
+            }
+
+            public override AsyncUnit GetResult()
+            {
+                cancellation.ThrowIfCancellationRequested();
+                return base.GetResult();
             }
 
             public bool MoveNext()
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    TrySetCanceled();
+                    TryInvokeContinuation(default(AsyncUnit));
                     return false;
                 }
 
@@ -152,7 +187,7 @@ namespace UniRx.Async
 
                 if (elapsed >= delayFrameTimeSpan)
                 {
-                    TrySetResult(default(AsyncUnit));
+                    TryInvokeContinuation(default(AsyncUnit));
                     return false;
                 }
 
@@ -160,24 +195,43 @@ namespace UniRx.Async
             }
         }
 
-        class DelayIgnoreTimeScalePromise : UniTaskCompletionSource<AsyncUnit>, IPlayerLoopItem
+        class DelayIgnoreTimeScalePromise : ReusablePromise<AsyncUnit>, IPlayerLoopItem
         {
             readonly float delayFrameTimeSpan;
+            readonly PlayerLoopTiming timing;
             float elapsed;
             CancellationToken cancellation;
 
-            public DelayIgnoreTimeScalePromise(TimeSpan delayFrameTimeSpan, CancellationToken cancellation)
+            public DelayIgnoreTimeScalePromise(TimeSpan delayFrameTimeSpan, PlayerLoopTiming timing, CancellationToken cancellation)
             {
                 this.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
+                this.timing = timing;
                 this.cancellation = cancellation;
                 this.elapsed = 0.0f;
+            }
+
+            public override bool IsCompleted
+            {
+                get
+                {
+                    if (cancellation.IsCancellationRequested) return true;
+
+                    PlayerLoopHelper.AddAction(timing, this);
+                    return false;
+                }
+            }
+
+            public override AsyncUnit GetResult()
+            {
+                cancellation.ThrowIfCancellationRequested();
+                return base.GetResult();
             }
 
             public bool MoveNext()
             {
                 if (cancellation.IsCancellationRequested)
                 {
-                    TrySetCanceled();
+                    TryInvokeContinuation(default(AsyncUnit));
                     return false;
                 }
 
@@ -185,7 +239,7 @@ namespace UniRx.Async
 
                 if (elapsed >= delayFrameTimeSpan)
                 {
-                    TrySetResult(default(AsyncUnit));
+                    TryInvokeContinuation(default(AsyncUnit));
                     return false;
                 }
 
