@@ -2,12 +2,13 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+using System.Threading;
 
 namespace UniRx.Async
 {
     public partial struct UniTask
     {
-        static readonly UniTask FromCanceledUniTask = new Func<UniTask>(() =>
+        static readonly UniTask CanceledUniTask = new Func<UniTask>(() =>
         {
             var promise = new UniTaskCompletionSource<AsyncUnit>();
             promise.TrySetCanceled();
@@ -43,19 +44,33 @@ namespace UniRx.Async
 
         public static UniTask FromCanceled()
         {
-            return FromCanceledUniTask;
+            return CanceledUniTask;
         }
 
         public static UniTask<T> FromCanceled<T>()
         {
-            return FromCanceledCache<T>.Task;
+            return CanceledUniTaskCache<T>.Task;
         }
 
-        static class FromCanceledCache<T>
+        public static UniTask FromCanceled(CancellationToken token)
+        {
+            var promise = new UniTaskCompletionSource<AsyncUnit>();
+            promise.TrySetException(new OperationCanceledException(token));
+            return new UniTask(promise);
+        }
+
+        public static UniTask<T> FromCanceled<T>(CancellationToken token)
+        {
+            var promise = new UniTaskCompletionSource<T>();
+            promise.TrySetException(new OperationCanceledException(token));
+            return new UniTask<T>(promise);
+        }
+
+        static class CanceledUniTaskCache<T>
         {
             public static readonly UniTask<T> Task;
 
-            static FromCanceledCache()
+            static CanceledUniTaskCache()
             {
                 var promise = new UniTaskCompletionSource<T>();
                 promise.TrySetCanceled();

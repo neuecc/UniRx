@@ -82,6 +82,51 @@ namespace UniRx.Async
             }
         }
 
+        public static implicit operator UniTask<AsyncUnit>(UniTask task)
+        {
+            if (task.awaiter != null)
+            {
+                return new UniTask<AsyncUnit>(new AsyncUnitAwaiter(task.awaiter));
+            }
+            else
+            {
+                return new UniTask();
+            }
+        }
+
+        class AsyncUnitAwaiter : IAwaiter<AsyncUnit>
+        {
+            readonly IAwaiter awaiter;
+
+            public AsyncUnitAwaiter(IAwaiter awaiter)
+            {
+                this.awaiter = awaiter;
+            }
+
+            public bool IsCompleted => awaiter.IsCompleted;
+
+            public AsyncUnit GetResult()
+            {
+                awaiter.GetResult();
+                return AsyncUnit.Default;
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                awaiter.OnCompleted(continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                awaiter.UnsafeOnCompleted(continuation);
+            }
+
+            void IAwaiter.GetResult()
+            {
+                awaiter.GetResult();
+            }
+        }
+
         public struct Awaiter : IAwaiter
         {
             readonly UniTask task;

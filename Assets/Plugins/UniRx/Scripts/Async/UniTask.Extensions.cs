@@ -13,10 +13,10 @@ namespace UniRx.Async
         /// <summary>
         /// Convert UniTask -> UniTask[AsyncUnit].
         /// </summary>
-        public static async UniTask<AsyncUnit> AsAsyncUnitUniTask(this UniTask task)
+        public static UniTask<AsyncUnit> AsAsyncUnitUniTask(this UniTask task)
         {
-            await task;
-            return AsyncUnit.Default;
+            // use implicit conversion
+            return task;
         }
 
         /// <summary>
@@ -89,6 +89,11 @@ namespace UniRx.Async
             return new ToCoroutineEnumerator(task, exceptionHandler);
         }
 
+        public static UniTask Timeout(this UniTask task, TimeSpan timeout, CancellationTokenSource taskCancellationTokenSource = null)
+        {
+            return Timeout(task.AsAsyncUnitUniTask(), timeout, taskCancellationTokenSource);
+        }
+
         public static async UniTask<T> Timeout<T>(this UniTask<T> task, TimeSpan timeout, CancellationTokenSource taskCancellationTokenSource = null)
         {
             var delayCancellationTokenSource = new CancellationTokenSource();
@@ -107,6 +112,33 @@ namespace UniRx.Async
             else
             {
                 delayCancellationTokenSource.Cancel();
+            }
+
+            return value;
+        }
+
+        public static UniTask WithCancellation(this UniTask task, CancellationToken cancellationToken, CancellationTokenSource taskCancellationTokenSource = null)
+        {
+            return WithCancellation(task.AsAsyncUnitUniTask(), cancellationToken, taskCancellationTokenSource);
+        }
+
+        public static async UniTask<T> WithCancellation<T>(this UniTask<T> task, CancellationToken cancellationToken, CancellationTokenSource taskCancellationTokenSource = null)
+        {
+            var (cancellationTask, registration) = cancellationToken.ToUniTask();
+
+            var (hasValue, value) = await UniTask.WhenAny(task, cancellationTask);
+            if (!hasValue)
+            {
+                if (taskCancellationTokenSource != null)
+                {
+                    taskCancellationTokenSource.Cancel();
+                }
+
+                throw new OperationCanceledException(cancellationToken);
+            }
+            else
+            {
+                registration.Dispose();
             }
 
             return value;
