@@ -9,18 +9,18 @@ namespace UniRx.Async.Triggers
     [DisallowMultipleComponent]
     public class AsyncUpdateTrigger : MonoBehaviour
     {
-        ReusablePromise<AsyncUnit> promise;
+        ReusablePromise promise;
 
         /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>
         void Update()
         {
-            promise?.TryInvokeContinuation(AsyncUnit.Default);
+            promise?.TryInvokeContinuation();
         }
 
         /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>
         public UniTask UpdateAsync()
         {
-            return new UniTask(promise ?? (promise = new ReusablePromise<AsyncUnit>()));
+            return new UniTask(promise ?? (promise = new ReusablePromise()));
         }
     }
 }

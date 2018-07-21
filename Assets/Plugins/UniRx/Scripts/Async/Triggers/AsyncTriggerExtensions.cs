@@ -9,28 +9,40 @@ namespace UniRx.Async.Triggers
 {
     public static class AsyncTriggerExtensions
     {
-        /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>
+        /// <summary>Get for OnUpdateAsync.</summary>
         public static AsyncUpdateTrigger GetAsyncUpdateTrigger(this GameObject gameObject)
         {
             return GetOrAddComponent<AsyncUpdateTrigger>(gameObject);
         }
 
-        /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>
+        /// <summary>Get for OnUpdateAsync.</summary>
         public static AsyncUpdateTrigger GetAsyncUpdateTrigger(this Component component)
         {
             return component.gameObject.GetAsyncUpdateTrigger();
         }
 
-        /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
+        /// <summary>Get for OnDestroyAsync.</summary>
         public static AsyncDestroyTrigger GetAsyncDestroyTrigger(this GameObject gameObject)
         {
             return GetOrAddComponent<AsyncDestroyTrigger>(gameObject);
         }
 
-        /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
+        /// <summary>Get for OnDestroyAsync.</summary>
         public static AsyncDestroyTrigger GetAsyncDestroyTrigger(this Component component)
         {
             return component.gameObject.GetAsyncDestroyTrigger();
+        }
+
+        /// <summary>Get for OnAnimatorIKAsync | OnAnimatorMoveAsync.</summary>
+        public static AsyncAnimatorTrigger GetAsyncAnimatorTrigger(this GameObject gameObject)
+        {
+            return GetOrAddComponent<AsyncAnimatorTrigger>(gameObject);
+        }
+
+        /// <summary>Get for OnAnimatorIKAsync | OnAnimatorMoveAsync.</summary>
+        public static AsyncAnimatorTrigger GetAsyncAnimatorTrigger(this Component component)
+        {
+            return component.gameObject.GetAsyncAnimatorTrigger();
         }
 
         static T GetOrAddComponent<T>(GameObject gameObject)

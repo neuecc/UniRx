@@ -10,20 +10,20 @@ namespace UniRx.Async.Triggers
     public class AsyncDestroyTrigger : MonoBehaviour
     {
         bool called = false;
-        UniTaskCompletionSource<AsyncUnit> promise;
+        UniTaskCompletionSource promise;
 
         /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
         void OnDestroy()
         {
             called = true;
-            promise?.TrySetResult(AsyncUnit.Default);
+            promise?.TrySetResult();
         }
 
         /// <summary>This function is called when the MonoBehaviour will be destroyed.</summary>
         public UniTask OnDestroyAsync()
         {
             if (called) return UniTask.CompletedTask;
-            return new UniTask(promise ?? (promise = new UniTaskCompletionSource<AsyncUnit>()));
+            return new UniTask(promise ?? (promise = new UniTaskCompletionSource()));
         }
     }
 }
