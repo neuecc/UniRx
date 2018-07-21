@@ -18,7 +18,9 @@ using System.Threading.Tasks;
 #endif
 using UnityEngine.Networking;
 using UnityEngine.Experimental.LowLevel;
+#if !UNITY_WSA
 using Unity.Jobs;
+#endif
 using Unity.Collections;
 using System.Threading;
 

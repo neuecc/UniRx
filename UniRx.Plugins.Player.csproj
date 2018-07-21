@@ -5,9 +5,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{37CDCF3F-0389-B63F-5625-A1C74B87B5B7}</ProjectGuid>
+    <ProjectGuid>{3595F121-8914-1E29-1048-72FE0D2B4AED}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Assembly-CSharp-player</AssemblyName>
+    <AssemblyName>Assembly-CSharp-firstpass-player</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
@@ -15,7 +15,7 @@
     <TargetFrameworkProfile></TargetFrameworkProfile>
     <CompilerResponseFile>Library\UnityAssemblies\mcs.rsp</CompilerResponseFile>
     <UnityProjectGenerator>VSTU</UnityProjectGenerator>
-    <UnityProjectType>Game:1</UnityProjectType>
+    <UnityProjectType>GamePlugins:3</UnityProjectType>
     <UnityBuildTarget>WSAPlayer:21</UnityBuildTarget>
     <UnityVersion>2018.2.0f1</UnityVersion>
     <RootNamespace></RootNamespace>
@@ -47,17 +47,8 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll</HintPath>
-    </Reference>
-    <Reference Include="UniRx">
-      <HintPath>Library/ScriptAssemblies/UniRx.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.ResourceManager">
       <HintPath>Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
-    </Reference>
-    <Reference Include="UniRx.Async">
-      <HintPath>Library/ScriptAssemblies/UniRx.Async.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Addressables">
       <HintPath>Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
@@ -880,30 +871,66 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\Assert.cs" />
-    <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\ChainingAssertion.Unity.cs" />
-    <Compile Include="Assets\Scripts\RuntimeUnitTestToolkit\UnitTestRunner.cs" />
-    <Compile Include="Assets\Scripts\Sandbox\SandboxScene.cs" />
-    <Compile Include="Assets\Scripts\Tests\_AsyncTest.cs" />
-    <Compile Include="Assets\Scripts\Tests\_ManualyTest.cs" />
-    <Compile Include="Assets\Scripts\Tests\Imported\Container.cs" />
-    <Compile Include="Assets\Scripts\Tests\Imported\Shim.cs" />
-    <Compile Include="Assets\Scripts\Tests\Imported\TestImporter.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TestImporter.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Assets\Scripts\Tests\Imported\TestUtil.cs" />
-    <Compile Include="Assets\Scripts\Tests\UnitTestLoader.cs" />
+    <ProjectReference Include="UniRx.Player.csproj">
+      <Project>{474AD341-FFD5-024B-366B-CBD4F5614BF0}</Project>
+      <Name>UniRx.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="UniRx.Async.Player.csproj">
+      <Project>{C94D98F1-359E-735D-1B99-EE89D0BBE9CF}</Project>
+      <Name>UniRx.Async.Player</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Scripts\Tests\Imported\TestImporter.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestImporter.cs</LastGenOutput>
-    </None>
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample01_ObservableWWW.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample02_ObservableTriggers.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample03_GameObjectAsObservable.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample04_ConvertFromUnityCallback.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample05_ConvertFromCoroutine.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample06_ConvertToCoroutine.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample07_OrchestratIEnumerator.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample08_DetectDoubleClick.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample09_EventHandling.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample10_MainThreadDispatcher.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample11_Logger.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample12_ReactiveProperty.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Examples\Sample13_ToDoApp.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <None Include="Assets\Plugins\UniRx\ReadMe.txt" />
+    <None Include="Assets\Plugins\UniRx\Scripts\Async\UniRx.Async.asmdef" />
+    <None Include="Assets\Plugins\UniRx\Scripts\UniRx.asmdef" />
+    <None Include="Assets\Resources\te.txt" />
+    <None Include="Assets\gmcs.rsp" />
+    <None Include="Assets\mcs.rsp" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.addressables@0.1.2-preview\Editor\Unity.Addressables.Editor.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.addressables@0.1.2-preview\Runtime\Unity.Addressables.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.addressables@0.1.2-preview\Tests\Editor\Unity.Addressables.Editor.Tests.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.addressables@0.1.2-preview\Tests\Runtime\Unity.Addressables.Runtime.Tests.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.cacheserver.client@0.1.1-preview\Editor\Unity.CacheServer.Client.Editor.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.cacheserver.client@0.1.1-preview\Tests\Editor\Unity.CacheServer.Client.EditorTests.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.incrementalcompiler@0.0.42-preview.14\Tests\Editor\Unity.Incremental.Compiler.Tests.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Resources\Styles\Main_Dark.uss" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Resources\Styles\Main_Light.uss" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Resources\Templates\Alert.uxml" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Resources\Templates\PackageDetails.uxml" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Resources\Templates\PackageGroup.uxml" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Resources\Templates\PackageItem.uxml" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Resources\Templates\PackageList.uxml" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Resources\Templates\PackageManagerWindow.uxml" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Resources\Templates\PackageSearchFilterTabs.uxml" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Resources\Templates\PackagesLoading.uxml" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Editor\Unity.PackageManagerUI.Editor.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.9.11\Tests\Editor\Unity.PackageManagerUI.EditorTests.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.resourcemanager@2.1.0-preview\Editor\Unity.ResourceManager.Editor.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.resourcemanager@2.1.0-preview\Runtime\Unity.ResourceManager.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.resourcemanager@2.1.0-preview\Tests\Runtime\Unity.ResourceManager.Tests.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.scriptablebuildpipeline@0.1.0-preview\Editor\Unity.ScriptableBuildPipeline.Editor.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.scriptablebuildpipeline@0.1.0-preview\Tests\Editor\Unity.ScriptableBuildPipeline.Editor.Tests.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.standardevents@1.0.13\Editor\Editor.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.textmeshpro@1.2.4\Scripts\Editor\Unity.TextMeshPro.Editor.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.textmeshpro@1.2.4\Scripts\Runtime\Unity.TextMeshPro.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.textmeshpro@1.2.4\Tests\Editor\Unity.TextMeshPro.Editor.Tests.asmdef" />
+    <None Include="C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.textmeshpro@1.2.4\Tests\Runtime\Unity.TextMeshPro.Tests.asmdef" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

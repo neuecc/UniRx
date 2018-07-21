@@ -10,7 +10,6 @@ using System.Linq;
 using System.Text;
 using UnityEngine.UI;
 using UnityEngine.Scripting;
-using Unity.Jobs;
 using System.Threading;
 using Unity.Collections;
 
