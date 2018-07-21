@@ -13,7 +13,9 @@ using UnityEngine.Scripting;
 using UniRx;
 using UniRx.Async;
 using UnityEngine.SceneManagement;
+#if CSHARP_7_OR_LATER
 using System.Threading.Tasks;
+#endif
 using UnityEngine.Networking;
 using UnityEngine.Experimental.LowLevel;
 using Unity.Jobs;

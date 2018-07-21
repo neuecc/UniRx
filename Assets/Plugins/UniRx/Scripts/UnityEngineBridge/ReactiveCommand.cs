@@ -4,8 +4,6 @@ using System.Threading;
 using UniRx.Async;
 #endif
 
-#pragma warning disable CS1591
-
 namespace UniRx
 {
     public interface IReactiveCommand<T> : IObservable<T>
