@@ -182,8 +182,8 @@ namespace UniRx.Async
             readonly T target;
             readonly Func<T, U> monitorFunction;
             readonly IEqualityComparer<U> equalityComparer;
-            readonly U initialValue;
             readonly PlayerLoopTiming timing;
+            U currentValue;
             ExceptionDispatchInfo exception;
             CancellationToken cancellation;
 
@@ -192,7 +192,7 @@ namespace UniRx.Async
                 this.target = target;
                 this.monitorFunction = monitorFunction;
                 this.equalityComparer = equalityComparer ?? UniRxAsyncDefaultEqualityComparer.GetDefault<U>();
-                this.initialValue = monitorFunction(target);
+                this.currentValue = monitorFunction(target);
                 this.cancellation = cancellation;
                 this.timing = timing;
                 this.exception = null;
@@ -233,7 +233,7 @@ namespace UniRx.Async
                     try
                     {
                         nextValue = monitorFunction(target);
-                        if (equalityComparer.Equals(initialValue, nextValue))
+                        if (equalityComparer.Equals(currentValue, nextValue))
                         {
                             return true;
                         }
@@ -251,6 +251,7 @@ namespace UniRx.Async
                     return false;
                 }
 
+                currentValue = nextValue;
                 TryInvokeContinuation(nextValue);
                 return false;
             }
@@ -262,9 +263,8 @@ namespace UniRx.Async
             readonly T target;
             readonly Func<T, U> monitorFunction;
             readonly IEqualityComparer<U> equalityComparer;
-            readonly U initialValue;
             readonly PlayerLoopTiming timing;
-            bool isDestroyed;
+            U currentValue;
             ExceptionDispatchInfo exception;
             CancellationToken cancellation;
 
@@ -273,7 +273,7 @@ namespace UniRx.Async
                 this.target = target;
                 this.monitorFunction = monitorFunction;
                 this.equalityComparer = equalityComparer ?? UniRxAsyncDefaultEqualityComparer.GetDefault<U>();
-                this.initialValue = monitorFunction(target);
+                this.currentValue = monitorFunction(target);
                 this.cancellation = cancellation;
                 this.timing = timing;
                 this.exception = null;
@@ -314,7 +314,7 @@ namespace UniRx.Async
                     try
                     {
                         nextValue = monitorFunction(target);
-                        if (equalityComparer.Equals(initialValue, nextValue))
+                        if (equalityComparer.Equals(currentValue, nextValue))
                         {
                             return true;
                         }
@@ -331,6 +331,7 @@ namespace UniRx.Async
                     return false;
                 }
 
+                currentValue = nextValue;
                 TryInvokeContinuation((false, nextValue));
                 return false;
             }
@@ -342,17 +343,18 @@ namespace UniRx.Async
             readonly WeakReference<T> target;
             readonly Func<T, U> monitorFunction;
             readonly IEqualityComparer<U> equalityComparer;
-            readonly U initialValue;
+            U currentValue;
             readonly PlayerLoopTiming timing;
             ExceptionDispatchInfo exception;
             CancellationToken cancellation;
 
             public WaitUntilValueChangedStandardObjectPromise(T target, Func<T, U> monitorFunction, PlayerLoopTiming timing, IEqualityComparer<U> equalityComparer, CancellationToken cancellation)
             {
+                // use WeakReference, but maybe target was referenced by async-statemachine so always referenced...
                 this.target = new WeakReference<T>(target);
                 this.monitorFunction = monitorFunction;
                 this.equalityComparer = equalityComparer ?? UniRxAsyncDefaultEqualityComparer.GetDefault<U>();
-                this.initialValue = monitorFunction(target);
+                this.currentValue = monitorFunction(target);
                 this.cancellation = cancellation;
                 this.timing = timing;
                 this.exception = null;
@@ -393,7 +395,7 @@ namespace UniRx.Async
                     try
                     {
                         nextValue = monitorFunction(t);
-                        if (equalityComparer.Equals(initialValue, nextValue))
+                        if (equalityComparer.Equals(currentValue, nextValue))
                         {
                             return true;
                         }
@@ -411,6 +413,7 @@ namespace UniRx.Async
                     return false;
                 }
 
+                currentValue = nextValue;
                 TryInvokeContinuation(nextValue);
                 return false;
             }

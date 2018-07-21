@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #if CSHARP_7_OR_LATER
+using System;
 using System.Threading;
 using UniRx.Async;
 using UniRx.Async.Triggers;
@@ -11,11 +12,18 @@ public class SandboxScene : MonoBehaviour
 {
     public Button buttonA;
     public Button buttonB;
+    MyMyClass mc;
 
     void Start()
     {
-        HandleDestroyEvent().Forget();
+        mc = new MyMyClass() { MyProperty = 9999 };
+        var task = UniTask.WaitUntilValueChanged(mc, x => x.MyProperty);
+        HandleObserve(task).Forget();
+
+        //HandleDestroyEvent().Forget();
         HandleEvent().Forget();
+        HandleEventA().Forget();
+        HandleEventB().Forget();
         // HandleUpdateLoop().Forget();
     }
 
@@ -33,12 +41,52 @@ public class SandboxScene : MonoBehaviour
         UnityEngine.Debug.Log("destroyed");
     }
 
-    async UniTaskVoid HandleUpdateLoop()
+    async UniTaskVoid HandleObserve(UniTask<int> waituntil)
     {
-        var trigger = this.GetAsyncUpdateTrigger();
-        while (this != null)
+        await waituntil;
+        //while (this != null)
+        //{
+        //    try
+        //    {
+        //        var v = await monitorTask;
+        //        Debug.Log("ValueChanged:" + v);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.Log("Catch!" + ex);
+        //        throw;
+        //    }
+        //}
+    }
+
+    async UniTaskVoid HandleEventA()
+    {
+        using (var handlerA = buttonA.GetAsyncClickEventHandler())
         {
-            await trigger.UpdateAsync();
+            while (this != null)
+            {
+                await handlerA.OnClickAsync();
+                if (mc != null)
+                {
+                    mc.MyProperty++;
+                }
+                else
+                {
+                    GC.Collect();
+                }
+            }
+        }
+    }
+
+    async UniTaskVoid HandleEventB()
+    {
+        using (var handlerB = buttonB.GetAsyncClickEventHandler())
+        {
+            while (this != null)
+            {
+                await handlerB.OnClickAsync();
+                mc = null;
+            }
         }
     }
 
@@ -51,11 +99,15 @@ public class SandboxScene : MonoBehaviour
         {
             while (this != null)
             {
+                await handlerA.OnClickAsync();
 
-                await handlerB.OnClickAsync();
-                Object.Destroy(buttonB.gameObject);
-                UnityEngine.Debug.Log("buttonB is destroyed");
-                return;
+
+
+
+                //await handlerB.OnClickAsync();
+                //Object.Destroy(buttonB.gameObject);
+                //UnityEngine.Debug.Log("buttonB is destroyed");
+                //return;
 
 
                 //await UniTask.WhenAll(
@@ -72,4 +124,15 @@ public class SandboxScene : MonoBehaviour
         }
     }
 }
+
+public class MyMyClass
+{
+    public int MyProperty { get; set; }
+
+    ~MyMyClass()
+    {
+        Debug.Log("GCed");
+    }
+}
+
 #endif
