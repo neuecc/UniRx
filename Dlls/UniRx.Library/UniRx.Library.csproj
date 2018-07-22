@@ -486,6 +486,7 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs">
       <Link>UnityEngineBridge\ReactiveProperty.cs</Link>
     </Compile>
+    <Compile Include="Operators\ResetAfter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

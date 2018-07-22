@@ -72,6 +72,7 @@
     <Compile Include="MicroCoroutineTest.cs" />
     <Compile Include="ReactivePropertyTest.cs" />
     <Compile Include="ContinueWithTest.cs" />
+    <Compile Include="ResetAfterTest.cs" />
     <Compile Include="SelectWhereOptimizeTest.cs" />
     <Compile Include="Tools\ChainingAssertion.Unity.cs" />
     <Compile Include="Tools\Init.cs" />
