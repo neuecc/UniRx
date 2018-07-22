@@ -128,6 +128,7 @@ namespace UniRx.Async
         {
             action = Invoke;
             unityEvent.AddListener(action);
+            this.unityEvent = unityEvent;
         }
 
         public UniTask OnInvokeAsync()
@@ -195,6 +196,7 @@ namespace UniRx.Async
         {
             action = Invoke;
             unityEvent.AddListener(action);
+            this.unityEvent = unityEvent;
         }
 
         public UniTask<T> OnInvokeAsync()
