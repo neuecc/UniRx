@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{089999BB-1900-31E8-673F-067C92198C6A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -67,11 +68,16 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncUniTaskVoidMethodBuilder.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\EnumeratorAsyncExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\IAwaiter.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayPool.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayPoolUtil.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayUtil.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ExceptionUtil.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\Hack.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\LazyPromise.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\MinimumQueue.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\PlayerLoopRunner.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ReusablePromise.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\RuntimeHelpersAbstraction.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\PlayerLoopHelper.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Progress.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncAnimatorTrigger.cs" />

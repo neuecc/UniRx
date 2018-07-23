@@ -69,6 +69,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayPool.cs">
+      <Link>AsyncInternal\ArrayPool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\MinimumQueue.cs">
+      <Link>AsyncInternal\MinimumQueue.cs</Link>
+    </Compile>
+    <Compile Include="ArrayPoolTest.cs" />
     <Compile Include="MicroCoroutineTest.cs" />
     <Compile Include="ReactivePropertyTest.cs" />
     <Compile Include="ContinueWithTest.cs" />
