@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -272,6 +273,18 @@ namespace UniRx.Async
         public static async UniTask Unwrap<T>(this UniTask<UniTask> task)
         {
             await await task;
+        }
+
+        // shortcut of WhenAll
+
+        public static UniTask.Awaiter GetAwaiter<T>(this IEnumerable<UniTask> tasks)
+        {
+            return UniTask.WhenAll(tasks).GetAwaiter();
+        }
+
+        public static UniTask<T[]>.Awaiter GetAwaiter<T>(this IEnumerable<UniTask<T>> tasks)
+        {
+            return UniTask.WhenAll(tasks).GetAwaiter();
         }
 
         class ToCoroutineEnumerator : IEnumerator
