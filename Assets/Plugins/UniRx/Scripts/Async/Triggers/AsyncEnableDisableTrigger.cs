@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
         /// <summary>This function is called when the object becomes enabled and active.</summary>
         void OnEnable()
         {
-            onEnable?.TryInvokeContinuation();
+            onEnable?.TrySetResult();
         }
 
         /// <summary>This function is called when the object becomes enabled and active.</summary>
@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         /// <summary>This function is called when the behaviour becomes disabled () or inactive.</summary>
         void OnDisable()
         {
-            onDisable?.TryInvokeContinuation();
+            onDisable?.TrySetResult();
         }
 
         /// <summary>This function is called when the behaviour becomes disabled () or inactive.</summary>

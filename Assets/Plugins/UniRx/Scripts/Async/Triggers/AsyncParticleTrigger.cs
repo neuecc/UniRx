@@ -15,7 +15,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnParticleCollision is called when a particle hits a collider.</summary>
         void OnParticleCollision(GameObject other)
         {
-            onParticleCollision?.TryInvokeContinuation(other);
+            onParticleCollision?.TrySetResult(other);
         }
 
         /// <summary>OnParticleCollision is called when a particle hits a collider.</summary>
@@ -27,7 +27,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnParticleTrigger is called when any particles in a particle system meet the conditions in the trigger module.</summary>
         void OnParticleTrigger()
         {
-            onParticleTrigger?.TryInvokeContinuation();
+            onParticleTrigger?.TrySetResult();
         }
 
         /// <summary>OnParticleTrigger is called when any particles in a particle system meet the conditions in the trigger module.</summary>

@@ -15,7 +15,7 @@ namespace UniRx.Async.Triggers
         // Callback that is sent if the canvas group is changed
         void OnCanvasGroupChanged()
         {
-            onCanvasGroupChanged?.TryInvokeContinuation();
+            onCanvasGroupChanged?.TrySetResult();
         }
 
         /// <summary>Callback that is sent if the canvas group is changed.</summary>

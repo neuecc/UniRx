@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnTriggerEnter is called when the Collider other enters the trigger.</summary>
         void OnTriggerEnter(Collider other)
         {
-            onTriggerEnter?.TryInvokeContinuation(other);
+            onTriggerEnter?.TrySetResult(other);
         }
 
         /// <summary>OnTriggerEnter is called when the Collider other enters the trigger.</summary>
@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnTriggerExit is called when the Collider other has stopped touching the trigger.</summary>
         void OnTriggerExit(Collider other)
         {
-            onTriggerExit?.TryInvokeContinuation(other);
+            onTriggerExit?.TrySetResult(other);
         }
 
         /// <summary>OnTriggerExit is called when the Collider other has stopped touching the trigger.</summary>
@@ -42,7 +42,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnTriggerStay is called once per frame for every Collider other that is touching the trigger.</summary>
         void OnTriggerStay(Collider other)
         {
-            onTriggerStay?.TryInvokeContinuation(other);
+            onTriggerStay?.TrySetResult(other);
         }
 
         /// <summary>OnTriggerStay is called once per frame for every Collider other that is touching the trigger.</summary>

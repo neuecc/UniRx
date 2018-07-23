@@ -176,6 +176,8 @@ namespace UniRx.Tests
             var currentThreadId = Thread.CurrentThread.ManagedThreadId;
 
             await UniTask.SwitchToThreadPool();
+            await UniTask.SwitchToThreadPool();
+            await UniTask.SwitchToThreadPool();
 
             var switchedThreadId = Thread.CurrentThread.ManagedThreadId;
 
@@ -292,9 +294,8 @@ namespace UniRx.Tests
             return (asset as TextAsset).text;
         }
 #endif
+#endif
     }
 }
-
-#endif
 
 #endif

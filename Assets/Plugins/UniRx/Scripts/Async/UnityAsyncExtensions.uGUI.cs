@@ -123,10 +123,12 @@ namespace UniRx.Async
         readonly UnityAction action;
         readonly UnityEvent unityEvent;
         Action continuation;
+        AwaiterStatus status;
 
         public AsyncUnityEventHandler(UnityEvent unityEvent)
         {
             action = Invoke;
+            status = AwaiterStatus.Pending;
             unityEvent.AddListener(action);
             this.unityEvent = unityEvent;
         }
@@ -139,12 +141,16 @@ namespace UniRx.Async
 
         void Invoke()
         {
+            status = AwaiterStatus.Succeeded;
+
             var c = continuation;
             continuation = null;
             if (c != null)
             {
                 c.Invoke();
             }
+
+            status = AwaiterStatus.Pending;
         }
 
         public void Dispose()
@@ -156,6 +162,8 @@ namespace UniRx.Async
         }
 
         bool IAwaiter.IsCompleted => false;
+
+        AwaiterStatus IAwaiter.Status => status;
 
         void IAwaiter.GetResult()
         {
@@ -191,10 +199,12 @@ namespace UniRx.Async
         readonly UnityEvent<T> unityEvent;
         Action continuation;
         T eventValue;
+        AwaiterStatus status;
 
         public AsyncUnityEventHandler(UnityEvent<T> unityEvent)
         {
             action = Invoke;
+            status = AwaiterStatus.Pending;
             unityEvent.AddListener(action);
             this.unityEvent = unityEvent;
         }
@@ -208,6 +218,7 @@ namespace UniRx.Async
         void Invoke(T value)
         {
             this.eventValue = value;
+            status = AwaiterStatus.Succeeded;
 
             var c = continuation;
             continuation = null;
@@ -215,6 +226,8 @@ namespace UniRx.Async
             {
                 c.Invoke();
             }
+
+            status = AwaiterStatus.Pending;
         }
 
         public void Dispose()
@@ -226,6 +239,7 @@ namespace UniRx.Async
         }
 
         bool IAwaiter.IsCompleted => false;
+        AwaiterStatus IAwaiter.Status => status;
 
         T IAwaiter<T>.GetResult()
         {

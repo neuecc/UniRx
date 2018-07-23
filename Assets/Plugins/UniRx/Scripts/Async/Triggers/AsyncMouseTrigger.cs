@@ -16,7 +16,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnMouseDown is called when the user has pressed the mouse button while over the GUIElement or Collider.</summary>
         void OnMouseDown()
         {
-            onMouseDown?.TryInvokeContinuation();
+            onMouseDown?.TrySetResult();
         }
 
         /// <summary>OnMouseDown is called when the user has pressed the mouse button while over the GUIElement or Collider.</summary>
@@ -30,7 +30,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnMouseDrag is called when the user has clicked on a GUIElement or Collider and is still holding down the mouse.</summary>
         void OnMouseDrag()
         {
-            onMouseDrag?.TryInvokeContinuation();
+            onMouseDrag?.TrySetResult();
         }
 
         /// <summary>OnMouseDrag is called when the user has clicked on a GUIElement or Collider and is still holding down the mouse.</summary>
@@ -44,7 +44,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnMouseEnter is called when the mouse entered the GUIElement or Collider.</summary>
         void OnMouseEnter()
         {
-            onMouseEnter?.TryInvokeContinuation();
+            onMouseEnter?.TrySetResult();
         }
 
         /// <summary>OnMouseEnter is called when the mouse entered the GUIElement or Collider.</summary>
@@ -58,7 +58,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnMouseExit is called when the mouse is not any longer over the GUIElement or Collider.</summary>
         void OnMouseExit()
         {
-            onMouseExit?.TryInvokeContinuation();
+            onMouseExit?.TrySetResult();
         }
 
         /// <summary>OnMouseExit is called when the mouse is not any longer over the GUIElement or Collider.</summary>
@@ -72,7 +72,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnMouseOver is called every frame while the mouse is over the GUIElement or Collider.</summary>
         void OnMouseOver()
         {
-            onMouseOver?.TryInvokeContinuation();
+            onMouseOver?.TrySetResult();
         }
 
         /// <summary>OnMouseOver is called every frame while the mouse is over the GUIElement or Collider.</summary>
@@ -86,7 +86,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnMouseUp is called when the user has released the mouse button.</summary>
         void OnMouseUp()
         {
-            onMouseUp?.TryInvokeContinuation();
+            onMouseUp?.TrySetResult();
         }
 
         /// <summary>OnMouseUp is called when the user has released the mouse button.</summary>
@@ -100,7 +100,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnMouseUpAsButton is only called when the mouse is released over the same GUIElement or Collider as it was pressed.</summary>
         void OnMouseUpAsButton()
         {
-            onMouseUpAsButton?.TryInvokeContinuation();
+            onMouseUpAsButton?.TrySetResult();
         }
 
         /// <summary>OnMouseUpAsButton is only called when the mouse is released over the same GUIElement or Collider as it was pressed.</summary>

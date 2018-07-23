@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
         /// <summary>Sent when another object enters a trigger collider attached to this object (2D physics only).</summary>
         void OnTriggerEnter2D(Collider2D other)
         {
-            onTriggerEnter2D?.TryInvokeContinuation(other);
+            onTriggerEnter2D?.TrySetResult(other);
         }
 
         /// <summary>Sent when another object enters a trigger collider attached to this object (2D physics only).</summary>
@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         /// <summary>Sent when another object leaves a trigger collider attached to this object (2D physics only).</summary>
         void OnTriggerExit2D(Collider2D other)
         {
-            onTriggerExit2D?.TryInvokeContinuation(other);
+            onTriggerExit2D?.TrySetResult(other);
         }
 
         /// <summary>Sent when another object leaves a trigger collider attached to this object (2D physics only).</summary>
@@ -42,7 +42,7 @@ namespace UniRx.Async.Triggers
         /// <summary>Sent each frame where another object is within a trigger collider attached to this object (2D physics only).</summary>
         void OnTriggerStay2D(Collider2D other)
         {
-            onTriggerStay2D?.TryInvokeContinuation(other);
+            onTriggerStay2D?.TrySetResult(other);
         }
 
         /// <summary>Sent each frame where another object is within a trigger collider attached to this object (2D physics only).</summary>

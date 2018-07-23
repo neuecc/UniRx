@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IScrollHandler.OnScroll(PointerEventData eventData)
         {
-            onScroll?.TryInvokeContinuation(eventData);
+            onScroll?.TrySetResult(eventData);
         }
 
         public UniTask<PointerEventData> OnScrollAsync()

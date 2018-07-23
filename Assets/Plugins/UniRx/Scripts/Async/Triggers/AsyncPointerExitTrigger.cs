@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
-            onPointerExit?.TryInvokeContinuation(eventData);
+            onPointerExit?.TrySetResult(eventData);
         }
 
         public UniTask<PointerEventData> OnPointerExitAsync()

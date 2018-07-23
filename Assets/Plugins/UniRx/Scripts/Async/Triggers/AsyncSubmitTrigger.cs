@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void ISubmitHandler.OnSubmit(BaseEventData eventData)
         {
-            onSubmit?.TryInvokeContinuation(eventData);
+            onSubmit?.TrySetResult(eventData);
         }
 
         public UniTask<BaseEventData> OnSubmitAsync()

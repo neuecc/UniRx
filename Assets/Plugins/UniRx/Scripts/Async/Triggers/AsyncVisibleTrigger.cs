@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnBecameInvisible is called when the renderer is no longer visible by any camera.</summary>
         void OnBecameInvisible()
         {
-            onBecameInvisible?.TryInvokeContinuation();
+            onBecameInvisible?.TrySetResult();
         }
 
         /// <summary>OnBecameInvisible is called when the renderer is no longer visible by any camera.</summary>
@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnBecameVisible is called when the renderer became visible by any camera.</summary>
         void OnBecameVisible()
         {
-            onBecameVisible?.TryInvokeContinuation();
+            onBecameVisible?.TrySetResult();
         }
 
         /// <summary>OnBecameVisible is called when the renderer became visible by any camera.</summary>

@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IMoveHandler.OnMove(AxisEventData eventData)
         {
-            onMove?.TryInvokeContinuation(eventData);
+            onMove?.TrySetResult(eventData);
         }
 
         public UniTask<AxisEventData> OnMoveAsync()

@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
         /// <summary>LateUpdate is called every frame, if the Behaviour is enabled.</summary>
         void LateUpdate()
         {
-            lateUpdate?.TryInvokeContinuation();
+            lateUpdate?.TrySetResult();
         }
 
         /// <summary>LateUpdate is called every frame, if the Behaviour is enabled.</summary>

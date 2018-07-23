@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
         /// <summary>This function is called every fixed framerate frame, if the MonoBehaviour is enabled.</summary>
         void FixedUpdate()
         {
-            fixedUpdate?.TryInvokeContinuation();
+            fixedUpdate?.TrySetResult();
         }
 
         /// <summary>This function is called every fixed framerate frame, if the MonoBehaviour is enabled.</summary>

@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
-            onDrag?.TryInvokeContinuation(eventData);
+            onDrag?.TrySetResult(eventData);
         }
 
         public UniTask<PointerEventData> OnDragAsync()

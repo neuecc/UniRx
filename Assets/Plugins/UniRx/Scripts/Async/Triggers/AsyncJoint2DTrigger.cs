@@ -13,7 +13,7 @@ namespace UniRx.Async.Triggers
 
         void OnJointBreak2D(Joint2D brokenJoint)
         {
-            onJointBreak2D?.TryInvokeContinuation(brokenJoint);
+            onJointBreak2D?.TrySetResult(brokenJoint);
         }
 
         public UniTask<Joint2D> OnJointBreak2DAsync()

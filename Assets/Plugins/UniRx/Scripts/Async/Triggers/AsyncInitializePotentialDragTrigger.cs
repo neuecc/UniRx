@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
         {
-            onInitializePotentialDrag?.TryInvokeContinuation(eventData);
+            onInitializePotentialDrag?.TrySetResult(eventData);
         }
 
         public UniTask<PointerEventData> OnInitializePotentialDragAsync()

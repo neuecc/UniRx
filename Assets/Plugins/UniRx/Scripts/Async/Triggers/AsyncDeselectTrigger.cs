@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IDeselectHandler.OnDeselect(BaseEventData eventData)
         {
-            onDeselect?.TryInvokeContinuation(eventData);
+            onDeselect?.TrySetResult(eventData);
         }
 
         public UniTask<BaseEventData> OnDeselectAsync()

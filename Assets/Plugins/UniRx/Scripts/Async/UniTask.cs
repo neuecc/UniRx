@@ -33,6 +33,15 @@ namespace UniRx.Async
         }
 
         [DebuggerHidden]
+        public AwaiterStatus Status
+        {
+            get
+            {
+                return awaiter == null ? AwaiterStatus.Succeeded : awaiter.Status;
+            }
+        }
+
+        [DebuggerHidden]
         public bool IsCompleted
         {
             get
@@ -115,6 +124,8 @@ namespace UniRx.Async
 
             public bool IsCompleted => awaiter.IsCompleted;
 
+            public AwaiterStatus Status => awaiter.Status;
+
             public AsyncUnit GetResult()
             {
                 awaiter.GetResult();
@@ -149,6 +160,9 @@ namespace UniRx.Async
 
             [DebuggerHidden]
             public bool IsCompleted => task.IsCompleted;
+
+            [DebuggerHidden]
+            public AwaiterStatus Status => task.Status;
 
             [DebuggerHidden]
             public void GetResult() => task.GetResult();
@@ -209,6 +223,15 @@ namespace UniRx.Async
         {
             this.result = default(T);
             this.awaiter = new LazyPromise<T>(factory);
+        }
+
+        [DebuggerHidden]
+        public AwaiterStatus Status
+        {
+            get
+            {
+                return awaiter == null ? AwaiterStatus.Succeeded : awaiter.Status;
+            }
         }
 
         [DebuggerHidden]
@@ -295,6 +318,9 @@ namespace UniRx.Async
 
             [DebuggerHidden]
             public bool IsCompleted => task.IsCompleted;
+
+            [DebuggerHidden]
+            public AwaiterStatus Status => task.Status;
 
             [DebuggerHidden]
             void IAwaiter.GetResult() => GetResult();

@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
         {
-            onPointerClick?.TryInvokeContinuation(eventData);
+            onPointerClick?.TrySetResult(eventData);
         }
 
         public UniTask<PointerEventData> OnPointerClickAsync()

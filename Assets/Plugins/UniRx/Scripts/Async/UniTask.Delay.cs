@@ -66,26 +66,22 @@ namespace UniRx.Async
             {
                 get
                 {
-                    if (cancellation.IsCancellationRequested) return true;
+                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
 
                     if (!isRunning)
                     {
                         isRunning = true;
+                        ResetStatus();
                         PlayerLoopHelper.AddAction(timing, this);
                     }
                     return false;
                 }
             }
 
-            public override void GetResult()
-            {
-                cancellation.ThrowIfCancellationRequested();
-            }
-
             public bool MoveNext()
             {
                 isRunning = false;
-                TryInvokeContinuation();
+                TrySetResult();
                 return false;
             }
         }
@@ -111,22 +107,17 @@ namespace UniRx.Async
             {
                 get
                 {
-                    if (cancellation.IsCancellationRequested) return true;
+                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
 
                     if (!isRunning)
                     {
                         isRunning = true;
                         currentFrameCount = 0;
+                        ResetStatus();
                         PlayerLoopHelper.AddAction(timing, this);
                     }
                     return false;
                 }
-            }
-
-            public override int GetResult()
-            {
-                cancellation.ThrowIfCancellationRequested();
-                return base.GetResult();
             }
 
             public bool MoveNext()
@@ -134,14 +125,14 @@ namespace UniRx.Async
                 if (cancellation.IsCancellationRequested)
                 {
                     isRunning = false;
-                    TryInvokeContinuation(default(int));
+                    TrySetCanceled();
                     return false;
                 }
 
                 if (currentFrameCount == delayFrameCount)
                 {
                     isRunning = false;
-                    TryInvokeContinuation(currentFrameCount);
+                    TrySetResult(currentFrameCount);
                     return false;
                 }
 
@@ -170,21 +161,17 @@ namespace UniRx.Async
             {
                 get
                 {
-                    if (cancellation.IsCancellationRequested) return true;
+                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
 
                     if (!isRunning)
                     {
                         isRunning = true;
                         this.elapsed = 0.0f;
+                        ResetStatus();
                         PlayerLoopHelper.AddAction(timing, this);
                     }
                     return false;
                 }
-            }
-
-            public override void GetResult()
-            {
-                cancellation.ThrowIfCancellationRequested();
             }
 
             public bool MoveNext()
@@ -192,7 +179,7 @@ namespace UniRx.Async
                 if (cancellation.IsCancellationRequested)
                 {
                     isRunning = false;
-                    TryInvokeContinuation();
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -200,7 +187,7 @@ namespace UniRx.Async
                 if (elapsed >= delayFrameTimeSpan)
                 {
                     isRunning = false;
-                    TryInvokeContinuation();
+                    TrySetResult();
                     return false;
                 }
 
@@ -228,11 +215,12 @@ namespace UniRx.Async
             {
                 get
                 {
-                    if (cancellation.IsCancellationRequested) return true;
+                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
 
                     if (!isRunning)
                     {
                         isRunning = true;
+                        ResetStatus();
                         this.elapsed = 0.0f;
                         PlayerLoopHelper.AddAction(timing, this);
                     }
@@ -250,7 +238,7 @@ namespace UniRx.Async
                 if (cancellation.IsCancellationRequested)
                 {
                     isRunning = false;
-                    TryInvokeContinuation();
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -259,7 +247,7 @@ namespace UniRx.Async
                 if (elapsed >= delayFrameTimeSpan)
                 {
                     isRunning = false;
-                    TryInvokeContinuation();
+                    TrySetResult();
                     return false;
                 }
 

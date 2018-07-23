@@ -13,7 +13,7 @@ namespace UniRx.Async.Triggers
 
         void OnJointBreak(float breakForce)
         {
-            onJointBreak?.TryInvokeContinuation(breakForce);
+            onJointBreak?.TrySetResult(breakForce);
         }
 
         public UniTask<float> OnJointBreakAsync()

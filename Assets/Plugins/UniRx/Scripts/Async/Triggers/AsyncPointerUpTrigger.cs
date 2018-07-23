@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            onPointerUp?.TryInvokeContinuation(eventData);
+            onPointerUp?.TrySetResult(eventData);
         }
 
         public UniTask<PointerEventData> OnPointerUpAsync()

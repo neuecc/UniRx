@@ -50,7 +50,6 @@ namespace UniRx.Async
         {
             readonly Func<bool> predicate;
             readonly PlayerLoopTiming timing;
-            ExceptionDispatchInfo exception;
             CancellationToken cancellation;
             bool isRunning = false;
 
@@ -59,29 +58,23 @@ namespace UniRx.Async
                 this.predicate = predicate;
                 this.timing = timing;
                 this.cancellation = cancellation;
-                this.exception = null;
             }
 
             public override bool IsCompleted
             {
                 get
                 {
-                    if (cancellation.IsCancellationRequested) return true;
-                    if (exception != null) return true;
+                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
 
                     if (!isRunning)
                     {
                         isRunning = true;
+                        ResetStatus();
                         PlayerLoopHelper.AddAction(timing, this);
                     }
+
                     return false;
                 }
-            }
-
-            public override void GetResult()
-            {
-                cancellation.ThrowIfCancellationRequested();
-                exception?.Throw();
             }
 
             public bool MoveNext()
@@ -89,7 +82,7 @@ namespace UniRx.Async
                 if (cancellation.IsCancellationRequested)
                 {
                     isRunning = false;
-                    TryInvokeContinuation();
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -101,15 +94,14 @@ namespace UniRx.Async
                 catch (Exception ex)
                 {
                     isRunning = false;
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryInvokeContinuation();
+                    TrySetException(ex);
                     return false;
                 }
 
                 if (result)
                 {
                     isRunning = false;
-                    TryInvokeContinuation();
+                    TrySetResult();
                     return false;
                 }
 
@@ -121,7 +113,6 @@ namespace UniRx.Async
         {
             readonly Func<bool> predicate;
             readonly PlayerLoopTiming timing;
-            ExceptionDispatchInfo exception;
             CancellationToken cancellation;
             bool isRunning = false;
 
@@ -130,29 +121,23 @@ namespace UniRx.Async
                 this.predicate = predicate;
                 this.timing = timing;
                 this.cancellation = cancellation;
-                this.exception = null;
             }
 
             public override bool IsCompleted
             {
                 get
                 {
-                    if (cancellation.IsCancellationRequested) return true;
-                    if (exception != null) return true;
+                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
 
                     if (!isRunning)
                     {
                         isRunning = true;
+                        ResetStatus();
                         PlayerLoopHelper.AddAction(timing, this);
                     }
+
                     return false;
                 }
-            }
-
-            public override void GetResult()
-            {
-                cancellation.ThrowIfCancellationRequested();
-                exception?.Throw();
             }
 
             public bool MoveNext()
@@ -160,7 +145,7 @@ namespace UniRx.Async
                 if (cancellation.IsCancellationRequested)
                 {
                     isRunning = false;
-                    TryInvokeContinuation();
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -173,15 +158,14 @@ namespace UniRx.Async
                 catch (Exception ex)
                 {
                     isRunning = false;
-                    exception = ExceptionDispatchInfo.Capture(ex);
-                    TryInvokeContinuation();
+                    TrySetException(ex);
                     return false;
                 }
 
                 if (!result)
                 {
                     isRunning = false;
-                    TryInvokeContinuation();
+                    TrySetResult();
                     return false;
                 }
 
@@ -196,7 +180,6 @@ namespace UniRx.Async
             readonly IEqualityComparer<U> equalityComparer;
             readonly PlayerLoopTiming timing;
             U currentValue;
-            ExceptionDispatchInfo exception;
             CancellationToken cancellation;
             bool isRunning = false;
 
@@ -208,31 +191,23 @@ namespace UniRx.Async
                 this.currentValue = monitorFunction(target);
                 this.cancellation = cancellation;
                 this.timing = timing;
-                this.exception = null;
             }
 
             public override bool IsCompleted
             {
                 get
                 {
-                    if (cancellation.IsCancellationRequested) return true;
-                    if (exception != null) return true;
+                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
 
                     if (!isRunning)
                     {
                         isRunning = true;
+                        ResetStatus();
                         PlayerLoopHelper.AddAction(timing, this);
                     }
+
                     return false;
                 }
-            }
-
-            public override U GetResult()
-            {
-                cancellation.ThrowIfCancellationRequested();
-                if (exception != null) exception.Throw();
-
-                return base.GetResult();
             }
 
             public bool MoveNext()
@@ -240,7 +215,7 @@ namespace UniRx.Async
                 if (cancellation.IsCancellationRequested)
                 {
                     isRunning = false;
-                    TryInvokeContinuation(default(U));
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -259,21 +234,20 @@ namespace UniRx.Async
                     catch (Exception ex)
                     {
                         isRunning = false;
-                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TrySetException(ex);
                         return false;
                     }
                 }
                 else
                 {
                     isRunning = false;
-                    exception = ExceptionDispatchInfo.Capture(new InvalidOperationException("Monitoring target is already destoyed."));
-                    TryInvokeContinuation(default(U));
+                    TrySetException(new InvalidOperationException("Monitoring target is already destoyed."));
                     return false;
                 }
 
                 isRunning = false;
                 currentValue = nextValue;
-                TryInvokeContinuation(nextValue);
+                TrySetResult(nextValue);
                 return false;
             }
         }
@@ -286,7 +260,6 @@ namespace UniRx.Async
             readonly IEqualityComparer<U> equalityComparer;
             readonly PlayerLoopTiming timing;
             U currentValue;
-            ExceptionDispatchInfo exception;
             CancellationToken cancellation;
             bool isRunning = false;
 
@@ -298,31 +271,23 @@ namespace UniRx.Async
                 this.currentValue = monitorFunction(target);
                 this.cancellation = cancellation;
                 this.timing = timing;
-                this.exception = null;
             }
 
             public override bool IsCompleted
             {
                 get
                 {
-                    if (cancellation.IsCancellationRequested) return true;
-                    if (exception != null) return true;
+                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
 
                     if (!isRunning)
                     {
                         isRunning = true;
+                        ResetStatus();
                         PlayerLoopHelper.AddAction(timing, this);
                     }
+
                     return false;
                 }
-            }
-
-            public override (bool, U) GetResult()
-            {
-                cancellation.ThrowIfCancellationRequested();
-                if (exception != null) exception.Throw();
-
-                return base.GetResult();
             }
 
             public bool MoveNext()
@@ -330,7 +295,7 @@ namespace UniRx.Async
                 if (cancellation.IsCancellationRequested)
                 {
                     isRunning = false;
-                    TryInvokeContinuation((false, default(U)));
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -349,20 +314,20 @@ namespace UniRx.Async
                     catch (Exception ex)
                     {
                         isRunning = false;
-                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TrySetException(ex);
                         return false;
                     }
                 }
                 else
                 {
                     isRunning = false;
-                    TryInvokeContinuation((true, default(U)));
+                    TrySetResult((true, default(U)));
                     return false;
                 }
 
                 isRunning = false;
                 currentValue = nextValue;
-                TryInvokeContinuation((false, nextValue));
+                TrySetResult((false, nextValue));
                 return false;
             }
         }
@@ -375,7 +340,6 @@ namespace UniRx.Async
             readonly IEqualityComparer<U> equalityComparer;
             U currentValue;
             readonly PlayerLoopTiming timing;
-            ExceptionDispatchInfo exception;
             CancellationToken cancellation;
             bool isRunning = false;
 
@@ -388,15 +352,13 @@ namespace UniRx.Async
                 this.currentValue = monitorFunction(target);
                 this.cancellation = cancellation;
                 this.timing = timing;
-                this.exception = null;
             }
 
             public override bool IsCompleted
             {
                 get
                 {
-                    if (cancellation.IsCancellationRequested) return true;
-                    if (exception != null) return true;
+                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
 
                     if (!isRunning)
                     {
@@ -407,20 +369,12 @@ namespace UniRx.Async
                 }
             }
 
-            public override U GetResult()
-            {
-                cancellation.ThrowIfCancellationRequested();
-                if (exception != null) exception.Throw();
-
-                return base.GetResult();
-            }
-
             public bool MoveNext()
             {
                 if (cancellation.IsCancellationRequested)
                 {
                     isRunning = false;
-                    TryInvokeContinuation(default(U));
+                    TrySetCanceled();
                     return false;
                 }
 
@@ -439,21 +393,20 @@ namespace UniRx.Async
                     catch (Exception ex)
                     {
                         isRunning = false;
-                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TrySetException(ex);
                         return false;
                     }
                 }
                 else
                 {
                     isRunning = false;
-                    exception = ExceptionDispatchInfo.Capture(new InvalidOperationException("Monitoring target is garbage collected."));
-                    TryInvokeContinuation(default(U));
+                    TrySetException(new InvalidOperationException("Monitoring target is garbage collected."));
                     return false;
                 }
 
                 isRunning = false;
                 currentValue = nextValue;
-                TryInvokeContinuation(nextValue);
+                TrySetResult(nextValue);
                 return false;
             }
         }

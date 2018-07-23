@@ -15,7 +15,7 @@ namespace UniRx.Async.Triggers
         /// <summary>Callback for setting up animation IK (inverse kinematics).</summary>
         void OnAnimatorIK(int layerIndex)
         {
-            onAnimatorIK?.TryInvokeContinuation(layerIndex);
+            onAnimatorIK?.TrySetResult(layerIndex);
         }
 
         /// <summary>Callback for setting up animation IK (inverse kinematics).</summary>
@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         /// <summary>Callback for processing animation movements for modifying root motion.</summary>
         void OnAnimatorMove()
         {
-            onAnimatorMove?.TryInvokeContinuation();
+            onAnimatorMove?.TrySetResult();
         }
 
         /// <summary>Callback for processing animation movements for modifying root motion.</summary>

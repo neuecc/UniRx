@@ -15,7 +15,7 @@ namespace UniRx.Async.Triggers
         // Callback that is sent if an associated RectTransform has it's dimensions changed
         public void OnRectTransformDimensionsChange()
         {
-            onRectTransformDimensionsChange?.TryInvokeContinuation();
+            onRectTransformDimensionsChange?.TrySetResult();
         }
 
         /// <summary>Callback that is sent if an associated RectTransform has it's dimensions changed.</summary>
@@ -29,7 +29,7 @@ namespace UniRx.Async.Triggers
         // Callback that is sent if an associated RectTransform is removed
         public void OnRectTransformRemoved()
         {
-            onRectTransformRemoved?.TryInvokeContinuation();
+            onRectTransformRemoved?.TrySetResult();
         }
 
         /// <summary>Callback that is sent if an associated RectTransform is removed.</summary>

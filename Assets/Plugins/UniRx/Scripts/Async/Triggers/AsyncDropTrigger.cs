@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IDropHandler.OnDrop(PointerEventData eventData)
         {
-            onDrop?.TryInvokeContinuation(eventData);
+            onDrop?.TrySetResult(eventData);
         }
 
         public UniTask<PointerEventData> OnDropAsync()

@@ -56,6 +56,8 @@ namespace UniRx.Async
                 }
             }
 
+            public AwaiterStatus Status => (AwaiterStatus)completeState;
+
             public void GetResult()
             {
                 cancellationToken.ThrowIfCancellationRequested();

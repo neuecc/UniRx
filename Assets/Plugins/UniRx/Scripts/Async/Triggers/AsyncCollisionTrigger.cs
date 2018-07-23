@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider.</summary>
          void OnCollisionEnter(Collision collision)
         {
-            onCollisionEnter?.TryInvokeContinuation(collision);
+            onCollisionEnter?.TrySetResult(collision);
         }
 
         /// <summary>OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider.</summary>
@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnCollisionExit is called when this collider/rigidbody has stopped touching another rigidbody/collider.</summary>
          void OnCollisionExit(Collision collisionInfo)
         {
-            onCollisionExit?.TryInvokeContinuation(collisionInfo);
+            onCollisionExit?.TrySetResult(collisionInfo);
         }
 
         /// <summary>OnCollisionExit is called when this collider/rigidbody has stopped touching another rigidbody/collider.</summary>
@@ -42,7 +42,7 @@ namespace UniRx.Async.Triggers
         /// <summary>OnCollisionStay is called once per frame for every collider/rigidbody that is touching rigidbody/collider.</summary>
          void OnCollisionStay(Collision collisionInfo)
         {
-            onCollisionStay?.TryInvokeContinuation(collisionInfo);
+            onCollisionStay?.TrySetResult(collisionInfo);
         }
 
         /// <summary>OnCollisionStay is called once per frame for every collider/rigidbody that is touching rigidbody/collider.</summary>

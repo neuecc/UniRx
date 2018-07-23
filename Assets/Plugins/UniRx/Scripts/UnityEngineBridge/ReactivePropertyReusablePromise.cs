@@ -15,9 +15,12 @@ namespace UniRx
         MinimumQueue<(int, T)> queueValues;
         bool running;
         int waitingContinuationCount;
+        AwaiterStatus status;
 
         public bool IsCompleted => false;
         public UniTask<T> Task => new UniTask<T>(this);
+
+        public AwaiterStatus Status => status;
 
         public T GetResult()
         {
@@ -36,8 +39,10 @@ namespace UniRx
             if (continuation is Action act)
             {
                 this.result = value;
+                status = AwaiterStatus.Succeeded;
                 continuation = null;
                 act();
+                status = AwaiterStatus.Pending;
             }
             else
             {
@@ -51,6 +56,7 @@ namespace UniRx
                 if (!running)
                 {
                     running = true;
+                    status = AwaiterStatus.Succeeded;
                     try
                     {
                         while (queueValues.Count != 0)
@@ -66,6 +72,7 @@ namespace UniRx
                     finally
                     {
                         running = false;
+                        status = AwaiterStatus.Pending;
                     }
                 }
             }

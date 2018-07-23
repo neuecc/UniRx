@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
         /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>
         void Update()
         {
-            promise?.TryInvokeContinuation();
+            promise?.TrySetResult();
         }
 
         /// <summary>Update is called every frame, if the MonoBehaviour is enabled.</summary>

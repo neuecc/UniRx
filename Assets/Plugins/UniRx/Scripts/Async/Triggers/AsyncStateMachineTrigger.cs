@@ -41,7 +41,7 @@ namespace UniRx.Async.Triggers
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            onStateExit?.TryInvokeContinuation(new OnStateInfo(animator, stateInfo, layerIndex));
+            onStateExit?.TrySetResult(new OnStateInfo(animator, stateInfo, layerIndex));
         }
 
         public UniTask<OnStateInfo> OnStateExitAsync()
@@ -55,7 +55,7 @@ namespace UniRx.Async.Triggers
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            onStateEnter?.TryInvokeContinuation(new OnStateInfo(animator, stateInfo, layerIndex));
+            onStateEnter?.TrySetResult(new OnStateInfo(animator, stateInfo, layerIndex));
         }
 
         public UniTask<OnStateInfo> OnStateEnterAsync()
@@ -69,7 +69,7 @@ namespace UniRx.Async.Triggers
 
         public override void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            onStateIK?.TryInvokeContinuation(new OnStateInfo(animator, stateInfo, layerIndex));
+            onStateIK?.TrySetResult(new OnStateInfo(animator, stateInfo, layerIndex));
         }
 
         public UniTask<OnStateInfo> OnStateIKAsync()
@@ -87,7 +87,7 @@ namespace UniRx.Async.Triggers
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            onStateUpdate?.TryInvokeContinuation(new OnStateInfo(animator, stateInfo, layerIndex));
+            onStateUpdate?.TrySetResult(new OnStateInfo(animator, stateInfo, layerIndex));
         }
 
         public UniTask<OnStateInfo> OnStateUpdateAsync()
@@ -101,7 +101,7 @@ namespace UniRx.Async.Triggers
 
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
         {
-            onStateMachineEnter?.TryInvokeContinuation(new OnStateMachineInfo(animator, stateMachinePathHash));
+            onStateMachineEnter?.TrySetResult(new OnStateMachineInfo(animator, stateMachinePathHash));
         }
 
         public UniTask<OnStateMachineInfo> OnStateMachineEnterAsync()
@@ -115,7 +115,7 @@ namespace UniRx.Async.Triggers
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash)
         {
-            onStateMachineExit?.TryInvokeContinuation(new OnStateMachineInfo(animator, stateMachinePathHash));
+            onStateMachineExit?.TrySetResult(new OnStateMachineInfo(animator, stateMachinePathHash));
         }
 
         public UniTask<OnStateMachineInfo> OnStateMachineExitAsync()

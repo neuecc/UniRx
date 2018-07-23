@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
         /// <summary>Sent when an incoming collider makes contact with this object's collider (2D physics only).</summary>
         void OnCollisionEnter2D(Collision2D coll)
         {
-            onCollisionEnter2D?.TryInvokeContinuation(coll);
+            onCollisionEnter2D?.TrySetResult(coll);
         }
 
         /// <summary>Sent when an incoming collider makes contact with this object's collider (2D physics only).</summary>
@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         /// <summary>Sent when a collider on another object stops touching this object's collider (2D physics only).</summary>
         void OnCollisionExit2D(Collision2D coll)
         {
-            onCollisionExit2D?.TryInvokeContinuation(coll);
+            onCollisionExit2D?.TrySetResult(coll);
         }
 
         /// <summary>Sent when a collider on another object stops touching this object's collider (2D physics only).</summary>
@@ -42,7 +42,7 @@ namespace UniRx.Async.Triggers
         /// <summary>Sent each frame where a collider on another object is touching this object's collider (2D physics only).</summary>
         void OnCollisionStay2D(Collision2D coll)
         {
-            onCollisionStay2D?.TryInvokeContinuation(coll);
+            onCollisionStay2D?.TrySetResult(coll);
         }
 
         /// <summary>Sent each frame where a collider on another object is touching this object's collider (2D physics only).</summary>

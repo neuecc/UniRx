@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            onPointerEnter?.TryInvokeContinuation(eventData);
+            onPointerEnter?.TrySetResult(eventData);
         }
 
         public UniTask<PointerEventData> OnPointerEnterAsync()

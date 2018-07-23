@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void ICancelHandler.OnCancel(BaseEventData eventData)
         {
-            onCancel?.TryInvokeContinuation(eventData);
+            onCancel?.TrySetResult(eventData);
         }
 
         public UniTask<BaseEventData> OnCancelAsync()

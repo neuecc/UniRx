@@ -124,7 +124,7 @@ PlayerSettings:
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
   xboxOneDisableKinectGpuReservation: 0
-  xboxOneEnable7thCore: 0
+  xboxOneEnable7thCore: 1
   vrSettings:
     cardboard:
       depthFormat: 0
@@ -151,13 +151,12 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.github.neuecc.unirx
+    Android: com.Company.ProductName
     Standalone: unity.neuecc.UniRx
-    Tizen: com.github.neuecc.unirx
-    iOS: com.github.neuecc.unirx
-    tvOS: com.github.neuecc.unirx
+    iOS: com.Company.ProductName
+    tvOS: com.Company.ProductName
   buildNumber:
-    iOS: 0
+    iOS: 
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
@@ -172,7 +171,7 @@ PlayerSettings:
   APKExpansionFiles: 0
   keepLoadedShadersAlive: 0
   StripUnusedMeshComponents: 0
-  VertexChannelCompressionMask: 214
+  VertexChannelCompressionMask: 4054
   iPhoneSdkVersion: 988
   iOSTargetOSVersionString: 8.0
   tvOSSdkVersion: 0
@@ -272,67 +271,12 @@ PlayerSettings:
   m_BuildTargetPlatformIcons: []
   m_BuildTargetBatching: []
   m_BuildTargetGraphicsAPIs: []
-  m_BuildTargetVRSettings:
-  - m_BuildTarget: Android
-    m_Enabled: 0
-    m_Devices:
-    - Oculus
-  - m_BuildTarget: Metro
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: N3DS
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: PS3
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: PS4
-    m_Enabled: 0
-    m_Devices:
-    - PlayStationVR
-  - m_BuildTarget: PSM
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: PSP2
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: SamsungTV
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: Standalone
-    m_Enabled: 0
-    m_Devices:
-    - Oculus
-  - m_BuildTarget: Tizen
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: WebGL
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: WebPlayer
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: WiiU
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: Xbox360
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: XboxOne
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: iOS
-    m_Enabled: 0
-    m_Devices: []
-  - m_BuildTarget: tvOS
-    m_Enabled: 0
-    m_Devices: []
+  m_BuildTargetVRSettings: []
   m_BuildTargetEnableVuforiaSettings: []
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
   m_TemplateCustomTags: {}
   mobileMTRendering:
-    Android: 1
     iPhone: 1
     tvOS: 1
   m_BuildTargetGroupLightmapEncodingQuality:
@@ -424,7 +368,7 @@ PlayerSettings:
   switchAccessibleURLs: 
   switchLegalInformation: 
   switchMainThreadStackSize: 1048576
-  switchPresenceGroupId: 0x01004b9000490000
+  switchPresenceGroupId: 
   switchLogoHandling: 0
   switchReleaseVersion: 0
   switchDisplayVersion: 1.0.0
@@ -436,8 +380,8 @@ PlayerSettings:
   switchUserAccountSaveDataSize: 0
   switchUserAccountSaveDataJournalSize: 0
   switchApplicationAttribute: 0
-  switchCardSpecSize: 4
-  switchCardSpecClock: 25
+  switchCardSpecSize: -1
+  switchCardSpecClock: -1
   switchRatingsMask: 0
   switchRatingsInt_0: 0
   switchRatingsInt_1: 0
@@ -451,7 +395,7 @@ PlayerSettings:
   switchRatingsInt_9: 0
   switchRatingsInt_10: 0
   switchRatingsInt_11: 0
-  switchLocalCommunicationIds_0: 0x01004b9000490000
+  switchLocalCommunicationIds_0: 
   switchLocalCommunicationIds_1: 
   switchLocalCommunicationIds_2: 
   switchLocalCommunicationIds_3: 
@@ -492,7 +436,7 @@ PlayerSettings:
   ps4VideoOutPixelFormat: 0
   ps4VideoOutInitialWidth: 1920
   ps4VideoOutBaseModeInitialWidth: 1920
-  ps4VideoOutReprojectionRate: 120
+  ps4VideoOutReprojectionRate: 60
   ps4PronunciationXMLPath: 
   ps4PronunciationSIGPath: 
   ps4BackgroundImagePath: 
@@ -529,7 +473,7 @@ PlayerSettings:
   ps4ReprojectionSupport: 0
   ps4UseAudio3dBackend: 0
   ps4SocialScreenEnabled: 0
-  ps4ScriptOptimizationLevel: 0
+  ps4ScriptOptimizationLevel: 2
   ps4Audio3dVirtualSpeakerCount: 14
   ps4attribCpuUsage: 0
   ps4PatchPkgPath: 
@@ -593,7 +537,7 @@ PlayerSettings:
   psp2UseLibLocation: 0
   psp2InfoBarOnStartup: 0
   psp2InfoBarColor: 0
-  psp2ScriptOptimizationLevel: 0
+  psp2ScriptOptimizationLevel: 2
   splashScreenBackgroundSourceLandscape: {fileID: 0}
   splashScreenBackgroundSourcePortrait: {fileID: 0}
   spritePackerPolicy: 
@@ -608,25 +552,22 @@ PlayerSettings:
   webGLAnalyzeBuildSize: 0
   webGLUseEmbeddedResources: 0
   webGLCompressionFormat: 1
-  webGLLinkerTarget: 0
+  webGLLinkerTarget: 1
   scriptingDefineSymbols:
     4: Exception
   platformArchitecture:
-    iOS: 0
+    iOS: 2
   scriptingBackend:
-    Android: 0
     Metro: 2
-    Standalone: 0
     WP8: 2
     WebGL: 1
-    iOS: 1
+    iOS: 0
   il2cppCompilerConfiguration: {}
   incrementalIl2cppBuild: {}
   allowUnsafeCode: 0
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
-  apiCompatibilityLevelPerPlatform:
-    Standalone: 3
+  apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: UnityRx
@@ -693,18 +634,9 @@ PlayerSettings:
     daydream:
       daydreamIconForeground: {fileID: 0}
       daydreamIconBackground: {fileID: 0}
-  cloudServicesEnabled:
-    Analytics: 0
-    Build: 0
-    Collab: 0
-    ErrorHub: 0
-    Game_Performance: 0
-    Hub: 0
-    Purchasing: 0
-    UNet: 0
-    Unity_Ads: 0
+  cloudServicesEnabled: {}
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 3
+  apiCompatibilityLevel: 2
   cloudProjectId: 
   projectName: 
   organizationId: 

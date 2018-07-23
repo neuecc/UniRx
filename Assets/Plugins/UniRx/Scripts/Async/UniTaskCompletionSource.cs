@@ -11,14 +11,17 @@ namespace UniRx.Async
 {
     public class UniTaskCompletionSource : IAwaiter
     {
+        // State(= AwaiterStatus)
         const int Pending = 0;
-        const int Resolved = 1;
-        const int Rejected = 2;
+        const int Succeeded = 1;
+        const int Faulted = 2;
         const int Canceled = 3;
 
         int state = 0;
         ExceptionDispatchInfo exception;
         object continuation; // action or list
+
+        AwaiterStatus IAwaiter.Status => (AwaiterStatus)state;
 
         bool IAwaiter.IsCompleted => state != Pending;
 
@@ -26,11 +29,11 @@ namespace UniRx.Async
 
         void IAwaiter.GetResult()
         {
-            if (state == Resolved)
+            if (state == Succeeded)
             {
                 return;
             }
-            else if (state == Rejected)
+            else if (state == Faulted)
             {
                 exception.Throw();
             }
@@ -108,7 +111,7 @@ namespace UniRx.Async
 
         public bool TrySetResult()
         {
-            if (Interlocked.CompareExchange(ref state, Resolved, Pending) == Pending)
+            if (Interlocked.CompareExchange(ref state, Succeeded, Pending) == Pending)
             {
                 TryInvokeContinuation();
                 return true;
@@ -118,7 +121,7 @@ namespace UniRx.Async
 
         public bool TrySetException(Exception exception)
         {
-            if (Interlocked.CompareExchange(ref state, Rejected, Pending) == Pending)
+            if (Interlocked.CompareExchange(ref state, Faulted, Pending) == Pending)
             {
                 this.exception = ExceptionDispatchInfo.Capture(exception);
                 TryInvokeContinuation();
@@ -145,9 +148,10 @@ namespace UniRx.Async
 
     public class UniTaskCompletionSource<T> : IAwaiter<T>
     {
+        // State(= AwaiterStatus)
         const int Pending = 0;
-        const int Resolved = 1;
-        const int Rejected = 2;
+        const int Succeeded = 1;
+        const int Faulted = 2;
         const int Canceled = 3;
 
         int state = 0;
@@ -160,13 +164,15 @@ namespace UniRx.Async
         public UniTask<T> Task => new UniTask<T>(this);
         public UniTask UnitTask => new UniTask(this);
 
+        AwaiterStatus IAwaiter.Status => (AwaiterStatus)state;
+
         T IAwaiter<T>.GetResult()
         {
-            if (state == Resolved)
+            if (state == Succeeded)
             {
                 return value;
             }
-            else if (state == Rejected)
+            else if (state == Faulted)
             {
                 exception.Throw();
             }
@@ -174,6 +180,7 @@ namespace UniRx.Async
             {
                 if (exception == null)
                 {
+                    // lazy create to reduce cancellation cost.
                     exception = ExceptionDispatchInfo.Capture(new OperationCanceledException());
                 }
                 exception.Throw();
@@ -246,7 +253,7 @@ namespace UniRx.Async
 
         public bool TrySetResult(T value)
         {
-            if (Interlocked.CompareExchange(ref state, Resolved, Pending) == Pending)
+            if (Interlocked.CompareExchange(ref state, Succeeded, Pending) == Pending)
             {
                 this.value = value;
                 TryInvokeContinuation();
@@ -257,7 +264,7 @@ namespace UniRx.Async
 
         public bool TrySetException(Exception exception)
         {
-            if (Interlocked.CompareExchange(ref state, Rejected, Pending) == Pending)
+            if (Interlocked.CompareExchange(ref state, Faulted, Pending) == Pending)
             {
                 this.exception = ExceptionDispatchInfo.Capture(exception);
                 TryInvokeContinuation();

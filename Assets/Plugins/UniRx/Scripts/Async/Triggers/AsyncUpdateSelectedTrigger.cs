@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
 
         void IUpdateSelectedHandler.OnUpdateSelected(BaseEventData eventData)
         {
-            onUpdateSelected?.TryInvokeContinuation(eventData);
+            onUpdateSelected?.TrySetResult(eventData);
         }
 
         public UniTask<BaseEventData> OnUpdateSelectedAsync()

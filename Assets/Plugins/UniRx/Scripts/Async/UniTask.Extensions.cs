@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -275,6 +276,40 @@ namespace UniRx.Async
             await await task;
         }
 
+        /// <summary>
+        /// Suppress throw OperationCanceledException when Task is canceled for optimize performance.
+        /// </summary>
+        public static async UniTask<bool> WithIsCanceled(this UniTask task)
+        {
+            var exceptionlessTask = new ExceptionlessUniTask(task);
+            await exceptionlessTask;
+            if (exceptionlessTask.Status == AwaiterStatus.Canceled)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Suppress throw OperationCanceledException when Task is canceled for optimize performance.
+        /// </summary>
+        public static async UniTask<(bool isCanceled, T value)> WithIsCanceled<T>(this UniTask<T> task)
+        {
+            var exceptionlessTask = new ExceptionlessUniTask<T>(task);
+            var result = await exceptionlessTask;
+            if (exceptionlessTask.Status == AwaiterStatus.Canceled)
+            {
+                return (true, default(T));
+            }
+            else
+            {
+                return (false, exceptionlessTask.Result);
+            }
+        }
+
         // shortcut of WhenAll
 
         public static UniTask.Awaiter GetAwaiter<T>(this IEnumerable<UniTask> tasks)
@@ -405,6 +440,144 @@ namespace UniRx.Async
             }
         }
 
+        // Exceptionless(used by WithIsCanceled)
+
+        struct ExceptionlessUniTask
+        {
+            readonly UniTask task;
+
+            [DebuggerHidden]
+            public ExceptionlessUniTask(UniTask task)
+            {
+                this.task = task;
+            }
+
+            [DebuggerHidden]
+            public AwaiterStatus Status => task.Status;
+
+            [DebuggerHidden]
+            public bool IsCompleted => task.IsCompleted;
+
+            [DebuggerHidden]
+            public void GetResult() => task.GetResult();
+
+            [DebuggerHidden]
+            public Awaiter GetAwaiter()
+            {
+                return new Awaiter(task.GetAwaiter());
+            }
+
+            public struct Awaiter : IAwaiter
+            {
+                readonly UniTask.Awaiter awaiter;
+
+                [DebuggerHidden]
+                public Awaiter(UniTask.Awaiter awaiter)
+                {
+                    this.awaiter = awaiter;
+                }
+
+                [DebuggerHidden]
+                public bool IsCompleted => awaiter.IsCompleted;
+
+                [DebuggerHidden]
+                public AwaiterStatus Status => awaiter.Status;
+
+                [DebuggerHidden]
+                public void GetResult()
+                {
+                    if (awaiter.Status == AwaiterStatus.Succeeded)
+                    {
+                        awaiter.GetResult();
+                    }
+
+                    // don't throw.
+                }
+
+                [DebuggerHidden]
+                public void OnCompleted(Action continuation)
+                {
+                    awaiter.OnCompleted(continuation);
+                }
+
+                [DebuggerHidden]
+                public void UnsafeOnCompleted(Action continuation)
+                {
+                    awaiter.UnsafeOnCompleted(continuation);
+                }
+            }
+        }
+
+        struct ExceptionlessUniTask<T>
+        {
+            readonly UniTask<T> task;
+
+            [DebuggerHidden]
+            public ExceptionlessUniTask(UniTask<T> task)
+            {
+                this.task = task;
+            }
+
+            [DebuggerHidden]
+            public AwaiterStatus Status => task.Status;
+
+            [DebuggerHidden]
+            public bool IsCompleted => task.IsCompleted;
+
+            [DebuggerHidden]
+            public T Result => task.Result;
+
+            [DebuggerHidden]
+            public Awaiter GetAwaiter()
+            {
+                return new Awaiter(task.GetAwaiter());
+            }
+
+            public struct Awaiter : IAwaiter<T>
+            {
+                readonly UniTask<T>.Awaiter awaiter;
+
+                [DebuggerHidden]
+                public Awaiter(UniTask<T>.Awaiter awaiter)
+                {
+                    this.awaiter = awaiter;
+                }
+
+                [DebuggerHidden]
+                public bool IsCompleted => awaiter.IsCompleted;
+
+                [DebuggerHidden]
+                public AwaiterStatus Status => awaiter.Status;
+
+                [DebuggerHidden]
+                void IAwaiter.GetResult() => GetResult();
+
+                [DebuggerHidden]
+                public T GetResult()
+                {
+                    if (awaiter.Status == AwaiterStatus.Succeeded)
+                    {
+                        return awaiter.GetResult();
+                    }
+
+                    // don't throw.
+                    return default(T);
+                }
+
+                [DebuggerHidden]
+                public void OnCompleted(Action continuation)
+                {
+                    awaiter.OnCompleted(continuation);
+                }
+
+                [DebuggerHidden]
+                public void UnsafeOnCompleted(Action continuation)
+                {
+                    awaiter.UnsafeOnCompleted(continuation);
+                }
+            }
+        }
     }
 }
+
 #endif

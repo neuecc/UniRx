@@ -14,7 +14,7 @@ namespace UniRx.Async.Triggers
         // Callback sent to the graphic before a Transform parent change occurs
         void OnBeforeTransformParentChanged()
         {
-            onBeforeTransformParentChanged?.TryInvokeContinuation();
+            onBeforeTransformParentChanged?.TrySetResult();
         }
 
         /// <summary>Callback sent to the graphic before a Transform parent change occurs.</summary>
@@ -28,7 +28,7 @@ namespace UniRx.Async.Triggers
         // This function is called when the parent property of the transform of the GameObject has changed
         void OnTransformParentChanged()
         {
-            onTransformParentChanged?.TryInvokeContinuation();
+            onTransformParentChanged?.TrySetResult();
         }
 
         /// <summary>This function is called when the parent property of the transform of the GameObject has changed.</summary>
@@ -42,7 +42,7 @@ namespace UniRx.Async.Triggers
         // This function is called when the list of children of the transform of the GameObject has changed
         void OnTransformChildrenChanged()
         {
-            onTransformChildrenChanged?.TryInvokeContinuation();
+            onTransformChildrenChanged?.TrySetResult();
         }
 
         /// <summary>This function is called when the list of children of the transform of the GameObject has changed.</summary>

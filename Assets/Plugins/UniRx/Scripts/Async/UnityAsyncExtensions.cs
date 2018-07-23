@@ -14,7 +14,7 @@ namespace UniRx.Async
         public static AsyncOperationAwaiter GetAwaiter(this AsyncOperation asyncOperation)
         {
             Guard.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
-            
+
             return new AsyncOperationAwaiter(asyncOperation);
         }
 
@@ -120,6 +120,8 @@ namespace UniRx.Async
                 }
             }
 
+            public AwaiterStatus Status => asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+
             public void GetResult()
             {
             }
@@ -157,6 +159,10 @@ namespace UniRx.Async
                     return cancellationToken.IsCancellationRequested || asyncOperation.isDone;
                 }
             }
+
+            public AwaiterStatus Status => asyncOperation.isDone ? AwaiterStatus.Succeeded
+                     : cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
+                     : AwaiterStatus.Pending;
 
             public void GetResult()
             {
@@ -213,6 +219,8 @@ namespace UniRx.Async
                 }
             }
 
+            public AwaiterStatus Status => request.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+
             public UnityEngine.Object GetResult()
             {
                 return request.asset;
@@ -256,6 +264,10 @@ namespace UniRx.Async
                     return cancellationToken.IsCancellationRequested || request.isDone;
                 }
             }
+
+            public AwaiterStatus Status => request.isDone ? AwaiterStatus.Succeeded
+                     : cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
+                     : AwaiterStatus.Pending;
 
             public UnityEngine.Object GetResult()
             {
@@ -326,6 +338,10 @@ namespace UniRx.Async
                 }
             }
 
+            public AwaiterStatus Status => request.isDone ? AwaiterStatus.Succeeded
+                     : cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
+                     : AwaiterStatus.Pending;
+
             public void GetResult()
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -385,6 +401,8 @@ namespace UniRx.Async
                 }
             }
 
+            public AwaiterStatus Status => asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+
             public UnityWebRequest GetResult()
             {
                 return asyncOperation.webRequest;
@@ -428,6 +446,10 @@ namespace UniRx.Async
                     return cancellationToken.IsCancellationRequested || request.isDone;
                 }
             }
+
+            public AwaiterStatus Status => request.isDone ? AwaiterStatus.Succeeded
+                     : cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
+                     : AwaiterStatus.Pending;
 
             public UnityWebRequest GetResult()
             {

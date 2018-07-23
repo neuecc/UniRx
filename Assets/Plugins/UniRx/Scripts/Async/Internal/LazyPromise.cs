@@ -34,6 +34,17 @@ namespace UniRx.Async.Internal
             }
         }
 
+        public AwaiterStatus Status
+        {
+            get
+            {
+                {
+                    Create();
+                    return value.Status;
+                }
+            }
+        }
+
         public void GetResult()
         {
             Create();
@@ -82,6 +93,17 @@ namespace UniRx.Async.Internal
             {
                 Create();
                 return value.IsCompleted;
+            }
+        }
+
+        public AwaiterStatus Status
+        {
+            get
+            {
+                {
+                    Create();
+                    return value.Status;
+                }
             }
         }
 
