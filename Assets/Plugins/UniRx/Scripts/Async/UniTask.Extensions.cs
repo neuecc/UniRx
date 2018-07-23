@@ -264,6 +264,16 @@ namespace UniRx.Async
             return v;
         }
 
+        public static async UniTask<T> Unwrap<T>(this UniTask<UniTask<T>> task)
+        {
+            return await await task;
+        }
+
+        public static async UniTask Unwrap<T>(this UniTask<UniTask> task)
+        {
+            await await task;
+        }
+
         class ToCoroutineEnumerator : IEnumerator
         {
             bool completed;
