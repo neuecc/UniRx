@@ -15,22 +15,29 @@ using Unity.Collections;
 
 namespace UniRx.Tests
 {
+    public enum MyMyMyEnum
+    {
+        Orange, Apple, Grape
+    }
+
     public class _ManualyTest
     {
-        public void AsyncSandbox()
+        public void RPTest2()
         {
-            // Unity.Collections.LowLevel.Unsafe.UnsafeUtility.
+            var rp = new ReactiveProperty<MyMyMyEnum>();
 
-            // T*
-
-            // Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray(
-
-
-            // RaycastCommand.ScheduleBatch(
+            var result = rp.Record();
+            result.Values.IsCollection(MyMyMyEnum.Orange);
+            rp.Value = MyMyMyEnum.Apple;
+            result.Values.IsCollection(MyMyMyEnum.Orange, MyMyMyEnum.Apple);
+            rp.Value = MyMyMyEnum.Apple;
+            result.Values.IsCollection(MyMyMyEnum.Orange, MyMyMyEnum.Apple);
+            rp.Value = MyMyMyEnum.Grape;
+            result.Values.IsCollection(MyMyMyEnum.Orange, MyMyMyEnum.Apple, MyMyMyEnum.Grape);
         }
     }
 
-   
+
 }
 
 #endif

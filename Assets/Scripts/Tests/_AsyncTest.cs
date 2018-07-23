@@ -213,7 +213,7 @@ namespace UniRx.Tests
 
             // var delay2 = UniTask.DelayFrame(10);
             // var (a, b ) = await UniTask.WhenAll(rp1.WaitUntilValueChangedAsync(), delay2);
-            
+
         }
 
         public async UniTask AwaitableReactiveCommand()
@@ -227,7 +227,18 @@ namespace UniRx.Tests
             v.Is(100);
         }
 
+        public async UniTask ExceptionlessCancellation()
+        {
+            var cts = new CancellationTokenSource();
 
+            UniTask.DelayFrame(10).ContinueWith(_ => cts.Cancel()).Forget();
+
+            var first = Time.frameCount;
+            var (canceled, value) = await UniTask.DelayFrame(100, cancellationToken: cts.Token).WithIsCanceled();
+
+            (Time.frameCount - first).Is(11); // 10 frame canceled
+            canceled.IsTrue();
+        }
 
         IEnumerator ToaruCoroutineEnumerator()
         {
