@@ -3,10 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading;
+using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
@@ -16,22 +16,34 @@ namespace UniRx.Async
 
         public static async UniTask<T[]> WhenAll<T>(params UniTask<T>[] tasks)
         {
-            return await new WhenAllPromise<T>(tasks);
+            return await new WhenAllPromise<T>(tasks, tasks.Length);
         }
 
         public static async UniTask<T[]> WhenAll<T>(IEnumerable<UniTask<T>> tasks)
         {
-            return await WhenAll(tasks.ToArray());
+            WhenAllPromise<T> promise;
+            using (var span = ArrayPoolUtil.Materialize(tasks))
+            {
+                promise = new WhenAllPromise<T>(span.Array, span.Length);
+            }
+
+            return await promise;
         }
 
         public static async UniTask WhenAll(params UniTask[] tasks)
         {
-            await new WhenAllPromise(tasks);
+            await new WhenAllPromise(tasks, tasks.Length);
         }
 
-        public static UniTask WhenAll(IEnumerable<UniTask> tasks)
+        public static async UniTask WhenAll(IEnumerable<UniTask> tasks)
         {
-            return WhenAll(tasks.ToArray());
+            WhenAllPromise promise;
+            using (var span = ArrayPoolUtil.Materialize(tasks))
+            {
+                promise = new WhenAllPromise(span.Array, span.Length);
+            }
+
+            await promise;
         }
 
         class WhenAllPromise<T>
@@ -41,14 +53,14 @@ namespace UniRx.Async
             Action whenComplete;
             ExceptionDispatchInfo exception;
 
-            public WhenAllPromise(UniTask<T>[] tasks)
+            public WhenAllPromise(UniTask<T>[] tasks, int tasksLength)
             {
                 this.completeCount = 0;
                 this.whenComplete = null;
                 this.exception = null;
-                this.result = new T[tasks.Length];
+                this.result = new T[tasksLength];
 
-                for (int i = 0; i < tasks.Length; i++)
+                for (int i = 0; i < tasksLength; i++)
                 {
                     RunTask(tasks[i], i).Forget();
                 }
@@ -141,14 +153,14 @@ namespace UniRx.Async
             Action whenComplete;
             ExceptionDispatchInfo exception;
 
-            public WhenAllPromise(UniTask[] tasks)
+            public WhenAllPromise(UniTask[] tasks, int tasksLength)
             {
                 this.completeCount = 0;
                 this.whenComplete = null;
                 this.exception = null;
-                this.resultLength = tasks.Length;
+                this.resultLength = tasksLength;
 
-                for (int i = 0; i < tasks.Length; i++)
+                for (int i = 0; i < tasksLength; i++)
                 {
                     RunTask(tasks[i], i).Forget();
                 }

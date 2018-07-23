@@ -70,8 +70,8 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\IAwaiter.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayPool.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayPoolUtil.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\Guard.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayUtil.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ExceptionUtil.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\Hack.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\LazyPromise.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\MinimumQueue.cs" />

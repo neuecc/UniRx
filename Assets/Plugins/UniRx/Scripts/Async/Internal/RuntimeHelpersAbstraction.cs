@@ -18,6 +18,8 @@ namespace UniRx.Async.Internal
         {
             // The primitive types are Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, and Single.
             if (t.IsPrimitive) return true;
+
+            if (t.IsEnum) return true;
             if (t == typeof(DateTime)) return true;
             if (t == typeof(DateTimeOffset)) return true;
             if (t == typeof(Guid)) return true;

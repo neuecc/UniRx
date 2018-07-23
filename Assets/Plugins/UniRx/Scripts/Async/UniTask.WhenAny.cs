@@ -22,6 +22,7 @@ namespace UniRx.Async
             return await new WhenAnyPromise<T>(tasks);
         }
 
+        /// <summary>Return value is winArgumentIndex</summary>
         public static async UniTask<int> WhenAny(params UniTask[] tasks)
         {
             return await new WhenAnyPromise(tasks);
