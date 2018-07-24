@@ -1,4 +1,4 @@
-﻿UniRx - Reactive Extensions for Unity / Ver 6.1.1
+﻿UniRx - Reactive Extensions for Unity / Ver 6.1.2
 ===
 Created by Yoshifumi Kawai(neuecc)
 
