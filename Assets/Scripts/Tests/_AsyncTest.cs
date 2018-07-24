@@ -240,6 +240,24 @@ namespace UniRx.Tests
             canceled.IsTrue();
         }
 
+        public async UniTask ExceptionCancellation()
+        {
+            var cts = new CancellationTokenSource();
+
+            UniTask.DelayFrame(10).ContinueWith(_ => cts.Cancel()).Forget();
+
+            bool occur = false;
+            try
+            {
+                var value = await UniTask.DelayFrame(100, cancellationToken: cts.Token);
+            }
+            catch (OperationCanceledException ex)
+            {
+                occur = true;
+            }
+            occur.IsTrue();
+        }
+
         IEnumerator ToaruCoroutineEnumerator()
         {
             yield return null;
