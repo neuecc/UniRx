@@ -1206,8 +1206,8 @@ async UniTask<string> DemoAsync()
     // .ConfigureAwait accepts progress callback
     await SceneManager.LoadSceneAsync("scene2").ConfigureAwait(new Progress<float>(x => Debug.Log(x)));
 
-    // await frame-based operation(You can also pass TimeSpan, it is same as calculate frame-based)
-    await UniTask.Delay(100); // be careful, arg is not millisecond, is frame count
+    // await frame-based operation(you can also await frame count by DelayFrame)
+    await UniTask.Delay(TimeSpan.FromSeconds(3));
 
     // like 'yield return WaitForEndOfFrame', or Rx's ObserveOn(scheduler)
     await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
