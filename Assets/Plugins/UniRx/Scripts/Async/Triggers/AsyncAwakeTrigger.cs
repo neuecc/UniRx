@@ -22,6 +22,11 @@ namespace UniRx.Async.Triggers
             if (called) return UniTask.CompletedTask;
             return new UniTask(promise ?? (promise = new UniTaskCompletionSource()));
         }
+
+        private void OnDestroy()
+        {
+            promise?.TrySetCanceled();
+        }
     }
 }
 

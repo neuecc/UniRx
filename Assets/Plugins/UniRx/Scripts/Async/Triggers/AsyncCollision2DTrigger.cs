@@ -50,6 +50,13 @@ namespace UniRx.Async.Triggers
         {
             return new UniTask<Collision2D>(onCollisionStay2D ?? (onCollisionStay2D = new ReusablePromise<Collision2D>()));
         }
+
+        void OnDestroy()
+        {
+            onCollisionEnter2D?.TrySetCanceled();
+            onCollisionExit2D?.TrySetCanceled();
+            onCollisionStay2D?.TrySetCanceled();
+        }
     }
 }
 #endif

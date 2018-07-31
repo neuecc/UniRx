@@ -3,6 +3,7 @@
 #pragma warning disable CS1591
 
 using System;
+using System.Threading;
 using UniRx.Async;
 using UniRx.Async.Internal;
 
@@ -107,6 +108,12 @@ namespace UniRx
                     waitingContinuationCount++;
                 }
             }
+        }
+
+        public void SetCancellationToken(CancellationToken token)
+        {
+            // TODO:...
+            throw new NotImplementedException();
         }
     }
 }

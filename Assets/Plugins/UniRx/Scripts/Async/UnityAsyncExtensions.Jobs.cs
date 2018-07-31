@@ -1,8 +1,9 @@
-﻿#if CSHARP_7_OR_LATER
+﻿#if CSHARP_7_OR_LATER && ENABLE_MANAGED_JOBS
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
 using System.Threading;
+using UniRx.Async.Internal;
 using Unity.Jobs;
 
 namespace UniRx.Async
@@ -109,6 +110,12 @@ namespace UniRx.Async
             public void UnsafeOnCompleted(Action continuation)
             {
                 this.continuation = continuation;
+            }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
             }
         }
     }

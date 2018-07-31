@@ -3,12 +3,18 @@
 
 using System;
 using System.Runtime.ExceptionServices;
+using System.Threading;
 
 namespace UniRx.Async.Internal
 {
     // 'public', user can use this(but be careful).
 
-    public class ReusablePromise : IAwaiter
+    public interface ICancelablePromise
+    {
+        bool TrySetCanceled();
+    }
+
+    public class ReusablePromise : IAwaiter, ICancelablePromise
     {
         ExceptionDispatchInfo exception;
         object continuation; // Action or Queue<Action>
@@ -138,9 +144,14 @@ namespace UniRx.Async.Internal
                 }
             }
         }
+
+        public virtual void SetCancellationToken(CancellationToken token)
+        {
+            // ignore
+        }
     }
 
-    public class ReusablePromise<T> : IAwaiter<T>
+    public class ReusablePromise<T> : IAwaiter<T>, ICancelablePromise
     {
         T result;
         ExceptionDispatchInfo exception;
@@ -271,6 +282,11 @@ namespace UniRx.Async.Internal
                     ((MinimumQueue<Action>)continuation).Enqueue(action);
                 }
             }
+        }
+
+        public virtual void SetCancellationToken(CancellationToken token)
+        {
+            // ignore
         }
     }
 }

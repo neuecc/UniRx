@@ -21,6 +21,11 @@ namespace UniRx.Async.Triggers
         {
             return new UniTask<BaseEventData>(onCancel ?? (onCancel = new ReusablePromise<BaseEventData>()));
         }
+
+        void OnDestroy()
+        {
+            onCancel?.TrySetCanceled();
+        }
     }
 }
 

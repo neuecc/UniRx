@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading;
+using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
@@ -16,6 +17,9 @@ namespace UniRx.Async
         const int Succeeded = 1;
         const int Faulted = 2;
         const int Canceled = 3;
+
+        static readonly Action<object> cancellationCallbackDelegate = new Action<object>(CancellationCallback);
+        CancellationToken cancellationToken; // used for SetCancelation.
 
         int state = 0;
         ExceptionDispatchInfo exception;
@@ -144,6 +148,20 @@ namespace UniRx.Async
         {
             ((ICriticalNotifyCompletion)this).UnsafeOnCompleted(continuation);
         }
+
+        public void SetCancellationToken(CancellationToken token)
+        {
+            if (CancellationTokenHelper.TrySetOrLinkCancellationToken(ref this.cancellationToken, token))
+            {
+                this.cancellationToken.Register(cancellationCallbackDelegate, this, false);
+            }
+        }
+
+        static void CancellationCallback(object state)
+        {
+            var source = (UniTaskCompletionSource)state;
+            source.TrySetCanceled();
+        }
     }
 
     public class UniTaskCompletionSource<T> : IAwaiter<T>
@@ -153,6 +171,9 @@ namespace UniRx.Async
         const int Succeeded = 1;
         const int Faulted = 2;
         const int Canceled = 3;
+
+        static readonly Action<object> cancellationCallbackDelegate = new Action<object>(CancellationCallback);
+        CancellationToken cancellationToken; // used for SetCancelation.
 
         int state = 0;
         T value;
@@ -291,6 +312,20 @@ namespace UniRx.Async
         void INotifyCompletion.OnCompleted(Action continuation)
         {
             ((ICriticalNotifyCompletion)this).UnsafeOnCompleted(continuation);
+        }
+
+        public void SetCancellationToken(CancellationToken token)
+        {
+            if (CancellationTokenHelper.TrySetOrLinkCancellationToken(ref this.cancellationToken, token))
+            {
+                this.cancellationToken.Register(cancellationCallbackDelegate, this, false);
+            }
+        }
+
+        static void CancellationCallback(object state)
+        {
+            var source = (UniTaskCompletionSource<T>)state;
+            source.TrySetCanceled();
         }
     }
 }

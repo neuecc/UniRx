@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Runtime.ExceptionServices;
 using System.Threading;
+using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
@@ -109,6 +110,11 @@ namespace UniRx.Async
             public void OnCompleted(Action continuation)
             {
                 this.continuation = continuation;
+            }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
             }
 
             public void UnsafeOnCompleted(Action continuation)

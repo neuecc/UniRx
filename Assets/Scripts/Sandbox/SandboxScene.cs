@@ -2,6 +2,7 @@
 #if CSHARP_7_OR_LATER
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using UniRx.Async;
 using UniRx.Async.Triggers;
 using UnityEngine;
@@ -16,17 +17,30 @@ public class SandboxScene : MonoBehaviour
 
     void Start()
     {
-        //mc = new MyMyClass() { MyProperty = 9999 };
-        //var task = UniTask.WaitUntilValueChanged(mc, x => x.MyProperty);
-        //HandleObserve(task).Forget();
-
-        //HandleDestroyEvent().Forget();
-        //HandleEvent().Forget();
-        //HandleEventA().Forget();
-        //HandleEventB().Forget();
-        // HandleUpdateLoop().Forget();
-        DelayForever().Forget();
+        DoAsync();//.Forget();
     }
+
+    async void DoAsync()
+    {
+        // await UniTask.Yield();
+
+        Debug.Log(Thread.CurrentThread.ManagedThreadId);
+
+        await UniTask.SwitchToTaskPool();
+
+
+        
+
+        Debug.Log("WHOO=" + Thread.CurrentThread.ManagedThreadId);
+        Thread.Sleep(TimeSpan.FromSeconds(3));
+        Debug.Log("END OF SLEEP" + Thread.CurrentThread.ManagedThreadId);
+
+        await UniTask.Yield();
+
+        Debug.Log(Thread.CurrentThread.ManagedThreadId);
+    }
+
+
 
     async UniTask DelayForever()
     {

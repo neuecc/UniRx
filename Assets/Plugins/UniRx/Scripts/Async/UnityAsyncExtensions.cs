@@ -106,24 +106,48 @@ namespace UniRx.Async
         public struct AsyncOperationAwaiter : IAwaiter
         {
             readonly AsyncOperation asyncOperation;
+            AwaiterStatus status;
+            CancellationToken cancellation;
 
             public AsyncOperationAwaiter(AsyncOperation asyncOperation)
             {
                 this.asyncOperation = asyncOperation;
+                this.status = asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
             }
 
             public bool IsCompleted
             {
                 get
                 {
-                    return asyncOperation.isDone;
+                    return asyncOperation.isDone || cancellation.IsCancellationRequested;
                 }
             }
 
-            public AwaiterStatus Status => asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+            public AwaiterStatus Status => status;
 
             public void GetResult()
             {
+                if (status == AwaiterStatus.Pending)
+                {
+                    // first timing of call
+                    if (cancellation.IsCancellationRequested)
+                    {
+                        status = AwaiterStatus.Canceled;
+                    }
+                    else if (asyncOperation.isDone)
+                    {
+                        status = AwaiterStatus.Succeeded;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Not yet completed.");
+                    }
+                }
+
+                if (status == AwaiterStatus.Canceled)
+                {
+                    cancellation.ThrowIfCancellationRequested();
+                }
             }
 
             public void OnCompleted(Action continuation)
@@ -135,6 +159,11 @@ namespace UniRx.Async
             {
                 asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
             }
+
+            void IAwaiter.SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
+            }
         }
 
         class AsyncOperationConfiguredAwaiter : IAwaiter, IPlayerLoopItem
@@ -142,6 +171,7 @@ namespace UniRx.Async
             readonly AsyncOperation asyncOperation;
             readonly IProgress<float> progress;
             CancellationToken cancellationToken;
+            AwaiterStatus status;
             Action continuation;
 
             public AsyncOperationConfiguredAwaiter(AsyncOperation asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
@@ -156,13 +186,11 @@ namespace UniRx.Async
             {
                 get
                 {
-                    return cancellationToken.IsCancellationRequested || asyncOperation.isDone;
+                    return asyncOperation.isDone || cancellationToken.IsCancellationRequested;
                 }
             }
 
-            public AwaiterStatus Status => asyncOperation.isDone ? AwaiterStatus.Succeeded
-                     : cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                     : AwaiterStatus.Pending;
+            public AwaiterStatus Status => status;
 
             public void GetResult()
             {
@@ -200,11 +228,17 @@ namespace UniRx.Async
             {
                 this.continuation = continuation;
             }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
+            }
         }
 
         public struct ResourceRequestAwaiter : IAwaiter<UnityEngine.Object>
         {
             readonly ResourceRequest request;
+            CancellationToken cancellation;
 
             public ResourceRequestAwaiter(ResourceRequest request)
             {
@@ -239,6 +273,11 @@ namespace UniRx.Async
             public void UnsafeOnCompleted(Action continuation)
             {
                 request.completed += continuation.AsFuncOfT<AsyncOperation>();
+            }
+
+            void IAwaiter.SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
             }
         }
 
@@ -311,6 +350,11 @@ namespace UniRx.Async
             {
                 this.continuation = continuation;
             }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
+            }
         }
 
 #if ENABLE_WWW
@@ -378,6 +422,11 @@ namespace UniRx.Async
             {
                 this.continuation = continuation;
             }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
+            }
         }
 
 #endif
@@ -387,6 +436,7 @@ namespace UniRx.Async
         public struct UnityWebRequestAsyncOperationAwaiter : IAwaiter<UnityWebRequest>
         {
             readonly UnityWebRequestAsyncOperation asyncOperation;
+            CancellationToken cancellation;
 
             public UnityWebRequestAsyncOperationAwaiter(UnityWebRequestAsyncOperation asyncOperation)
             {
@@ -410,7 +460,7 @@ namespace UniRx.Async
 
             void IAwaiter.GetResult()
             {
-                // do nothing(no throw)
+                cancellation.ThrowIfCancellationRequested();
             }
 
             public void OnCompleted(Action continuation)
@@ -421,6 +471,11 @@ namespace UniRx.Async
             public void UnsafeOnCompleted(Action continuation)
             {
                 asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
+            }
+
+            void IAwaiter.SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
             }
         }
 
@@ -492,6 +547,11 @@ namespace UniRx.Async
             public void UnsafeOnCompleted(Action continuation)
             {
                 this.continuation = continuation;
+            }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
             }
         }
 

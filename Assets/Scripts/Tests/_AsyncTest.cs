@@ -173,17 +173,33 @@ namespace UniRx.Tests
 
         public async UniTask SwitchTo()
         {
+            await UniTask.Yield();
+
             var currentThreadId = Thread.CurrentThread.ManagedThreadId;
 
+            UnityEngine.Debug.Log("Before:" + currentThreadId);
+
+
             await UniTask.SwitchToThreadPool();
-            await UniTask.SwitchToThreadPool();
-            await UniTask.SwitchToThreadPool();
+            //await UniTask.SwitchToThreadPool();
+            //await UniTask.SwitchToThreadPool();
+
+
+
 
             var switchedThreadId = Thread.CurrentThread.ManagedThreadId;
 
-            await UniTask.Yield();
+            UnityEngine.Debug.Log("After:" + switchedThreadId);
+
 
             currentThreadId.IsNot(switchedThreadId);
+
+
+            await UniTask.Yield();
+
+            var switchedThreadId2 = Thread.CurrentThread.ManagedThreadId;
+
+            currentThreadId.Is(switchedThreadId2);
         }
 
         public async UniTask ObservableConversion()
@@ -234,7 +250,7 @@ namespace UniRx.Tests
             UniTask.DelayFrame(10).ContinueWith(_ => cts.Cancel()).Forget();
 
             var first = Time.frameCount;
-            var (canceled, value) = await UniTask.DelayFrame(100, cancellationToken: cts.Token).WithIsCanceled();
+            var (canceled, value) = await UniTask.DelayFrame(100, cancellationToken: cts.Token).SupressOperationCanceledException();
 
             (Time.frameCount - first).Is(11); // 10 frame canceled
             canceled.IsTrue();

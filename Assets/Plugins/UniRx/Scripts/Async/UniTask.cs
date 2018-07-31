@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using UniRx.Async.CompilerServices;
 using UniRx.Async.Internal;
 
@@ -93,6 +94,12 @@ namespace UniRx.Async
             }
         }
 
+        public UniTask<bool> WithIsCanceled(CancellationToken cancellationToken)
+        {
+            if (awaiter != null) return UniTask.FromResult(false);
+            return new UniTask<bool>(new IsCanceledAwaiter(awaiter, cancellationToken));
+        }
+
         public static implicit operator UniTask<AsyncUnit>(UniTask task)
         {
             if (task.awaiter != null)
@@ -137,6 +144,11 @@ namespace UniRx.Async
                 awaiter.OnCompleted(continuation);
             }
 
+            public void SetCancellationToken(CancellationToken token)
+            {
+                awaiter.SetCancellationToken(token);
+            }
+
             public void UnsafeOnCompleted(Action continuation)
             {
                 awaiter.UnsafeOnCompleted(continuation);
@@ -145,6 +157,53 @@ namespace UniRx.Async
             void IAwaiter.GetResult()
             {
                 awaiter.GetResult();
+            }
+        }
+
+        class IsCanceledAwaiter : IAwaiter<bool>
+        {
+            readonly IAwaiter awaiter;
+
+            public IsCanceledAwaiter(IAwaiter awaiter, CancellationToken token)
+            {
+                this.awaiter = awaiter;
+                this.awaiter.SetCancellationToken(token);
+            }
+
+            public AwaiterStatus Status => awaiter.Status;
+
+            public bool IsCompleted => awaiter.IsCompleted;
+
+            public bool GetResult()
+            {
+                // suppress exception
+                if (awaiter.Status == AwaiterStatus.Canceled)
+                {
+                    return true;
+                }
+
+                awaiter.GetResult();
+                return false;
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                awaiter.OnCompleted(continuation);
+            }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                awaiter.SetCancellationToken(token);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                awaiter.UnsafeOnCompleted(continuation);
+            }
+
+            void IAwaiter.GetResult()
+            {
+                GetResult();
             }
         }
 
@@ -163,6 +222,15 @@ namespace UniRx.Async
 
             [DebuggerHidden]
             public AwaiterStatus Status => task.Status;
+
+            [DebuggerHidden]
+            public void SetCancellationToken(CancellationToken token)
+            {
+                if (task.awaiter != null)
+                {
+                    task.awaiter.SetCancellationToken(token);
+                }
+            }
 
             [DebuggerHidden]
             public void GetResult() => task.GetResult();
@@ -265,6 +333,12 @@ namespace UniRx.Async
             return new Awaiter(this);
         }
 
+        public UniTask<(bool isCanceled, T value)> WithIsCanceled(CancellationToken cancellationToken)
+        {
+            if (awaiter != null) return UniTask.FromResult((false, result));
+            return new UniTask<(bool, T)>(new WithIsCanceledAwaiter(awaiter, cancellationToken));
+        }
+
         public bool Equals(UniTask<T> other)
         {
             if (this.awaiter == null && other.awaiter == null)
@@ -303,6 +377,52 @@ namespace UniRx.Async
             else
             {
                 return new UniTask();
+            }
+        }
+
+        class WithIsCanceledAwaiter : IAwaiter<(bool, T)>
+        {
+            readonly IAwaiter<T> awaiter;
+
+            public WithIsCanceledAwaiter(IAwaiter<T> awaiter, CancellationToken token)
+            {
+                this.awaiter = awaiter;
+                this.awaiter.SetCancellationToken(token);
+            }
+
+            public AwaiterStatus Status => awaiter.Status;
+
+            public bool IsCompleted => awaiter.IsCompleted;
+
+            public (bool, T) GetResult()
+            {
+                // suppress exception
+                if (awaiter.Status == AwaiterStatus.Canceled)
+                {
+                    return (true, default(T));
+                }
+
+                return (false, awaiter.GetResult());
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                awaiter.OnCompleted(continuation);
+            }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                awaiter.SetCancellationToken(token);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                awaiter.UnsafeOnCompleted(continuation);
+            }
+
+            void IAwaiter.GetResult()
+            {
+                GetResult();
             }
         }
 
@@ -351,6 +471,15 @@ namespace UniRx.Async
                 else
                 {
                     continuation();
+                }
+            }
+
+            [DebuggerHidden]
+            public void SetCancellationToken(CancellationToken token)
+            {
+                if (task.awaiter != null)
+                {
+                    task.awaiter.SetCancellationToken(token);
                 }
             }
         }

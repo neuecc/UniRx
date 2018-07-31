@@ -23,6 +23,11 @@ namespace UniRx.Async.Triggers
         {
             return new UniTask(onCanvasGroupChanged ?? (onCanvasGroupChanged = new ReusablePromise()));
         }
+
+        void OnDestroy()
+        {
+            onCanvasGroupChanged?.TrySetCanceled();
+        }
     }
 }
 

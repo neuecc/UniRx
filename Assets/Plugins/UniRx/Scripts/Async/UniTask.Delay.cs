@@ -50,6 +50,9 @@ namespace UniRx.Async
             return source.Task;
         }
 
+        // policy of playerloop cancellation.
+        // does not raise cancel immediately, check only MoveNext timing(for performance).
+
         class YieldPromise : ReusablePromise, IPlayerLoopItem
         {
             readonly PlayerLoopTiming timing;
@@ -81,8 +84,23 @@ namespace UniRx.Async
             public bool MoveNext()
             {
                 isRunning = false;
-                TrySetResult();
+
+                if (cancellation.IsCancellationRequested)
+                {
+                    TrySetCanceled();
+                }
+                else
+                {
+                    TrySetResult();
+                }
+
                 return false;
+            }
+
+            public override void SetCancellationToken(CancellationToken token)
+            {
+                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
             }
         }
 
@@ -139,6 +157,12 @@ namespace UniRx.Async
                 currentFrameCount++;
                 return true;
             }
+
+            public override void SetCancellationToken(CancellationToken token)
+            {
+                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
+            }
         }
 
         class DelayPromise : ReusablePromise, IPlayerLoopItem
@@ -192,6 +216,12 @@ namespace UniRx.Async
                 }
 
                 return true;
+            }
+
+            public override void SetCancellationToken(CancellationToken token)
+            {
+                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
             }
         }
 
@@ -252,6 +282,12 @@ namespace UniRx.Async
                 }
 
                 return true;
+            }
+
+            public override void SetCancellationToken(CancellationToken token)
+            {
+                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
             }
         }
     }

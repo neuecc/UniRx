@@ -21,6 +21,11 @@ namespace UniRx.Async.Triggers
         {
             return new UniTask<PointerEventData>(onBeginDrag ?? (onBeginDrag = new ReusablePromise<PointerEventData>()));
         }
+
+        void OnDestroy()
+        {
+            onBeginDrag?.TrySetCanceled();
+        }
     }
 }
 

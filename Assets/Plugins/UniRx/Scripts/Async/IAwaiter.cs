@@ -2,6 +2,7 @@
 #pragma warning disable CS1591
 
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace UniRx.Async
 {
@@ -20,6 +21,7 @@ namespace UniRx.Async
     public interface IAwaiter : ICriticalNotifyCompletion
     {
         AwaiterStatus Status { get; }
+        void SetCancellationToken(CancellationToken token);
         bool IsCompleted { get; }
         void GetResult();
     }

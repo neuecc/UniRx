@@ -3,6 +3,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -191,6 +192,12 @@ namespace UniRx.Async
         {
             return OnInvokeAsync();
         }
+
+        public void SetCancellationToken(CancellationToken token)
+        {
+            // TODO:...
+            throw new NotImplementedException();
+        }
     }
 
     public class AsyncUnityEventHandler<T> : IAwaiter<T>, IDisposable, IAsyncValueChangedEventHandler<T>, IAsyncEndEditEventHandler<T>
@@ -271,6 +278,12 @@ namespace UniRx.Async
         UniTask<T> IAsyncEndEditEventHandler<T>.OnEndEditAsync()
         {
             return OnInvokeAsync();
+        }
+
+        public void SetCancellationToken(CancellationToken token)
+        {
+            // TODO:...
+            throw new NotImplementedException();
         }
     }
 }
