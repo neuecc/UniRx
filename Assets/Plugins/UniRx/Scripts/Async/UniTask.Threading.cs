@@ -4,32 +4,97 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
     public partial struct UniTask
     {
-        static readonly WaitCallback switchToThreadPoolCallback = CallbackPromiseSetResult;
-        static readonly Action<object> switchToTaskPoolCallback = CallbackPromiseSetResult;
-
         public static UniTask SwitchToThreadPool()
         {
-            var promise = new UniTaskCompletionSource<AsyncUnit>();
-            ThreadPool.UnsafeQueueUserWorkItem(switchToThreadPoolCallback, promise);
-            return new UniTask(promise);
+            return new UniTask(new SwitchToThreadPoolPromise());
         }
 
         public static UniTask SwitchToTaskPool(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var promise = new UniTaskCompletionSource<AsyncUnit>();
-            Task.Factory.StartNew(switchToTaskPoolCallback, promise, cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
-            return new UniTask(promise);
+            return new UniTask(new SwitchToTaskPoolPromise(cancellationToken));
         }
 
-        static void CallbackPromiseSetResult(object state)
+        class SwitchToThreadPoolPromise : IAwaiter
         {
-            var promise = (UniTaskCompletionSource<AsyncUnit>)state;
-            promise.TrySetResult(AsyncUnit.Default);
+            static readonly WaitCallback switchToCallback = Callback;
+            CancellationToken cancellationToken;
+
+            public AwaiterStatus Status => cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled : AwaiterStatus.Pending;
+
+            public bool IsCompleted => cancellationToken.IsCancellationRequested ? true : false;
+
+            public void GetResult()
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                ThreadPool.UnsafeQueueUserWorkItem(switchToCallback, continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                ThreadPool.UnsafeQueueUserWorkItem(switchToCallback, continuation);
+            }
+
+            static void Callback(object state)
+            {
+                var continuation = (Action)state;
+                continuation();
+            }
+        }
+
+        class SwitchToTaskPoolPromise : IAwaiter
+        {
+            static readonly Action<object> switchToCallback = Callback;
+            CancellationToken cancellationToken;
+
+            public SwitchToTaskPoolPromise(CancellationToken cancellationToken)
+            {
+                this.cancellationToken = cancellationToken;
+            }
+
+            public AwaiterStatus Status => cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled : AwaiterStatus.Pending;
+
+            public bool IsCompleted => cancellationToken.IsCancellationRequested ? true : false;
+
+            public void GetResult()
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                Task.Factory.StartNew(switchToCallback, continuation, cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                Task.Factory.StartNew(switchToCallback, continuation, cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+            }
+
+            static void Callback(object state)
+            {
+                var continuation = (Action)state;
+                continuation();
+            }
         }
     }
 }
