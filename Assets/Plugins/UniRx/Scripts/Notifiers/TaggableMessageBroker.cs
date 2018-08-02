@@ -51,20 +51,17 @@ namespace UniRx
     /// <summary>
     /// In-Memory PubSub filtered by Type and tag
     /// </summary>
-    public class TaggableMessegeBroker : ITaggableMessageBroker, IDisposable
+    public class TaggableMessageBroker : ITaggableMessageBroker, IDisposable
     {
         /// <summary>
         /// TaggableMessageBroker in Global scope.
         /// </summary>
-        public static readonly ITaggableMessageBroker Default = new TaggableMessegeBroker();
+        public static readonly ITaggableMessageBroker Default = new TaggableMessageBroker();
 
         bool isDisposed = false;
         readonly Dictionary<ValueTuple<string, Type>, object> notifiers = new Dictionary<ValueTuple<string, Type>, object>();
-        // List<string> TagCache = new List<string>();
-
         public void Publish<T>(T message, string tag = "")
         {
-            // if (!TagCache.Contains(tag)) TagCache.Add(tag);
             object notifier;
             lock (notifiers)
             {
@@ -81,24 +78,16 @@ namespace UniRx
         public IObservable<T> Receive<T>(string tag = "")
         {
             object notifier;
-            //if (TagCache.Contains(tag))
-            // {
             lock (notifiers)
             {
                 if (isDisposed) throw new ObjectDisposedException("MessageBroker");
 
                 if (!notifiers.TryGetValue(ValueTuple.Create(tag, typeof(T)), out notifier))
                 {
-                    ISubject<T> n = new Subject<T>().Synchronize();
-                    notifier = n;
+                    notifier = new Subject<T>().Synchronize();
                     notifiers.Add(ValueTuple.Create(tag, typeof(T)), notifier);
                 }
             }
-            //}
-            //else
-            //{
-            //    notifier = default(T); //I'm not sure how this should work.
-            //}
             return ((IObservable<T>)notifier).AsObservable();
         }
         public void Dispose()
@@ -124,20 +113,19 @@ namespace UniRx
         /// TaggableAsyncMessageBroker in Global scope.
         /// </summary>
         public static readonly ITaggableAsyncMessageBroker Default = new TaggableAsyncMessageBroker();
-
         bool isDisposed = false;
         readonly Dictionary<ValueTuple<string, Type>, object> notifiers = new Dictionary<ValueTuple<string, Type>, object>();
 
         public IObservable<Unit> PublishAsync<T>(T message, string tag = "")
         {
-
             UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>> notifier;
             lock (notifiers)
             {
                 if (isDisposed) throw new ObjectDisposedException("AsyncMessageBroker");
 
                 object _notifier;
-                if (notifiers.TryGetValue(ValueTuple.Create(tag, typeof(T)), out _notifier))
+                var v = ValueTuple.Create(tag, typeof(T));
+                if (notifiers.TryGetValue(v, out _notifier))
                 {
                     notifier = (UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>)_notifier;
                 }
@@ -163,17 +151,18 @@ namespace UniRx
                 if (isDisposed) throw new ObjectDisposedException("AsyncMessageBroker");
 
                 object _notifier;
-                if (!notifiers.TryGetValue(ValueTuple.Create(tag, typeof(T)), out _notifier))
+                var t = ValueTuple.Create(tag, typeof(T));
+                if (!notifiers.TryGetValue(t, out _notifier))
                 {
                     var notifier = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
                     notifier = notifier.Add(asyncMessageReceiver);
-                    notifiers.Add(ValueTuple.Create(tag, typeof(T)), notifier);
+                    notifiers.Add(t, notifier);
                 }
                 else
                 {
                     var notifier = (ImmutableList<Func<T, IObservable<Unit>>>)_notifier;
                     notifier = notifier.Add(asyncMessageReceiver);
-                    notifiers[ValueTuple.Create(tag, typeof(T))] = notifier;
+                    notifiers[t] = notifier;
                 }
             }
             return new Subscription<T>(this, asyncMessageReceiver, tag);
@@ -208,12 +197,12 @@ namespace UniRx
                 lock (parent.notifiers)
                 {
                     object _notifier;
-                    if (parent.notifiers.TryGetValue(ValueTuple.Create(tag, typeof(T)), out _notifier))
+                    var t = ValueTuple.Create(tag, typeof(T));
+                    if (parent.notifiers.TryGetValue(t, out _notifier))
                     {
                         var notifier = (ImmutableList<Func<T, IObservable<Unit>>>)_notifier;
                         notifier = notifier.Remove(asyncMessageReceiver);
-
-                        parent.notifiers[ValueTuple.Create(tag, typeof(T))] = notifier;
+                        parent.notifiers[t] = notifier;
                     }
                 }
             }
