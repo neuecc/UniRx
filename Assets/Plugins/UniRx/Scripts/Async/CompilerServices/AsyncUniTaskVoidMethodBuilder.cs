@@ -46,11 +46,9 @@ namespace UniRx.Async.CompilerServices
         {
             if (moveNext == null)
             {
-                var runner = new MoveNextRunner();
+                var runner = new MoveNextRunner<TStateMachine>();
                 moveNext = runner.Run;
-
-                var boxed = (IAsyncStateMachine)stateMachine;
-                runner.StateMachine = boxed; // boxed
+                runner.StateMachine = stateMachine; // set after create delegate.
             }
 
             awaiter.OnCompleted(moveNext);
@@ -65,11 +63,9 @@ namespace UniRx.Async.CompilerServices
         {
             if (moveNext == null)
             {
-                var runner = new MoveNextRunner();
+                var runner = new MoveNextRunner<TStateMachine>();
                 moveNext = runner.Run;
-
-                var boxed = (IAsyncStateMachine)stateMachine;
-                runner.StateMachine = boxed; // boxed
+                runner.StateMachine = stateMachine; // set after create delegate.
             }
 
             awaiter.UnsafeOnCompleted(moveNext);
@@ -87,16 +83,6 @@ namespace UniRx.Async.CompilerServices
         [DebuggerHidden]
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
-        }
-
-        class MoveNextRunner
-        {
-            public IAsyncStateMachine StateMachine;
-
-            public void Run()
-            {
-                StateMachine.MoveNext();
-            }
         }
     }
 }
