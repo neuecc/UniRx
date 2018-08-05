@@ -20,6 +20,21 @@ namespace UniRx.Async
             return new UniTask(new SwitchToTaskPoolPromise(cancellationToken));
         }
 
+        public static UniTask SwitchToSynchronizationContext()
+        {
+            var current = SynchronizationContext.Current;
+            if (current == null)
+            {
+                return SwitchToThreadPool();
+            }
+            return SwitchToSynchronizationContext(current);
+        }
+
+        public static UniTask SwitchToSynchronizationContext(SynchronizationContext syncContext)
+        {
+            return new UniTask(new SwitchToSynchronizationContextPromise(syncContext));
+        }
+
         class SwitchToThreadPoolPromise : IAwaiter
         {
             static readonly WaitCallback switchToCallback = Callback;
@@ -88,6 +103,48 @@ namespace UniRx.Async
             public void UnsafeOnCompleted(Action continuation)
             {
                 Task.Factory.StartNew(switchToCallback, continuation, cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+            }
+
+            static void Callback(object state)
+            {
+                var continuation = (Action)state;
+                continuation();
+            }
+        }
+
+        class SwitchToSynchronizationContextPromise : IAwaiter
+        {
+            static readonly SendOrPostCallback switchToCallback = Callback;
+            CancellationToken cancellationToken;
+            SynchronizationContext synchronizationContext;
+
+            public SwitchToSynchronizationContextPromise(SynchronizationContext synchronizationContext)
+            {
+                this.synchronizationContext = synchronizationContext;
+            }
+
+            public AwaiterStatus Status => cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled : AwaiterStatus.Pending;
+
+            public bool IsCompleted => cancellationToken.IsCancellationRequested ? true : false;
+
+            public void GetResult()
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            public void SetCancellationToken(CancellationToken token)
+            {
+                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                synchronizationContext.Post(switchToCallback, continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                synchronizationContext.Post(switchToCallback, continuation);
             }
 
             static void Callback(object state)
