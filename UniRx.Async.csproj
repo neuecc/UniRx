@@ -138,6 +138,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.Jobs.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.uGUI.cs" />
     <None Include="Assets\Plugins\UniRx\Scripts\Async\UniRx.Async.asmdef" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Run.cs" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.2.0f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
     </Reference>
