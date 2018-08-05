@@ -94,6 +94,13 @@ namespace UniRx.Async
             }
         }
 
+        public override string ToString()
+        {
+            return (this.awaiter == null) ? "()"
+                 : (this.awaiter.Status == AwaiterStatus.Succeeded) ? "()"
+                 : "(" + this.awaiter.Status + ")";
+        }
+
         public UniTask<bool> WithIsCanceled(CancellationToken cancellationToken)
         {
             if (awaiter != null) return UniTask.FromResult(false);
@@ -366,6 +373,13 @@ namespace UniRx.Async
             {
                 return this.awaiter.GetHashCode();
             }
+        }
+
+        public override string ToString()
+        {
+            return (this.awaiter == null) ? result.ToString()
+                 : (this.awaiter.Status == AwaiterStatus.Succeeded) ? this.awaiter.GetResult().ToString()
+                 : "(" + this.awaiter.Status + ")";
         }
 
         public static implicit operator UniTask(UniTask<T> task)
