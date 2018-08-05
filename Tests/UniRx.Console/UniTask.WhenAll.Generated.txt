@@ -58,8 +58,8 @@ namespace UniRx.Async
                 this.result2 = default(T2);
                 this.exception = null;
 
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
+                RunTask1(task1);
+                RunTask2(task2);
             }
 
             void TryCallContinuation()
@@ -71,7 +71,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask1(UniTask<T1> task)
+            void RunTask1(UniTask<T1> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result1 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask1Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask1Async(UniTask<T1> task)
             {
                 try
                 {
@@ -91,7 +118,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask2(UniTask<T2> task)
+            void RunTask2(UniTask<T2> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result2 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask2Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask2Async(UniTask<T2> task)
             {
                 try
                 {
@@ -184,9 +238,9 @@ namespace UniRx.Async
                 this.result3 = default(T3);
                 this.exception = null;
 
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-                RunTask3(task3).Forget();
+                RunTask1(task1);
+                RunTask2(task2);
+                RunTask3(task3);
             }
 
             void TryCallContinuation()
@@ -198,7 +252,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask1(UniTask<T1> task)
+            void RunTask1(UniTask<T1> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result1 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask1Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask1Async(UniTask<T1> task)
             {
                 try
                 {
@@ -218,7 +299,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask2(UniTask<T2> task)
+            void RunTask2(UniTask<T2> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result2 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask2Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask2Async(UniTask<T2> task)
             {
                 try
                 {
@@ -238,7 +346,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask3(UniTask<T3> task)
+            void RunTask3(UniTask<T3> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result3 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask3Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask3Async(UniTask<T3> task)
             {
                 try
                 {
@@ -333,10 +468,10 @@ namespace UniRx.Async
                 this.result4 = default(T4);
                 this.exception = null;
 
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-                RunTask3(task3).Forget();
-                RunTask4(task4).Forget();
+                RunTask1(task1);
+                RunTask2(task2);
+                RunTask3(task3);
+                RunTask4(task4);
             }
 
             void TryCallContinuation()
@@ -348,7 +483,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask1(UniTask<T1> task)
+            void RunTask1(UniTask<T1> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result1 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask1Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask1Async(UniTask<T1> task)
             {
                 try
                 {
@@ -368,7 +530,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask2(UniTask<T2> task)
+            void RunTask2(UniTask<T2> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result2 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask2Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask2Async(UniTask<T2> task)
             {
                 try
                 {
@@ -388,7 +577,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask3(UniTask<T3> task)
+            void RunTask3(UniTask<T3> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result3 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask3Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask3Async(UniTask<T3> task)
             {
                 try
                 {
@@ -408,7 +624,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask4(UniTask<T4> task)
+            void RunTask4(UniTask<T4> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result4 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask4Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask4Async(UniTask<T4> task)
             {
                 try
                 {
@@ -505,11 +748,11 @@ namespace UniRx.Async
                 this.result5 = default(T5);
                 this.exception = null;
 
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-                RunTask3(task3).Forget();
-                RunTask4(task4).Forget();
-                RunTask5(task5).Forget();
+                RunTask1(task1);
+                RunTask2(task2);
+                RunTask3(task3);
+                RunTask4(task4);
+                RunTask5(task5);
             }
 
             void TryCallContinuation()
@@ -521,7 +764,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask1(UniTask<T1> task)
+            void RunTask1(UniTask<T1> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result1 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask1Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask1Async(UniTask<T1> task)
             {
                 try
                 {
@@ -541,7 +811,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask2(UniTask<T2> task)
+            void RunTask2(UniTask<T2> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result2 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask2Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask2Async(UniTask<T2> task)
             {
                 try
                 {
@@ -561,7 +858,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask3(UniTask<T3> task)
+            void RunTask3(UniTask<T3> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result3 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask3Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask3Async(UniTask<T3> task)
             {
                 try
                 {
@@ -581,7 +905,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask4(UniTask<T4> task)
+            void RunTask4(UniTask<T4> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result4 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask4Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask4Async(UniTask<T4> task)
             {
                 try
                 {
@@ -601,7 +952,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask5(UniTask<T5> task)
+            void RunTask5(UniTask<T5> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result5 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask5Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask5Async(UniTask<T5> task)
             {
                 try
                 {
@@ -700,12 +1078,12 @@ namespace UniRx.Async
                 this.result6 = default(T6);
                 this.exception = null;
 
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-                RunTask3(task3).Forget();
-                RunTask4(task4).Forget();
-                RunTask5(task5).Forget();
-                RunTask6(task6).Forget();
+                RunTask1(task1);
+                RunTask2(task2);
+                RunTask3(task3);
+                RunTask4(task4);
+                RunTask5(task5);
+                RunTask6(task6);
             }
 
             void TryCallContinuation()
@@ -717,7 +1095,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask1(UniTask<T1> task)
+            void RunTask1(UniTask<T1> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result1 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask1Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask1Async(UniTask<T1> task)
             {
                 try
                 {
@@ -737,7 +1142,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask2(UniTask<T2> task)
+            void RunTask2(UniTask<T2> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result2 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask2Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask2Async(UniTask<T2> task)
             {
                 try
                 {
@@ -757,7 +1189,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask3(UniTask<T3> task)
+            void RunTask3(UniTask<T3> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result3 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask3Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask3Async(UniTask<T3> task)
             {
                 try
                 {
@@ -777,7 +1236,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask4(UniTask<T4> task)
+            void RunTask4(UniTask<T4> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result4 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask4Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask4Async(UniTask<T4> task)
             {
                 try
                 {
@@ -797,7 +1283,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask5(UniTask<T5> task)
+            void RunTask5(UniTask<T5> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result5 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask5Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask5Async(UniTask<T5> task)
             {
                 try
                 {
@@ -817,7 +1330,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask6(UniTask<T6> task)
+            void RunTask6(UniTask<T6> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result6 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask6Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask6Async(UniTask<T6> task)
             {
                 try
                 {
@@ -918,13 +1458,13 @@ namespace UniRx.Async
                 this.result7 = default(T7);
                 this.exception = null;
 
-                RunTask1(task1).Forget();
-                RunTask2(task2).Forget();
-                RunTask3(task3).Forget();
-                RunTask4(task4).Forget();
-                RunTask5(task5).Forget();
-                RunTask6(task6).Forget();
-                RunTask7(task7).Forget();
+                RunTask1(task1);
+                RunTask2(task2);
+                RunTask3(task3);
+                RunTask4(task4);
+                RunTask5(task5);
+                RunTask6(task6);
+                RunTask7(task7);
             }
 
             void TryCallContinuation()
@@ -936,7 +1476,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask1(UniTask<T1> task)
+            void RunTask1(UniTask<T1> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result1 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask1Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask1Async(UniTask<T1> task)
             {
                 try
                 {
@@ -956,7 +1523,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask2(UniTask<T2> task)
+            void RunTask2(UniTask<T2> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result2 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask2Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask2Async(UniTask<T2> task)
             {
                 try
                 {
@@ -976,7 +1570,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask3(UniTask<T3> task)
+            void RunTask3(UniTask<T3> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result3 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask3Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask3Async(UniTask<T3> task)
             {
                 try
                 {
@@ -996,7 +1617,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask4(UniTask<T4> task)
+            void RunTask4(UniTask<T4> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result4 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask4Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask4Async(UniTask<T4> task)
             {
                 try
                 {
@@ -1016,7 +1664,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask5(UniTask<T5> task)
+            void RunTask5(UniTask<T5> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result5 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask5Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask5Async(UniTask<T5> task)
             {
                 try
                 {
@@ -1036,7 +1711,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask6(UniTask<T6> task)
+            void RunTask6(UniTask<T6> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result6 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask6Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask6Async(UniTask<T6> task)
             {
                 try
                 {
@@ -1056,7 +1758,34 @@ namespace UniRx.Async
                 }
             }
 
-            async UniTaskVoid RunTask7(UniTask<T7> task)
+            void RunTask7(UniTask<T7> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result7 = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask7Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask7Async(UniTask<T7> task)
             {
                 try
                 {

@@ -54,7 +54,7 @@ namespace UniRx.Async
                 this.exception = null;
 
 <# for(var j = 1; j <= i; j++) { #>
-                RunTask<#= j #>(task<#= j #>).Forget();
+                RunTask<#= j #>(task<#= j #>);
 <# } #>
             }
 
@@ -68,7 +68,34 @@ namespace UniRx.Async
             }
 
 <# for(var j = 1; j <= i; j++) { #>
-            async UniTaskVoid RunTask<#= j #>(UniTask<T<#= j #>> task)
+            void RunTask<#= j #>(UniTask<T<#= j #>> task)
+            {
+                if (task.IsCompleted)
+                {
+                    try
+                    {
+                        result<#= j #> = task.Result;
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ExceptionDispatchInfo.Capture(ex);
+                        TryCallContinuation();
+                        return;
+                    }
+
+                    var count = Interlocked.Increment(ref completeCount);
+                    if (count == MaxCount)
+                    {
+                        TryCallContinuation();
+                    }
+                }
+                else
+                {
+                    RunTask<#= j #>Async(task).Forget();
+                }
+            }
+
+            async UniTaskVoid RunTask<#= j #>Async(UniTask<T<#= j #>> task)
             {
                 try
                 {
