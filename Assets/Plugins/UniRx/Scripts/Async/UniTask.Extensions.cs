@@ -327,7 +327,7 @@ namespace UniRx.Async
 
         // shortcut of WhenAll
 
-        public static UniTask.Awaiter GetAwaiter<T>(this IEnumerable<UniTask> tasks)
+        public static UniTask.Awaiter GetAwaiter(this IEnumerable<UniTask> tasks)
         {
             return UniTask.WhenAll(tasks).GetAwaiter();
         }

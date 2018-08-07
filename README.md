@@ -1206,8 +1206,8 @@ async UniTask<string> DemoAsync()
     // .ConfigureAwait accepts progress callback
     await SceneManager.LoadSceneAsync("scene2").ConfigureAwait(new Progress<float>(x => Debug.Log(x)));
 
-    // await frame-based operation(You can also pass TimeSpan, it is same as calculate frame-based)
-    await UniTask.Delay(100); // be careful, arg is not millisecond, is frame count
+    // await frame-based operation(you can also await frame count by DelayFrame)
+    await UniTask.Delay(TimeSpan.FromSeconds(3));
 
     // like 'yield return WaitForEndOfFrame', or Rx's ObserveOn(scheduler)
     await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
@@ -1280,30 +1280,18 @@ public class SceneAssets
 }
 ```
 
-If you want to convert callback to UniTask, you can use `Promise<T>` that is the lightweight edition of `TaskCompletionSource<T>`. The API is same as EcmaScript's Promise.
+If you want to convert callback to UniTask, you can use `UniTaskCompletionSource<T>` that is the lightweight edition of `TaskCompletionSource<T>`. 
 
 ```csharp
-public UniTask<int> WrapByPromise1()
+public UniTask<int> WrapByUniTaskCompletionSource()
 {
-    var promise = new Promise<int>((resolve, reject) =>
-    {
-        // when complete, call resolve.SetResult();
-        // when failed, call reject.SetException();
-    });
+    var utcs = new UniTaskCompletionSource<int>();
 
-    return new UniTask<int>(promise);
-}
+    // when complete, call utcs.TrySetResult();
+    // when failed, call utcs.TrySetException();
+    // when cancel, call utcs.TrySetCanceled();
 
-public UniTask<int> WrapByPromise2()
-{
-    // also allows outer methods(no use constructor resolve/reject).
-    var promise = new Promise<int>();
-
-    // when complete, call promise.SetResult();
-    // when failed, call promise.SetException();
-    // when cancel, call promise.SetCancel();
-
-    return new UniTask<int>(promise);
+    return utcs.Task; //return UniTask<int>
 }
 ```
 
