@@ -1,6 +1,7 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+using System.Threading;
 
 namespace UniRx.Async.Internal
 {
@@ -16,14 +17,17 @@ namespace UniRx.Async.Internal
         public static readonly ArrayPool<T> Shared = new ArrayPool<T>();
 
         readonly MinimumQueue<T[]>[] buckets;
+        readonly SpinLock[] locks;
 
         ArrayPool()
         {
             // see: GetQueueIndex
             buckets = new MinimumQueue<T[]>[18];
+            locks = new SpinLock[18];
             for (int i = 0; i < buckets.Length; i++)
             {
                 buckets[i] = new MinimumQueue<T[]>(4);
+                locks[i] = new SpinLock(false);
             }
         }
 
@@ -43,12 +47,19 @@ namespace UniRx.Async.Internal
             if (index != -1)
             {
                 var q = buckets[index];
-                lock (q)
+                var lockTaken = false;
+                try
                 {
+                    locks[index].Enter(ref lockTaken);
+
                     if (q.Count != 0)
                     {
                         return q.Dequeue();
                     }
+                }
+                finally
+                {
+                    if (lockTaken) locks[index].Exit(false);
                 }
             }
 
@@ -71,14 +82,22 @@ namespace UniRx.Async.Internal
                 }
 
                 var q = buckets[index];
-                lock (q)
+                var lockTaken = false;
+
+                try
                 {
+                    locks[index].Enter(ref lockTaken);
+
                     if (q.Count > DefaultMaxNumberOfArraysPerBucket)
                     {
                         return;
                     }
 
                     q.Enqueue(array);
+                }
+                finally
+                {
+                    if (lockTaken) locks[index].Exit(false);
                 }
             }
         }
