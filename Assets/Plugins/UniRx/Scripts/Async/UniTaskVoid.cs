@@ -29,7 +29,11 @@ namespace UniRx.Async
             [DebuggerHidden]
             public void GetResult()
             {
+#if !UniRxLibrary
                 UnityEngine.Debug.LogWarning("UniTask can't await, always fire-and-forget. use Forget instead of await.");
+#else
+                Console.WriteLine("UniTask can't await, always fire-and-forget. use Forget instead of await.");
+#endif
             }
 
             [DebuggerHidden]

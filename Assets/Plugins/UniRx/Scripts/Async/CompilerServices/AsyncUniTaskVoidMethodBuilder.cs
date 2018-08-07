@@ -28,7 +28,11 @@ namespace UniRx.Async.CompilerServices
         [DebuggerHidden]
         public void SetException(Exception exception)
         {
+#if !UniRxLibrary
             UnityEngine.Debug.LogException(exception);
+#else
+            Console.WriteLine(exception);
+#endif
         }
 
         // 4. SetResult

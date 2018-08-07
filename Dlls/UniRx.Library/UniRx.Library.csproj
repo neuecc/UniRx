@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UniRx</RootNamespace>
     <AssemblyName>UniRx</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -18,9 +18,9 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;UniRxLibrary</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;UniRxLibrary,CSHARP_7_OR_LATER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Debug\UniRx.xml</DocumentationFile>
     <NoWarn>1573,1591</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;UniRxLibrary</DefineConstants>
+    <DefineConstants>TRACE;UniRxLibrary,CSHARP_7_OR_LATER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\UniRx.xml</DocumentationFile>
@@ -47,6 +47,93 @@
   <ItemGroup>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Asynchronous\WebRequestExtensions.cs">
       <Link>Asynchronous\WebRequestExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\AsyncUnit.cs">
+      <Link>Async\AsyncUnit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\CancellationTokenExtensions.cs">
+      <Link>Async\CancellationTokenExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncMethodBuilderAttribute.cs">
+      <Link>Async\Compiler\AsyncMethodBuilderAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncUniTaskMethodBuilder.cs">
+      <Link>Async\Compiler\AsyncUniTaskMethodBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncUniTaskVoidMethodBuilder.cs">
+      <Link>Async\Compiler\AsyncUniTaskVoidMethodBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\CompilerServices\MoveNextRunner.cs">
+      <Link>Async\Internal\MoveNextRunner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\IAwaiter.cs">
+      <Link>Async\IAwaiter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayPool.cs">
+      <Link>Async\Internal\ArrayPool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayPoolUtil.cs">
+      <Link>Async\Internal\ArrayPoolUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayUtil.cs">
+      <Link>Async\Internal\ArrayUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\CancellationTokenHelper.cs">
+      <Link>Async\Internal\CancellationTokenHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\Guard.cs">
+      <Link>Async\Internal\Guard.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\Hack.cs">
+      <Link>Async\Internal\Hack.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\LazyPromise.cs">
+      <Link>Async\Internal\LazyPromise.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\MinimumQueue.cs">
+      <Link>Async\Internal\MinimumQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\PlayerLoopRunner.cs">
+      <Link>Async\Internal\PlayerLoopRunner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\ReusablePromise.cs">
+      <Link>Async\Internal\ReusablePromise.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\RuntimeHelpersAbstraction.cs">
+      <Link>Async\Internal\RuntimeHelpersAbstraction.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\PlayerLoopHelper.cs">
+      <Link>Async\PlayerLoopHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Progress.cs">
+      <Link>Async\Progress.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.cs">
+      <Link>Async\UniTask.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.Factory.cs">
+      <Link>Async\UniTask.Factory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.Threading.cs">
+      <Link>Async\UniTask.Threading.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAll.cs">
+      <Link>Async\UniTask.WhenAll.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAll.Generated.cs">
+      <Link>Async\UniTask.WhenAll.Generated.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAny.cs">
+      <Link>Async\UniTask.WhenAny.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAny.Generated.cs">
+      <Link>Async\UniTask.WhenAny.Generated.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTaskCompletionSource.cs">
+      <Link>Async\UniTaskCompletionSource.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTaskVoid.cs">
+      <Link>Async\UniTaskVoid.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Disposables\BooleanDisposable.cs">
       <Link>Disposables\BooleanDisposable.cs</Link>
@@ -485,6 +572,9 @@
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs">
       <Link>UnityEngineBridge\ReactiveProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactivePropertyReusablePromise.cs">
+      <Link>UnityEngineBridge\ReactivePropertyReusablePromise.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

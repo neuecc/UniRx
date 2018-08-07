@@ -291,9 +291,11 @@ namespace UniRx.Async.Internal
     }
 
 
+#if !UniRxLibrary
+
     // policy of playerloop cancellation.
     // does not raise cancel immediately, check only MoveNext timing(for performance).
-    
+
     // TODO:
     public abstract class PlayerLoopReusablePromiseBase : ReusablePromise, IPlayerLoopItem
     {
@@ -328,6 +330,8 @@ namespace UniRx.Async.Internal
             base.SetCancellationToken(token);
         }
     }
+
+#endif
 }
 
 #endif

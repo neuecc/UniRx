@@ -2,7 +2,9 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+#if !UniRxLibrary
 using UnityEngine;
+#endif
 
 namespace UniRx.Async.Internal
 {
@@ -31,6 +33,7 @@ namespace UniRx.Async.Internal
                 return WellKnownNoReferenceContainsTypeInitialize(t.GetGenericArguments()[0]);
             }
 
+#if !UniRxLibrary
             // or add other wellknown types(Vector, etc...) here
             if (t == typeof(Vector2)) return true;
             if (t == typeof(Vector3)) return true;
@@ -39,6 +42,7 @@ namespace UniRx.Async.Internal
             if (t == typeof(Rect)) return true;
             if (t == typeof(Bounds)) return true;
             if (t == typeof(Quaternion)) return true;
+#endif
 
             return false;
         }
