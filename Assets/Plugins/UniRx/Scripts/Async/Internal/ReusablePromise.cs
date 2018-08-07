@@ -289,6 +289,45 @@ namespace UniRx.Async.Internal
             // ignore
         }
     }
+
+
+    // policy of playerloop cancellation.
+    // does not raise cancel immediately, check only MoveNext timing(for performance).
+    
+    // TODO:
+    public abstract class PlayerLoopReusablePromiseBase : ReusablePromise, IPlayerLoopItem
+    {
+        readonly PlayerLoopTiming timing;
+        CancellationToken cancellation;
+
+        bool isRunning = false;
+
+        public abstract bool MoveNext();
+
+        public override bool IsCompleted
+        {
+            get
+            {
+                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
+
+                if (!isRunning)
+                {
+                    isRunning = true;
+                    ResetStatus();
+                    PlayerLoopHelper.AddAction(timing, this);
+                }
+                return false;
+            }
+        }
+
+
+
+
+        public override void SetCancellationToken(CancellationToken token)
+        {
+            base.SetCancellationToken(token);
+        }
+    }
 }
 
 #endif
