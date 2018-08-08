@@ -60,9 +60,37 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\UnityTests\AsyncTestEnumerator.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Async\AsyncTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\AsyncTestSample.cs" />
     <Compile Include="Assets\Scripts\UnityTests\ChainingAssertion.Unity.cs" />
-    <Compile Include="Assets\Scripts\UnityTests\NewTestScript.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\AggregateTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\ArrayPoolTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\ContinueWithTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\ConversionTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\DisposableTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\DoTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\DurabilityTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\MicroCoroutineTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\Observable.ConcatTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\Observable.ConcurrencyTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\Observable.ErrorHandlingTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\Observable.Events.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\Observable.GeneratorTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\Observable.PagingTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\Observable.TimeTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\ObservableTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\QueueWorkerTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\RangeTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\ReactivePropertyTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\ReactriveDictionaryTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\SchedulerTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\SelectMany.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\SelectWhereOptimizeTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\SubjectTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\TakeTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\ToTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Rx\WhenAllTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\TestUtil.cs" />
     <None Include="Assets\Scripts\UnityTests\UnityTests.asmdef" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.2.0f2/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -702,7 +730,7 @@
   <PropertyGroup>
     <IncrementalCompiler>true</IncrementalCompiler>
     <CscToolPath>C:\Users\S02811\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.incrementalcompiler@0.0.42-preview.14\.bin</CscToolPath>
-    <DocumentationFile>53455</DocumentationFile>
+    <DocumentationFile>51237</DocumentationFile>
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
   </PropertyGroup>
 </Project>

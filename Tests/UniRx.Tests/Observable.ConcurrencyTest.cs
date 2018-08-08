@@ -9,6 +9,7 @@ namespace UniRx.Tests
     [TestClass]
     public class ObservableConcurrencyTest
     {
+
         [TestMethod]
         public void ObserveOnTest()
         {
