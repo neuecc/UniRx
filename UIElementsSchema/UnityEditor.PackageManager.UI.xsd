@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:editor="UnityEditor.Experimental.UIElements" xmlns:engine="UnityEngine.Experimental.UIElements" xmlns="UnityEditor.PackageManager.UI" elementFormDefault="qualified" targetNamespace="UnityEditor.PackageManager.UI" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="UnityEngine.Experimental.UIElements.xsd" namespace="UnityEngine.Experimental.UIElements" />
+  <xs:complexType name="PackageSearchFilterTabsType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="engine:VisualElement" />
+        </xs:sequence>
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="pickingMode" type="engine:VisualElement_pickingMode_Type" use="optional" />
+        <xs:attribute default="-1" name="focusIndex" type="xs:int" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PackageSearchFilterTabs" substitutionGroup="engine:VisualElement" type="PackageSearchFilterTabsType" />
+  <xs:complexType name="PackageItemType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="engine:VisualElement" />
+        </xs:sequence>
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="pickingMode" type="engine:VisualElement_pickingMode_Type" use="optional" />
+        <xs:attribute default="-1" name="focusIndex" type="xs:int" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PackageItem" substitutionGroup="engine:VisualElement" type="PackageItemType" />
+  <xs:complexType name="AlertType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="engine:VisualElement" />
+        </xs:sequence>
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="pickingMode" type="engine:VisualElement_pickingMode_Type" use="optional" />
+        <xs:attribute default="-1" name="focusIndex" type="xs:int" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Alert" substitutionGroup="engine:VisualElement" type="AlertType" />
+  <xs:complexType name="PackageListType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="engine:VisualElement" />
+        </xs:sequence>
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="pickingMode" type="engine:VisualElement_pickingMode_Type" use="optional" />
+        <xs:attribute default="-1" name="focusIndex" type="xs:int" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PackageList" substitutionGroup="engine:VisualElement" type="PackageListType" />
+  <xs:complexType name="PackageGroupType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="engine:VisualElement" />
+        </xs:sequence>
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="pickingMode" type="engine:VisualElement_pickingMode_Type" use="optional" />
+        <xs:attribute default="-1" name="focusIndex" type="xs:int" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PackageGroup" substitutionGroup="engine:VisualElement" type="PackageGroupType" />
+  <xs:complexType name="PackageDetailsType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="engine:VisualElement" />
+        </xs:sequence>
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="pickingMode" type="engine:VisualElement_pickingMode_Type" use="optional" />
+        <xs:attribute default="-1" name="focusIndex" type="xs:int" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PackageDetails" substitutionGroup="engine:VisualElement" type="PackageDetailsType" />
+  <xs:complexType name="LoadingSpinnerType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="engine:VisualElement" />
+        </xs:sequence>
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="pickingMode" type="engine:VisualElement_pickingMode_Type" use="optional" />
+        <xs:attribute default="-1" name="focusIndex" type="xs:int" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="LoadingSpinner" substitutionGroup="engine:VisualElement" type="LoadingSpinnerType" />
+  <xs:complexType name="PackagesLoadingType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="engine:VisualElement" />
+        </xs:sequence>
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="pickingMode" type="engine:VisualElement_pickingMode_Type" use="optional" />
+        <xs:attribute default="-1" name="focusIndex" type="xs:int" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PackagesLoading" substitutionGroup="engine:VisualElement" type="PackagesLoadingType" />
+</xs:schema>
