@@ -1,0 +1,13 @@
+{
+    "name": "UniRx.Examples",
+    "references": [
+        "UniRx",
+        "UniRx.Async"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
