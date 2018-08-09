@@ -2,6 +2,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using UniRx.Async.Internal;
@@ -10,49 +11,33 @@ namespace UniRx.Async
 {
     public partial struct UniTask
     {
-        public static UniTask SwitchToThreadPool()
+        public static SwitchToThreadPoolAwaitable SwitchToThreadPool()
         {
-            return new UniTask(new SwitchToThreadPoolPromise());
+            return new SwitchToThreadPoolAwaitable();
         }
 
-        public static UniTask SwitchToTaskPool(CancellationToken cancellationToken = default(CancellationToken))
+        public static SwitchToTaskPoolAwaitable SwitchToTaskPool()
         {
-            return new UniTask(new SwitchToTaskPoolPromise(cancellationToken));
+            return new SwitchToTaskPoolAwaitable();
         }
 
-        public static UniTask SwitchToSynchronizationContext()
+        public static SwitchToSynchronizationContextAwaitable SwitchToSynchronizationContext(SynchronizationContext syncContext)
         {
-            var current = SynchronizationContext.Current;
-            if (current == null)
-            {
-                return SwitchToThreadPool();
-            }
-            return SwitchToSynchronizationContext(current);
+            Guard.ThrowArgumentNullException(syncContext, nameof(syncContext));
+            return new SwitchToSynchronizationContextAwaitable(syncContext);
         }
+    }
 
-        public static UniTask SwitchToSynchronizationContext(SynchronizationContext syncContext)
-        {
-            return new UniTask(new SwitchToSynchronizationContextPromise(syncContext));
-        }
+    public struct SwitchToThreadPoolAwaitable
+    {
+        public Awaiter GetAwaiter() => new Awaiter();
 
-        class SwitchToThreadPoolPromise : IAwaiter
+        public struct Awaiter : ICriticalNotifyCompletion
         {
             static readonly WaitCallback switchToCallback = Callback;
-            CancellationToken cancellationToken;
 
-            public AwaiterStatus Status => cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled : AwaiterStatus.Pending;
-
-            public bool IsCompleted => cancellationToken.IsCancellationRequested ? true : false;
-
-            public void GetResult()
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-            }
-
-            public void SetCancellationToken(CancellationToken token)
-            {
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
-            }
+            public bool IsCompleted => false;
+            public void GetResult() { }
 
             public void OnCompleted(Action continuation)
             {
@@ -70,39 +55,27 @@ namespace UniRx.Async
                 continuation();
             }
         }
+    }
 
-        class SwitchToTaskPoolPromise : IAwaiter
+    public struct SwitchToTaskPoolAwaitable
+    {
+        public Awaiter GetAwaiter() => new Awaiter();
+
+        public struct Awaiter : ICriticalNotifyCompletion
         {
             static readonly Action<object> switchToCallback = Callback;
-            CancellationToken cancellationToken;
 
-            public SwitchToTaskPoolPromise(CancellationToken cancellationToken)
-            {
-                this.cancellationToken = cancellationToken;
-            }
-
-            public AwaiterStatus Status => cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled : AwaiterStatus.Pending;
-
-            public bool IsCompleted => cancellationToken.IsCancellationRequested ? true : false;
-
-            public void GetResult()
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-            }
-
-            public void SetCancellationToken(CancellationToken token)
-            {
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
-            }
+            public bool IsCompleted => false;
+            public void GetResult() { }
 
             public void OnCompleted(Action continuation)
             {
-                Task.Factory.StartNew(switchToCallback, continuation, cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+                Task.Factory.StartNew(switchToCallback, continuation, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
             }
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                Task.Factory.StartNew(switchToCallback, continuation, cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+                Task.Factory.StartNew(switchToCallback, continuation, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
             }
 
             static void Callback(object state)
@@ -111,31 +84,31 @@ namespace UniRx.Async
                 continuation();
             }
         }
+    }
 
-        class SwitchToSynchronizationContextPromise : IAwaiter
+    public struct SwitchToSynchronizationContextAwaitable
+    {
+        readonly SynchronizationContext synchronizationContext;
+
+        public SwitchToSynchronizationContextAwaitable(SynchronizationContext synchronizationContext)
+        {
+            this.synchronizationContext = synchronizationContext;
+        }
+
+        public Awaiter GetAwaiter() => new Awaiter(synchronizationContext);
+
+        public struct Awaiter : ICriticalNotifyCompletion
         {
             static readonly SendOrPostCallback switchToCallback = Callback;
-            CancellationToken cancellationToken;
-            SynchronizationContext synchronizationContext;
+            readonly SynchronizationContext synchronizationContext;
 
-            public SwitchToSynchronizationContextPromise(SynchronizationContext synchronizationContext)
+            public Awaiter(SynchronizationContext synchronizationContext)
             {
                 this.synchronizationContext = synchronizationContext;
             }
 
-            public AwaiterStatus Status => cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled : AwaiterStatus.Pending;
-
-            public bool IsCompleted => cancellationToken.IsCancellationRequested ? true : false;
-
-            public void GetResult()
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-            }
-
-            public void SetCancellationToken(CancellationToken token)
-            {
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
-            }
+            public bool IsCompleted => false;
+            public void GetResult() { }
 
             public void OnCompleted(Action continuation)
             {

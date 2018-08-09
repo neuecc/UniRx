@@ -2,6 +2,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using UniRx.Async.Internal;
 using UnityEngine;
@@ -10,7 +11,12 @@ namespace UniRx.Async
 {
     public partial struct UniTask
     {
-        public static UniTask Yield(PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static YieldAwaitable Yield(PlayerLoopTiming timing = PlayerLoopTiming.Update)
+        {
+            return new YieldAwaitable(timing);
+        }
+
+        public static UniTask Yield(PlayerLoopTiming timing, CancellationToken cancellationToken)
         {
             return new UniTask(new YieldPromise(timing, cancellationToken));
         }
@@ -288,6 +294,47 @@ namespace UniRx.Async
             {
                 if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
                 CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
+            }
+        }
+    }
+
+    // optimize for single continuation
+
+    public struct YieldAwaitable
+    {
+        readonly PlayerLoopTiming timing;
+
+        public YieldAwaitable(PlayerLoopTiming timing)
+        {
+            this.timing = timing;
+        }
+
+        public Awaiter GetAwaiter()
+        {
+            return new Awaiter(timing);
+        }
+
+        public struct Awaiter : ICriticalNotifyCompletion
+        {
+            readonly PlayerLoopTiming timing;
+
+            public Awaiter(PlayerLoopTiming timing)
+            {
+                this.timing = timing;
+            }
+
+            public bool IsCompleted => false;
+
+            public void GetResult() { }
+
+            public void OnCompleted(Action continuation)
+            {
+                PlayerLoopHelper.AddContinuation(timing, continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                PlayerLoopHelper.AddContinuation(timing, continuation);
             }
         }
     }

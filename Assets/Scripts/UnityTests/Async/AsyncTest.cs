@@ -93,7 +93,7 @@ namespace UniRx.AsyncTests
         public IEnumerator WhenAll() => UniTask.ToCoroutine(async () =>
         {
             var a = UniTask.FromResult(999);
-            var b = UniTask.Yield().AsAsyncUnitUniTask();
+            var b = UniTask.Yield(PlayerLoopTiming.Update, CancellationToken.None).AsAsyncUnitUniTask();
             var c = UniTask.DelayFrame(99);
 
             var (a2, b2, c2) = await UniTask.WhenAll(a, b, c);
@@ -106,7 +106,7 @@ namespace UniRx.AsyncTests
         public IEnumerator WhenAny() => UniTask.ToCoroutine(async () =>
         {
             var a = UniTask.FromResult(999);
-            var b = UniTask.Yield().AsAsyncUnitUniTask();
+            var b = UniTask.Yield(PlayerLoopTiming.Update, CancellationToken.None).AsAsyncUnitUniTask();
             var c = UniTask.DelayFrame(99);
 
             var (win, a2, b2, c2) = await UniTask.WhenAny(a, b, c);
@@ -298,7 +298,7 @@ namespace UniRx.AsyncTests
             yield return null;
         }
 
-    
+
         //// You can return type as struct UniTask<T>, it is unity specialized lightweight alternative of Task<T>
         //// no(or less) allocation and fast excution for zero overhead async/await integrate with Unity
         //async UniTask<string> DemoAsync()

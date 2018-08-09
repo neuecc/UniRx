@@ -706,8 +706,8 @@
   -->
   <PropertyGroup>
     <IncrementalCompiler>true</IncrementalCompiler>
-    <CscToolPath>C:\Users\S02811\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.incrementalcompiler@0.0.42-preview.14\.bin</CscToolPath>
-    <DocumentationFile>51237</DocumentationFile>
+    <CscToolPath>C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.incrementalcompiler@0.0.42-preview.14\.bin</CscToolPath>
+    <DocumentationFile>42476</DocumentationFile>
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
   </PropertyGroup>
 </Project>
