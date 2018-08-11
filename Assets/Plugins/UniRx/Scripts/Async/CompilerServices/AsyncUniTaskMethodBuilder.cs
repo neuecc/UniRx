@@ -53,7 +53,14 @@ namespace UniRx.Async.CompilerServices
             {
                 promise = new UniTaskCompletionSource();
             }
-            promise.TrySetException(exception);
+            if (exception is OperationCanceledException ex)
+            {
+                promise.TrySetCanceled(ex);
+            }
+            else
+            {
+                promise.TrySetException(exception);
+            }
         }
 
         // 4. SetResult
@@ -177,7 +184,14 @@ namespace UniRx.Async.CompilerServices
             {
                 promise = new UniTaskCompletionSource<T>();
             }
-            promise.TrySetException(exception);
+            if (exception is OperationCanceledException ex)
+            {
+                promise.TrySetCanceled(ex);
+            }
+            else
+            {
+                promise.TrySetException(exception);
+            }
         }
 
         // 4. SetResult

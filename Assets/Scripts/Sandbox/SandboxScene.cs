@@ -17,7 +17,34 @@ public class SandboxScene : MonoBehaviour
 
     void Start()
     {
-        DoAsync();//.Forget();
+        RunAsync().Forget();
+    }
+
+    private async UniTask RunAsync()
+    {
+        var a = RunAsyncInternal();
+        try
+        {
+            await a;
+        }
+        finally
+        {
+            Debug.Log("RunAsync status= " + a.Status);
+        }
+    }
+
+    private async UniTask RunAsyncInternal()
+    {
+        var tcs = new UniTaskCompletionSource();
+        tcs.TrySetCanceled();
+        try
+        {
+            await tcs.Task;
+        }
+        finally
+        {
+            Debug.Log("RunAsyncInternal status= " + tcs.Task.Status);
+        }
     }
 
     async void DoAsync()

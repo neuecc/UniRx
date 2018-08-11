@@ -144,6 +144,17 @@ namespace UniRx.Async
             return false;
         }
 
+        public bool TrySetCanceled(OperationCanceledException exception)
+        {
+            if (Interlocked.CompareExchange(ref state, Canceled, Pending) == Pending)
+            {
+                this.exception = ExceptionDispatchInfo.Capture(exception);
+                TryInvokeContinuation();
+                return true;
+            }
+            return false;
+        }
+
         void INotifyCompletion.OnCompleted(Action continuation)
         {
             ((ICriticalNotifyCompletion)this).UnsafeOnCompleted(continuation);
@@ -298,6 +309,17 @@ namespace UniRx.Async
         {
             if (Interlocked.CompareExchange(ref state, Canceled, Pending) == Pending)
             {
+                TryInvokeContinuation();
+                return true;
+            }
+            return false;
+        }
+
+        public bool TrySetCanceled(OperationCanceledException exception)
+        {
+            if (Interlocked.CompareExchange(ref state, Canceled, Pending) == Pending)
+            {
+                this.exception = ExceptionDispatchInfo.Capture(exception);
                 TryInvokeContinuation();
                 return true;
             }

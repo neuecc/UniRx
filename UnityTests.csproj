@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\UnityTests\Async\AsyncTest.cs" />
+    <Compile Include="Assets\Scripts\UnityTests\Async\WhenAnyTest.cs" />
     <Compile Include="Assets\Scripts\UnityTests\AsyncTestSample.cs" />
     <Compile Include="Assets\Scripts\UnityTests\ChainingAssertion.Unity.cs" />
     <Compile Include="Assets\Scripts\UnityTests\Rx\AggregateTest.cs" />
@@ -721,7 +722,7 @@
   <PropertyGroup>
     <IncrementalCompiler>true</IncrementalCompiler>
     <CscToolPath>C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.incrementalcompiler@0.0.42-preview.14\.bin</CscToolPath>
-    <DocumentationFile>42476</DocumentationFile>
+    <DocumentationFile>3380</DocumentationFile>
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
   </PropertyGroup>
 </Project>
