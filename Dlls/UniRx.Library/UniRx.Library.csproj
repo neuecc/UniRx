@@ -135,6 +135,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTaskVoid.cs">
       <Link>Async\UniTaskVoid.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UnityEqualityComparer.cs">
+      <Link>Async\UnityEqualityComparer.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Disposables\BooleanDisposable.cs">
       <Link>Disposables\BooleanDisposable.cs</Link>
     </Compile>

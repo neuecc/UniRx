@@ -2,7 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+#if !UniRxLibrary
 using UnityEngine;
+#endif
 
 // share between UniRx and UniRx.Async
 
@@ -10,6 +12,7 @@ namespace UniRx
 {
     public static class UnityEqualityComparer
     {
+#if !UniRxLibrary
         public static readonly IEqualityComparer<Vector2> Vector2 = new Vector2EqualityComparer();
         public static readonly IEqualityComparer<Vector3> Vector3 = new Vector3EqualityComparer();
         public static readonly IEqualityComparer<Vector4> Vector4 = new Vector4EqualityComparer();
@@ -27,6 +30,7 @@ namespace UniRx
         static readonly RuntimeTypeHandle rectType = typeof(Rect).TypeHandle;
         static readonly RuntimeTypeHandle boundsType = typeof(Bounds).TypeHandle;
         static readonly RuntimeTypeHandle quaternionType = typeof(Quaternion).TypeHandle;
+#endif
 
 #if UNITY_2017_2_OR_NEWER
 
@@ -71,6 +75,7 @@ namespace UniRx
         {
             var t = type.TypeHandle;
 
+#if !UniRxLibrary
             if (t.Equals(vector2Type)) return (object)UnityEqualityComparer.Vector2;
             if (t.Equals(vector3Type)) return (object)UnityEqualityComparer.Vector3;
             if (t.Equals(vector4Type)) return (object)UnityEqualityComparer.Vector4;
@@ -78,6 +83,7 @@ namespace UniRx
             if (t.Equals(rectType)) return (object)UnityEqualityComparer.Rect;
             if (t.Equals(boundsType)) return (object)UnityEqualityComparer.Bounds;
             if (t.Equals(quaternionType)) return (object)UnityEqualityComparer.Quaternion;
+#endif
 
 #if UNITY_2017_2_OR_NEWER
 
@@ -90,6 +96,8 @@ namespace UniRx
 
             return null;
         }
+
+        #if !UniRxLibrary
 
         sealed class Vector2EqualityComparer : IEqualityComparer<Vector2>
         {
@@ -194,6 +202,8 @@ namespace UniRx
                 return obj.a.GetHashCode() ^ obj.r.GetHashCode() << 2 ^ obj.g.GetHashCode() >> 2 ^ obj.b.GetHashCode() >> 1;
             }
         }
+
+#endif
 
 #if UNITY_2017_2_OR_NEWER
 
