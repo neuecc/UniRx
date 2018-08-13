@@ -20,8 +20,7 @@ namespace UniRx.Async
         public static IProgress<T> CreateOnlyValueChanged<T>(Action<T> handler, IEqualityComparer<T> comparer = null)
         {
             if (handler == null) return NullProgress<T>.Instance;
-            // TODO:UnityEqualityComparer?
-            return new OnlyValueChangedProgress<T>(handler, comparer ?? EqualityComparer<T>.Default);
+            return new OnlyValueChangedProgress<T>(handler, comparer ?? UnityEqualityComparer.GetDefault<T>());
         }
 
         sealed class NullProgress<T> : IProgress<T>
