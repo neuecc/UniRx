@@ -81,6 +81,8 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\PlayerLoopRunner.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ReusablePromise.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\RuntimeHelpersAbstraction.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\TaskTracker.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\WeakDictionary.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\PlayerLoopHelper.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Progress.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncAnimatorTrigger.cs" />

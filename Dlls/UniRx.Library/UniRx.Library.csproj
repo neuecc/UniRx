@@ -102,6 +102,12 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\RuntimeHelpersAbstraction.cs">
       <Link>Async\Internal\RuntimeHelpersAbstraction.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\TaskTracker.cs">
+      <Link>InternalUtil\TaskTracker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\WeakDictionary.cs">
+      <Link>InternalUtil\WeakDictionary.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\PlayerLoopHelper.cs">
       <Link>Async\PlayerLoopHelper.cs</Link>
     </Compile>
