@@ -29,7 +29,7 @@ namespace UniRx.Async.CompilerServices
         public void SetException(Exception exception)
         {
 #if !UniRxLibrary
-            UnityEngine.Debug.LogException(exception);
+            UniTaskScheduler.PublishUnobservedTaskException(exception);
 #else
             Console.WriteLine(exception);
 #endif

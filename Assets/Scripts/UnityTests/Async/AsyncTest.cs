@@ -298,56 +298,73 @@ namespace UniRx.AsyncTests
             yield return null;
         }
 
+        [UnityTest]
+        public IEnumerator ExceptionUnobserved1() => UniTask.ToCoroutine(async () =>
+        {
+            bool calledEx = false;
+            Action<Exception> action = exx =>
+            {
+                calledEx = true;
+                exx.Message.Is("MyException");
+            };
 
-        //// You can return type as struct UniTask<T>, it is unity specialized lightweight alternative of Task<T>
-        //// no(or less) allocation and fast excution for zero overhead async/await integrate with Unity
-        //async UniTask<string> DemoAsync()
-        //{
-        //    // You can await Unity's AsyncObject
-        //    var asset = await Resources.LoadAsync<TextAsset>("foo");
+            UniTaskScheduler.UnobservedTaskException += action;
 
-        //    // .ConfigureAwait accepts progress callback
-        //    await SceneManager.LoadSceneAsync("scene2").ConfigureAwait(new Progress<float>(x => Debug.Log(x)));
+            var ex = InException1();
+            ex = default(UniTask);
 
-        //    // await frame-based operation(You can also pass TimeSpan, it is same as calculate frame-based)
-        //    await UniTask.Delay(100); // be careful, arg is not millisecond, is frame count
+            await UniTask.DelayFrame(3);
 
-        //    // like 'yield return WaitForEndOfFrame', or Rx's ObserveOn(scheduler)
-        //    await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
-        //    // You can await standard task
-        //    await Task.Run(() => 100);
+            await UniTask.DelayFrame(1);
 
-        //    // You can await IEnumerator coroutine
-        //    await ToaruCoroutineEnumerator();
+            calledEx.IsTrue();
 
-        //    // get async webrequest
-        //    async UniTask<string> GetTextAsync(UnityWebRequest req)
-        //    {
-        //        var op = await req.SendWebRequest();
-        //        return op.downloadHandler.text;
-        //    }
+            UniTaskScheduler.UnobservedTaskException -= action;
+        });
 
-        //    var task1 = GetTextAsync(UnityWebRequest.Get("http://google.com"));
-        //    var task2 = GetTextAsync(UnityWebRequest.Get("http://bing.com"));
-        //    var task3 = GetTextAsync(UnityWebRequest.Get("http://yahoo.com"));
+        [UnityTest]
+        public IEnumerator ExceptionUnobserved2() => UniTask.ToCoroutine(async () =>
+        {
+            bool calledEx = false;
+            Action<Exception> action = exx =>
+            {
+                calledEx = true;
+                exx.Message.Is("MyException");
+            };
 
-        //    // concurrent async-wait and get result easily by tuple syntax
-        //    var (google, bing, yahoo) = await UniTask.WhenAll(task1, task2, task3);
+            UniTaskScheduler.UnobservedTaskException += action;
 
-        //    // You can handle timeout easily
-        //    await GetTextAsync(UnityWebRequest.Get("http://unity.com")).Timeout(TimeSpan.FromMilliseconds(300));
+            var ex = InException2();
+            ex = default(UniTask<int>);
 
-        //    // return async-value.(or you can use `UniTask`(no result), `UniTaskVoid`(fire and forget)).
-        //    return (asset as TextAsset)?.text ?? throw new InvalidOperationException("Asset not found");
-        //}
+            await UniTask.DelayFrame(3);
 
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
-        //public async Task<string> GetTextAsync(string path)
-        //{
-        //    var asset = await Resources.LoadAsync<TextAsset>(path);
-        //    return (asset as TextAsset).text;
-        //}
+            await UniTask.DelayFrame(1);
+
+            calledEx.IsTrue();
+
+            UniTaskScheduler.UnobservedTaskException -= action;
+        });
+
+        async UniTask InException1()
+        {
+            await UniTask.Yield();
+            throw new Exception("MyException");
+        }
+
+        async UniTask<int> InException2()
+        {
+            await UniTask.Yield();
+            throw new Exception("MyException");
+        }
 #endif
 #endif
     }

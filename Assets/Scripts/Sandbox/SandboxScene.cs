@@ -17,11 +17,12 @@ public class SandboxScene : MonoBehaviour
 
     void Start()
     {
-        RunAsync().Forget();
+        var _ = RunAsync();
     }
 
     private async UniTask RunAsync()
     {
+        await UniTask.Yield();
         var a = RunAsyncInternal();
         try
         {
@@ -35,6 +36,7 @@ public class SandboxScene : MonoBehaviour
 
     private async UniTask RunAsyncInternal()
     {
+        await UniTask.Yield();
         var tcs = new UniTaskCompletionSource();
         tcs.TrySetCanceled();
         try
@@ -56,7 +58,7 @@ public class SandboxScene : MonoBehaviour
         await UniTask.SwitchToTaskPool();
 
 
-        
+
 
         Debug.Log("WHOO=" + Thread.CurrentThread.ManagedThreadId);
         Thread.Sleep(TimeSpan.FromSeconds(3));
