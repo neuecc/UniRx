@@ -1,0 +1,12 @@
+{
+    "name": "UniRx.Async.Editor",
+    "references": [
+        "UniRx.Async"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

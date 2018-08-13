@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "UniRx.Examples.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "Assembly-CSharp.csproj", "{C46B99A5-0F0F-2FEE-50C8-DAE79AA3F247}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "UniRx.Async.Editor.csproj", "{AC634E5B-708C-5977-C4DC-E09142D40887}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRxAnalyzer", "Analyzer\UniRxAnalyzer\UniRxAnalyzer\UniRxAnalyzer.csproj", "{08E3D837-5096-4CB4-84B2-149000DC691D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRxAnalyzer.Test", "Analyzer\UniRxAnalyzer\UniRxAnalyzer.Test\UniRxAnalyzer.Test.csproj", "{7CB72B4B-5866-45E6-AA99-1323D26A293F}"
@@ -49,6 +51,10 @@ Global
 		{C46B99A5-0F0F-2FEE-50C8-DAE79AA3F247}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C46B99A5-0F0F-2FEE-50C8-DAE79AA3F247}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C46B99A5-0F0F-2FEE-50C8-DAE79AA3F247}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC634E5B-708C-5977-C4DC-E09142D40887}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC634E5B-708C-5977-C4DC-E09142D40887}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC634E5B-708C-5977-C4DC-E09142D40887}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC634E5B-708C-5977-C4DC-E09142D40887}.Release|Any CPU.Build.0 = Release|Any CPU
 		{08E3D837-5096-4CB4-84B2-149000DC691D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{08E3D837-5096-4CB4-84B2-149000DC691D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08E3D837-5096-4CB4-84B2-149000DC691D}.Release|Any CPU.ActiveCfg = Release|Any CPU
