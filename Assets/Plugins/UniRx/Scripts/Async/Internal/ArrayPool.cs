@@ -10,7 +10,7 @@ namespace UniRx.Async.Internal
     public sealed class ArrayPool<T> // public, can use from other assembly.
     {
         // Same size as System.Buffers.DefaultArrayPool<T>
-        const int DefaultMaxNumberOfArraysPerBucket = 1;
+        const int DefaultMaxNumberOfArraysPerBucket = 50;
 
         static readonly T[] EmptyArray = new T[0];
 
