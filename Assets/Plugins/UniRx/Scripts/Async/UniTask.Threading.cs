@@ -23,7 +23,7 @@ namespace UniRx.Async
 
         public static SwitchToSynchronizationContextAwaitable SwitchToSynchronizationContext(SynchronizationContext syncContext)
         {
-            Guard.ThrowArgumentNullException(syncContext, nameof(syncContext));
+            Error.ThrowArgumentNullException(syncContext, nameof(syncContext));
             return new SwitchToSynchronizationContextAwaitable(syncContext);
         }
     }
