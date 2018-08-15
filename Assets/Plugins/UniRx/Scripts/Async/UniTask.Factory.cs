@@ -66,6 +66,30 @@ namespace UniRx.Async
             return new UniTask<T>(promise);
         }
 
+        /// <summary>shorthand of new UniTask[T](Func[UniTask[T]] factory)</summary>
+        public static UniTask<T> Lazy<T>(Func<UniTask<T>> factory)
+        {
+            return new UniTask<T>(factory);
+        }
+
+        /// <summary>
+        /// helper of create add UniTaskVoid to delegate.
+        /// For example: FooEvent += () => UniTask.Void(async () => { /* */ })
+        /// </summary>
+        public static void Void(Func<UniTask> asyncAction)
+        {
+            asyncAction().Forget();
+        }
+
+        /// <summary>
+        /// helper of create add UniTaskVoid to delegate.
+        /// For example: FooEvent += (sender, e) => UniTask.Void(async arg => { /* */ }, (sender, e))
+        /// </summary>
+        public static void Void<T>(Func<T, UniTask> asyncAction, T state)
+        {
+            asyncAction(state).Forget();
+        }
+
         static class CanceledUniTaskCache<T>
         {
             public static readonly UniTask<T> Task;

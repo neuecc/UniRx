@@ -3,16 +3,13 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
-using UniRx.Async.Triggers;
 using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
-    public static class UniTaskExtensions
+    public static partial class UniTaskExtensions
     {
         /// <summary>
         /// Convert UniTask -> UniTask[AsyncUnit].
@@ -321,18 +318,6 @@ namespace UniRx.Async
         public static async UniTask Unwrap<T>(this UniTask<UniTask> task)
         {
             await await task;
-        }
-
-        // shortcut of WhenAll
-
-        public static UniTask.Awaiter GetAwaiter(this IEnumerable<UniTask> tasks)
-        {
-            return UniTask.WhenAll(tasks).GetAwaiter();
-        }
-
-        public static UniTask<T[]>.Awaiter GetAwaiter<T>(this IEnumerable<UniTask<T>> tasks)
-        {
-            return UniTask.WhenAll(tasks).GetAwaiter();
         }
 
         class ToCoroutineEnumerator : IEnumerator
