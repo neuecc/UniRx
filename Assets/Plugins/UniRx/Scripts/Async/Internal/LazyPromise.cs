@@ -10,7 +10,6 @@ namespace UniRx.Async.Internal
     {
         Func<UniTask> factory;
         UniTask value;
-        CancellationToken token;
 
         public LazyPromise(Func<UniTask> factory)
         {
@@ -23,10 +22,6 @@ namespace UniRx.Async.Internal
             if (f != null)
             {
                 value = f();
-                if (token != CancellationToken.None)
-                {
-                    value.GetAwaiter().SetCancellationToken(token);
-                }
             }
         }
 
@@ -43,10 +38,8 @@ namespace UniRx.Async.Internal
         {
             get
             {
-                {
-                    Create();
-                    return value.Status;
-                }
+                Create();
+                return value.Status;
             }
         }
 
@@ -71,25 +64,12 @@ namespace UniRx.Async.Internal
         {
             UnsafeOnCompleted(continuation);
         }
-
-        public void SetCancellationToken(CancellationToken token)
-        {
-            if (factory == null)
-            {
-                value.GetAwaiter().SetCancellationToken(token);
-            }
-            else
-            {
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref this.token, token);
-            }
-        }
     }
 
     internal sealed class LazyPromise<T> : IAwaiter<T>
     {
         Func<UniTask<T>> factory;
         UniTask<T> value;
-        CancellationToken token;
 
         public LazyPromise(Func<UniTask<T>> factory)
         {
@@ -102,10 +82,6 @@ namespace UniRx.Async.Internal
             if (f != null)
             {
                 value = f();
-                if (token != CancellationToken.None)
-                {
-                    value.GetAwaiter().SetCancellationToken(token);
-                }
             }
         }
 
@@ -122,10 +98,8 @@ namespace UniRx.Async.Internal
         {
             get
             {
-                {
                     Create();
                     return value.Status;
-                }
             }
         }
 
@@ -149,105 +123,6 @@ namespace UniRx.Async.Internal
         public void OnCompleted(Action continuation)
         {
             UnsafeOnCompleted(continuation);
-        }
-
-        public void SetCancellationToken(CancellationToken token)
-        {
-            if (factory == null)
-            {
-                value.GetAwaiter().SetCancellationToken(token);
-            }
-            else
-            {
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref this.token, token);
-            }
-        }
-    }
-
-    // TODO:Nanika Kaku...!
-    internal sealed class RetriableLazyPromise : IAwaiter
-    {
-        Func<UniTask> factory;
-        UniTask value;
-        CancellationToken token;
-
-        public RetriableLazyPromise(Func<UniTask> factory)
-        {
-            this.factory = factory;
-        }
-
-        void Create()
-        {
-            var f = Interlocked.Exchange(ref factory, null);
-            if (f != null)
-            {
-                value = f();
-                if (token != CancellationToken.None)
-                {
-                    value.GetAwaiter().SetCancellationToken(token);
-                }
-            }
-        }
-
-        public bool IsCompleted
-        {
-            get
-            {
-                Create();
-                return value.IsCompleted;
-            }
-        }
-
-        public AwaiterStatus Status
-        {
-            get
-            {
-                {
-                    Create();
-                    return value.Status;
-                }
-            }
-        }
-
-        public void GetResult()
-        {
-            if (Status == AwaiterStatus.Succeeded)
-            {
-                factory = null; // complete.
-            }
-            else
-            {
-                value = default(UniTask);
-            }
-            value.GetResult();
-        }
-
-        void IAwaiter.GetResult()
-        {
-            GetResult();
-        }
-
-        public void UnsafeOnCompleted(Action continuation)
-        {
-            Create();
-            value.GetAwaiter().UnsafeOnCompleted(continuation);
-        }
-
-        public void OnCompleted(Action continuation)
-        {
-            UnsafeOnCompleted(continuation);
-        }
-
-        public void SetCancellationToken(CancellationToken token)
-        {
-            if (factory == null)
-            {
-                value.GetAwaiter().SetCancellationToken(token);
-            }
-            else
-            {
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref this.token, token);
-            }
         }
     }
 }

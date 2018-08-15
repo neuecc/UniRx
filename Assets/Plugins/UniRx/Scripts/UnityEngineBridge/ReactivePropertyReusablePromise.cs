@@ -109,12 +109,6 @@ namespace UniRx
                 }
             }
         }
-
-        public void SetCancellationToken(CancellationToken token)
-        {
-            // TODO:...
-            throw new NotImplementedException();
-        }
     }
 }
 

@@ -2,7 +2,6 @@
 #pragma warning disable CS1591
 
 using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace UniRx.Async
 {
@@ -21,7 +20,6 @@ namespace UniRx.Async
     public interface IAwaiter : ICriticalNotifyCompletion
     {
         AwaiterStatus Status { get; }
-        void SetCancellationToken(CancellationToken token);
         bool IsCompleted { get; }
         void GetResult();
     }
@@ -31,6 +29,20 @@ namespace UniRx.Async
         new T GetResult();
     }
 
+    public static class AwaiterStatusExtensions
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsCompleted(this AwaiterStatus status)
+        {
+            return status != AwaiterStatus.Pending;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsCompletedSuccessfully(this AwaiterStatus status)
+        {
+            return status == AwaiterStatus.Succeeded;
+        }
+    }
 }
 
 #endif

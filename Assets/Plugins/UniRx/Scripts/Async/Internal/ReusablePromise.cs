@@ -144,11 +144,6 @@ namespace UniRx.Async.Internal
                 }
             }
         }
-
-        public virtual void SetCancellationToken(CancellationToken token)
-        {
-            // ignore
-        }
     }
 
     public class ReusablePromise<T> : IAwaiter<T>, ICancelablePromise
@@ -283,11 +278,6 @@ namespace UniRx.Async.Internal
                 }
             }
         }
-
-        public virtual void SetCancellationToken(CancellationToken token)
-        {
-            // ignore
-        }
     }
 
 
@@ -320,14 +310,6 @@ namespace UniRx.Async.Internal
                 }
                 return false;
             }
-        }
-
-
-
-
-        public override void SetCancellationToken(CancellationToken token)
-        {
-            base.SetCancellationToken(token);
         }
     }
 

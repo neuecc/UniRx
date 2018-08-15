@@ -107,12 +107,6 @@ namespace UniRx.Async
 
                 return true;
             }
-
-            public override void SetCancellationToken(CancellationToken token)
-            {
-                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
-            }
         }
 
         class WaitWhilePromise : ReusablePromise, IPlayerLoopItem
@@ -176,12 +170,6 @@ namespace UniRx.Async
                 }
 
                 return true;
-            }
-
-            public override void SetCancellationToken(CancellationToken token)
-            {
-                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
             }
         }
 
@@ -261,12 +249,6 @@ namespace UniRx.Async
                 currentValue = nextValue;
                 TrySetResult(nextValue);
                 return false;
-            }
-
-            public override void SetCancellationToken(CancellationToken token)
-            {
-                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
             }
         }
 
@@ -348,12 +330,6 @@ namespace UniRx.Async
                 TrySetResult((false, nextValue));
                 return false;
             }
-
-            public override void SetCancellationToken(CancellationToken token)
-            {
-                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
-            }
         }
 
         class WaitUntilValueChangedStandardObjectPromise<T, U> : ReusablePromise<U>, IPlayerLoopItem
@@ -432,12 +408,6 @@ namespace UniRx.Async
                 currentValue = nextValue;
                 TrySetResult(nextValue);
                 return false;
-            }
-
-            public override void SetCancellationToken(CancellationToken token)
-            {
-                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
             }
         }
     }

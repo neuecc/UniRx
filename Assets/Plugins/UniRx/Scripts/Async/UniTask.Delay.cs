@@ -102,12 +102,6 @@ namespace UniRx.Async
 
                 return false;
             }
-
-            public override void SetCancellationToken(CancellationToken token)
-            {
-                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
-            }
         }
 
         class DelayFramePromise : ReusablePromise<int>, IPlayerLoopItem
@@ -163,12 +157,6 @@ namespace UniRx.Async
                 currentFrameCount++;
                 return true;
             }
-
-            public override void SetCancellationToken(CancellationToken token)
-            {
-                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
-            }
         }
 
         class DelayPromise : ReusablePromise, IPlayerLoopItem
@@ -222,12 +210,6 @@ namespace UniRx.Async
                 }
 
                 return true;
-            }
-
-            public override void SetCancellationToken(CancellationToken token)
-            {
-                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
             }
         }
 
@@ -289,12 +271,6 @@ namespace UniRx.Async
 
                 return true;
             }
-
-            public override void SetCancellationToken(CancellationToken token)
-            {
-                if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return;
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellation, token);
-            }
         }
     }
 
@@ -312,6 +288,11 @@ namespace UniRx.Async
         public Awaiter GetAwaiter()
         {
             return new Awaiter(timing);
+        }
+
+        public UniTask ToUniTask()
+        {
+            return UniTask.Yield(timing, CancellationToken.None);
         }
 
         public struct Awaiter : ICriticalNotifyCompletion

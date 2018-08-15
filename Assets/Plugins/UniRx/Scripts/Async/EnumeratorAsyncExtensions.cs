@@ -112,11 +112,6 @@ namespace UniRx.Async
                 this.continuation = continuation;
             }
 
-            public void SetCancellationToken(CancellationToken token)
-            {
-                CancellationTokenHelper.TrySetOrLinkCancellationToken(ref cancellationToken, token);
-            }
-
             public void UnsafeOnCompleted(Action continuation)
             {
                 this.continuation = continuation;

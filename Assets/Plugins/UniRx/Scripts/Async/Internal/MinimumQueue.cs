@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace UniRx.Async.Internal
 {
-    // based corefx/Queue
+    // optimized version of Standard Queue<T>.
     public class MinimumQueue<T>
     {
         const int MinimumGrow = 4;
