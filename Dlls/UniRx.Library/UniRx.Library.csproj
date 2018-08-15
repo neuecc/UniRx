@@ -64,7 +64,7 @@
       <Link>Async\Compiler\AsyncUniTaskVoidMethodBuilder.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\CompilerServices\MoveNextRunner.cs">
-      <Link>Async\Internal\MoveNextRunner.cs</Link>
+      <Link>Async\Compiler\MoveNextRunner.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\IAwaiter.cs">
       <Link>Async\IAwaiter.cs</Link>
@@ -81,8 +81,8 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\CancellationTokenHelper.cs">
       <Link>Async\Internal\CancellationTokenHelper.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\Guard.cs">
-      <Link>Async\Internal\Guard.cs</Link>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\Error.cs">
+      <Link>Async\Internal\Error.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\Hack.cs">
       <Link>Async\Internal\Hack.cs</Link>
@@ -117,8 +117,14 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.cs">
       <Link>Async\UniTask.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.Extensions.cs">
+      <Link>Async\UniTask.Extensions.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.Factory.cs">
       <Link>Async\UniTask.Factory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.Shorthand.cs">
+      <Link>Async\UniTask.Shorthand.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.Threading.cs">
       <Link>Async\UniTask.Threading.cs</Link>
@@ -137,6 +143,9 @@
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTaskCompletionSource.cs">
       <Link>Async\UniTaskCompletionSource.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTaskScheduler.cs">
+      <Link>Async\UniTaskScheduler.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTaskVoid.cs">
       <Link>Async\UniTaskVoid.cs</Link>

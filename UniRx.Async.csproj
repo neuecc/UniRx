@@ -8,8 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{089999BB-1900-31E8-673F-067C92198C6A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -129,7 +128,6 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Bridge.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Delay.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTaskExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Factory.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Run.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.Threading.cs" />
@@ -139,6 +137,8 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAny.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTask.WhenAny.Generated.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTaskCompletionSource.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTaskExtensions.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTaskExtensions.Shorthand.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTaskScheduler.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTaskVoid.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.cs" />
@@ -146,7 +146,6 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityAsyncExtensions.uGUI.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UnityEqualityComparer.cs" />
     <None Include="Assets\Plugins\UniRx\Scripts\Async\UniRx.Async.asmdef" />
-    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\UniTaskExtensions.Shorthand.cs" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.2.0f2/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
     </Reference>

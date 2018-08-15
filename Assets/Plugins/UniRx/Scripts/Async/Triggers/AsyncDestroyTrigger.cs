@@ -12,8 +12,8 @@ namespace UniRx.Async.Triggers
     {
         bool called = false;
         UniTaskCompletionSource promise;
-        CancellationTokenSource cancellationTokenSource;
-        object canellationTokenSourceOrQueue;
+        CancellationTokenSource cancellationTokenSource; // main cancellation
+        object canellationTokenSourceOrQueue;            // external from AddCancellationTriggerOnDestory
 
         public CancellationToken CancellationToken
         {
@@ -47,6 +47,7 @@ namespace UniRx.Async.Triggers
                         q.Dequeue().Cancel();
                     }
                 }
+                canellationTokenSourceOrQueue = null;
             }
         }
 

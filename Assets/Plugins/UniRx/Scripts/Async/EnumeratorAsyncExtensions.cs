@@ -11,69 +11,81 @@ namespace UniRx.Async
 {
     public static class EnumeratorAsyncExtensions
     {
-        public static UniTask.Awaiter GetAwaiter(this IEnumerator enumerator)
+        public static IAwaiter GetAwaiter(this IEnumerator enumerator)
         {
-            return enumerator.ConfigureAwait().GetAwaiter();
+            var awaiter = new EnumeratorAwaiter(enumerator, CancellationToken.None);
+            if (!awaiter.IsCompleted)
+            {
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, awaiter);
+            }
+            return awaiter;
         }
 
         public static UniTask ToUniTask(this IEnumerator enumerator)
         {
-            return enumerator.ConfigureAwait();
+            var awaiter = new EnumeratorAwaiter(enumerator, CancellationToken.None);
+            if (!awaiter.IsCompleted)
+            {
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, awaiter);
+            }
+            return new UniTask(awaiter);
         }
 
         public static UniTask ConfigureAwait(this IEnumerator enumerator, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
             var awaiter = new EnumeratorAwaiter(enumerator, cancellationToken);
-            PlayerLoopHelper.AddAction(timing, awaiter);
+            if (!awaiter.IsCompleted)
+            {
+                PlayerLoopHelper.AddAction(timing, awaiter);
+            }
             return new UniTask(awaiter);
         }
 
         class EnumeratorAwaiter : IAwaiter, IPlayerLoopItem
         {
-            const int Unfinished = 0;
-            const int Success = 1;
-            const int Error = 2;
-            const int Canceled = 3;
-
             IEnumerator innerEnumerator;
             CancellationToken cancellationToken;
             Action continuation;
-            int completeState;
+            AwaiterStatus status;
             ExceptionDispatchInfo exception;
 
             public EnumeratorAwaiter(IEnumerator innerEnumerator, CancellationToken cancellationToken)
             {
-                this.innerEnumerator = innerEnumerator;
-                this.continuation = null;
-                this.completeState = Unfinished;
-                this.cancellationToken = cancellationToken;
-            }
-
-            public bool IsCompleted
-            {
-                get
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    return cancellationToken.IsCancellationRequested || (completeState != Unfinished);
+                    status = AwaiterStatus.Canceled;
+                    return;
                 }
+
+                this.innerEnumerator = innerEnumerator;
+                this.status = AwaiterStatus.Pending;
+                this.cancellationToken = cancellationToken;
+                this.continuation = null;
+
+                TaskTracker.TrackActiveTask(this, 2);
             }
 
-            public AwaiterStatus Status => (AwaiterStatus)completeState;
+            public bool IsCompleted => status.IsCompleted();
+
+            public AwaiterStatus Status => status;
 
             public void GetResult()
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (completeState == Success)
+                switch (status)
                 {
-                    return;
-                }
-                else if (completeState == Error)
-                {
-                    exception.Throw();
-                }
-                else if (completeState == Canceled)
-                {
-                    throw new OperationCanceledException();
+                    case AwaiterStatus.Succeeded:
+                        break;
+                    case AwaiterStatus.Pending:
+                        Error.ThrowNotYetCompleted();
+                        break;
+                    case AwaiterStatus.Faulted:
+                        exception.Throw();
+                        break;
+                    case AwaiterStatus.Canceled:
+                        Error.ThrowOperationCanceledException();
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -81,11 +93,11 @@ namespace UniRx.Async
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    completeState = Canceled;
-                    continuation?.Invoke();
+                    InvokeContinuation(AwaiterStatus.Canceled);
                     return false;
                 }
 
+                var success = false;
                 try
                 {
                     if (innerEnumerator.MoveNext())
@@ -94,26 +106,40 @@ namespace UniRx.Async
                     }
                     else
                     {
-                        completeState = Success;
+                        success = true;
                     }
                 }
                 catch (Exception ex)
                 {
                     exception = ExceptionDispatchInfo.Capture(ex);
-                    completeState = Error;
                 }
 
-                continuation?.Invoke();
+                InvokeContinuation(success ? AwaiterStatus.Succeeded : AwaiterStatus.Faulted);
                 return false;
+            }
+
+            void InvokeContinuation(AwaiterStatus status)
+            {
+                this.status = status;
+                var cont = this.continuation;
+
+                // cleanup
+                TaskTracker.RemoveTracking(this);
+                this.continuation = null;
+                this.cancellationToken = CancellationToken.None;
+                this.innerEnumerator = null;
+
+                if (cont != null) cont.Invoke();
             }
 
             public void OnCompleted(Action continuation)
             {
-                this.continuation = continuation;
+                UnsafeOnCompleted(continuation);
             }
 
             public void UnsafeOnCompleted(Action continuation)
             {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
                 this.continuation = continuation;
             }
         }

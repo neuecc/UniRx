@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using UniRx.Async.CompilerServices;
 using UniRx.Async.Internal;
 

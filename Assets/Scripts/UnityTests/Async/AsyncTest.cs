@@ -264,7 +264,7 @@ namespace UniRx.AsyncTests
             UniTask.DelayFrame(10).ContinueWith(_ => cts.Cancel()).Forget();
 
             var first = Time.frameCount;
-            var (canceled, value) = await UniTask.DelayFrame(100, cancellationToken: cts.Token).SupressOperationCanceledException();
+            var (canceled, value) = await UniTask.DelayFrame(100, cancellationToken: cts.Token).SuppressCancellationThrow();
 
             (Time.frameCount - first).Is(11); // 10 frame canceled
             canceled.IsTrue();

@@ -57,6 +57,23 @@ namespace UniRx.Async.Internal
         }
 
         [Conditional("UNITY_EDITOR")]
+        public static void TrackActiveTask(IAwaiter task, StackTrace stackTrace)
+        {
+            // TODO:Configuration Option(don't use stacktrace, etc.) if  == null...
+            tracking.TryAdd(task, (DateTime.UtcNow, CleanupAsyncStacktrace(stackTrace)));
+        }
+
+        public static StackTrace CaptureStackTrace(int skipFrame)
+        {
+#if UNITY_EDITOR
+            // TODO:Configureation Option... return null...
+            return new StackTrace(skipFrame + 1, true);
+#else
+            return null;
+#endif
+        }
+
+        [Conditional("UNITY_EDITOR")]
         public static void RemoveTracking(IAwaiter task)
         {
             // TODO:Configuration Option(don't use stacktrace, etc.)

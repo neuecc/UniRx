@@ -3,10 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using UniRx.Async.Internal;
-using UnityEngine;
 
 namespace UniRx.Async
 {
@@ -30,58 +28,30 @@ namespace UniRx.Async
             var unityObject = target as UnityEngine.Object;
             var isUnityObject = !object.ReferenceEquals(target, null); // don't use (unityObject == null)
 
-            if (isUnityObject)
-            {
-                return new WaitUntilValueChangedUnityObjectPromise<T, U>(target, monitorFunction, monitorTiming, equalityComparer, cancellationToken).Task;
-            }
-            else
-            {
-                return new WaitUntilValueChangedStandardObjectPromise<T, U>(target, monitorFunction, monitorTiming, equalityComparer, cancellationToken).Task;
-            }
+            return (isUnityObject)
+                ? new WaitUntilValueChangedUnityObjectPromise<T, U>(target, monitorFunction, equalityComparer, monitorTiming, cancellationToken).Task
+                : new WaitUntilValueChangedStandardObjectPromise<T, U>(target, monitorFunction, equalityComparer, monitorTiming, cancellationToken).Task;
         }
 
-        public static UniTask<(bool isDestroyed, U value)> WaitUntilValueChangedWithIsDestroyed<T, U>(T target, Func<T, U> monitorFunction, PlayerLoopTiming monitorTiming = PlayerLoopTiming.Update, IEqualityComparer<U> equalityComparer = null, CancellationToken cancellationToken = default(CancellationToken))
-          where T : UnityEngine.Object
-        {
-            return new WaitUntilValueChangedUnityObjectWithReturnIsDestoryedPromise<T, U>(target, monitorFunction, monitorTiming, equalityComparer, cancellationToken).Task;
-        }
-
-        class WaitUntilPromise : ReusablePromise, IPlayerLoopItem
+        class WaitUntilPromise : PlayerLoopReusablePromiseBase
         {
             readonly Func<bool> predicate;
-            readonly PlayerLoopTiming timing;
-            CancellationToken cancellation;
-            bool isRunning = false;
 
-            public WaitUntilPromise(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellation)
+            public WaitUntilPromise(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellationToken)
+                : base(timing, cancellationToken, 1)
             {
                 this.predicate = predicate;
-                this.timing = timing;
-                this.cancellation = cancellation;
             }
 
-            public override bool IsCompleted
+            protected override void OnRunningStart()
             {
-                get
-                {
-                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
-
-                    if (!isRunning)
-                    {
-                        isRunning = true;
-                        ResetStatus();
-                        PlayerLoopHelper.AddAction(timing, this);
-                    }
-
-                    return false;
-                }
             }
 
-            public bool MoveNext()
+            public override bool MoveNext()
             {
-                if (cancellation.IsCancellationRequested)
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    isRunning = false;
+                    Complete();
                     TrySetCanceled();
                     return false;
                 }
@@ -93,14 +63,14 @@ namespace UniRx.Async
                 }
                 catch (Exception ex)
                 {
-                    isRunning = false;
+                    Complete();
                     TrySetException(ex);
                     return false;
                 }
 
                 if (result)
                 {
-                    isRunning = false;
+                    Complete();
                     TrySetResult();
                     return false;
                 }
@@ -109,46 +79,28 @@ namespace UniRx.Async
             }
         }
 
-        class WaitWhilePromise : ReusablePromise, IPlayerLoopItem
+        class WaitWhilePromise : PlayerLoopReusablePromiseBase
         {
             readonly Func<bool> predicate;
-            readonly PlayerLoopTiming timing;
-            CancellationToken cancellation;
-            bool isRunning = false;
 
-            public WaitWhilePromise(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellation)
+            public WaitWhilePromise(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellationToken)
+                : base(timing, cancellationToken, 1)
             {
                 this.predicate = predicate;
-                this.timing = timing;
-                this.cancellation = cancellation;
             }
 
-            public override bool IsCompleted
+            protected override void OnRunningStart()
             {
-                get
-                {
-                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
-
-                    if (!isRunning)
-                    {
-                        isRunning = true;
-                        ResetStatus();
-                        PlayerLoopHelper.AddAction(timing, this);
-                    }
-
-                    return false;
-                }
             }
 
-            public bool MoveNext()
+            public override bool MoveNext()
             {
-                if (cancellation.IsCancellationRequested)
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    isRunning = false;
+                    Complete();
                     TrySetCanceled();
                     return false;
                 }
-
 
                 bool result = default(bool);
                 try
@@ -157,14 +109,14 @@ namespace UniRx.Async
                 }
                 catch (Exception ex)
                 {
-                    isRunning = false;
+                    Complete();
                     TrySetException(ex);
                     return false;
                 }
 
                 if (!result)
                 {
-                    isRunning = false;
+                    Complete();
                     TrySetResult();
                     return false;
                 }
@@ -173,238 +125,106 @@ namespace UniRx.Async
             }
         }
 
-        class WaitUntilValueChangedUnityObjectPromise<T, U> : ReusablePromise<U>, IPlayerLoopItem
+        // where T : UnityEngine.Object, can not add constraint
+        class WaitUntilValueChangedUnityObjectPromise<T, U> : PlayerLoopReusablePromiseBase<U>
         {
             readonly T target;
             readonly Func<T, U> monitorFunction;
             readonly IEqualityComparer<U> equalityComparer;
-            readonly PlayerLoopTiming timing;
             U currentValue;
-            CancellationToken cancellation;
-            bool isRunning = false;
 
-            public WaitUntilValueChangedUnityObjectPromise(T target, Func<T, U> monitorFunction, PlayerLoopTiming timing, IEqualityComparer<U> equalityComparer, CancellationToken cancellation)
+            public WaitUntilValueChangedUnityObjectPromise(T target, Func<T, U> monitorFunction, IEqualityComparer<U> equalityComparer, PlayerLoopTiming timing, CancellationToken cancellationToken)
+                : base(timing, cancellationToken, 1)
             {
                 this.target = target;
                 this.monitorFunction = monitorFunction;
                 this.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
                 this.currentValue = monitorFunction(target);
-                this.cancellation = cancellation;
-                this.timing = timing;
             }
 
-            public override bool IsCompleted
+            protected override void OnRunningStart()
             {
-                get
-                {
-                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
-
-                    if (!isRunning)
-                    {
-                        isRunning = true;
-                        ResetStatus();
-                        PlayerLoopHelper.AddAction(timing, this);
-                    }
-
-                    return false;
-                }
             }
 
-            public bool MoveNext()
+            public override bool MoveNext()
             {
-                if (cancellation.IsCancellationRequested)
+                if (cancellationToken.IsCancellationRequested || target == null) // destroyed = cancel.
                 {
-                    isRunning = false;
+                    Complete();
                     TrySetCanceled();
                     return false;
                 }
 
                 U nextValue = default(U);
-
-                if (target != null)
+                try
                 {
-                    try
+                    nextValue = monitorFunction(target);
+                    if (equalityComparer.Equals(currentValue, nextValue))
                     {
-                        nextValue = monitorFunction(target);
-                        if (equalityComparer.Equals(currentValue, nextValue))
-                        {
-                            return true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        isRunning = false;
-                        TrySetException(ex);
-                        return false;
+                        return true;
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    isRunning = false;
-                    TrySetException(new InvalidOperationException("Monitoring target is already destoyed."));
+                    Complete();
+                    TrySetException(ex);
                     return false;
                 }
 
-                isRunning = false;
+                Complete();
                 currentValue = nextValue;
                 TrySetResult(nextValue);
                 return false;
             }
         }
 
-        class WaitUntilValueChangedUnityObjectWithReturnIsDestoryedPromise<T, U> : ReusablePromise<(bool, U)>, IPlayerLoopItem
-          where T : UnityEngine.Object
-        {
-            readonly T target;
-            readonly Func<T, U> monitorFunction;
-            readonly IEqualityComparer<U> equalityComparer;
-            readonly PlayerLoopTiming timing;
-            U currentValue;
-            CancellationToken cancellation;
-            bool isRunning = false;
-
-            public WaitUntilValueChangedUnityObjectWithReturnIsDestoryedPromise(T target, Func<T, U> monitorFunction, PlayerLoopTiming timing, IEqualityComparer<U> equalityComparer, CancellationToken cancellation)
-            {
-                this.target = target;
-                this.monitorFunction = monitorFunction;
-                this.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
-                this.currentValue = monitorFunction(target);
-                this.cancellation = cancellation;
-                this.timing = timing;
-            }
-
-            public override bool IsCompleted
-            {
-                get
-                {
-                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
-
-                    if (!isRunning)
-                    {
-                        isRunning = true;
-                        ResetStatus();
-                        PlayerLoopHelper.AddAction(timing, this);
-                    }
-
-                    return false;
-                }
-            }
-
-            public bool MoveNext()
-            {
-                if (cancellation.IsCancellationRequested)
-                {
-                    isRunning = false;
-                    TrySetCanceled();
-                    return false;
-                }
-
-                U nextValue = default(U);
-
-                if (target != null)
-                {
-                    try
-                    {
-                        nextValue = monitorFunction(target);
-                        if (equalityComparer.Equals(currentValue, nextValue))
-                        {
-                            return true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        isRunning = false;
-                        TrySetException(ex);
-                        return false;
-                    }
-                }
-                else
-                {
-                    isRunning = false;
-                    TrySetResult((true, default(U)));
-                    return false;
-                }
-
-                isRunning = false;
-                currentValue = nextValue;
-                TrySetResult((false, nextValue));
-                return false;
-            }
-        }
-
-        class WaitUntilValueChangedStandardObjectPromise<T, U> : ReusablePromise<U>, IPlayerLoopItem
-          where T : class
+        class WaitUntilValueChangedStandardObjectPromise<T, U> : PlayerLoopReusablePromiseBase<U>
+            where T : class
         {
             readonly WeakReference<T> target;
             readonly Func<T, U> monitorFunction;
             readonly IEqualityComparer<U> equalityComparer;
             U currentValue;
-            readonly PlayerLoopTiming timing;
-            CancellationToken cancellation;
-            bool isRunning = false;
 
-            public WaitUntilValueChangedStandardObjectPromise(T target, Func<T, U> monitorFunction, PlayerLoopTiming timing, IEqualityComparer<U> equalityComparer, CancellationToken cancellation)
+            public WaitUntilValueChangedStandardObjectPromise(T target, Func<T, U> monitorFunction, IEqualityComparer<U> equalityComparer, PlayerLoopTiming timing, CancellationToken cancellationToken)
+                : base(timing, cancellationToken, 1)
             {
-                // use WeakReference, but maybe target was referenced by async-statemachine so always referenced...
-                this.target = new WeakReference<T>(target);
+                this.target = new WeakReference<T>(target, false); // wrap in WeakReference.
                 this.monitorFunction = monitorFunction;
                 this.equalityComparer = equalityComparer ?? UnityEqualityComparer.GetDefault<U>();
                 this.currentValue = monitorFunction(target);
-                this.cancellation = cancellation;
-                this.timing = timing;
             }
 
-            public override bool IsCompleted
+            protected override void OnRunningStart()
             {
-                get
-                {
-                    if (Status == AwaiterStatus.Canceled || Status == AwaiterStatus.Faulted) return true;
-
-                    if (!isRunning)
-                    {
-                        isRunning = true;
-                        PlayerLoopHelper.AddAction(timing, this);
-                    }
-                    return false;
-                }
             }
 
-            public bool MoveNext()
+            public override bool MoveNext()
             {
-                if (cancellation.IsCancellationRequested)
+                if (cancellationToken.IsCancellationRequested || !target.TryGetTarget(out var t))
                 {
-                    isRunning = false;
+                    Complete();
                     TrySetCanceled();
                     return false;
                 }
 
                 U nextValue = default(U);
-
-                if (target.TryGetTarget(out var t))
+                try
                 {
-                    try
+                    nextValue = monitorFunction(t);
+                    if (equalityComparer.Equals(currentValue, nextValue))
                     {
-                        nextValue = monitorFunction(t);
-                        if (equalityComparer.Equals(currentValue, nextValue))
-                        {
-                            return true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        isRunning = false;
-                        TrySetException(ex);
-                        return false;
+                        return true;
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    isRunning = false;
-                    TrySetException(new InvalidOperationException("Monitoring target is garbage collected."));
+                    Complete();
+                    TrySetException(ex);
                     return false;
                 }
 
-                isRunning = false;
+                Complete();
                 currentValue = nextValue;
                 TrySetResult(nextValue);
                 return false;
