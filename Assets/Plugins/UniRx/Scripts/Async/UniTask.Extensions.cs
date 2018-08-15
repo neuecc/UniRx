@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UniRx.Async.Triggers;
+using UniRx.Async.Internal;
 
 namespace UniRx.Async
 {
@@ -55,7 +56,7 @@ namespace UniRx.Async
         /// <summary>
         /// Convert Task -> UniTask.
         /// </summary>
-        public static UniTask AsUniTask(this Task task)
+        public static UniTask AsUniTask(this Task task, bool useCurrentSynchronizationContext = true)
         {
             var promise = new UniTaskCompletionSource<AsyncUnit>();
 
@@ -77,7 +78,7 @@ namespace UniRx.Async
                     default:
                         throw new NotSupportedException();
                 }
-            }, promise);
+            }, promise, useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
 
             return new UniTask(promise);
         }
@@ -102,9 +103,9 @@ namespace UniRx.Async
             // left, right both suppress operation canceled exception.
 
             var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).WithIsCanceled(delayCancellationTokenSource.Token);
+            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).SuppressCancellationThrow();
 
-            var (hasValue, value) = await UniTask.WhenAny(task.SupressOperationCanceledException(), timeoutTask);
+            var (hasValue, value) = await UniTask.WhenAny(task.SuppressCancellationThrow(), timeoutTask);
 
             if (!hasValue)
             {
@@ -120,28 +121,36 @@ namespace UniRx.Async
                 delayCancellationTokenSource.Cancel();
             }
 
-            if (value.isCanceled)
+            if (value.IsCanceled)
             {
-                throw new OperationCanceledException();
+                Error.ThrowOperationCanceledException();
             }
 
-            return value.value;
+            return value.Result;
         }
 
+        /// <summary>
+        /// Timeout with suppress OperationCanceledException. Returns (bool, IsCacneled).
+        /// </summary>
         public static async UniTask<bool> TimeoutWithoutException(this UniTask task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
             var v = await TimeoutWithoutException(task.AsAsyncUnitUniTask(), timeout, ignoreTimeScale, timeoutCheckTiming, taskCancellationTokenSource);
-            return v.isTimeout;
+            return v.IsTimeout;
         }
 
-        public static async UniTask<(bool isTimeout, T value)> TimeoutWithoutException<T>(this UniTask<T> task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
+
+        /// <summary>
+        /// Timeout with suppress OperationCanceledException. Returns (bool IsTimeout, T Result).
+        /// </summary>
+        public static async UniTask<(bool IsTimeout, T Result)> TimeoutWithoutException<T>(this UniTask<T> task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
             // left, right both suppress operation canceled exception.
 
             var delayCancellationTokenSource = new CancellationTokenSource();
-            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).WithIsCanceled(delayCancellationTokenSource.Token);
+            var timeoutTask = (UniTask)UniTask.Delay(timeout, ignoreTimeScale, timeoutCheckTiming).SuppressCancellationThrow();
 
-            var (hasValue, value) = await UniTask.WhenAny(task.SupressOperationCanceledException(), timeoutTask);
+            var (hasValue, value) = await UniTask.WhenAny(task.SuppressCancellationThrow(), timeoutTask);
+
             if (!hasValue)
             {
                 if (taskCancellationTokenSource != null)
@@ -156,45 +165,38 @@ namespace UniRx.Async
                 delayCancellationTokenSource.Cancel();
             }
 
-            if (value.isCanceled)
+            if (value.IsCanceled)
             {
-                throw new OperationCanceledException();
+                Error.ThrowOperationCanceledException();
             }
 
-            return (false, value.value);
+            return (false, value.Result);
         }
 
-        public static void Forget(this UniTask task, Action<Exception> exceptionHandler = null)
+        public static void Forget(this UniTask task)
         {
-            ForgetCore(task, exceptionHandler).Forget();
+            ForgetCore(task).Forget();
         }
 
-        static async UniTaskVoid ForgetCore(UniTask task, Action<Exception> exceptionHandler)
+        public static void Forget(this UniTask task, Action<Exception> exceptionHandler)
         {
-            try
+            if (exceptionHandler == null)
             {
-                await task;
+                ForgetCore(task).Forget();
             }
-            catch (Exception ex)
+            else
             {
-                if (exceptionHandler != null)
-                {
-                    exceptionHandler(ex);
-                    return;
-                }
-                else
-                {
-                    throw;
-                }
+                ForgetCoreWithCatch(task, exceptionHandler).Forget();
             }
         }
 
-        public static void Forget<T>(this UniTask<T> task, Action<Exception> exceptionHandler = null)
+        // UniTask to UniTaskVoid
+        static async UniTaskVoid ForgetCore(UniTask task)
         {
-            ForgetCore(task, exceptionHandler).Forget();
+            await task;
         }
 
-        static async UniTaskVoid ForgetCore<T>(UniTask<T> task, Action<Exception> exceptionHandler)
+        static async UniTaskVoid ForgetCoreWithCatch(UniTask task, Action<Exception> exceptionHandler)
         {
             try
             {
@@ -202,15 +204,42 @@ namespace UniRx.Async
             }
             catch (Exception ex)
             {
-                if (exceptionHandler != null)
-                {
-                    exceptionHandler(ex);
-                    return;
-                }
-                else
-                {
-                    throw;
-                }
+                exceptionHandler(ex);
+            }
+        }
+
+        public static void Forget<T>(this UniTask<T> task)
+        {
+            ForgetCore(task).Forget();
+        }
+
+        public static void Forget<T>(this UniTask<T> task, Action<Exception> exceptionHandler)
+        {
+            if (exceptionHandler == null)
+            {
+                ForgetCore(task).Forget();
+            }
+            else
+            {
+                ForgetCoreWithCatch(task, exceptionHandler).Forget();
+            }
+        }
+
+        // UniTask to UniTaskVoid
+        static async UniTaskVoid ForgetCore<T>(UniTask<T> task)
+        {
+            await task;
+        }
+
+        static async UniTaskVoid ForgetCoreWithCatch<T>(UniTask<T> task, Action<Exception> exceptionHandler)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception ex)
+            {
+                exceptionHandler(ex);
             }
         }
 
@@ -292,37 +321,6 @@ namespace UniRx.Async
         public static async UniTask Unwrap<T>(this UniTask<UniTask> task)
         {
             await await task;
-        }
-
-        public static UniTask<bool> SupressOperationCanceledException(this UniTask task)
-        {
-            return task.WithIsCanceled(CancellationToken.None);
-        }
-
-        public static UniTask<(bool isCanceled, T value)> SupressOperationCanceledException<T>(this UniTask<T> task)
-        {
-            return task.WithIsCanceled(CancellationToken.None);
-        }
-
-        public static UniTask<bool> WithIsCanceled(this UniTask task, CancellationTokenSource cts)
-        {
-            return task.WithIsCanceled(cts.Token);
-        }
-
-        public static UniTask<(bool isCanceled, T value)> WithIsCanceled<T>(this UniTask<T> task, CancellationTokenSource cts)
-        {
-            return task.WithIsCanceled(cts.Token);
-        }
-
-        public static UniTask<bool> WithIsCanceled(this UniTask task, Component component)
-        {
-            return WithIsCanceled(task, component);
-        }
-
-        public static UniTask<bool> WithIsCanceled(this UniTask task, GameObject gameObject)
-        {
-            var token = gameObject.GetCancellationTokenOnDestroy();
-            return task.WithIsCanceled(token);
         }
 
         // shortcut of WhenAll

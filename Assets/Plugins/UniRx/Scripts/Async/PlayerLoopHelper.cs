@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Experimental.LowLevel;
 using UniRx.Async.Internal;
+using System.Threading;
 
 namespace UniRx.Async
 {
@@ -48,6 +49,11 @@ namespace UniRx.Async
 
     public static class PlayerLoopHelper
     {
+        public static SynchronizationContext UnitySynchronizationContext => unitySynchronizationContetext;
+        public static int MainThreadId => mainThreadId;
+
+        static int mainThreadId;
+        static SynchronizationContext unitySynchronizationContetext;
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
 
@@ -75,6 +81,10 @@ namespace UniRx.Async
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Init()
         {
+            // capture default(unity) sync-context.
+            unitySynchronizationContetext = SynchronizationContext.Current;
+            mainThreadId = Thread.CurrentThread.ManagedThreadId;
+
             if (runners != null) return; // already initialized
 
             var playerLoop = PlayerLoop.GetDefaultPlayerLoop();

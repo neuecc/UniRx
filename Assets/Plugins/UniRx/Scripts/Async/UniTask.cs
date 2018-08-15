@@ -324,9 +324,9 @@ namespace UniRx.Async
         }
 
         /// <summary>
-        /// returns (bool isCanceled, T result) instead of throws OperationCanceledException.
+        /// returns (bool IsCanceled, T Result) instead of throws OperationCanceledException.
         /// </summary>
-        public UniTask<(bool isCanceled, T result)> SuppressCancellationThrow()
+        public UniTask<(bool IsCanceled, T Result)> SuppressCancellationThrow()
         {
             var status = Status;
             if (status == AwaiterStatus.Succeeded)
