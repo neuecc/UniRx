@@ -78,5 +78,14 @@ namespace UniRx.Async
             }
         }
     }
+
+    internal static class CompletedTasks
+    {
+        public static readonly UniTask<bool> True = UniTask.FromResult(true);
+        public static readonly UniTask<bool> False = UniTask.FromResult(false);
+        public static readonly UniTask<int> Zero = UniTask.FromResult(0);
+        public static readonly UniTask<int> MinusOne = UniTask.FromResult(-1);
+        public static readonly UniTask<int> One = UniTask.FromResult(1);
+    }
 }
 #endif

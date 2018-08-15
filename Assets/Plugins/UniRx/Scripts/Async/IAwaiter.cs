@@ -31,16 +31,32 @@ namespace UniRx.Async
 
     public static class AwaiterStatusExtensions
     {
+        /// <summary>!= Pending.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCompleted(this AwaiterStatus status)
         {
             return status != AwaiterStatus.Pending;
         }
 
+        /// <summary>== Succeeded.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCompletedSuccessfully(this AwaiterStatus status)
         {
             return status == AwaiterStatus.Succeeded;
+        }
+
+        /// <summary>== Canceled.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsCanceled(this AwaiterStatus status)
+        {
+            return status == AwaiterStatus.Canceled;
+        }
+
+        /// <summary>== Faulted.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFaulted(this AwaiterStatus status)
+        {
+            return status == AwaiterStatus.Faulted;
         }
     }
 }
