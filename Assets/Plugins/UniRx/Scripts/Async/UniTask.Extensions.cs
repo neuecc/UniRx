@@ -25,7 +25,7 @@ namespace UniRx.Async
         /// <summary>
         /// Convert Task[T] -> UniTask[T].
         /// </summary>
-        public static UniTask<T> AsUniTask<T>(this Task<T> task)
+        public static UniTask<T> AsUniTask<T>(this Task<T> task, bool useCurrentSynchronizationContext = true)
         {
             var promise = new UniTaskCompletionSource<T>();
 
@@ -47,7 +47,7 @@ namespace UniRx.Async
                     default:
                         throw new NotSupportedException();
                 }
-            }, promise);
+            }, promise, useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
 
             return new UniTask<T>(promise);
         }
