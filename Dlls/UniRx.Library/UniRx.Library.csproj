@@ -69,6 +69,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\CompilerServices\MoveNextRunner.cs">
       <Link>Async\Compiler\MoveNextRunner.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\DiagnosticsExtensions.cs">
+      <Link>Async\DiagnosticsExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\IAwaiter.cs">
       <Link>Async\IAwaiter.cs</Link>
     </Compile>

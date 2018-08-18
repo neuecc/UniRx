@@ -69,6 +69,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncUniTaskMethodBuilder.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncUniTaskVoidMethodBuilder.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\MoveNextRunner.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\DiagnosticsExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\EnumeratorAsyncExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\IAwaiter.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayPool.cs" />
