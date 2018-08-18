@@ -175,7 +175,7 @@ namespace UniRx.Async
             ForgetCore(task).Forget();
         }
 
-        public static void Forget(this UniTask task, Action<Exception> exceptionHandler)
+        public static void Forget(this UniTask task, Action<Exception> exceptionHandler, bool handleExceptionOnMainThread = true)
         {
             if (exceptionHandler == null)
             {
@@ -183,7 +183,7 @@ namespace UniRx.Async
             }
             else
             {
-                ForgetCoreWithCatch(task, exceptionHandler).Forget();
+                ForgetCoreWithCatch(task, exceptionHandler, handleExceptionOnMainThread).Forget();
             }
         }
 
@@ -193,7 +193,7 @@ namespace UniRx.Async
             await task;
         }
 
-        static async UniTaskVoid ForgetCoreWithCatch(UniTask task, Action<Exception> exceptionHandler)
+        static async UniTaskVoid ForgetCoreWithCatch(UniTask task, Action<Exception> exceptionHandler, bool handleExceptionOnMainThread)
         {
             try
             {
@@ -201,7 +201,18 @@ namespace UniRx.Async
             }
             catch (Exception ex)
             {
-                exceptionHandler(ex);
+                try
+                {
+                    if (handleExceptionOnMainThread)
+                    {
+                        await UniTask.SwitchToMainThread();
+                    }
+                    exceptionHandler(ex);
+                }
+                catch (Exception ex2)
+                {
+                    UniTaskScheduler.PublishUnobservedTaskException(ex2);
+                }
             }
         }
 
@@ -210,7 +221,7 @@ namespace UniRx.Async
             ForgetCore(task).Forget();
         }
 
-        public static void Forget<T>(this UniTask<T> task, Action<Exception> exceptionHandler)
+        public static void Forget<T>(this UniTask<T> task, Action<Exception> exceptionHandler, bool handleExceptionOnMainThread = true)
         {
             if (exceptionHandler == null)
             {
@@ -218,7 +229,7 @@ namespace UniRx.Async
             }
             else
             {
-                ForgetCoreWithCatch(task, exceptionHandler).Forget();
+                ForgetCoreWithCatch(task, exceptionHandler, handleExceptionOnMainThread).Forget();
             }
         }
 
@@ -228,7 +239,7 @@ namespace UniRx.Async
             await task;
         }
 
-        static async UniTaskVoid ForgetCoreWithCatch<T>(UniTask<T> task, Action<Exception> exceptionHandler)
+        static async UniTaskVoid ForgetCoreWithCatch<T>(UniTask<T> task, Action<Exception> exceptionHandler, bool handleExceptionOnMainThread)
         {
             try
             {
@@ -236,7 +247,18 @@ namespace UniRx.Async
             }
             catch (Exception ex)
             {
-                exceptionHandler(ex);
+                try
+                {
+                    if (handleExceptionOnMainThread)
+                    {
+                        await UniTask.SwitchToMainThread();
+                    }
+                    exceptionHandler(ex);
+                }
+                catch (Exception ex2)
+                {
+                    UniTaskScheduler.PublishUnobservedTaskException(ex2);
+                }
             }
         }
 
