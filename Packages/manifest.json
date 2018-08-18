@@ -2,7 +2,7 @@
   "dependencies": {
     "com.unity.ads": "2.0.8",
     "com.unity.analytics": "2.0.16",
-    "com.unity.incrementalcompiler": "0.0.42-preview.14",
+    "com.unity.incrementalcompiler": "0.0.42-preview.19",
     "com.unity.package-manager-ui": "1.9.11",
     "com.unity.purchasing": "2.0.3",
     "com.unity.textmeshpro": "1.2.4",
