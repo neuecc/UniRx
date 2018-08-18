@@ -10,12 +10,7 @@ namespace UniRx.Async.Internal
 {
     // 'public', user can use this(but be careful).
 
-    public interface ICancelablePromise
-    {
-        bool TrySetCanceled();
-    }
-
-    public class ReusablePromise : IAwaiter, ICancelablePromise
+    public abstract class ReusablePromise : IAwaiter
     {
         ExceptionDispatchInfo exception;
         object continuation; // Action or Queue<Action>
@@ -63,7 +58,7 @@ namespace UniRx.Async.Internal
             }
         }
 
-        public bool TrySetCanceled()
+        public virtual bool TrySetCanceled()
         {
             if (status == AwaiterStatus.Pending)
             {
@@ -74,7 +69,7 @@ namespace UniRx.Async.Internal
             return false;
         }
 
-        public bool TrySetException(Exception ex)
+        public virtual bool TrySetException(Exception ex)
         {
             if (status == AwaiterStatus.Pending)
             {
@@ -86,7 +81,7 @@ namespace UniRx.Async.Internal
             return false;
         }
 
-        public bool TrySetResult()
+        public virtual bool TrySetResult()
         {
             if (status == AwaiterStatus.Pending)
             {
@@ -148,7 +143,7 @@ namespace UniRx.Async.Internal
         }
     }
 
-    public class ReusablePromise<T> : IAwaiter<T>, ICancelablePromise
+    public abstract class ReusablePromise<T> : IAwaiter<T>
     {
         T result;
         ExceptionDispatchInfo exception;
@@ -197,7 +192,7 @@ namespace UniRx.Async.Internal
             }
         }
 
-        public bool TrySetCanceled()
+        public virtual bool TrySetCanceled()
         {
             if (status == AwaiterStatus.Pending)
             {
@@ -208,7 +203,7 @@ namespace UniRx.Async.Internal
             return false;
         }
 
-        public bool TrySetException(Exception ex)
+        public virtual bool TrySetException(Exception ex)
         {
             if (status == AwaiterStatus.Pending)
             {
@@ -220,7 +215,7 @@ namespace UniRx.Async.Internal
             return false;
         }
 
-        public bool TrySetResult(T result)
+        public virtual bool TrySetResult(T result)
         {
             if (status == AwaiterStatus.Pending)
             {
@@ -282,7 +277,6 @@ namespace UniRx.Async.Internal
             }
         }
     }
-
 
 #if !UniRxLibrary
 
