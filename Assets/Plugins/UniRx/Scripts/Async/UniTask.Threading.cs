@@ -11,6 +11,8 @@ namespace UniRx.Async
 {
     public partial struct UniTask
     {
+#if !UniRxLibrary
+
         /// <summary>
         /// If running on mainthread, do nothing. Otherwise, same as UniTask.Yield(PlayerLoopTiming.Update).
         /// </summary>
@@ -18,6 +20,8 @@ namespace UniRx.Async
         {
             return new SwitchToMainThreadAwaitable();
         }
+
+#endif
 
         public static SwitchToThreadPoolAwaitable SwitchToThreadPool()
         {
@@ -35,6 +39,8 @@ namespace UniRx.Async
             return new SwitchToSynchronizationContextAwaitable(syncContext);
         }
     }
+
+#if !UniRxLibrary
 
     public struct SwitchToMainThreadAwaitable
     {
@@ -71,6 +77,8 @@ namespace UniRx.Async
             }
         }
     }
+
+#endif
 
     public struct SwitchToThreadPoolAwaitable
     {

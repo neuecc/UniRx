@@ -51,6 +51,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\AsyncUnit.cs">
       <Link>Async\AsyncUnit.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\CancellationTokenEqualityComparer.cs">
+      <Link>Async\CancellationTokenEqualityComparer.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\CancellationTokenExtensions.cs">
       <Link>Async\CancellationTokenExtensions.cs</Link>
     </Compile>
@@ -143,6 +146,9 @@
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTaskCompletionSource.cs">
       <Link>Async\UniTaskCompletionSource.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTaskExtensions.cs">
+      <Link>Async\UniTaskExtensions.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTaskScheduler.cs">
       <Link>Async\UniTaskScheduler.cs</Link>

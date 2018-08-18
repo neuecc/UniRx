@@ -98,6 +98,8 @@ namespace UniRx
 
         class ToUniTaskObserver<T> : IObserver<T>
         {
+            static readonly Action<object> callback = OnCanceled;
+
             readonly UniTaskCompletionSource<T> promise;
             readonly SingleAssignmentDisposable disposable;
             readonly CancellationToken cancellationToken;
@@ -114,14 +116,15 @@ namespace UniRx
 
                 if (this.cancellationToken.CanBeCanceled)
                 {
-                    this.registration = this.cancellationToken.Register(OnCanceled);
+                    this.registration = this.cancellationToken.Register(callback, this, false);
                 }
             }
 
-            void OnCanceled()
+            static void OnCanceled(object state)
             {
-                disposable.Dispose();
-                promise.TrySetCanceled();
+                var self = (ToUniTaskObserver<T>)state;
+                self.disposable.Dispose();
+                self.promise.TrySetCanceled();
             }
 
             public void OnNext(T value)
@@ -166,6 +169,8 @@ namespace UniRx
 
         class FirstValueToUniTaskObserver<T> : IObserver<T>
         {
+            static readonly Action<object> callback = OnCanceled;
+
             readonly UniTaskCompletionSource<T> promise;
             readonly SingleAssignmentDisposable disposable;
             readonly CancellationToken cancellationToken;
@@ -181,14 +186,15 @@ namespace UniRx
 
                 if (this.cancellationToken.CanBeCanceled)
                 {
-                    this.registration = this.cancellationToken.Register(OnCanceled);
+                    this.registration = this.cancellationToken.Register(callback, this, false);
                 }
             }
 
-            void OnCanceled()
+            static void OnCanceled(object state)
             {
-                disposable.Dispose();
-                promise.TrySetCanceled();
+                var self = (FirstValueToUniTaskObserver<T>)state;
+                self.disposable.Dispose();
+                self.promise.TrySetCanceled();
             }
 
             public void OnNext(T value)

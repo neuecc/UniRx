@@ -90,6 +90,8 @@ namespace UniRx.Async
             return new ToCoroutineEnumerator(task, exceptionHandler);
         }
 
+#if !UniRxLibrary
+
         public static UniTask Timeout(this UniTask task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
             return Timeout(task.AsAsyncUnitUniTask(), timeout, ignoreTimeScale, timeoutCheckTiming, taskCancellationTokenSource);
@@ -170,6 +172,8 @@ namespace UniRx.Async
             return (false, value.Result);
         }
 
+#endif
+
         public static void Forget(this UniTask task)
         {
             ForgetCore(task).Forget();
@@ -203,10 +207,12 @@ namespace UniRx.Async
             {
                 try
                 {
+#if !UniRxLibrary
                     if (handleExceptionOnMainThread)
                     {
                         await UniTask.SwitchToMainThread();
                     }
+#endif
                     exceptionHandler(ex);
                 }
                 catch (Exception ex2)
@@ -249,10 +255,12 @@ namespace UniRx.Async
             {
                 try
                 {
+#if !UniRxLibrary
                     if (handleExceptionOnMainThread)
                     {
                         await UniTask.SwitchToMainThread();
                     }
+#endif
                     exceptionHandler(ex);
                 }
                 catch (Exception ex2)
@@ -306,6 +314,8 @@ namespace UniRx.Async
             return await continuationFunction();
         }
 
+#if !UniRxLibrary
+
         public static async UniTask ConfigureAwait(this Task task, PlayerLoopTiming timing)
         {
             await task.ConfigureAwait(false);
@@ -331,6 +341,8 @@ namespace UniRx.Async
             await UniTask.Yield(timing);
             return v;
         }
+
+#endif
 
         public static async UniTask<T> Unwrap<T>(this UniTask<UniTask<T>> task)
         {
