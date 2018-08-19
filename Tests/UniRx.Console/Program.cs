@@ -15,12 +15,13 @@ namespace UniRx
         static void Main(string[] args)
         {
             // my path:)
-            var path = @"C:\Users\neuecc\Documents\Git\neuecc\UniRx\Assets\Plugins\UniRx\Scripts\Async\Triggers";
-            var code = TriggerExtensionGenerator.GenerateAsyncTriggerExtension(path);
+            var path = @"C:\Users\neuecc\Documents\Git\neuecc\UniRx\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers";
+            var outpath = @"C:\Users\neuecc\Downloads\akarnokd-misc-dotnet\test";
+            TriggerFileGenerator.GenerateAsyncTrigger(path, outpath);
 
-            Console.WriteLine("---");
-            Console.WriteLine(code);
-            Console.WriteLine("---");
+            //            Console.WriteLine("-- -");
+            //          Console.WriteLine(code);
+            //        Console.WriteLine("---");
 
         }
     }

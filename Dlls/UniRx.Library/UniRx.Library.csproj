@@ -123,14 +123,8 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.cs">
       <Link>Async\UniTask.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.Extensions.cs">
-      <Link>Async\UniTask.Extensions.cs</Link>
-    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.Factory.cs">
       <Link>Async\UniTask.Factory.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.Shorthand.cs">
-      <Link>Async\UniTask.Shorthand.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\UniTask.Threading.cs">
       <Link>Async\UniTask.Threading.cs</Link>
