@@ -1,55 +1,69 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncCollision2DTrigger : MonoBehaviour
+    public class AsyncCollision2DTrigger : AsyncTriggerBase
     {
-        ReusablePromise<Collision2D> onCollisionEnter2D;
+        AsyncTriggerPromise<Collision2D> onCollisionEnter2D;
+        AsyncTriggerPromiseDictionary<Collision2D> onCollisionEnter2Ds;
+        AsyncTriggerPromise<Collision2D> onCollisionExit2D;
+        AsyncTriggerPromiseDictionary<Collision2D> onCollisionExit2Ds;
+        AsyncTriggerPromise<Collision2D> onCollisionStay2D;
+        AsyncTriggerPromiseDictionary<Collision2D> onCollisionStay2Ds;
 
-        /// <summary>Sent when an incoming collider makes contact with this object's collider (2D physics only).</summary>
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(onCollisionEnter2D, onCollisionEnter2Ds, onCollisionExit2D, onCollisionExit2Ds, onCollisionStay2D, onCollisionStay2Ds);
+        }
+
+
         void OnCollisionEnter2D(Collision2D coll)
         {
-            onCollisionEnter2D?.TrySetResult(coll);
+            TrySetResult(onCollisionEnter2D, onCollisionEnter2Ds, coll);
         }
 
-        /// <summary>Sent when an incoming collider makes contact with this object's collider (2D physics only).</summary>
-        public UniTask<Collision2D> OnCollisionEnter2DAsync()
+
+        public UniTask OnCollisionEnter2DAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask<Collision2D>(onCollisionEnter2D ?? (onCollisionEnter2D = new ReusablePromise<Collision2D>()));
+            return GetOrAddPromise(ref onCollisionEnter2D, ref onCollisionEnter2Ds, cancellationToken);
         }
 
-        ReusablePromise<Collision2D> onCollisionExit2D;
 
-        /// <summary>Sent when a collider on another object stops touching this object's collider (2D physics only).</summary>
         void OnCollisionExit2D(Collision2D coll)
         {
-            onCollisionExit2D?.TrySetResult(coll);
+            TrySetResult(onCollisionExit2D, onCollisionExit2Ds, coll);
         }
 
-        /// <summary>Sent when a collider on another object stops touching this object's collider (2D physics only).</summary>
-        public UniTask<Collision2D> OnCollisionExit2DAsync()
+
+        public UniTask OnCollisionExit2DAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask<Collision2D>(onCollisionExit2D ?? (onCollisionExit2D = new ReusablePromise<Collision2D>()));
+            return GetOrAddPromise(ref onCollisionExit2D, ref onCollisionExit2Ds, cancellationToken);
         }
 
-        ReusablePromise<Collision2D> onCollisionStay2D;
 
-        /// <summary>Sent each frame where a collider on another object is touching this object's collider (2D physics only).</summary>
         void OnCollisionStay2D(Collision2D coll)
         {
-            onCollisionStay2D?.TrySetResult(coll);
+            TrySetResult(onCollisionStay2D, onCollisionStay2Ds, coll);
         }
 
-        /// <summary>Sent each frame where a collider on another object is touching this object's collider (2D physics only).</summary>
-        public UniTask<Collision2D> OnCollisionStay2DAsync()
+
+        public UniTask OnCollisionStay2DAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask<Collision2D>(onCollisionStay2D ?? (onCollisionStay2D = new ReusablePromise<Collision2D>()));
+            return GetOrAddPromise(ref onCollisionStay2D, ref onCollisionStay2Ds, cancellationToken);
         }
+
+
     }
 }
+
 #endif
+

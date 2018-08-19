@@ -1,28 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncSubmitTrigger : MonoBehaviour, IEventSystemHandler, ISubmitHandler
+    public class AsyncSubmitTrigger : AsyncTriggerBase
     {
-        ReusablePromise<BaseEventData> onSubmit;
+        AsyncTriggerPromise<BaseEventData> onSubmit;
+        AsyncTriggerPromiseDictionary<BaseEventData> onSubmits;
 
-        void ISubmitHandler.OnSubmit(BaseEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onSubmit?.TrySetResult(eventData);
+            return Concat(onSubmit, onSubmits);
         }
 
-        public UniTask<BaseEventData> OnSubmitAsync()
+
+        void OnSubmit(BaseEventData eventData)
         {
-            return new UniTask<BaseEventData>(onSubmit ?? (onSubmit = new ReusablePromise<BaseEventData>()));
+            TrySetResult(onSubmit, onSubmits, eventData);
         }
+
+
+        public UniTask OnSubmitAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onSubmit, ref onSubmits, cancellationToken);
+        }
+
+
     }
 }
 
-
 #endif
+

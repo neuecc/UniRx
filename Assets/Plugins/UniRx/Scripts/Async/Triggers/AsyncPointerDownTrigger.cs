@@ -1,28 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncPointerDownTrigger : MonoBehaviour, IEventSystemHandler, IPointerDownHandler
+    public class AsyncPointerDownTrigger : AsyncTriggerBase
     {
-        ReusablePromise<PointerEventData> onPointerDown;
+        AsyncTriggerPromise<PointerEventData> onPointerDown;
+        AsyncTriggerPromiseDictionary<PointerEventData> onPointerDowns;
 
-        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onPointerDown?.TrySetResult(eventData);
+            return Concat(onPointerDown, onPointerDowns);
         }
 
-        public UniTask<PointerEventData> OnPointerDownAsync()
+
+        void OnPointerDown(PointerEventData eventData)
         {
-            return new UniTask<PointerEventData>(onPointerDown ?? (onPointerDown = new ReusablePromise<PointerEventData>()));
+            TrySetResult(onPointerDown, onPointerDowns, eventData);
         }
+
+
+        public UniTask OnPointerDownAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onPointerDown, ref onPointerDowns, cancellationToken);
+        }
+
+
     }
 }
 
-
 #endif
+

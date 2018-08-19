@@ -3,6 +3,7 @@
 #pragma warning disable CS1591
 
 using System;
+using System.Threading;
 using UniRx.Async;
 using UniRx.Async.Internal;
 
@@ -17,19 +18,42 @@ namespace UniRx
         int waitingContinuationCount;
         AwaiterStatus status;
 
-        public bool IsCompleted => false;
-        public UniTask<T> Task => new UniTask<T>(this);
+        internal readonly CancellationToken RegisteredCancelationToken;
 
+        public bool IsCompleted => status.IsCompleted();
+        public UniTask<T> Task => new UniTask<T>(this);
         public AwaiterStatus Status => status;
+
+        public ReactivePropertyReusablePromise(CancellationToken cancellationToken)
+        {
+            this.RegisteredCancelationToken = cancellationToken;
+            this.status = AwaiterStatus.Pending;
+
+            TaskTracker.TrackActiveTask(this, 3);
+        }
 
         public T GetResult()
         {
+            if (status == AwaiterStatus.Canceled) throw new OperationCanceledException();
             return result;
         }
 
         void IAwaiter.GetResult()
         {
+            GetResult();
+        }
 
+        public void SetCanceled()
+        {
+            status = AwaiterStatus.Canceled;
+            // run rest continuation.
+            TaskTracker.RemoveTracking(this);
+
+            result = default(T);
+            InvokeContinuation(ref result);
+            // clear
+            continuation = null;
+            queueValues = null;
         }
 
         public void InvokeContinuation(ref T value)
@@ -39,10 +63,8 @@ namespace UniRx
             if (continuation is Action act)
             {
                 this.result = value;
-                status = AwaiterStatus.Succeeded;
                 continuation = null;
                 act();
-                status = AwaiterStatus.Pending;
             }
             else
             {
@@ -56,7 +78,6 @@ namespace UniRx
                 if (!running)
                 {
                     running = true;
-                    status = AwaiterStatus.Succeeded;
                     try
                     {
                         while (queueValues.Count != 0)
@@ -72,7 +93,6 @@ namespace UniRx
                     finally
                     {
                         running = false;
-                        status = AwaiterStatus.Pending;
                     }
                 }
             }

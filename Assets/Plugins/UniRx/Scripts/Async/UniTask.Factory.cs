@@ -12,6 +12,7 @@ namespace UniRx.Async
         {
             var promise = new UniTaskCompletionSource<AsyncUnit>();
             promise.TrySetCanceled();
+            promise.MarkHandled();
             return new UniTask(promise);
         })();
 
@@ -27,6 +28,7 @@ namespace UniRx.Async
         {
             var promise = new UniTaskCompletionSource<AsyncUnit>();
             promise.TrySetException(ex);
+            promise.MarkHandled();
             return new UniTask(promise);
         }
 
@@ -34,6 +36,7 @@ namespace UniRx.Async
         {
             var promise = new UniTaskCompletionSource<T>();
             promise.TrySetException(ex);
+            promise.MarkHandled();
             return new UniTask<T>(promise);
         }
 
@@ -56,6 +59,7 @@ namespace UniRx.Async
         {
             var promise = new UniTaskCompletionSource<AsyncUnit>();
             promise.TrySetException(new OperationCanceledException(token));
+            promise.MarkHandled();
             return new UniTask(promise);
         }
 
@@ -63,7 +67,32 @@ namespace UniRx.Async
         {
             var promise = new UniTaskCompletionSource<T>();
             promise.TrySetException(new OperationCanceledException(token));
+            promise.MarkHandled();
             return new UniTask<T>(promise);
+        }
+
+        /// <summary>shorthand of new UniTask[T](Func[UniTask[T]] factory)</summary>
+        public static UniTask<T> Lazy<T>(Func<UniTask<T>> factory)
+        {
+            return new UniTask<T>(factory);
+        }
+
+        /// <summary>
+        /// helper of create add UniTaskVoid to delegate.
+        /// For example: FooEvent += () => UniTask.Void(async () => { /* */ })
+        /// </summary>
+        public static void Void(Func<UniTask> asyncAction)
+        {
+            asyncAction().Forget();
+        }
+
+        /// <summary>
+        /// helper of create add UniTaskVoid to delegate.
+        /// For example: FooEvent += (sender, e) => UniTask.Void(async arg => { /* */ }, (sender, e))
+        /// </summary>
+        public static void Void<T>(Func<T, UniTask> asyncAction, T state)
+        {
+            asyncAction(state).Forget();
         }
 
         static class CanceledUniTaskCache<T>
@@ -74,9 +103,19 @@ namespace UniRx.Async
             {
                 var promise = new UniTaskCompletionSource<T>();
                 promise.TrySetCanceled();
+                promise.MarkHandled();
                 Task = new UniTask<T>(promise);
             }
         }
+    }
+
+    internal static class CompletedTasks
+    {
+        public static readonly UniTask<bool> True = UniTask.FromResult(true);
+        public static readonly UniTask<bool> False = UniTask.FromResult(false);
+        public static readonly UniTask<int> Zero = UniTask.FromResult(0);
+        public static readonly UniTask<int> MinusOne = UniTask.FromResult(-1);
+        public static readonly UniTask<int> One = UniTask.FromResult(1);
     }
 }
 #endif

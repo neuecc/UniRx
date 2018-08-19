@@ -18,6 +18,11 @@ namespace UniRx.Async
         {
             return true;
         }
+
+        public override string ToString()
+        {
+            return "()";
+        }
     }
 }
 #endif

@@ -1,40 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncParticleTrigger : MonoBehaviour
+    public class AsyncParticleTrigger : AsyncTriggerBase
     {
-        ReusablePromise<GameObject> onParticleCollision;
-        ReusablePromise onParticleTrigger;
+        AsyncTriggerPromise<GameObject> onParticleCollision;
+        AsyncTriggerPromiseDictionary<GameObject> onParticleCollisions;
 
-        /// <summary>OnParticleCollision is called when a particle hits a collider.</summary>
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(onParticleCollision, onParticleCollisions);
+        }
+
+
         void OnParticleCollision(GameObject other)
         {
-            onParticleCollision?.TrySetResult(other);
+            TrySetResult(onParticleCollision, onParticleCollisions, other);
         }
 
-        /// <summary>OnParticleCollision is called when a particle hits a collider.</summary>
-        public UniTask<GameObject> OnParticleCollisionAsync()
+
+        public UniTask OnParticleCollisionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask<GameObject>(onParticleCollision ?? (onParticleCollision = new ReusablePromise<GameObject>()));
+            return GetOrAddPromise(ref onParticleCollision, ref onParticleCollisions, cancellationToken);
         }
 
-        /// <summary>OnParticleTrigger is called when any particles in a particle system meet the conditions in the trigger module.</summary>
-        void OnParticleTrigger()
-        {
-            onParticleTrigger?.TrySetResult();
-        }
 
-        /// <summary>OnParticleTrigger is called when any particles in a particle system meet the conditions in the trigger module.</summary>
-        public UniTask OnParticleTriggerAsync()
-        {
-            return new UniTask(onParticleTrigger ?? (onParticleTrigger = new ReusablePromise()));
-        }
     }
 }
+
 #endif
+

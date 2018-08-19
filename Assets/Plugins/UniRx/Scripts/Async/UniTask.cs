@@ -65,6 +65,17 @@ namespace UniRx.Async
             return new Awaiter(this);
         }
 
+        /// <summary>
+        /// returns (bool IsCanceled) instead of throws OperationCanceledException.
+        /// </summary>
+        public UniTask<bool> SuppressCancellationThrow()
+        {
+            var status = Status;
+            if (status == AwaiterStatus.Succeeded) return CompletedTasks.False;
+            if (status == AwaiterStatus.Canceled) return CompletedTasks.True;
+            return new UniTask<bool>(new IsCanceledAwaiter(awaiter));
+        }
+
         public bool Equals(UniTask other)
         {
             if (this.awaiter == null && other.awaiter == null)
@@ -91,6 +102,13 @@ namespace UniRx.Async
             {
                 return this.awaiter.GetHashCode();
             }
+        }
+
+        public override string ToString()
+        {
+            return (this.awaiter == null) ? "()"
+                 : (this.awaiter.Status == AwaiterStatus.Succeeded) ? "()"
+                 : "(" + this.awaiter.Status + ")";
         }
 
         public static implicit operator UniTask<AsyncUnit>(UniTask task)
@@ -130,6 +148,45 @@ namespace UniRx.Async
             {
                 awaiter.GetResult();
                 return AsyncUnit.Default;
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                awaiter.OnCompleted(continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                awaiter.UnsafeOnCompleted(continuation);
+            }
+
+            void IAwaiter.GetResult()
+            {
+                awaiter.GetResult();
+            }
+        }
+
+        class IsCanceledAwaiter : IAwaiter<bool>
+        {
+            readonly IAwaiter awaiter;
+
+            public IsCanceledAwaiter(IAwaiter awaiter)
+            {
+                this.awaiter = awaiter;
+            }
+
+            public bool IsCompleted => awaiter.IsCompleted;
+
+            public AwaiterStatus Status => awaiter.Status;
+
+            public bool GetResult()
+            {
+                if (awaiter.Status == AwaiterStatus.Canceled)
+                {
+                    return true;
+                }
+                awaiter.GetResult();
+                return false;
             }
 
             public void OnCompleted(Action continuation)
@@ -265,6 +322,23 @@ namespace UniRx.Async
             return new Awaiter(this);
         }
 
+        /// <summary>
+        /// returns (bool IsCanceled, T Result) instead of throws OperationCanceledException.
+        /// </summary>
+        public UniTask<(bool IsCanceled, T Result)> SuppressCancellationThrow()
+        {
+            var status = Status;
+            if (status == AwaiterStatus.Succeeded)
+            {
+                return new UniTask<(bool, T)>((false, Result));
+            }
+            else if (status == AwaiterStatus.Canceled)
+            {
+                return new UniTask<(bool, T)>((true, default(T)));
+            }
+            return new UniTask<(bool, T)>(new IsCanceledAwaiter(awaiter));
+        }
+
         public bool Equals(UniTask<T> other)
         {
             if (this.awaiter == null && other.awaiter == null)
@@ -294,6 +368,13 @@ namespace UniRx.Async
             }
         }
 
+        public override string ToString()
+        {
+            return (this.awaiter == null) ? result.ToString()
+                 : (this.awaiter.Status == AwaiterStatus.Succeeded) ? this.awaiter.GetResult().ToString()
+                 : "(" + this.awaiter.Status + ")";
+        }
+
         public static implicit operator UniTask(UniTask<T> task)
         {
             if (task.awaiter != null)
@@ -303,6 +384,44 @@ namespace UniRx.Async
             else
             {
                 return new UniTask();
+            }
+        }
+
+        class IsCanceledAwaiter : IAwaiter<(bool, T)>
+        {
+            readonly IAwaiter<T> awaiter;
+
+            public IsCanceledAwaiter(IAwaiter<T> awaiter)
+            {
+                this.awaiter = awaiter;
+            }
+
+            public bool IsCompleted => awaiter.IsCompleted;
+
+            public AwaiterStatus Status => awaiter.Status;
+
+            public (bool, T) GetResult()
+            {
+                if (awaiter.Status == AwaiterStatus.Canceled)
+                {
+                    return (true, default(T));
+                }
+                return (false, awaiter.GetResult());
+            }
+
+            public void OnCompleted(Action continuation)
+            {
+                awaiter.OnCompleted(continuation);
+            }
+
+            public void UnsafeOnCompleted(Action continuation)
+            {
+                awaiter.UnsafeOnCompleted(continuation);
+            }
+
+            void IAwaiter.GetResult()
+            {
+                awaiter.GetResult();
             }
         }
 

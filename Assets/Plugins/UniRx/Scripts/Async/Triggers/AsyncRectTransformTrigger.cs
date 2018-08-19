@@ -1,43 +1,55 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using System;
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncRectTransformTrigger : MonoBehaviour
+    public class AsyncRectTransformTrigger : AsyncTriggerBase
     {
-        ReusablePromise onRectTransformDimensionsChange;
+        AsyncTriggerPromise<AsyncUnit> onRectTransformDimensionsChange;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onRectTransformDimensionsChanges;
+        AsyncTriggerPromise<AsyncUnit> onRectTransformRemoved;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onRectTransformRemoveds;
 
-        // Callback that is sent if an associated RectTransform has it's dimensions changed
-        public void OnRectTransformDimensionsChange()
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onRectTransformDimensionsChange?.TrySetResult();
+            return Concat(onRectTransformDimensionsChange, onRectTransformDimensionsChanges, onRectTransformRemoved, onRectTransformRemoveds);
         }
 
-        /// <summary>Callback that is sent if an associated RectTransform has it's dimensions changed.</summary>
-        public UniTask OnRectTransformDimensionsChangeAsync()
+
+        void OnRectTransformDimensionsChange()
         {
-            return new UniTask(onRectTransformDimensionsChange ?? (onRectTransformDimensionsChange = new ReusablePromise()));
+            TrySetResult(onRectTransformDimensionsChange, onRectTransformDimensionsChanges, AsyncUnit.Default);
         }
 
-        ReusablePromise onRectTransformRemoved;
 
-        // Callback that is sent if an associated RectTransform is removed
-        public void OnRectTransformRemoved()
+        public UniTask OnRectTransformDimensionsChangeAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            onRectTransformRemoved?.TrySetResult();
+            return GetOrAddPromise(ref onRectTransformDimensionsChange, ref onRectTransformDimensionsChanges, cancellationToken);
         }
 
-        /// <summary>Callback that is sent if an associated RectTransform is removed.</summary>
-        public UniTask OnRectTransformRemovedAsync()
+
+        void OnRectTransformRemoved()
         {
-            return new UniTask(onRectTransformRemoved ?? (onRectTransformRemoved = new ReusablePromise()));
+            TrySetResult(onRectTransformRemoved, onRectTransformRemoveds, AsyncUnit.Default);
         }
+
+
+        public UniTask OnRectTransformRemovedAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onRectTransformRemoved, ref onRectTransformRemoveds, cancellationToken);
+        }
+
+
     }
 }
 
 #endif
+

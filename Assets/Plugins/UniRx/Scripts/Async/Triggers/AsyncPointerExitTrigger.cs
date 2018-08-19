@@ -1,28 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncPointerExitTrigger : MonoBehaviour, IEventSystemHandler, IPointerExitHandler
+    public class AsyncPointerExitTrigger : AsyncTriggerBase
     {
-        ReusablePromise<PointerEventData> onPointerExit;
+        AsyncTriggerPromise<PointerEventData> onPointerExit;
+        AsyncTriggerPromiseDictionary<PointerEventData> onPointerExits;
 
-        void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onPointerExit?.TrySetResult(eventData);
+            return Concat(onPointerExit, onPointerExits);
         }
 
-        public UniTask<PointerEventData> OnPointerExitAsync()
+
+        void OnPointerExit(PointerEventData eventData)
         {
-            return new UniTask<PointerEventData>(onPointerExit ?? (onPointerExit = new ReusablePromise<PointerEventData>()));
+            TrySetResult(onPointerExit, onPointerExits, eventData);
         }
+
+
+        public UniTask OnPointerExitAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onPointerExit, ref onPointerExits, cancellationToken);
+        }
+
+
     }
 }
 
-
 #endif
+

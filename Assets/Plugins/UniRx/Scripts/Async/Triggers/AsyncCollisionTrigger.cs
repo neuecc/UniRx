@@ -1,55 +1,69 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncCollisionTrigger : MonoBehaviour
+    public class AsyncCollisionTrigger : AsyncTriggerBase
     {
-        ReusablePromise<Collision> onCollisionEnter;
+        AsyncTriggerPromise<Collision> onCollisionEnter;
+        AsyncTriggerPromiseDictionary<Collision> onCollisionEnters;
+        AsyncTriggerPromise<Collision> onCollisionExit;
+        AsyncTriggerPromiseDictionary<Collision> onCollisionExits;
+        AsyncTriggerPromise<Collision> onCollisionStay;
+        AsyncTriggerPromiseDictionary<Collision> onCollisionStays;
 
-        /// <summary>OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider.</summary>
-         void OnCollisionEnter(Collision collision)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onCollisionEnter?.TrySetResult(collision);
+            return Concat(onCollisionEnter, onCollisionEnters, onCollisionExit, onCollisionExits, onCollisionStay, onCollisionStays);
         }
 
-        /// <summary>OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider.</summary>
-        public UniTask<Collision> OnCollisionEnterAsync()
+
+        void OnCollisionEnter(Collision collision)
         {
-            return new UniTask<Collision>(onCollisionEnter ?? (onCollisionEnter = new ReusablePromise<Collision>()));
+            TrySetResult(onCollisionEnter, onCollisionEnters, collision);
         }
 
-        ReusablePromise<Collision> onCollisionExit;
 
-        /// <summary>OnCollisionExit is called when this collider/rigidbody has stopped touching another rigidbody/collider.</summary>
-         void OnCollisionExit(Collision collisionInfo)
+        public UniTask OnCollisionEnterAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            onCollisionExit?.TrySetResult(collisionInfo);
+            return GetOrAddPromise(ref onCollisionEnter, ref onCollisionEnters, cancellationToken);
         }
 
-        /// <summary>OnCollisionExit is called when this collider/rigidbody has stopped touching another rigidbody/collider.</summary>
-        public UniTask<Collision> OnCollisionExitAsync()
+
+        void OnCollisionExit(Collision collisionInfo)
         {
-            return new UniTask<Collision>(onCollisionExit ?? (onCollisionExit = new ReusablePromise<Collision>()));
+            TrySetResult(onCollisionExit, onCollisionExits, collisionInfo);
         }
 
-        ReusablePromise<Collision> onCollisionStay;
 
-        /// <summary>OnCollisionStay is called once per frame for every collider/rigidbody that is touching rigidbody/collider.</summary>
-         void OnCollisionStay(Collision collisionInfo)
+        public UniTask OnCollisionExitAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            onCollisionStay?.TrySetResult(collisionInfo);
+            return GetOrAddPromise(ref onCollisionExit, ref onCollisionExits, cancellationToken);
         }
 
-        /// <summary>OnCollisionStay is called once per frame for every collider/rigidbody that is touching rigidbody/collider.</summary>
-        public UniTask<Collision> OnCollisionStayAsync()
+
+        void OnCollisionStay(Collision collisionInfo)
         {
-            return new UniTask<Collision>(onCollisionStay ?? (onCollisionStay = new ReusablePromise<Collision>()));
+            TrySetResult(onCollisionStay, onCollisionStays, collisionInfo);
         }
+
+
+        public UniTask OnCollisionStayAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onCollisionStay, ref onCollisionStays, cancellationToken);
+        }
+
+
     }
 }
+
 #endif
+

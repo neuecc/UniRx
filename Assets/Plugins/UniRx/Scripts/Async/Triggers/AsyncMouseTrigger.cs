@@ -1,115 +1,129 @@
-﻿#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
+
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
 #if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncMouseTrigger : MonoBehaviour
+    public class AsyncMouseTrigger : AsyncTriggerBase
     {
-        ReusablePromise onMouseDown;
+        AsyncTriggerPromise<AsyncUnit> onMouseDown;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onMouseDowns;
+        AsyncTriggerPromise<AsyncUnit> onMouseDrag;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onMouseDrags;
+        AsyncTriggerPromise<AsyncUnit> onMouseEnter;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onMouseEnters;
+        AsyncTriggerPromise<AsyncUnit> onMouseExit;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onMouseExits;
+        AsyncTriggerPromise<AsyncUnit> onMouseOver;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onMouseOvers;
+        AsyncTriggerPromise<AsyncUnit> onMouseUp;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onMouseUps;
+        AsyncTriggerPromise<AsyncUnit> onMouseUpAsButton;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onMouseUpAsButtons;
 
-        /// <summary>OnMouseDown is called when the user has pressed the mouse button while over the GUIElement or Collider.</summary>
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(onMouseDown, onMouseDowns, onMouseDrag, onMouseDrags, onMouseEnter, onMouseEnters, onMouseExit, onMouseExits, onMouseOver, onMouseOvers, onMouseUp, onMouseUps, onMouseUpAsButton, onMouseUpAsButtons);
+        }
+
+
         void OnMouseDown()
         {
-            onMouseDown?.TrySetResult();
+            TrySetResult(onMouseDown, onMouseDowns, AsyncUnit.Default);
         }
 
-        /// <summary>OnMouseDown is called when the user has pressed the mouse button while over the GUIElement or Collider.</summary>
-        public UniTask OnMouseDownAsync()
+
+        public UniTask OnMouseDownAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onMouseDown ?? (onMouseDown = new ReusablePromise()));
+            return GetOrAddPromise(ref onMouseDown, ref onMouseDowns, cancellationToken);
         }
 
-        ReusablePromise onMouseDrag;
 
-        /// <summary>OnMouseDrag is called when the user has clicked on a GUIElement or Collider and is still holding down the mouse.</summary>
         void OnMouseDrag()
         {
-            onMouseDrag?.TrySetResult();
+            TrySetResult(onMouseDrag, onMouseDrags, AsyncUnit.Default);
         }
 
-        /// <summary>OnMouseDrag is called when the user has clicked on a GUIElement or Collider and is still holding down the mouse.</summary>
-        public UniTask OnMouseDragAsync()
+
+        public UniTask OnMouseDragAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onMouseDrag ?? (onMouseDrag = new ReusablePromise()));
+            return GetOrAddPromise(ref onMouseDrag, ref onMouseDrags, cancellationToken);
         }
 
-        ReusablePromise onMouseEnter;
 
-        /// <summary>OnMouseEnter is called when the mouse entered the GUIElement or Collider.</summary>
         void OnMouseEnter()
         {
-            onMouseEnter?.TrySetResult();
+            TrySetResult(onMouseEnter, onMouseEnters, AsyncUnit.Default);
         }
 
-        /// <summary>OnMouseEnter is called when the mouse entered the GUIElement or Collider.</summary>
-        public UniTask OnMouseEnterAsync()
+
+        public UniTask OnMouseEnterAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onMouseEnter ?? (onMouseEnter = new ReusablePromise()));
+            return GetOrAddPromise(ref onMouseEnter, ref onMouseEnters, cancellationToken);
         }
 
-        ReusablePromise onMouseExit;
 
-        /// <summary>OnMouseExit is called when the mouse is not any longer over the GUIElement or Collider.</summary>
         void OnMouseExit()
         {
-            onMouseExit?.TrySetResult();
+            TrySetResult(onMouseExit, onMouseExits, AsyncUnit.Default);
         }
 
-        /// <summary>OnMouseExit is called when the mouse is not any longer over the GUIElement or Collider.</summary>
-        public UniTask OnMouseExitAsync()
+
+        public UniTask OnMouseExitAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onMouseExit ?? (onMouseExit = new ReusablePromise()));
+            return GetOrAddPromise(ref onMouseExit, ref onMouseExits, cancellationToken);
         }
 
-        ReusablePromise onMouseOver;
 
-        /// <summary>OnMouseOver is called every frame while the mouse is over the GUIElement or Collider.</summary>
         void OnMouseOver()
         {
-            onMouseOver?.TrySetResult();
+            TrySetResult(onMouseOver, onMouseOvers, AsyncUnit.Default);
         }
 
-        /// <summary>OnMouseOver is called every frame while the mouse is over the GUIElement or Collider.</summary>
-        public UniTask OnMouseOverAsync()
+
+        public UniTask OnMouseOverAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onMouseOver ?? (onMouseOver = new ReusablePromise()));
+            return GetOrAddPromise(ref onMouseOver, ref onMouseOvers, cancellationToken);
         }
 
-        ReusablePromise onMouseUp;
 
-        /// <summary>OnMouseUp is called when the user has released the mouse button.</summary>
         void OnMouseUp()
         {
-            onMouseUp?.TrySetResult();
+            TrySetResult(onMouseUp, onMouseUps, AsyncUnit.Default);
         }
 
-        /// <summary>OnMouseUp is called when the user has released the mouse button.</summary>
-        public UniTask OnMouseUpAsync()
+
+        public UniTask OnMouseUpAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onMouseUp ?? (onMouseUp = new ReusablePromise()));
+            return GetOrAddPromise(ref onMouseUp, ref onMouseUps, cancellationToken);
         }
 
-        ReusablePromise onMouseUpAsButton;
 
-        /// <summary>OnMouseUpAsButton is only called when the mouse is released over the same GUIElement or Collider as it was pressed.</summary>
         void OnMouseUpAsButton()
         {
-            onMouseUpAsButton?.TrySetResult();
+            TrySetResult(onMouseUpAsButton, onMouseUpAsButtons, AsyncUnit.Default);
         }
 
-        /// <summary>OnMouseUpAsButton is only called when the mouse is released over the same GUIElement or Collider as it was pressed.</summary>
-        public UniTask OnMouseUpAsButtonAsync()
+
+        public UniTask OnMouseUpAsButtonAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onMouseUpAsButton ?? (onMouseUpAsButton = new ReusablePromise()));
+            return GetOrAddPromise(ref onMouseUpAsButton, ref onMouseUpAsButtons, cancellationToken);
         }
+
+
     }
 }
 
 #endif
+
+
 #endif

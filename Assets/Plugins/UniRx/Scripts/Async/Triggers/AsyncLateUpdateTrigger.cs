@@ -1,27 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncLateUpdateTrigger : MonoBehaviour
+    public class AsyncLateUpdateTrigger : AsyncTriggerBase
     {
-        ReusablePromise lateUpdate;
+        AsyncTriggerPromise<AsyncUnit> lateUpdate;
+        AsyncTriggerPromiseDictionary<AsyncUnit> lateUpdates;
 
-        /// <summary>LateUpdate is called every frame, if the Behaviour is enabled.</summary>
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(lateUpdate, lateUpdates);
+        }
+
+
         void LateUpdate()
         {
-            lateUpdate?.TrySetResult();
+            TrySetResult(lateUpdate, lateUpdates, AsyncUnit.Default);
         }
 
-        /// <summary>LateUpdate is called every frame, if the Behaviour is enabled.</summary>
-        public UniTask LateUpdateAsync()
+
+        public UniTask LateUpdateAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(lateUpdate ?? (lateUpdate = new ReusablePromise()));
+            return GetOrAddPromise(ref lateUpdate, ref lateUpdates, cancellationToken);
         }
+
+
     }
 }
+
 #endif
+

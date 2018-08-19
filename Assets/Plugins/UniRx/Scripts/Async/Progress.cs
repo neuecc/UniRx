@@ -2,6 +2,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
+using System.Collections.Generic;
 
 namespace UniRx.Async
 {
@@ -14,6 +15,12 @@ namespace UniRx.Async
         {
             if (handler == null) return NullProgress<T>.Instance;
             return new AnonymousProgress<T>(handler);
+        }
+
+        public static IProgress<T> CreateOnlyValueChanged<T>(Action<T> handler, IEqualityComparer<T> comparer = null)
+        {
+            if (handler == null) return NullProgress<T>.Instance;
+            return new OnlyValueChangedProgress<T>(handler, comparer ?? UnityEqualityComparer.GetDefault<T>());
         }
 
         sealed class NullProgress<T> : IProgress<T>
@@ -41,6 +48,36 @@ namespace UniRx.Async
 
             public void Report(T value)
             {
+                action(value);
+            }
+        }
+
+        sealed class OnlyValueChangedProgress<T> : IProgress<T>
+        {
+            readonly Action<T> action;
+            readonly IEqualityComparer<T> comparer;
+            bool isFirstCall;
+            T latestValue;
+
+            public OnlyValueChangedProgress(Action<T> action, IEqualityComparer<T> comparer)
+            {
+                this.action = action;
+                this.comparer = comparer;
+                this.isFirstCall = true;
+            }
+
+            public void Report(T value)
+            {
+                if (isFirstCall)
+                {
+                    isFirstCall = false;
+                }
+                else if (comparer.Equals(value, latestValue))
+                {
+                    return;
+                }
+
+                latestValue = value;
                 action(value);
             }
         }

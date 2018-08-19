@@ -26,6 +26,12 @@ public static partial class ChainingAssertion
         Assert.AreEqual(expected, actual, message);
     }
 
+    /// <summary>Assert.IsTrue(expected(actual)).</summary>
+    public static void Is<T>(this T actual, Func<T, bool> expected, string message = "")
+    {
+        Assert.IsTrue(expected(actual), message);
+    }
+
     /// <summary>CollectionAssert.AreEqual</summary>
     public static void Is<T>(this IEnumerable<T> actual, params T[] expected)
     {
@@ -122,6 +128,18 @@ public static partial class ChainingAssertion
     public static void IsApproximatelyEqual(this float actual, float expected, float tolerance, string message = "")
     {
         Assert.AreApproximatelyEqual(expected, actual, tolerance, message);
+    }
+
+    /// <summary>Assert.AreApproximatelyEqual</summary>
+    public static void IsApproximatelyEqual(this double actual, float expected, string message = "")
+    {
+        Assert.AreApproximatelyEqual(expected, (float)actual, message);
+    }
+
+    /// <summary>Assert.AreApproximatelyEqual</summary>
+    public static void IsApproximatelyEqual(this double actual, float expected, float tolerance, string message = "")
+    {
+        Assert.AreApproximatelyEqual(expected, (float)actual, tolerance, message);
     }
 
     /// <summary>Assert.AreNotApproximatelyEqual</summary>

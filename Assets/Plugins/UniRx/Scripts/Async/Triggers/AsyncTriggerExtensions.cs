@@ -1,6 +1,7 @@
 ﻿#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using System.Threading;
 using UnityEngine;
 
 namespace UniRx.Async.Triggers
@@ -33,6 +34,18 @@ namespace UniRx.Async.Triggers
         public static UniTask OnDestroyAsync(this Component component)
         {
             return component.GetAsyncDestroyTrigger().OnDestroyAsync();
+        }
+
+        /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
+        public static CancellationToken GetCancellationTokenOnDestroy(this GameObject gameObject)
+        {
+            return gameObject.GetAsyncDestroyTrigger().CancellationToken;
+        }
+
+        /// <summary>This CancellationToken is canceled when the MonoBehaviour will be destroyed.</summary>
+        public static CancellationToken GetCancellationTokenOnDestroy(this Component component)
+        {
+            return component.GetAsyncDestroyTrigger().CancellationToken;
         }
 
         public static UniTask StartAsync(this GameObject gameObject)
@@ -235,18 +248,6 @@ namespace UniRx.Async.Triggers
         public static AsyncInitializePotentialDragTrigger GetAsyncInitializePotentialDragTrigger(this Component component)
         {
             return component.gameObject.GetAsyncInitializePotentialDragTrigger();
-        }
-
-        /// <summary>Get for OnJointBreak2DAsync.</summary>
-        public static AsyncJoint2DTrigger GetAsyncJoint2DTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncJoint2DTrigger>(gameObject);
-        }
-
-        /// <summary>Get for OnJointBreak2DAsync.</summary>
-        public static AsyncJoint2DTrigger GetAsyncJoint2DTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncJoint2DTrigger();
         }
 
         /// <summary>Get for OnJointBreakAsync.</summary>

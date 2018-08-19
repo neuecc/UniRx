@@ -62,7 +62,31 @@ namespace UniRx.Async
 
                 for (int i = 0; i < tasksLength; i++)
                 {
-                    RunTask(tasks[i], i).Forget();
+                    if (tasks[i].IsCompleted)
+                    {
+                        T value = default(T);
+                        try
+                        {
+                            value = tasks[i].Result;
+                        }
+                        catch (Exception ex)
+                        {
+                            exception = ExceptionDispatchInfo.Capture(ex);
+                            TryCallContinuation();
+                            continue;
+                        }
+
+                        result[i] = value;
+                        var count = Interlocked.Increment(ref completeCount);
+                        if (count == result.Length)
+                        {
+                            TryCallContinuation();
+                        }
+                    }
+                    else
+                    {
+                        RunTask(tasks[i], i).Forget();
+                    }
                 }
             }
 
@@ -77,19 +101,22 @@ namespace UniRx.Async
 
             async UniTaskVoid RunTask(UniTask<T> task, int index)
             {
+                T value = default(T);
                 try
                 {
-                    var value = await task;
-                    result[index] = value;
-                    var count = Interlocked.Increment(ref completeCount);
-                    if (count == result.Length)
-                    {
-                        TryCallContinuation();
-                    }
+                    value = await task;
                 }
                 catch (Exception ex)
                 {
                     exception = ExceptionDispatchInfo.Capture(ex);
+                    TryCallContinuation();
+                    return;
+                }
+
+                result[index] = value;
+                var count = Interlocked.Increment(ref completeCount);
+                if (count == result.Length)
+                {
                     TryCallContinuation();
                 }
             }
@@ -162,7 +189,29 @@ namespace UniRx.Async
 
                 for (int i = 0; i < tasksLength; i++)
                 {
-                    RunTask(tasks[i], i).Forget();
+                    if (tasks[i].IsCompleted)
+                    {
+                        try
+                        {
+                            tasks[i].GetResult();
+                        }
+                        catch (Exception ex)
+                        {
+                            exception = ExceptionDispatchInfo.Capture(ex);
+                            TryCallContinuation();
+                            continue;
+                        }
+
+                        var count = Interlocked.Increment(ref completeCount);
+                        if (count == resultLength)
+                        {
+                            TryCallContinuation();
+                        }
+                    }
+                    else
+                    {
+                        RunTask(tasks[i], i).Forget();
+                    }
                 }
             }
 
@@ -180,15 +229,17 @@ namespace UniRx.Async
                 try
                 {
                     await task;
-                    var count = Interlocked.Increment(ref completeCount);
-                    if (count == resultLength)
-                    {
-                        TryCallContinuation();
-                    }
                 }
                 catch (Exception ex)
                 {
                     exception = ExceptionDispatchInfo.Capture(ex);
+                    TryCallContinuation();
+                    return;
+                }
+
+                var count = Interlocked.Increment(ref completeCount);
+                if (count == resultLength)
+                {
                     TryCallContinuation();
                 }
             }

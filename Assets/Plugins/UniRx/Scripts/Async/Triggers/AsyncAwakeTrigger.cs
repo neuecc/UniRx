@@ -20,7 +20,34 @@ namespace UniRx.Async.Triggers
         public UniTask AwakeAsync()
         {
             if (called) return UniTask.CompletedTask;
+            PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
             return new UniTask(promise ?? (promise = new UniTaskCompletionSource()));
+        }
+
+        private void OnDestroy()
+        {
+            promise?.TrySetCanceled();
+        }
+
+        class AwakeMonitor : IPlayerLoopItem
+        {
+            readonly AsyncAwakeTrigger trigger;
+
+            public AwakeMonitor(AsyncAwakeTrigger trigger)
+            {
+                this.trigger = trigger;
+            }
+
+            public bool MoveNext()
+            {
+                if (trigger.called) return false;
+                if (trigger == null)
+                {
+                    trigger.OnDestroy();
+                    return false;
+                }
+                return true;
+            }
         }
     }
 }

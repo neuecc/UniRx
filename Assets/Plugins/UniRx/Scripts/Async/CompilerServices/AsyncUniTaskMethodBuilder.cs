@@ -53,7 +53,14 @@ namespace UniRx.Async.CompilerServices
             {
                 promise = new UniTaskCompletionSource();
             }
-            promise.TrySetException(exception);
+            if (exception is OperationCanceledException ex)
+            {
+                promise.TrySetCanceled(ex);
+            }
+            else
+            {
+                promise.TrySetException(exception);
+            }
         }
 
         // 4. SetResult
@@ -86,11 +93,9 @@ namespace UniRx.Async.CompilerServices
                     promise = new UniTaskCompletionSource(); // built future.
                 }
 
-                var runner = new MoveNextRunner();
+                var runner = new MoveNextRunner<TStateMachine>();
                 moveNext = runner.Run;
-
-                var boxed = (IAsyncStateMachine)stateMachine;
-                runner.StateMachine = boxed; // boxed
+                runner.StateMachine = stateMachine; // set after create delegate.
             }
 
             awaiter.OnCompleted(moveNext);
@@ -110,11 +115,9 @@ namespace UniRx.Async.CompilerServices
                     promise = new UniTaskCompletionSource(); // built future.
                 }
 
-                var runner = new MoveNextRunner();
+                var runner = new MoveNextRunner<TStateMachine>();
                 moveNext = runner.Run;
-
-                var boxed = (IAsyncStateMachine)stateMachine;
-                runner.StateMachine = boxed; // boxed
+                runner.StateMachine = stateMachine; // set after create delegate.
             }
 
             awaiter.UnsafeOnCompleted(moveNext);
@@ -132,16 +135,6 @@ namespace UniRx.Async.CompilerServices
         [DebuggerHidden]
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
-        }
-
-        class MoveNextRunner
-        {
-            public IAsyncStateMachine StateMachine;
-
-            public void Run()
-            {
-                StateMachine.MoveNext();
-            }
         }
     }
 
@@ -191,7 +184,14 @@ namespace UniRx.Async.CompilerServices
             {
                 promise = new UniTaskCompletionSource<T>();
             }
-            promise.TrySetException(exception);
+            if (exception is OperationCanceledException ex)
+            {
+                promise.TrySetCanceled(ex);
+            }
+            else
+            {
+                promise.TrySetException(exception);
+            }
         }
 
         // 4. SetResult
@@ -225,11 +225,9 @@ namespace UniRx.Async.CompilerServices
                     promise = new UniTaskCompletionSource<T>(); // built future.
                 }
 
-                var runner = new MoveNextRunner();
+                var runner = new MoveNextRunner<TStateMachine>();
                 moveNext = runner.Run;
-
-                var boxed = (IAsyncStateMachine)stateMachine;
-                runner.StateMachine = boxed; // boxed
+                runner.StateMachine = stateMachine; // set after create delegate.
             }
 
             awaiter.OnCompleted(moveNext);
@@ -249,11 +247,9 @@ namespace UniRx.Async.CompilerServices
                     promise = new UniTaskCompletionSource<T>(); // built future.
                 }
 
-                var runner = new MoveNextRunner();
+                var runner = new MoveNextRunner<TStateMachine>();
                 moveNext = runner.Run;
-
-                var boxed = (IAsyncStateMachine)stateMachine;
-                runner.StateMachine = boxed; // boxed
+                runner.StateMachine = stateMachine; // set after create delegate.
             }
 
             awaiter.UnsafeOnCompleted(moveNext);
@@ -271,16 +267,6 @@ namespace UniRx.Async.CompilerServices
         [DebuggerHidden]
         public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
-        }
-
-        class MoveNextRunner
-        {
-            public IAsyncStateMachine StateMachine;
-
-            public void Run()
-            {
-                StateMachine.MoveNext();
-            }
         }
     }
 }

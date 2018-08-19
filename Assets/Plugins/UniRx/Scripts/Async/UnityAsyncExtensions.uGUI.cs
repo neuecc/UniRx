@@ -3,22 +3,25 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using UniRx.Async.Internal;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UniRx.Async.Triggers;
 
 namespace UniRx.Async
 {
     public static partial class UnityAsyncExtensions
     {
-        public static AsyncUnityEventHandler GetAsyncEventHandler(this UnityEvent unityEvent)
+        public static AsyncUnityEventHandler GetAsyncEventHandler(this UnityEvent unityEvent, CancellationToken cancellationToken)
         {
-            return new AsyncUnityEventHandler(unityEvent);
+            return new AsyncUnityEventHandler(unityEvent, cancellationToken);
         }
 
-        public static async UniTask OnInvokeAsync(this UnityEvent unityEvent)
+        public static async UniTask OnInvokeAsync(this UnityEvent unityEvent, CancellationToken cancellationToken)
         {
-            using (var handler = unityEvent.GetAsyncEventHandler())
+            using (var handler = unityEvent.GetAsyncEventHandler(cancellationToken))
             {
                 await handler.OnInvokeAsync();
             }
@@ -26,7 +29,7 @@ namespace UniRx.Async
 
         public static IAsyncClickEventHandler GetAsyncClickEventHandler(this Button button)
         {
-            return new AsyncUnityEventHandler(button.onClick);
+            return new AsyncUnityEventHandler(button.onClick, button.GetCancellationTokenOnDestroy());
         }
 
         public static async UniTask OnInvokeAsync(this Button button)
@@ -39,7 +42,7 @@ namespace UniRx.Async
 
         public static IAsyncValueChangedEventHandler<bool> GetAsyncValueChangedEventHandler(this Toggle toggle)
         {
-            return new AsyncUnityEventHandler<bool>(toggle.onValueChanged);
+            return new AsyncUnityEventHandler<bool>(toggle.onValueChanged, toggle.GetCancellationTokenOnDestroy());
         }
 
         public static async UniTask<bool> OnValueChangedAsync(this Toggle toggle)
@@ -52,7 +55,7 @@ namespace UniRx.Async
 
         public static IAsyncValueChangedEventHandler<float> GetAsyncValueChangedEventHandler(this Scrollbar scrollbar)
         {
-            return new AsyncUnityEventHandler<float>(scrollbar.onValueChanged);
+            return new AsyncUnityEventHandler<float>(scrollbar.onValueChanged, scrollbar.GetCancellationTokenOnDestroy());
         }
 
         public static async UniTask<float> OnValueChangedAsync(this Scrollbar scrollbar)
@@ -65,7 +68,7 @@ namespace UniRx.Async
 
         public static IAsyncValueChangedEventHandler<Vector2> GetAsyncValueChangedEventHandler(this ScrollRect scrollRect)
         {
-            return new AsyncUnityEventHandler<Vector2>(scrollRect.onValueChanged);
+            return new AsyncUnityEventHandler<Vector2>(scrollRect.onValueChanged, scrollRect.GetCancellationTokenOnDestroy());
         }
 
         public static async UniTask<Vector2> OnValueChangedAsync(this ScrollRect scrollRect)
@@ -78,7 +81,7 @@ namespace UniRx.Async
 
         public static IAsyncValueChangedEventHandler<float> GetAsyncValueChangedEventHandler(this Slider slider)
         {
-            return new AsyncUnityEventHandler<float>(slider.onValueChanged);
+            return new AsyncUnityEventHandler<float>(slider.onValueChanged, slider.GetCancellationTokenOnDestroy());
         }
 
         public static async UniTask<float> OnValueChangedAsync(this Slider slider)
@@ -91,7 +94,7 @@ namespace UniRx.Async
 
         public static IAsyncEndEditEventHandler<string> GetAsyncEndEditEventHandler(this InputField inputField)
         {
-            return new AsyncUnityEventHandler<string>(inputField.onEndEdit);
+            return new AsyncUnityEventHandler<string>(inputField.onEndEdit, inputField.GetCancellationTokenOnDestroy());
         }
 
         public static async UniTask<string> OnEndEditAsync(this InputField inputField)
@@ -118,19 +121,35 @@ namespace UniRx.Async
         UniTask<T> OnEndEditAsync();
     }
 
-    public class AsyncUnityEventHandler : IAwaiter<AsyncUnit>, IDisposable, IAsyncClickEventHandler
+    // event handler is reusable.
+    public class AsyncUnityEventHandler : IAwaiter, IDisposable, IAsyncClickEventHandler
     {
+        static Action<object> cancellationCallback = CancellationCallback;
+
         readonly UnityAction action;
         readonly UnityEvent unityEvent;
         Action continuation;
-        AwaiterStatus status;
+        CancellationTokenRegistration registration;
+        bool isDisposed;
 
-        public AsyncUnityEventHandler(UnityEvent unityEvent)
+        public AsyncUnityEventHandler(UnityEvent unityEvent, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                isDisposed = true;
+                return;
+            }
+
             action = Invoke;
-            status = AwaiterStatus.Pending;
             unityEvent.AddListener(action);
             this.unityEvent = unityEvent;
+
+            if (cancellationToken.CanBeCanceled)
+            {
+                registration = cancellationToken.Register(cancellationCallback, this, false);
+            }
+
+            TaskTracker.TrackActiveTask(this, 3);
         }
 
         public UniTask OnInvokeAsync()
@@ -141,37 +160,40 @@ namespace UniRx.Async
 
         void Invoke()
         {
-            status = AwaiterStatus.Succeeded;
-
             var c = continuation;
             continuation = null;
             if (c != null)
             {
                 c.Invoke();
             }
+        }
 
-            status = AwaiterStatus.Pending;
+        static void CancellationCallback(object state)
+        {
+            var self = (AsyncUnityEventHandler)state;
+            self.Dispose();
+            self.Invoke(); // call continuation if exists yet(GetResult -> throw OperationCanceledException).
         }
 
         public void Dispose()
         {
-            if (unityEvent != null)
+            if (!isDisposed)
             {
-                unityEvent.RemoveListener(action);
+                isDisposed = true;
+                TaskTracker.RemoveTracking(this);
+                registration.Dispose();
+                if (unityEvent != null)
+                {
+                    unityEvent.RemoveListener(action);
+                }
             }
         }
 
-        bool IAwaiter.IsCompleted => false;
-
-        AwaiterStatus IAwaiter.Status => status;
-
+        bool IAwaiter.IsCompleted => isDisposed ? true : false;
+        AwaiterStatus IAwaiter.Status => isDisposed ? AwaiterStatus.Canceled : AwaiterStatus.Pending;
         void IAwaiter.GetResult()
         {
-        }
-
-        public AsyncUnit GetResult()
-        {
-            return AsyncUnit.Default;
+            if (isDisposed) throw new OperationCanceledException();
         }
 
         void INotifyCompletion.OnCompleted(Action action)
@@ -181,7 +203,7 @@ namespace UniRx.Async
 
         void ICriticalNotifyCompletion.UnsafeOnCompleted(Action action)
         {
-            if (continuation != null) throw new InvalidOperationException("can't add multiple continuation(await)");
+            Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
             this.continuation = action;
         }
 
@@ -193,20 +215,36 @@ namespace UniRx.Async
         }
     }
 
+    // event handler is reusable.
     public class AsyncUnityEventHandler<T> : IAwaiter<T>, IDisposable, IAsyncValueChangedEventHandler<T>, IAsyncEndEditEventHandler<T>
     {
+        static Action<object> cancellationCallback = CancellationCallback;
+
         readonly UnityAction<T> action;
         readonly UnityEvent<T> unityEvent;
         Action continuation;
+        CancellationTokenRegistration registration;
+        bool isDisposed;
         T eventValue;
-        AwaiterStatus status;
 
-        public AsyncUnityEventHandler(UnityEvent<T> unityEvent)
+        public AsyncUnityEventHandler(UnityEvent<T> unityEvent, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                isDisposed = true;
+                return;
+            }
+
             action = Invoke;
-            status = AwaiterStatus.Pending;
             unityEvent.AddListener(action);
             this.unityEvent = unityEvent;
+
+            if (cancellationToken.CanBeCanceled)
+            {
+                registration = cancellationToken.Register(cancellationCallback, this, false);
+            }
+
+            TaskTracker.TrackActiveTask(this, 3);
         }
 
         public UniTask<T> OnInvokeAsync()
@@ -218,7 +256,6 @@ namespace UniRx.Async
         void Invoke(T value)
         {
             this.eventValue = value;
-            status = AwaiterStatus.Succeeded;
 
             var c = continuation;
             continuation = null;
@@ -226,28 +263,41 @@ namespace UniRx.Async
             {
                 c.Invoke();
             }
+        }
 
-            status = AwaiterStatus.Pending;
+        static void CancellationCallback(object state)
+        {
+            var self = (AsyncUnityEventHandler<T>)state;
+            self.Dispose();
+            self.Invoke(default(T)); // call continuation if exists yet(GetResult -> throw OperationCanceledException).
         }
 
         public void Dispose()
         {
-            if (unityEvent != null)
+            if (!isDisposed)
             {
-                unityEvent.RemoveListener(action);
+                isDisposed = true;
+                TaskTracker.RemoveTracking(this);
+                registration.Dispose();
+                if (unityEvent != null)
+                {
+                    unityEvent.RemoveListener(action);
+                }
             }
         }
 
-        bool IAwaiter.IsCompleted => false;
-        AwaiterStatus IAwaiter.Status => status;
+        bool IAwaiter.IsCompleted => isDisposed ? true : false;
+        AwaiterStatus IAwaiter.Status => isDisposed ? AwaiterStatus.Canceled : AwaiterStatus.Pending;
 
         T IAwaiter<T>.GetResult()
         {
+            if (isDisposed) throw new OperationCanceledException();
             return eventValue;
         }
 
         void IAwaiter.GetResult()
         {
+            if (isDisposed) throw new OperationCanceledException();
         }
 
         void INotifyCompletion.OnCompleted(Action action)
@@ -257,8 +307,8 @@ namespace UniRx.Async
 
         void ICriticalNotifyCompletion.UnsafeOnCompleted(Action action)
         {
-            if (continuation != null) throw new InvalidOperationException("can't add multiple continuation(await)");
-            continuation = action;
+            Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
+            this.continuation = action;
         }
 
         // Interface events.

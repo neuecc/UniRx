@@ -1,28 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncScrollTrigger : MonoBehaviour, IEventSystemHandler, IScrollHandler
+    public class AsyncScrollTrigger : AsyncTriggerBase
     {
-        ReusablePromise<PointerEventData> onScroll;
+        AsyncTriggerPromise<PointerEventData> onScroll;
+        AsyncTriggerPromiseDictionary<PointerEventData> onScrolls;
 
-        void IScrollHandler.OnScroll(PointerEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onScroll?.TrySetResult(eventData);
+            return Concat(onScroll, onScrolls);
         }
 
-        public UniTask<PointerEventData> OnScrollAsync()
+
+        void OnScroll(PointerEventData eventData)
         {
-            return new UniTask<PointerEventData>(onScroll ?? (onScroll = new ReusablePromise<PointerEventData>()));
+            TrySetResult(onScroll, onScrolls, eventData);
         }
+
+
+        public UniTask OnScrollAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onScroll, ref onScrolls, cancellationToken);
+        }
+
+
     }
 }
 
-
 #endif
+

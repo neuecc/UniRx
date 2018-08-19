@@ -13,66 +13,87 @@ namespace UniRx.Async
     {
         public static AsyncOperationAwaiter GetAwaiter(this AsyncOperation asyncOperation)
         {
-            Guard.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
-
+            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             return new AsyncOperationAwaiter(asyncOperation);
         }
 
         public static UniTask ToUniTask(this AsyncOperation asyncOperation)
         {
-            return new UniTask(GetAwaiter(asyncOperation));
+            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            return new UniTask(new AsyncOperationAwaiter(asyncOperation));
         }
 
         public static UniTask ConfigureAwait(this AsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
         {
-            Guard.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
 
             var awaiter = new AsyncOperationConfiguredAwaiter(asyncOperation, progress, cancellation);
-            PlayerLoopHelper.AddAction(timing, awaiter);
+            if (!awaiter.IsCompleted)
+            {
+                PlayerLoopHelper.AddAction(timing, awaiter);
+            }
             return new UniTask(awaiter);
         }
 
         public static ResourceRequestAwaiter GetAwaiter(this ResourceRequest resourceRequest)
         {
-            Guard.ThrowArgumentNullException(resourceRequest, nameof(resourceRequest));
-
+            Error.ThrowArgumentNullException(resourceRequest, nameof(resourceRequest));
             return new ResourceRequestAwaiter(resourceRequest);
         }
 
         public static UniTask<UnityEngine.Object> ToUniTask(this ResourceRequest resourceRequest)
         {
-            Guard.ThrowArgumentNullException(resourceRequest, nameof(resourceRequest));
-
+            Error.ThrowArgumentNullException(resourceRequest, nameof(resourceRequest));
             return new UniTask<UnityEngine.Object>(new ResourceRequestAwaiter(resourceRequest));
         }
 
         public static UniTask<UnityEngine.Object> ConfigureAwait(this ResourceRequest resourceRequest, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
         {
-            Guard.ThrowArgumentNullException(resourceRequest, nameof(resourceRequest));
+            Error.ThrowArgumentNullException(resourceRequest, nameof(resourceRequest));
 
             var awaiter = new ResourceRequestConfiguredAwaiter(resourceRequest, progress, cancellation);
-            PlayerLoopHelper.AddAction(timing, awaiter);
+            if (!awaiter.IsCompleted)
+            {
+                PlayerLoopHelper.AddAction(timing, awaiter);
+            }
             return new UniTask<UnityEngine.Object>(awaiter);
         }
 
 #if ENABLE_WWW
 
-        public static UniTask.Awaiter GetAwaiter(this WWW www)
+        public static IAwaiter GetAwaiter(this WWW www)
         {
-            return ConfigureAwait(www).GetAwaiter();
+            Error.ThrowArgumentNullException(www, nameof(www));
+
+            var awaiter = new WWWConfiguredAwaiter(www, null, CancellationToken.None);
+            if (!awaiter.IsCompleted)
+            {
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, awaiter);
+            }
+            return awaiter;
         }
 
         public static UniTask ToUniTask(this WWW www)
         {
-            return ConfigureAwait(www);
+            Error.ThrowArgumentNullException(www, nameof(www));
+
+            var awaiter = new WWWConfiguredAwaiter(www, null, CancellationToken.None);
+            if (!awaiter.IsCompleted)
+            {
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, awaiter);
+            }
+            return new UniTask(awaiter);
         }
 
         public static UniTask ConfigureAwait(this WWW www, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
         {
-            Guard.ThrowArgumentNullException(www, nameof(www));
+            Error.ThrowArgumentNullException(www, nameof(www));
 
             var awaiter = new WWWConfiguredAwaiter(www, progress, cancellation);
-            PlayerLoopHelper.AddAction(timing, awaiter);
+            if (!awaiter.IsCompleted)
+            {
+                PlayerLoopHelper.AddAction(timing, awaiter);
+            }
             return new UniTask(awaiter);
         }
 
@@ -82,22 +103,25 @@ namespace UniRx.Async
 
         public static UnityWebRequestAsyncOperationAwaiter GetAwaiter(this UnityWebRequestAsyncOperation asyncOperation)
         {
-            Guard.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
-
+            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             return new UnityWebRequestAsyncOperationAwaiter(asyncOperation);
         }
 
         public static UniTask<UnityWebRequest> ToUniTask(this UnityWebRequestAsyncOperation asyncOperation)
         {
-            return new UniTask<UnityWebRequest>(GetAwaiter(asyncOperation));
+            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            return new UniTask<UnityWebRequest>(new UnityWebRequestAsyncOperationAwaiter(asyncOperation));
         }
 
         public static UniTask<UnityWebRequest> ConfigureAwait(this UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellation = default(CancellationToken))
         {
-            Guard.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
 
             var awaiter = new UnityWebRequestAsyncOperationConfiguredAwaiter(asyncOperation, progress, cancellation);
-            PlayerLoopHelper.AddAction(timing, awaiter);
+            if (!awaiter.IsCompleted)
+            {
+                PlayerLoopHelper.AddAction(timing, awaiter);
+            }
             return new UniTask<UnityWebRequest>(awaiter);
         }
 
@@ -105,75 +129,105 @@ namespace UniRx.Async
 
         public struct AsyncOperationAwaiter : IAwaiter
         {
-            readonly AsyncOperation asyncOperation;
+            AsyncOperation asyncOperation;
+            Action<AsyncOperation> continuationAction;
+            AwaiterStatus status;
 
             public AsyncOperationAwaiter(AsyncOperation asyncOperation)
             {
-                this.asyncOperation = asyncOperation;
+                this.status = asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+                this.asyncOperation = (this.status.IsCompleted()) ? null : asyncOperation;
+                this.continuationAction = null;
             }
 
-            public bool IsCompleted
-            {
-                get
-                {
-                    return asyncOperation.isDone;
-                }
-            }
-
-            public AwaiterStatus Status => asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+            public bool IsCompleted => status.IsCompleted();
+            public AwaiterStatus Status => status;
 
             public void GetResult()
             {
+                if (status == AwaiterStatus.Succeeded) return;
+
+                if (status == AwaiterStatus.Pending)
+                {
+                    // first timing of call
+                    if (asyncOperation.isDone)
+                    {
+                        status = AwaiterStatus.Succeeded;
+                    }
+                    else
+                    {
+                        Error.ThrowNotYetCompleted();
+                    }
+                }
+
+                asyncOperation = null; // remove reference.
+
+                if (continuationAction != null)
+                {
+                    asyncOperation.completed -= continuationAction;
+                    continuationAction = null;
+                }
             }
 
             public void OnCompleted(Action continuation)
             {
-                asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
+                UnsafeOnCompleted(continuation);
             }
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
+                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
+                continuationAction = continuation.AsFuncOfT<AsyncOperation>();
+                asyncOperation.completed += continuationAction;
             }
         }
 
         class AsyncOperationConfiguredAwaiter : IAwaiter, IPlayerLoopItem
         {
-            readonly AsyncOperation asyncOperation;
-            readonly IProgress<float> progress;
+            AsyncOperation asyncOperation;
+            IProgress<float> progress;
             CancellationToken cancellationToken;
+            AwaiterStatus status;
             Action continuation;
 
             public AsyncOperationConfiguredAwaiter(AsyncOperation asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
+                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
+                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
+                            : AwaiterStatus.Pending;
+
+                if (this.status.IsCompleted()) return;
+
                 this.asyncOperation = asyncOperation;
                 this.progress = progress;
                 this.cancellationToken = cancellationToken;
                 this.continuation = null;
+
+                TaskTracker.TrackActiveTask(this, 2);
             }
 
-            public bool IsCompleted
-            {
-                get
-                {
-                    return cancellationToken.IsCancellationRequested || asyncOperation.isDone;
-                }
-            }
-
-            public AwaiterStatus Status => asyncOperation.isDone ? AwaiterStatus.Succeeded
-                     : cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                     : AwaiterStatus.Pending;
+            public bool IsCompleted => status.IsCompleted();
+            public AwaiterStatus Status => status;
 
             public void GetResult()
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                if (status == AwaiterStatus.Succeeded)
+                {
+                    return;
+                }
+                else if (status == AwaiterStatus.Canceled)
+                {
+                    Error.ThrowOperationCanceledException();
+                }
+
+                Error.ThrowNotYetCompleted();
             }
 
             public bool MoveNext()
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    this.continuation?.Invoke();
+                    InvokeContinuation(AwaiterStatus.Canceled);
                     return false;
                 }
 
@@ -184,131 +238,192 @@ namespace UniRx.Async
 
                 if (asyncOperation.isDone)
                 {
-                    this.continuation?.Invoke();
+                    InvokeContinuation(AwaiterStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
+            void InvokeContinuation(AwaiterStatus status)
+            {
+                this.status = status;
+                var cont = this.continuation;
+
+                // cleanup
+                TaskTracker.RemoveTracking(this);
+                this.continuation = null;
+                this.cancellationToken = CancellationToken.None;
+                this.progress = null;
+                this.asyncOperation = null;
+
+                if (cont != null) cont.Invoke();
+            }
+
             public void OnCompleted(Action continuation)
             {
-                this.continuation = continuation;
+                UnsafeOnCompleted(continuation);
             }
 
             public void UnsafeOnCompleted(Action continuation)
             {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
                 this.continuation = continuation;
             }
         }
 
         public struct ResourceRequestAwaiter : IAwaiter<UnityEngine.Object>
         {
-            readonly ResourceRequest request;
+            ResourceRequest asyncOperation;
+            Action<AsyncOperation> continuationAction;
+            AwaiterStatus status;
+            UnityEngine.Object result;
 
-            public ResourceRequestAwaiter(ResourceRequest request)
+            public ResourceRequestAwaiter(ResourceRequest asyncOperation)
             {
-                this.request = request;
+                this.status = asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+                this.asyncOperation = (this.status.IsCompleted()) ? null : asyncOperation;
+                this.result = (this.status.IsCompletedSuccessfully()) ? asyncOperation.asset : null;
+                this.continuationAction = null;
             }
 
-            public bool IsCompleted
-            {
-                get
-                {
-                    return request.isDone;
-                }
-            }
-
-            public AwaiterStatus Status => request.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+            public bool IsCompleted => status.IsCompleted();
+            public AwaiterStatus Status => status;
 
             public UnityEngine.Object GetResult()
             {
-                return request.asset;
+                if (status == AwaiterStatus.Succeeded) return this.result;
+
+                if (status == AwaiterStatus.Pending)
+                {
+                    // first timing of call
+                    if (asyncOperation.isDone)
+                    {
+                        status = AwaiterStatus.Succeeded;
+                    }
+                    else
+                    {
+                        Error.ThrowNotYetCompleted();
+                    }
+                }
+
+                this.result = asyncOperation.asset;
+                asyncOperation = null; // remove reference.
+
+                if (continuationAction != null)
+                {
+                    asyncOperation.completed -= continuationAction;
+                    continuationAction = null;
+                }
+
+                return this.result;
             }
 
-            void IAwaiter.GetResult()
-            {
-                // do nothing(no throw)
-            }
+            void IAwaiter.GetResult() => GetResult();
 
             public void OnCompleted(Action continuation)
             {
-                request.completed += continuation.AsFuncOfT<AsyncOperation>();
+                UnsafeOnCompleted(continuation);
             }
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                request.completed += continuation.AsFuncOfT<AsyncOperation>();
+                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
+                continuationAction = continuation.AsFuncOfT<AsyncOperation>();
+                asyncOperation.completed += continuationAction;
             }
         }
 
         class ResourceRequestConfiguredAwaiter : IAwaiter<UnityEngine.Object>, IPlayerLoopItem
         {
-            readonly ResourceRequest request;
-            readonly IProgress<float> progress;
+            ResourceRequest asyncOperation;
+            IProgress<float> progress;
             CancellationToken cancellationToken;
+            AwaiterStatus status;
             Action continuation;
+            UnityEngine.Object result;
 
-            public ResourceRequestConfiguredAwaiter(ResourceRequest request, IProgress<float> progress, CancellationToken cancellationToken)
+            public ResourceRequestConfiguredAwaiter(ResourceRequest asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
-                this.request = request;
+                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
+                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
+                            : AwaiterStatus.Pending;
+
+                if (this.status.IsCompletedSuccessfully()) this.result = asyncOperation.asset;
+                if (this.status.IsCompleted()) return;
+
+                this.asyncOperation = asyncOperation;
                 this.progress = progress;
                 this.cancellationToken = cancellationToken;
                 this.continuation = null;
+                this.result = null;
+
+                TaskTracker.TrackActiveTask(this, 2);
             }
 
-            public bool IsCompleted
-            {
-                get
-                {
-                    return cancellationToken.IsCancellationRequested || request.isDone;
-                }
-            }
-
-            public AwaiterStatus Status => request.isDone ? AwaiterStatus.Succeeded
-                     : cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                     : AwaiterStatus.Pending;
+            public bool IsCompleted => status.IsCompleted();
+            public AwaiterStatus Status => status;
+            void IAwaiter.GetResult() => GetResult();
 
             public UnityEngine.Object GetResult()
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                return request.asset;
-            }
+                if (status == AwaiterStatus.Succeeded) return this.result;
 
-            void IAwaiter.GetResult()
-            {
-                GetResult();
+                if (status == AwaiterStatus.Canceled)
+                {
+                    Error.ThrowOperationCanceledException();
+                }
+
+                return Error.ThrowNotYetCompleted<UnityEngine.Object>();
             }
 
             public bool MoveNext()
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    this.continuation?.Invoke();
+                    InvokeContinuation(AwaiterStatus.Canceled);
                     return false;
                 }
 
                 if (progress != null)
                 {
-                    progress.Report(request.progress);
+                    progress.Report(asyncOperation.progress);
                 }
 
-                if (request.isDone)
+                if (asyncOperation.isDone)
                 {
-                    this.continuation?.Invoke();
+                    this.result = asyncOperation.asset;
+                    InvokeContinuation(AwaiterStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
+            void InvokeContinuation(AwaiterStatus status)
+            {
+                this.status = status;
+                var cont = this.continuation;
+
+                // cleanup
+                TaskTracker.RemoveTracking(this);
+                this.continuation = null;
+                this.cancellationToken = CancellationToken.None;
+                this.progress = null;
+                this.asyncOperation = null;
+
+                if (cont != null) cont.Invoke();
+            }
+
             public void OnCompleted(Action continuation)
             {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
                 this.continuation = continuation;
             }
 
             public void UnsafeOnCompleted(Action continuation)
             {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
                 this.continuation = continuation;
             }
         }
@@ -317,65 +432,90 @@ namespace UniRx.Async
 
         class WWWConfiguredAwaiter : IAwaiter, IPlayerLoopItem
         {
-            readonly WWW request;
-            readonly IProgress<float> progress;
+            WWW asyncOperation;
+            IProgress<float> progress;
             CancellationToken cancellationToken;
+            AwaiterStatus status;
             Action continuation;
 
-            public WWWConfiguredAwaiter(WWW request, IProgress<float> progress, CancellationToken cancellationToken)
+            public WWWConfiguredAwaiter(WWW asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
-                this.request = request;
+                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
+                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
+                            : AwaiterStatus.Pending;
+
+                if (this.status.IsCompleted()) return;
+
+                this.asyncOperation = asyncOperation;
                 this.progress = progress;
                 this.cancellationToken = cancellationToken;
                 this.continuation = null;
+
+                TaskTracker.TrackActiveTask(this, 2);
             }
 
-            public bool IsCompleted
-            {
-                get
-                {
-                    return cancellationToken.IsCancellationRequested || request.isDone;
-                }
-            }
-
-            public AwaiterStatus Status => request.isDone ? AwaiterStatus.Succeeded
-                     : cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                     : AwaiterStatus.Pending;
+            public bool IsCompleted => status.IsCompleted();
+            public AwaiterStatus Status => status;
 
             public void GetResult()
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                if (status == AwaiterStatus.Succeeded)
+                {
+                    return;
+                }
+                else if (status == AwaiterStatus.Canceled)
+                {
+                    Error.ThrowOperationCanceledException();
+                }
+
+                Error.ThrowNotYetCompleted();
             }
 
             public bool MoveNext()
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    this.continuation?.Invoke();
+                    InvokeContinuation(AwaiterStatus.Canceled);
                     return false;
                 }
 
                 if (progress != null)
                 {
-                    progress.Report(request.progress);
+                    progress.Report(asyncOperation.progress);
                 }
 
-                if (request.isDone)
+                if (asyncOperation.isDone)
                 {
-                    this.continuation?.Invoke();
+                    InvokeContinuation(AwaiterStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
+            void InvokeContinuation(AwaiterStatus status)
+            {
+                this.status = status;
+                var cont = this.continuation;
+
+                // cleanup
+                TaskTracker.RemoveTracking(this);
+                this.continuation = null;
+                this.cancellationToken = CancellationToken.None;
+                this.progress = null;
+                this.asyncOperation = null;
+
+                if (cont != null) cont.Invoke();
+            }
+
             public void OnCompleted(Action continuation)
             {
-                this.continuation = continuation;
+                UnsafeOnCompleted(continuation);
             }
 
             public void UnsafeOnCompleted(Action continuation)
             {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
                 this.continuation = continuation;
             }
         }
@@ -386,111 +526,156 @@ namespace UniRx.Async
 
         public struct UnityWebRequestAsyncOperationAwaiter : IAwaiter<UnityWebRequest>
         {
-            readonly UnityWebRequestAsyncOperation asyncOperation;
+            UnityWebRequestAsyncOperation asyncOperation;
+            Action<AsyncOperation> continuationAction;
+            AwaiterStatus status;
+            UnityWebRequest result;
 
             public UnityWebRequestAsyncOperationAwaiter(UnityWebRequestAsyncOperation asyncOperation)
             {
-                this.asyncOperation = asyncOperation;
+                this.status = asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+                this.asyncOperation = (this.status.IsCompleted()) ? null : asyncOperation;
+                this.result = (this.status.IsCompletedSuccessfully()) ? asyncOperation.webRequest : null;
+                this.continuationAction = null;
             }
 
-            public bool IsCompleted
-            {
-                get
-                {
-                    return asyncOperation.isDone;
-                }
-            }
-
-            public AwaiterStatus Status => asyncOperation.isDone ? AwaiterStatus.Succeeded : AwaiterStatus.Pending;
+            public bool IsCompleted => status.IsCompleted();
+            public AwaiterStatus Status => status;
 
             public UnityWebRequest GetResult()
             {
-                return asyncOperation.webRequest;
+                if (status == AwaiterStatus.Succeeded) return this.result;
+
+                if (status == AwaiterStatus.Pending)
+                {
+                    // first timing of call
+                    if (asyncOperation.isDone)
+                    {
+                        status = AwaiterStatus.Succeeded;
+                    }
+                    else
+                    {
+                        Error.ThrowNotYetCompleted();
+                    }
+                }
+
+                this.result = asyncOperation.webRequest;
+                asyncOperation = null; // remove reference.
+
+                if (continuationAction != null)
+                {
+                    asyncOperation.completed -= continuationAction;
+                    continuationAction = null;
+                }
+
+                return this.result;
             }
 
-            void IAwaiter.GetResult()
-            {
-                // do nothing(no throw)
-            }
+            void IAwaiter.GetResult() => GetResult();
 
             public void OnCompleted(Action continuation)
             {
-                asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
+                UnsafeOnCompleted(continuation);
             }
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                asyncOperation.completed += continuation.AsFuncOfT<AsyncOperation>();
+                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
+                continuationAction = continuation.AsFuncOfT<AsyncOperation>();
+                asyncOperation.completed += continuationAction;
             }
         }
 
         class UnityWebRequestAsyncOperationConfiguredAwaiter : IAwaiter<UnityWebRequest>, IPlayerLoopItem
         {
-            readonly UnityWebRequestAsyncOperation request;
-            readonly IProgress<float> progress;
+            UnityWebRequestAsyncOperation asyncOperation;
+            IProgress<float> progress;
             CancellationToken cancellationToken;
+            AwaiterStatus status;
             Action continuation;
+            UnityWebRequest result;
 
-            public UnityWebRequestAsyncOperationConfiguredAwaiter(UnityWebRequestAsyncOperation request, IProgress<float> progress, CancellationToken cancellationToken)
+            public UnityWebRequestAsyncOperationConfiguredAwaiter(UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress, CancellationToken cancellationToken)
             {
-                this.request = request;
+                this.status = cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
+                            : asyncOperation.isDone ? AwaiterStatus.Succeeded
+                            : AwaiterStatus.Pending;
+
+                if (this.status.IsCompletedSuccessfully()) this.result = asyncOperation.webRequest;
+                if (this.status.IsCompleted()) return;
+
+                this.asyncOperation = asyncOperation;
                 this.progress = progress;
                 this.cancellationToken = cancellationToken;
                 this.continuation = null;
+                this.result = null;
+
+                TaskTracker.TrackActiveTask(this, 2);
             }
 
-            public bool IsCompleted
-            {
-                get
-                {
-                    return cancellationToken.IsCancellationRequested || request.isDone;
-                }
-            }
-
-            public AwaiterStatus Status => request.isDone ? AwaiterStatus.Succeeded
-                     : cancellationToken.IsCancellationRequested ? AwaiterStatus.Canceled
-                     : AwaiterStatus.Pending;
+            public bool IsCompleted => status.IsCompleted();
+            public AwaiterStatus Status => status;
+            void IAwaiter.GetResult() => GetResult();
 
             public UnityWebRequest GetResult()
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                return request.webRequest;
-            }
+                if (status == AwaiterStatus.Succeeded) return this.result;
 
-            void IAwaiter.GetResult()
-            {
-                GetResult();
+                if (status == AwaiterStatus.Canceled)
+                {
+                    Error.ThrowOperationCanceledException();
+                }
+
+                return Error.ThrowNotYetCompleted<UnityWebRequest>();
             }
 
             public bool MoveNext()
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    this.continuation?.Invoke();
+                    InvokeContinuation(AwaiterStatus.Canceled);
                     return false;
                 }
 
                 if (progress != null)
                 {
-                    progress.Report(request.progress);
+                    progress.Report(asyncOperation.progress);
                 }
 
-                if (request.isDone)
+                if (asyncOperation.isDone)
                 {
-                    this.continuation?.Invoke();
+                    this.result = asyncOperation.webRequest;
+                    InvokeContinuation(AwaiterStatus.Succeeded);
                     return false;
                 }
 
                 return true;
             }
 
+            void InvokeContinuation(AwaiterStatus status)
+            {
+                this.status = status;
+                var cont = this.continuation;
+
+                // cleanup
+                TaskTracker.RemoveTracking(this);
+                this.continuation = null;
+                this.cancellationToken = CancellationToken.None;
+                this.progress = null;
+                this.asyncOperation = null;
+
+                if (cont != null) cont.Invoke();
+            }
+
             public void OnCompleted(Action continuation)
             {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
                 this.continuation = continuation;
             }
 
             public void UnsafeOnCompleted(Action continuation)
             {
+                Error.ThrowWhenContinuationIsAlreadyRegistered(this.continuation);
                 this.continuation = continuation;
             }
         }

@@ -2,6 +2,8 @@
 #if CSHARP_7_OR_LATER
 using System;
 using System.Threading;
+using System.Threading.Tasks;
+using UniRx;
 using UniRx.Async;
 using UniRx.Async.Triggers;
 using UnityEngine;
@@ -13,30 +15,38 @@ public class SandboxScene : MonoBehaviour
     public Button buttonA;
     public Button buttonB;
     MyMyClass mc;
+    ReactiveProperty<int> rp = new ReactiveProperty<int>();
 
     void Start()
     {
-        //mc = new MyMyClass() { MyProperty = 9999 };
-        //var task = UniTask.WaitUntilValueChanged(mc, x => x.MyProperty);
-        //HandleObserve(task).Forget();
-
-        //HandleDestroyEvent().Forget();
-        //HandleEvent().Forget();
-        //HandleEventA().Forget();
-        //HandleEventB().Forget();
-        // HandleUpdateLoop().Forget();
-        DelayForever().Forget();
+        //for (int i = 0; i < 3; i++)
+        {
+            DelayForever().Forget();
+            HandleEventA().Forget();
+            HandleEventB().Forget();
+            DoAsync().Forget();
+        }
+        //var promise = new UniTaskCompletionSource();
     }
+
+    async UniTaskVoid DoAsync()
+    {
+        while (true)
+        {
+            await rp.WaitUntilValueChangedAsync(this.GetCancellationTokenOnDestroy());
+        }
+    }
+
+
 
     async UniTask DelayForever()
     {
         Time.timeScale = 1.0f;
-        var delay = UniTask.Delay(TimeSpan.FromSeconds(1));
-        var count = 0;
-        while (this != null)
+        var delay = UniTask.Delay(TimeSpan.FromSeconds(1)).SuppressCancellationThrow();
+        while (true)
         {
-            await delay;
-            UnityEngine.Debug.Log("delay:" + count++ + " " + Time.realtimeSinceStartup);
+            var iscancel = await delay;
+            if (iscancel) return;
         }
     }
 
@@ -74,20 +84,28 @@ public class SandboxScene : MonoBehaviour
 
     async UniTaskVoid HandleEventA()
     {
-        using (var handlerA = buttonA.GetAsyncClickEventHandler())
+        try
         {
-            while (this != null)
+            using (var handlerA = buttonA.GetAsyncClickEventHandler())
             {
-                await handlerA.OnClickAsync();
-                if (mc != null)
+                while (this != null)
                 {
-                    mc.MyProperty++;
-                }
-                else
-                {
-                    GC.Collect();
+                    await handlerA.OnClickAsync();
+                    UnityEngine.Debug.Log("OK");
+                    if (mc != null)
+                    {
+                        mc.MyProperty++;
+                    }
+                    else
+                    {
+                        GC.Collect();
+                    }
                 }
             }
+        }
+        finally
+        {
+            UnityEngine.Debug.Log("Finish Here");
         }
     }
 
@@ -98,7 +116,7 @@ public class SandboxScene : MonoBehaviour
             while (this != null)
             {
                 await handlerB.OnClickAsync();
-                mc = null;
+                Destroy(buttonA.gameObject);
             }
         }
     }
