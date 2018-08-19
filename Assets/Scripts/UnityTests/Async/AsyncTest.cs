@@ -128,6 +128,7 @@ namespace UniRx.AsyncTests
         public IEnumerator JobSystem() => UniTask.ToCoroutine(async () =>
         {
             var job = new MyJob() { loopCount = 999, inOut = new NativeArray<int>(1, Allocator.TempJob) };
+            JobHandle.ScheduleBatchedJobs();
             await job.Schedule();
             job.inOut[0].Is(999);
             job.inOut.Dispose();

@@ -43,7 +43,7 @@ namespace UniRx.Async.Internal
         public static void ThrowWhenContinuationIsAlreadyRegistered<T>(T continuationField)
           where T : class
         {
-            if (continuationField == null) ThrowInvalidOperationExceptionCore("continuation is already registered.");
+            if (continuationField != null) ThrowInvalidOperationExceptionCore("continuation is already registered.");
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using UniRx.Async.Internal;
@@ -360,6 +361,7 @@ namespace UniRx.Async
             UniTask task;
             Action<Exception> exceptionHandler = null;
             bool isStarted = false;
+            ExceptionDispatchInfo exception;
 
             public ToCoroutineEnumerator(UniTask task, Action<Exception> exceptionHandler)
             {
@@ -382,7 +384,7 @@ namespace UniRx.Async
                     }
                     else
                     {
-                        throw;
+                        this.exception = ExceptionDispatchInfo.Capture(ex);
                     }
                 }
                 finally
@@ -401,6 +403,17 @@ namespace UniRx.Async
                     RunTask(task).Forget();
                 }
 
+                if (exception != null)
+                {
+                    // throw exception on iterator (main)thread.
+                    // unfortunately unity test-runner can not handle throw exception on hand-write IEnumerator.MoveNext.
+#if !UniRxLibrary
+                    UnityEngine.Debug.LogException(exception.SourceException);
+#else
+                    exception.Throw();
+#endif
+                }
+
                 return !completed;
             }
 
@@ -417,6 +430,7 @@ namespace UniRx.Async
             bool isStarted = false;
             UniTask<T> task;
             object current = null;
+            ExceptionDispatchInfo exception;
 
             public ToCoroutineEnumerator(UniTask<T> task, Action<T> resultHandler, Action<Exception> exceptionHandler)
             {
@@ -445,7 +459,7 @@ namespace UniRx.Async
                     }
                     else
                     {
-                        throw;
+                        this.exception = ExceptionDispatchInfo.Capture(ex);
                     }
                 }
                 finally
@@ -462,6 +476,17 @@ namespace UniRx.Async
                 {
                     isStarted = true;
                     RunTask(task).Forget();
+                }
+
+                if (exception != null)
+                {
+                    // throw exception on iterator (main)thread.
+                    // unfortunately unity test-runner can not handle throw exception on hand-write IEnumerator.MoveNext.
+#if !UniRxLibrary
+                    UnityEngine.Debug.LogException(exception.SourceException);
+#else
+                    exception.Throw();
+#endif
                 }
 
                 return !completed;
