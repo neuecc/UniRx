@@ -1,9 +1,9 @@
-﻿UniRx - Reactive Extensions for Unity / Ver 6.1.2
+﻿UniRx - Reactive Extensions for Unity / Ver 6.2.0
 ===
 Created by Yoshifumi Kawai(neuecc)
 
 UniRx (Reactive Extensions for Unity) is a reimplementation of the .NET Reactive Extensions.
-UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/etc) 
+UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/etc) + async/await integration(UniRx.Async)
 
 Please read Official Site's ReadMe(Manual) - https://github.com/neuecc/UniRx/
 
@@ -24,6 +24,6 @@ Twitter: https://twitter.com/neuecc (Japanese)
 
 License
 ---
-This library is under the MIT License.
+This library is under the [MIT License](https://github.com/neuecc/UniRx/blob/master/LICENSE).
 
 Some code is borrowed from [Rx.NET](https://rx.codeplex.com/) and [mono/mcs](https://github.com/mono/mono).
