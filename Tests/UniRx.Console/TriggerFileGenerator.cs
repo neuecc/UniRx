@@ -179,7 +179,7 @@ namespace UniRx.Async.Triggers
                         methodTemplate.AppendLine($@"
         public UniTask {method.MethodName.Replace("AsObservable", "Async")}(CancellationToken cancellationToken = default(CancellationToken))
         {{
-            return GetOrAddPromise(ref {m},ref {m}s, cancellationToken);
+            return GetOrAddPromise(ref {m}, ref {m}s, cancellationToken);
         }}
 ");
                     }
@@ -192,11 +192,12 @@ namespace UniRx.Async.Triggers
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {{
     [DisallowMultipleComponent]
-    public class AsyncAnimatorTrigger : AsyncTriggerBase
+    public class {item.TypeName.Replace("Observable", "Async")} : AsyncTriggerBase
     {{
 {fieldTemplate}
 
@@ -207,7 +208,10 @@ namespace UniRx.Async.Triggers
 
 {methodTemplate}
     }}
-}}";
+}}
+
+#endif
+";
 
                 if (item.TypeName == "ObservableMouseTrigger")
                 {
@@ -225,7 +229,15 @@ namespace UniRx.Async.Triggers
 
                 // gen
 
-                var outputPath = Path.Combine(outputDir, item.TypeName.Replace("Observable", "Async") + ".cs");
+                var fileName = item.TypeName.Replace("Observable", "Async");
+                if (fileName == "AsyncDestroyTrigger"
+                 || fileName == "AsyncStateMachineTrigger")
+                {
+                    sb.Clear();
+                    continue;
+                }
+
+                var outputPath = Path.Combine(outputDir, fileName + ".cs");
                 var code = sb.ToString();
 
                 File.WriteAllText(outputPath, code);

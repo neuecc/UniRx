@@ -16,7 +16,7 @@ namespace UniRx
         {
             // my path:)
             var path = @"C:\Users\neuecc\Documents\Git\neuecc\UniRx\Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers";
-            var outpath = @"C:\Users\neuecc\Downloads\akarnokd-misc-dotnet\test";
+            var outpath = @"";
             TriggerFileGenerator.GenerateAsyncTrigger(path, outpath);
 
             //            Console.WriteLine("-- -");

@@ -1,56 +1,69 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncTransformChangedTrigger : MonoBehaviour
+    public class AsyncTransformChangedTrigger : AsyncTriggerBase
     {
-        ReusablePromise onBeforeTransformParentChanged;
+        AsyncTriggerPromise<AsyncUnit> onBeforeTransformParentChanged;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onBeforeTransformParentChangeds;
+        AsyncTriggerPromise<AsyncUnit> onTransformParentChanged;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onTransformParentChangeds;
+        AsyncTriggerPromise<AsyncUnit> onTransformChildrenChanged;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onTransformChildrenChangeds;
 
-        // Callback sent to the graphic before a Transform parent change occurs
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(onBeforeTransformParentChanged, onBeforeTransformParentChangeds, onTransformParentChanged, onTransformParentChangeds, onTransformChildrenChanged, onTransformChildrenChangeds);
+        }
+
+
         void OnBeforeTransformParentChanged()
         {
-            onBeforeTransformParentChanged?.TrySetResult();
+            TrySetResult(onBeforeTransformParentChanged, onBeforeTransformParentChangeds, AsyncUnit.Default);
         }
 
-        /// <summary>Callback sent to the graphic before a Transform parent change occurs.</summary>
-        public UniTask OnBeforeTransformParentChangedAsync()
+
+        public UniTask OnBeforeTransformParentChangedAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onBeforeTransformParentChanged ?? (onBeforeTransformParentChanged = new ReusablePromise()));
+            return GetOrAddPromise(ref onBeforeTransformParentChanged, ref onBeforeTransformParentChangeds, cancellationToken);
         }
 
-        ReusablePromise onTransformParentChanged;
 
-        // This function is called when the parent property of the transform of the GameObject has changed
         void OnTransformParentChanged()
         {
-            onTransformParentChanged?.TrySetResult();
+            TrySetResult(onTransformParentChanged, onTransformParentChangeds, AsyncUnit.Default);
         }
 
-        /// <summary>This function is called when the parent property of the transform of the GameObject has changed.</summary>
-        public UniTask OnTransformParentChangedAsync()
+
+        public UniTask OnTransformParentChangedAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onTransformParentChanged ?? (onTransformParentChanged = new ReusablePromise()));
+            return GetOrAddPromise(ref onTransformParentChanged, ref onTransformParentChangeds, cancellationToken);
         }
 
-        ReusablePromise onTransformChildrenChanged;
 
-        // This function is called when the list of children of the transform of the GameObject has changed
         void OnTransformChildrenChanged()
         {
-            onTransformChildrenChanged?.TrySetResult();
+            TrySetResult(onTransformChildrenChanged, onTransformChildrenChangeds, AsyncUnit.Default);
         }
 
-        /// <summary>This function is called when the list of children of the transform of the GameObject has changed.</summary>
-        public UniTask OnTransformChildrenChangedAsync()
+
+        public UniTask OnTransformChildrenChangedAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onTransformChildrenChanged ?? (onTransformChildrenChanged = new ReusablePromise()));
+            return GetOrAddPromise(ref onTransformChildrenChanged, ref onTransformChildrenChangeds, cancellationToken);
         }
+
+
     }
 }
 
 #endif
+

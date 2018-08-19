@@ -12,7 +12,7 @@ namespace UniRx.Triggers
         Subject<Unit> onRectTransformDimensionsChange;
 
         // Callback that is sent if an associated RectTransform has it's dimensions changed
-        public void OnRectTransformDimensionsChange()
+        void OnRectTransformDimensionsChange()
         {
             if (onRectTransformDimensionsChange != null) onRectTransformDimensionsChange.OnNext(Unit.Default);
         }
@@ -26,7 +26,7 @@ namespace UniRx.Triggers
         Subject<Unit> onRectTransformRemoved;
 
         // Callback that is sent if an associated RectTransform is removed
-        public void OnRectTransformRemoved()
+        void OnRectTransformRemoved()
         {
             if (onRectTransformRemoved != null) onRectTransformRemoved.OnNext(Unit.Default);
         }

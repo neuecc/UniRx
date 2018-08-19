@@ -1,33 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncBeginDragTrigger : MonoBehaviour, IEventSystemHandler, IBeginDragHandler
+    public class AsyncBeginDragTrigger : AsyncTriggerBase
     {
-        ReusablePromise<PointerEventData> onBeginDrag;
+        AsyncTriggerPromise<PointerEventData> onBeginDrag;
+        AsyncTriggerPromiseDictionary<PointerEventData> onBeginDrags;
 
-        void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onBeginDrag?.TrySetResult(eventData);
+            return Concat(onBeginDrag, onBeginDrags);
         }
 
-        public UniTask<PointerEventData> OnBeginDragAsync()
+
+        void OnBeginDrag(PointerEventData eventData)
         {
-            return new UniTask<PointerEventData>(onBeginDrag ?? (onBeginDrag = new ReusablePromise<PointerEventData>()));
+            TrySetResult(onBeginDrag, onBeginDrags, eventData);
         }
 
-        void OnDestroy()
+
+        public UniTask OnBeginDragAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            onBeginDrag?.TrySetCanceled();
+            return GetOrAddPromise(ref onBeginDrag, ref onBeginDrags, cancellationToken);
         }
+
+
     }
 }
 
-
 #endif
+

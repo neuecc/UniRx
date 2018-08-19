@@ -1,4 +1,5 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System.Collections.Generic;
@@ -48,3 +49,6 @@ namespace UniRx.Async.Triggers
 
     }
 }
+
+#endif
+

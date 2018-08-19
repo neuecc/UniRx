@@ -1,28 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncInitializePotentialDragTrigger : MonoBehaviour, IEventSystemHandler, IInitializePotentialDragHandler
+    public class AsyncInitializePotentialDragTrigger : AsyncTriggerBase
     {
-        ReusablePromise<PointerEventData> onInitializePotentialDrag;
+        AsyncTriggerPromise<PointerEventData> onInitializePotentialDrag;
+        AsyncTriggerPromiseDictionary<PointerEventData> onInitializePotentialDrags;
 
-        void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onInitializePotentialDrag?.TrySetResult(eventData);
+            return Concat(onInitializePotentialDrag, onInitializePotentialDrags);
         }
 
-        public UniTask<PointerEventData> OnInitializePotentialDragAsync()
+
+        void OnInitializePotentialDrag(PointerEventData eventData)
         {
-            return new UniTask<PointerEventData>(onInitializePotentialDrag ?? (onInitializePotentialDrag = new ReusablePromise<PointerEventData>()));
+            TrySetResult(onInitializePotentialDrag, onInitializePotentialDrags, eventData);
         }
+
+
+        public UniTask OnInitializePotentialDragAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onInitializePotentialDrag, ref onInitializePotentialDrags, cancellationToken);
+        }
+
+
     }
 }
 
-
 #endif
+

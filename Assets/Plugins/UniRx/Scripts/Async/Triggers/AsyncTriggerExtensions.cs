@@ -250,18 +250,6 @@ namespace UniRx.Async.Triggers
             return component.gameObject.GetAsyncInitializePotentialDragTrigger();
         }
 
-        /// <summary>Get for OnJointBreak2DAsync.</summary>
-        public static AsyncJoint2DTrigger GetAsyncJoint2DTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncJoint2DTrigger>(gameObject);
-        }
-
-        /// <summary>Get for OnJointBreak2DAsync.</summary>
-        public static AsyncJoint2DTrigger GetAsyncJoint2DTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncJoint2DTrigger();
-        }
-
         /// <summary>Get for OnJointBreakAsync.</summary>
         public static AsyncJointTrigger GetAsyncJointTrigger(this GameObject gameObject)
         {

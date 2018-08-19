@@ -1,28 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncDropTrigger : MonoBehaviour, IEventSystemHandler, IDropHandler
+    public class AsyncDropTrigger : AsyncTriggerBase
     {
-        ReusablePromise<PointerEventData> onDrop;
+        AsyncTriggerPromise<PointerEventData> onDrop;
+        AsyncTriggerPromiseDictionary<PointerEventData> onDrops;
 
-        void IDropHandler.OnDrop(PointerEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onDrop?.TrySetResult(eventData);
+            return Concat(onDrop, onDrops);
         }
 
-        public UniTask<PointerEventData> OnDropAsync()
+
+        void OnDrop(PointerEventData eventData)
         {
-            return new UniTask<PointerEventData>(onDrop ?? (onDrop = new ReusablePromise<PointerEventData>()));
+            TrySetResult(onDrop, onDrops, eventData);
         }
+
+
+        public UniTask OnDropAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onDrop, ref onDrops, cancellationToken);
+        }
+
+
     }
 }
 
-
 #endif
+

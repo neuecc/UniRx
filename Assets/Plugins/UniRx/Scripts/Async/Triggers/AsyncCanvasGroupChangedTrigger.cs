@@ -1,34 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using System;
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncCanvasGroupChangedTrigger : MonoBehaviour
+    public class AsyncCanvasGroupChangedTrigger : AsyncTriggerBase
     {
-        ReusablePromise onCanvasGroupChanged;
+        AsyncTriggerPromise<AsyncUnit> onCanvasGroupChanged;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onCanvasGroupChangeds;
 
-        // Callback that is sent if the canvas group is changed
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(onCanvasGroupChanged, onCanvasGroupChangeds);
+        }
+
+
         void OnCanvasGroupChanged()
         {
-            onCanvasGroupChanged?.TrySetResult();
+            TrySetResult(onCanvasGroupChanged, onCanvasGroupChangeds, AsyncUnit.Default);
         }
 
-        /// <summary>Callback that is sent if the canvas group is changed.</summary>
-        public UniTask OnCanvasGroupChangedAsync()
+
+        public UniTask OnCanvasGroupChangedAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onCanvasGroupChanged ?? (onCanvasGroupChanged = new ReusablePromise()));
+            return GetOrAddPromise(ref onCanvasGroupChanged, ref onCanvasGroupChangeds, cancellationToken);
         }
 
-        void OnDestroy()
-        {
-            onCanvasGroupChanged?.TrySetCanceled();
-        }
+
     }
 }
 
 #endif
+

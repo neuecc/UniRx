@@ -1,28 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncEndDragTrigger : MonoBehaviour, IEventSystemHandler, IEndDragHandler
+    public class AsyncEndDragTrigger : AsyncTriggerBase
     {
-        ReusablePromise<PointerEventData> onEndDrag;
+        AsyncTriggerPromise<PointerEventData> onEndDrag;
+        AsyncTriggerPromiseDictionary<PointerEventData> onEndDrags;
 
-        void IEndDragHandler.OnEndDrag(PointerEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onEndDrag?.TrySetResult(eventData);
+            return Concat(onEndDrag, onEndDrags);
         }
 
-        public UniTask<PointerEventData> OnEndDragAsync()
+
+        void OnEndDrag(PointerEventData eventData)
         {
-            return new UniTask<PointerEventData>(onEndDrag ?? (onEndDrag = new ReusablePromise<PointerEventData>()));
+            TrySetResult(onEndDrag, onEndDrags, eventData);
         }
+
+
+        public UniTask OnEndDragAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onEndDrag, ref onEndDrags, cancellationToken);
+        }
+
+
     }
 }
 
-
 #endif
+

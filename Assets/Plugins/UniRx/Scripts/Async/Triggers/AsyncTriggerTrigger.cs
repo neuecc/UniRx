@@ -1,55 +1,69 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncTriggerTrigger : MonoBehaviour
+    public class AsyncTriggerTrigger : AsyncTriggerBase
     {
-        ReusablePromise<Collider> onTriggerEnter;
+        AsyncTriggerPromise<Collider> onTriggerEnter;
+        AsyncTriggerPromiseDictionary<Collider> onTriggerEnters;
+        AsyncTriggerPromise<Collider> onTriggerExit;
+        AsyncTriggerPromiseDictionary<Collider> onTriggerExits;
+        AsyncTriggerPromise<Collider> onTriggerStay;
+        AsyncTriggerPromiseDictionary<Collider> onTriggerStays;
 
-        /// <summary>OnTriggerEnter is called when the Collider other enters the trigger.</summary>
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(onTriggerEnter, onTriggerEnters, onTriggerExit, onTriggerExits, onTriggerStay, onTriggerStays);
+        }
+
+
         void OnTriggerEnter(Collider other)
         {
-            onTriggerEnter?.TrySetResult(other);
+            TrySetResult(onTriggerEnter, onTriggerEnters, other);
         }
 
-        /// <summary>OnTriggerEnter is called when the Collider other enters the trigger.</summary>
-        public UniTask<Collider> OnTriggerEnterAsync()
+
+        public UniTask OnTriggerEnterAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask<Collider>(onTriggerEnter ?? (onTriggerEnter = new ReusablePromise<Collider>()));
+            return GetOrAddPromise(ref onTriggerEnter, ref onTriggerEnters, cancellationToken);
         }
 
-        ReusablePromise<Collider> onTriggerExit;
 
-        /// <summary>OnTriggerExit is called when the Collider other has stopped touching the trigger.</summary>
         void OnTriggerExit(Collider other)
         {
-            onTriggerExit?.TrySetResult(other);
+            TrySetResult(onTriggerExit, onTriggerExits, other);
         }
 
-        /// <summary>OnTriggerExit is called when the Collider other has stopped touching the trigger.</summary>
-        public UniTask<Collider> OnTriggerExitAsync()
+
+        public UniTask OnTriggerExitAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask<Collider>(onTriggerExit ?? (onTriggerExit = new ReusablePromise<Collider>()));
+            return GetOrAddPromise(ref onTriggerExit, ref onTriggerExits, cancellationToken);
         }
 
-        ReusablePromise<Collider> onTriggerStay;
 
-        /// <summary>OnTriggerStay is called once per frame for every Collider other that is touching the trigger.</summary>
         void OnTriggerStay(Collider other)
         {
-            onTriggerStay?.TrySetResult(other);
+            TrySetResult(onTriggerStay, onTriggerStays, other);
         }
 
-        /// <summary>OnTriggerStay is called once per frame for every Collider other that is touching the trigger.</summary>
-        public UniTask<Collider> OnTriggerStayAsync()
+
+        public UniTask OnTriggerStayAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask<Collider>(onTriggerStay ?? (onTriggerStay = new ReusablePromise<Collider>()));
+            return GetOrAddPromise(ref onTriggerStay, ref onTriggerStays, cancellationToken);
         }
+
+
     }
 }
+
 #endif
+

@@ -1,27 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncFixedUpdateTrigger : MonoBehaviour
+    public class AsyncFixedUpdateTrigger : AsyncTriggerBase
     {
-        ReusablePromise fixedUpdate;
+        AsyncTriggerPromise<AsyncUnit> fixedUpdate;
+        AsyncTriggerPromiseDictionary<AsyncUnit> fixedUpdates;
 
-        /// <summary>This function is called every fixed framerate frame, if the MonoBehaviour is enabled.</summary>
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(fixedUpdate, fixedUpdates);
+        }
+
+
         void FixedUpdate()
         {
-            fixedUpdate?.TrySetResult();
+            TrySetResult(fixedUpdate, fixedUpdates, AsyncUnit.Default);
         }
 
-        /// <summary>This function is called every fixed framerate frame, if the MonoBehaviour is enabled.</summary>
-        public UniTask FixedUpdateAsync()
+
+        public UniTask FixedUpdateAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(fixedUpdate ?? (fixedUpdate = new ReusablePromise()));
+            return GetOrAddPromise(ref fixedUpdate, ref fixedUpdates, cancellationToken);
         }
+
+
     }
 }
+
 #endif
+

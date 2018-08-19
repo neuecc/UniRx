@@ -1,41 +1,55 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncVisibleTrigger : MonoBehaviour
+    public class AsyncVisibleTrigger : AsyncTriggerBase
     {
-        ReusablePromise onBecameInvisible;
+        AsyncTriggerPromise<AsyncUnit> onBecameInvisible;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onBecameInvisibles;
+        AsyncTriggerPromise<AsyncUnit> onBecameVisible;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onBecameVisibles;
 
-        /// <summary>OnBecameInvisible is called when the renderer is no longer visible by any camera.</summary>
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(onBecameInvisible, onBecameInvisibles, onBecameVisible, onBecameVisibles);
+        }
+
+
         void OnBecameInvisible()
         {
-            onBecameInvisible?.TrySetResult();
+            TrySetResult(onBecameInvisible, onBecameInvisibles, AsyncUnit.Default);
         }
 
-        /// <summary>OnBecameInvisible is called when the renderer is no longer visible by any camera.</summary>
-        public UniTask OnBecameInvisibleAsync()
+
+        public UniTask OnBecameInvisibleAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onBecameInvisible ?? (onBecameInvisible = new ReusablePromise()));
+            return GetOrAddPromise(ref onBecameInvisible, ref onBecameInvisibles, cancellationToken);
         }
 
-        ReusablePromise onBecameVisible;
 
-        /// <summary>OnBecameVisible is called when the renderer became visible by any camera.</summary>
         void OnBecameVisible()
         {
-            onBecameVisible?.TrySetResult();
+            TrySetResult(onBecameVisible, onBecameVisibles, AsyncUnit.Default);
         }
 
-        /// <summary>OnBecameVisible is called when the renderer became visible by any camera.</summary>
-        public UniTask OnBecameVisibleAsync()
+
+        public UniTask OnBecameVisibleAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onBecameVisible ?? (onBecameVisible = new ReusablePromise()));
+            return GetOrAddPromise(ref onBecameVisible, ref onBecameVisibles, cancellationToken);
         }
+
+
     }
 }
+
 #endif
+

@@ -1,28 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncPointerClickTrigger : MonoBehaviour, IEventSystemHandler, IPointerClickHandler
+    public class AsyncPointerClickTrigger : AsyncTriggerBase
     {
-        ReusablePromise<PointerEventData> onPointerClick;
+        AsyncTriggerPromise<PointerEventData> onPointerClick;
+        AsyncTriggerPromiseDictionary<PointerEventData> onPointerClicks;
 
-        void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onPointerClick?.TrySetResult(eventData);
+            return Concat(onPointerClick, onPointerClicks);
         }
 
-        public UniTask<PointerEventData> OnPointerClickAsync()
+
+        void OnPointerClick(PointerEventData eventData)
         {
-            return new UniTask<PointerEventData>(onPointerClick ?? (onPointerClick = new ReusablePromise<PointerEventData>()));
+            TrySetResult(onPointerClick, onPointerClicks, eventData);
         }
+
+
+        public UniTask OnPointerClickAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onPointerClick, ref onPointerClicks, cancellationToken);
+        }
+
+
     }
 }
 
-
 #endif
+

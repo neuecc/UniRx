@@ -1,55 +1,69 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncTrigger2DTrigger : MonoBehaviour
+    public class AsyncTrigger2DTrigger : AsyncTriggerBase
     {
-        ReusablePromise<Collider2D> onTriggerEnter2D;
+        AsyncTriggerPromise<Collider2D> onTriggerEnter2D;
+        AsyncTriggerPromiseDictionary<Collider2D> onTriggerEnter2Ds;
+        AsyncTriggerPromise<Collider2D> onTriggerExit2D;
+        AsyncTriggerPromiseDictionary<Collider2D> onTriggerExit2Ds;
+        AsyncTriggerPromise<Collider2D> onTriggerStay2D;
+        AsyncTriggerPromiseDictionary<Collider2D> onTriggerStay2Ds;
 
-        /// <summary>Sent when another object enters a trigger collider attached to this object (2D physics only).</summary>
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(onTriggerEnter2D, onTriggerEnter2Ds, onTriggerExit2D, onTriggerExit2Ds, onTriggerStay2D, onTriggerStay2Ds);
+        }
+
+
         void OnTriggerEnter2D(Collider2D other)
         {
-            onTriggerEnter2D?.TrySetResult(other);
+            TrySetResult(onTriggerEnter2D, onTriggerEnter2Ds, other);
         }
 
-        /// <summary>Sent when another object enters a trigger collider attached to this object (2D physics only).</summary>
-        public UniTask<Collider2D> OnTriggerEnter2DAsync()
+
+        public UniTask OnTriggerEnter2DAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask<Collider2D>(onTriggerEnter2D ?? (onTriggerEnter2D = new ReusablePromise<Collider2D>()));
+            return GetOrAddPromise(ref onTriggerEnter2D, ref onTriggerEnter2Ds, cancellationToken);
         }
 
-        ReusablePromise<Collider2D> onTriggerExit2D;
 
-        /// <summary>Sent when another object leaves a trigger collider attached to this object (2D physics only).</summary>
         void OnTriggerExit2D(Collider2D other)
         {
-            onTriggerExit2D?.TrySetResult(other);
+            TrySetResult(onTriggerExit2D, onTriggerExit2Ds, other);
         }
 
-        /// <summary>Sent when another object leaves a trigger collider attached to this object (2D physics only).</summary>
-        public UniTask<Collider2D> OnTriggerExit2DAsync()
+
+        public UniTask OnTriggerExit2DAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask<Collider2D>(onTriggerExit2D ?? (onTriggerExit2D = new ReusablePromise<Collider2D>()));
+            return GetOrAddPromise(ref onTriggerExit2D, ref onTriggerExit2Ds, cancellationToken);
         }
 
-        ReusablePromise<Collider2D> onTriggerStay2D;
 
-        /// <summary>Sent each frame where another object is within a trigger collider attached to this object (2D physics only).</summary>
         void OnTriggerStay2D(Collider2D other)
         {
-            onTriggerStay2D?.TrySetResult(other);
+            TrySetResult(onTriggerStay2D, onTriggerStay2Ds, other);
         }
 
-        /// <summary>Sent each frame where another object is within a trigger collider attached to this object (2D physics only).</summary>
-        public UniTask<Collider2D> OnTriggerStay2DAsync()
+
+        public UniTask OnTriggerStay2DAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask<Collider2D>(onTriggerStay2D ?? (onTriggerStay2D = new ReusablePromise<Collider2D>()));
+            return GetOrAddPromise(ref onTriggerStay2D, ref onTriggerStay2Ds, cancellationToken);
         }
+
+
     }
 }
+
 #endif
+

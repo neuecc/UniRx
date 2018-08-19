@@ -1,28 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncSelectTrigger : MonoBehaviour, IEventSystemHandler, ISelectHandler
+    public class AsyncSelectTrigger : AsyncTriggerBase
     {
-        ReusablePromise<BaseEventData> onSelect;
+        AsyncTriggerPromise<BaseEventData> onSelect;
+        AsyncTriggerPromiseDictionary<BaseEventData> onSelects;
 
-        void ISelectHandler.OnSelect(BaseEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onSelect?.TrySetResult(eventData);
+            return Concat(onSelect, onSelects);
         }
 
-        public UniTask<BaseEventData> OnSelectAsync()
+
+        void OnSelect(BaseEventData eventData)
         {
-            return new UniTask<BaseEventData>(onSelect ?? (onSelect = new ReusablePromise<BaseEventData>()));
+            TrySetResult(onSelect, onSelects, eventData);
         }
+
+
+        public UniTask OnSelectAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onSelect, ref onSelects, cancellationToken);
+        }
+
+
     }
 }
 
-
 #endif
+

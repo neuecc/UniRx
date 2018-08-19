@@ -1,41 +1,55 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncEnableDisableTrigger : MonoBehaviour
+    public class AsyncEnableDisableTrigger : AsyncTriggerBase
     {
-        ReusablePromise onEnable;
+        AsyncTriggerPromise<AsyncUnit> onEnable;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onEnables;
+        AsyncTriggerPromise<AsyncUnit> onDisable;
+        AsyncTriggerPromiseDictionary<AsyncUnit> onDisables;
 
-        /// <summary>This function is called when the object becomes enabled and active.</summary>
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
+        {
+            return Concat(onEnable, onEnables, onDisable, onDisables);
+        }
+
+
         void OnEnable()
         {
-            onEnable?.TrySetResult();
+            TrySetResult(onEnable, onEnables, AsyncUnit.Default);
         }
 
-        /// <summary>This function is called when the object becomes enabled and active.</summary>
-        public UniTask OnEnableAsync()
+
+        public UniTask OnEnableAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onEnable ?? (onEnable = new ReusablePromise()));
+            return GetOrAddPromise(ref onEnable, ref onEnables, cancellationToken);
         }
 
-        ReusablePromise onDisable;
 
-        /// <summary>This function is called when the behaviour becomes disabled () or inactive.</summary>
         void OnDisable()
         {
-            onDisable?.TrySetResult();
+            TrySetResult(onDisable, onDisables, AsyncUnit.Default);
         }
 
-        /// <summary>This function is called when the behaviour becomes disabled () or inactive.</summary>
-        public UniTask OnDisableAsync()
+
+        public UniTask OnDisableAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new UniTask(onDisable ?? (onDisable = new ReusablePromise()));
+            return GetOrAddPromise(ref onDisable, ref onDisables, cancellationToken);
         }
+
+
     }
 }
+
 #endif
+

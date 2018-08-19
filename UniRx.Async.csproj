@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{089999BB-1900-31E8-673F-067C92198C6A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -100,9 +101,9 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncDropTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncEnableDisableTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncEndDragTrigger.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncEventTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncFixedUpdateTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncInitializePotentialDragTrigger.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncJoint2DTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncJointTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncLateUpdateTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncMouseTrigger.cs" />
@@ -117,7 +118,6 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncScrollTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncSelectTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncStartTrigger.cs" />
-    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncStateMachineTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncSubmitTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncTransformChangedTrigger.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Triggers\AsyncTrigger2DTrigger.cs" />

@@ -1,33 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncCancelTrigger : MonoBehaviour, IEventSystemHandler, ICancelHandler
+    public class AsyncCancelTrigger : AsyncTriggerBase
     {
-        ReusablePromise<BaseEventData> onCancel;
+        AsyncTriggerPromise<BaseEventData> onCancel;
+        AsyncTriggerPromiseDictionary<BaseEventData> onCancels;
 
-        void ICancelHandler.OnCancel(BaseEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onCancel?.TrySetResult(eventData);
+            return Concat(onCancel, onCancels);
         }
 
-        public UniTask<BaseEventData> OnCancelAsync()
+
+        void OnCancel(BaseEventData eventData)
         {
-            return new UniTask<BaseEventData>(onCancel ?? (onCancel = new ReusablePromise<BaseEventData>()));
+            TrySetResult(onCancel, onCancels, eventData);
         }
 
-        void OnDestroy()
+
+        public UniTask OnCancelAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            onCancel?.TrySetCanceled();
+            return GetOrAddPromise(ref onCancel, ref onCancels, cancellationToken);
         }
+
+
     }
 }
 
-
 #endif
+

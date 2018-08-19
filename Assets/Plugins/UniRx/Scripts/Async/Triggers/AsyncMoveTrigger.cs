@@ -1,28 +1,41 @@
-﻿#if CSHARP_7_OR_LATER
+
+#if CSHARP_7_OR_LATER
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using UniRx.Async.Internal;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UniRx.Async.Triggers
 {
     [DisallowMultipleComponent]
-    public class AsyncMoveTrigger : MonoBehaviour, IEventSystemHandler, IMoveHandler
+    public class AsyncMoveTrigger : AsyncTriggerBase
     {
-        ReusablePromise<AxisEventData> onMove;
+        AsyncTriggerPromise<AxisEventData> onMove;
+        AsyncTriggerPromiseDictionary<AxisEventData> onMoves;
 
-        void IMoveHandler.OnMove(AxisEventData eventData)
+
+        protected override IEnumerable<ICancelablePromise> GetPromises()
         {
-            onMove?.TrySetResult(eventData);
+            return Concat(onMove, onMoves);
         }
 
-        public UniTask<AxisEventData> OnMoveAsync()
+
+        void OnMove(AxisEventData eventData)
         {
-            return new UniTask<AxisEventData>(onMove ?? (onMove = new ReusablePromise<AxisEventData>()));
+            TrySetResult(onMove, onMoves, eventData);
         }
+
+
+        public UniTask OnMoveAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetOrAddPromise(ref onMove, ref onMoves, cancellationToken);
+        }
+
+
     }
 }
 
-
 #endif
+

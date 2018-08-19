@@ -68,15 +68,20 @@ namespace UniRx.Async.Triggers
     {
         static readonly Action<object> Callback = CancelCallback;
 
+        bool calledAwake = false;
+        bool destroyCalled = false;
+        CancellationTokenRegistration[] registeredCancellations;
+        int registeredCancellationsCount;
+
         protected abstract IEnumerable<ICancelablePromise> GetPromises();
 
-        protected IEnumerable<ICancelablePromise> Concat(ICancelablePromise p1, IEnumerable<ICancelablePromise> p1s)
+        static protected IEnumerable<ICancelablePromise> Concat(ICancelablePromise p1, IEnumerable<ICancelablePromise> p1s)
         {
             if (p1 != null) yield return p1;
             if (p1s != null) foreach (var item in p1s) yield return item;
         }
 
-        protected IEnumerable<ICancelablePromise> Concat(
+        static protected IEnumerable<ICancelablePromise> Concat(
             ICancelablePromise p1, IEnumerable<ICancelablePromise> p1s,
             ICancelablePromise p2, IEnumerable<ICancelablePromise> p2s)
         {
@@ -86,7 +91,7 @@ namespace UniRx.Async.Triggers
             if (p2s != null) foreach (var item in p2s) yield return item;
         }
 
-        protected IEnumerable<ICancelablePromise> Concat(
+        static protected IEnumerable<ICancelablePromise> Concat(
             ICancelablePromise p1, IEnumerable<ICancelablePromise> p1s,
             ICancelablePromise p2, IEnumerable<ICancelablePromise> p2s,
             ICancelablePromise p3, IEnumerable<ICancelablePromise> p3s)
@@ -99,7 +104,7 @@ namespace UniRx.Async.Triggers
             if (p3s != null) foreach (var item in p3s) yield return item;
         }
 
-        protected IEnumerable<ICancelablePromise> Concat(
+        static protected IEnumerable<ICancelablePromise> Concat(
             ICancelablePromise p1, IEnumerable<ICancelablePromise> p1s,
             ICancelablePromise p2, IEnumerable<ICancelablePromise> p2s,
             ICancelablePromise p3, IEnumerable<ICancelablePromise> p3s,
@@ -115,18 +120,58 @@ namespace UniRx.Async.Triggers
             if (p4s != null) foreach (var item in p4s) yield return item;
         }
 
+        // otherwise...
+        static protected IEnumerable<ICancelablePromise> Concat(params object[] promises)
+        {
+            foreach (var item in promises)
+            {
+                if (item is ICancelablePromise p)
+                {
+                    yield return p;
+                }
+                else if (item is IEnumerable<ICancelablePromise> ps)
+                {
+                    foreach (var p2 in ps)
+                    {
+                        yield return p2;
+                    }
+                }
+            }
+        }
+
         protected UniTask<T> GetOrAddPromise<T>(ref AsyncTriggerPromise<T> promise, ref AsyncTriggerPromiseDictionary<T> promises, CancellationToken cancellationToken)
         {
+            if (destroyCalled) return UniTask.FromCanceled<T>();
+
             if (!cancellationToken.CanBeCanceled)
             {
-                if (promise == null) promise = new AsyncTriggerPromise<T>();
+                if (promise == null)
+                {
+                    promise = new AsyncTriggerPromise<T>();
+                    if (!calledAwake)
+                    {
+                        PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
+                    }
+                }
                 return promise.Task;
             }
 
             if (promises == null) promises = new AsyncTriggerPromiseDictionary<T>();
             var cancellablePromise = new AsyncTriggerPromise<T>();
             promises.Add(cancellationToken, cancellablePromise);
-            cancellationToken.Register(Callback, Tuple.Create(promises, cancellablePromise));
+            if (!calledAwake)
+            {
+                PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
+            }
+
+            var registrationToken = cancellationToken.Register(Callback, Tuple.Create(promises, cancellablePromise));
+            if (registeredCancellations == null)
+            {
+                registeredCancellations = ArrayPool<CancellationTokenRegistration>.Shared.Rent(4);
+            }
+            ArrayPoolUtil.EnsureCapacity(ref registeredCancellations, registeredCancellationsCount + 1, ArrayPool<CancellationTokenRegistration>.Shared);
+            registeredCancellations[registeredCancellationsCount++] = registrationToken;
+
             return cancellablePromise.Task;
         }
 
@@ -155,11 +200,48 @@ namespace UniRx.Async.Triggers
             }
         }
 
-        private void OnDestroy()
+        void Awake()
         {
+            calledAwake = true;
+        }
+
+        void OnDestroy()
+        {
+            if (destroyCalled) return;
+            destroyCalled = true;
             foreach (var item in GetPromises())
             {
                 item.TrySetCanceled();
+            }
+            if (registeredCancellations != null)
+            {
+                for (int i = 0; i < registeredCancellationsCount; i++)
+                {
+                    registeredCancellations[i].Dispose();
+                    registeredCancellations[i] = default(CancellationTokenRegistration);
+                }
+                ArrayPool<CancellationTokenRegistration>.Shared.Return(registeredCancellations);
+            }
+        }
+
+        class AwakeMonitor : IPlayerLoopItem
+        {
+            readonly AsyncTriggerBase trigger;
+
+            public AwakeMonitor(AsyncTriggerBase trigger)
+            {
+                this.trigger = trigger;
+            }
+
+            public bool MoveNext()
+            {
+                if (trigger.calledAwake) return false;
+                if (trigger == null)
+                {
+                    trigger.OnDestroy();
+                    return false;
+                }
+                return true;
             }
         }
     }
