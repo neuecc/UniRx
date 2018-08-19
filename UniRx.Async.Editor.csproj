@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Editor\SplitterGUILayout.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Editor\UniTaskTrackerTreeView.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Editor\UniTaskTrackerWindow.cs" />
     <None Include="Assets\Plugins\UniRx\Scripts\Async\Editor\UniRx.Async.Editor.asmdef" />
     <Reference Include="UnityEngine.AIModule">
@@ -685,7 +686,7 @@
   <PropertyGroup>
     <IncrementalCompiler>true</IncrementalCompiler>
     <CscToolPath>C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.incrementalcompiler@0.0.42-preview.19\.bin</CscToolPath>
-    <DocumentationFile>59157</DocumentationFile>
+    <DocumentationFile>6365</DocumentationFile>
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
   </PropertyGroup>
 </Project>

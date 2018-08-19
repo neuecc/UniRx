@@ -144,12 +144,12 @@ namespace UniRx.Async
             unityEvent.AddListener(action);
             this.unityEvent = unityEvent;
 
-            if (cancellationToken != CancellationToken.None)
+            if (cancellationToken.CanBeCanceled)
             {
                 registration = cancellationToken.Register(cancellationCallback, this, false);
             }
 
-            TaskTracker.TrackActiveTask(this, 2);
+            TaskTracker.TrackActiveTask(this, 3);
         }
 
         public UniTask OnInvokeAsync()
@@ -239,12 +239,12 @@ namespace UniRx.Async
             unityEvent.AddListener(action);
             this.unityEvent = unityEvent;
 
-            if (cancellationToken != CancellationToken.None)
+            if (cancellationToken.CanBeCanceled)
             {
                 registration = cancellationToken.Register(cancellationCallback, this, false);
             }
 
-            TaskTracker.TrackActiveTask(this, 2);
+            TaskTracker.TrackActiveTask(this, 3);
         }
 
         public UniTask<T> OnInvokeAsync()

@@ -3,6 +3,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using UniRx;
 using UniRx.Async;
 using UniRx.Async.Triggers;
 using UnityEngine;
@@ -14,59 +15,26 @@ public class SandboxScene : MonoBehaviour
     public Button buttonA;
     public Button buttonB;
     MyMyClass mc;
+    ReactiveProperty<int> rp = new ReactiveProperty<int>();
 
     void Start()
     {
-        var _ = RunAsync();
+        //for (int i = 0; i < 3; i++)
+        {
+            DelayForever().Forget();
+            HandleEventA().Forget();
+            HandleEventB().Forget();
+            DoAsync().Forget();
+        }
+        //var promise = new UniTaskCompletionSource();
     }
 
-    private async UniTask RunAsync()
+    async UniTaskVoid DoAsync()
     {
-        await UniTask.Yield();
-        var a = RunAsyncInternal();
-        try
+        while (true)
         {
-            await a;
+            await rp.WaitUntilValueChangedAsync(this.GetCancellationTokenOnDestroy());
         }
-        finally
-        {
-            Debug.Log("RunAsync status= " + a.Status);
-        }
-    }
-
-    private async UniTask RunAsyncInternal()
-    {
-        await UniTask.Yield();
-        var tcs = new UniTaskCompletionSource();
-        tcs.TrySetCanceled();
-        try
-        {
-            await tcs.Task;
-        }
-        finally
-        {
-            Debug.Log("RunAsyncInternal status= " + tcs.Task.Status);
-        }
-    }
-
-    async void DoAsync()
-    {
-        // await UniTask.Yield();
-
-        Debug.Log(Thread.CurrentThread.ManagedThreadId);
-
-        await UniTask.SwitchToTaskPool();
-
-
-
-
-        Debug.Log("WHOO=" + Thread.CurrentThread.ManagedThreadId);
-        Thread.Sleep(TimeSpan.FromSeconds(3));
-        Debug.Log("END OF SLEEP" + Thread.CurrentThread.ManagedThreadId);
-
-        await UniTask.Yield();
-
-        Debug.Log(Thread.CurrentThread.ManagedThreadId);
     }
 
 
@@ -74,12 +42,11 @@ public class SandboxScene : MonoBehaviour
     async UniTask DelayForever()
     {
         Time.timeScale = 1.0f;
-        var delay = UniTask.Delay(TimeSpan.FromSeconds(1));
-        var count = 0;
-        while (this != null)
+        var delay = UniTask.Delay(TimeSpan.FromSeconds(1)).SuppressCancellationThrow();
+        while (true)
         {
-            await delay;
-            UnityEngine.Debug.Log("delay:" + count++ + " " + Time.realtimeSinceStartup);
+            var iscancel = await delay;
+            if (iscancel) return;
         }
     }
 
@@ -117,20 +84,28 @@ public class SandboxScene : MonoBehaviour
 
     async UniTaskVoid HandleEventA()
     {
-        using (var handlerA = buttonA.GetAsyncClickEventHandler())
+        try
         {
-            while (this != null)
+            using (var handlerA = buttonA.GetAsyncClickEventHandler())
             {
-                await handlerA.OnClickAsync();
-                if (mc != null)
+                while (this != null)
                 {
-                    mc.MyProperty++;
-                }
-                else
-                {
-                    GC.Collect();
+                    await handlerA.OnClickAsync();
+                    UnityEngine.Debug.Log("OK");
+                    if (mc != null)
+                    {
+                        mc.MyProperty++;
+                    }
+                    else
+                    {
+                        GC.Collect();
+                    }
                 }
             }
+        }
+        finally
+        {
+            UnityEngine.Debug.Log("Finish Here");
         }
     }
 
@@ -141,7 +116,7 @@ public class SandboxScene : MonoBehaviour
             while (this != null)
             {
                 await handlerB.OnClickAsync();
-                mc = null;
+                Destroy(buttonA.gameObject);
             }
         }
     }

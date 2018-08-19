@@ -204,6 +204,10 @@ namespace UniRx.Async.Internal
             }
             else
             {
+                if (entry.Prev == null)
+                {
+                    buckets[hashIndex] = entry.Next;
+                }
                 if (entry.Prev != null)
                 {
                     entry.Prev.Next = entry.Next;

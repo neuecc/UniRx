@@ -287,7 +287,7 @@ namespace UniRx.Async.Internal
         bool isRunning = false;
 
 #if UNITY_EDITOR
-        StackTrace capturedStackTraceForDebugging;
+        string capturedStackTraceForDebugging;
 #endif
 
         public PlayerLoopReusablePromiseBase(PlayerLoopTiming timing, CancellationToken cancellationToken, int skipTrackFrameCountAdditive)
@@ -340,7 +340,7 @@ namespace UniRx.Async.Internal
         bool isRunning = false;
 
 #if UNITY_EDITOR
-        StackTrace capturedStackTraceForDebugging;
+        string capturedStackTraceForDebugging;
 #endif
 
         public PlayerLoopReusablePromiseBase(PlayerLoopTiming timing, CancellationToken cancellationToken, int skipTrackFrameCountAdditive)

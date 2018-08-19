@@ -8,11 +8,14 @@ using System.Linq;
 using System.Reflection;
 using System;
 using UnityEditor.IMGUI.Controls;
+using UniRx.Async.Internal;
 
 namespace UniRx.Async.Editor
 {
     public class UniTaskTrackerWindow : EditorWindow
     {
+        static int interval;
+
         static UniTaskTrackerWindow window;
 
         [MenuItem("Window/UniRx/UniTask Tracker")]
@@ -29,12 +32,17 @@ namespace UniRx.Async.Editor
 
         static readonly GUILayoutOption[] EmptyLayoutOption = new GUILayoutOption[0];
 
+        UniTaskTrackerTreeView treeView;
         object splitterState;
 
         void OnEnable()
         {
             window = this; // set singleton.
             splitterState = SplitterGUILayout.CreateSplitterState(new float[] { 75f, 25f }, new int[] { 32, 32 }, null);
+            treeView = new UniTaskTrackerTreeView();
+            TaskTracker.EditorEnableState.EnableAutoReload = EditorPrefs.GetBool(TaskTracker.EnableAutoReloadKey, false);
+            TaskTracker.EditorEnableState.EnableTracking = EditorPrefs.GetBool(TaskTracker.EnableTrackingKey, false);
+            TaskTracker.EditorEnableState.EnableStackTrace = EditorPrefs.GetBool(TaskTracker.EnableStackTraceKey, false);
         }
 
         void OnGUI()
@@ -50,17 +58,20 @@ namespace UniRx.Async.Editor
 
                 // StackTrace details
                 RenderDetailsPanel();
-
             }
             SplitterGUILayout.EndVerticalSplit();
         }
 
         #region HeadPanel
 
-        public static bool EnableTracking { get; private set; }
-        public static bool EnableStackTrace { get; private set; }
-        static readonly GUIContent EnableTrackingHeadContent = EditorGUIUtility.TrTextContent("Enable Tracking", "Start to track async/await UniTask(Require Replay). Performance impact: low", (Texture)null);
-        static readonly GUIContent EnableStackTraceHeadContent = EditorGUIUtility.TrTextContent("Enable StackTrace", "Capture StackTrace when task is started(Require Replay). Performance impact: high", (Texture)null);
+        public static bool EnableAutoReload => TaskTracker.EditorEnableState.EnableAutoReload;
+        public static bool EnableTracking => TaskTracker.EditorEnableState.EnableTracking;
+        public static bool EnableStackTrace => TaskTracker.EditorEnableState.EnableStackTrace;
+        static readonly GUIContent EnableAutoReloadHeadContent = EditorGUIUtility.TrTextContent("Enable AutoReload", "Reload automatically.", (Texture)null);
+        static readonly GUIContent ReloadHeadContent = EditorGUIUtility.TrTextContent("Reload", "Reload View.", (Texture)null);
+        static readonly GUIContent GCHeadContent = EditorGUIUtility.TrTextContent("GC.Collect", "Invoke GC.Collect.", (Texture)null);
+        static readonly GUIContent EnableTrackingHeadContent = EditorGUIUtility.TrTextContent("Enable Tracking", "Start to track async/await UniTask. Performance impact: low", (Texture)null);
+        static readonly GUIContent EnableStackTraceHeadContent = EditorGUIUtility.TrTextContent("Enable StackTrace", "Capture StackTrace when task is started. Performance impact: high", (Texture)null);
 
         // [Enable Tracking] | [Enable StackTrace]
         void RenderHeadPanel()
@@ -68,17 +79,34 @@ namespace UniRx.Async.Editor
             EditorGUILayout.BeginVertical(EmptyLayoutOption);
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar, EmptyLayoutOption);
 
+            if (GUILayout.Toggle(EnableAutoReload, EnableAutoReloadHeadContent, EditorStyles.toolbarButton, EmptyLayoutOption) != EnableAutoReload)
+            {
+                TaskTracker.EditorEnableState.EnableAutoReload = !EnableAutoReload;
+            }
+
             if (GUILayout.Toggle(EnableTracking, EnableTrackingHeadContent, EditorStyles.toolbarButton, EmptyLayoutOption) != EnableTracking)
             {
-                EnableTracking = !EnableTracking;
+                TaskTracker.EditorEnableState.EnableTracking = !EnableTracking;
             }
 
             if (GUILayout.Toggle(EnableStackTrace, EnableStackTraceHeadContent, EditorStyles.toolbarButton, EmptyLayoutOption) != EnableStackTrace)
             {
-                EnableStackTrace = !EnableStackTrace;
+                TaskTracker.EditorEnableState.EnableStackTrace = !EnableStackTrace;
             }
 
             GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button(ReloadHeadContent, EditorStyles.toolbarButton, EmptyLayoutOption))
+            {
+                TaskTracker.CheckAndResetDirty();
+                treeView.ReloadAndSort();
+                Repaint();
+            }
+
+            if (GUILayout.Button(GCHeadContent, EditorStyles.toolbarButton, EmptyLayoutOption))
+            {
+                GC.Collect(0);
+            }
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
@@ -113,15 +141,26 @@ namespace UniRx.Async.Editor
                 GUILayout.ExpandWidth(true)
             });
 
-            // int controlID = GUIUtility.GetControlID(FocusType.Keyboard);
-            // this.m_TestListTree.OnGUI(controlRect, controlID);
 
-            var state = new TreeViewState();
-            var treeView = new ExampleTreeView(state);
-            treeView.OnGUI(controlRect);
+            treeView?.OnGUI(controlRect);
 
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
+        }
+
+        private void Update()
+        {
+            if (EnableAutoReload)
+            {
+                if (interval++ % 120 == 0)
+                {
+                    if (TaskTracker.CheckAndResetDirty())
+                    {
+                        treeView.ReloadAndSort();
+                        Repaint();
+                    }
+                }
+            }
         }
 
         #endregion
@@ -141,9 +180,21 @@ namespace UniRx.Async.Editor
                 detailsStyle.margin.right = 15;
             }
 
+            string message = "";
+            var selected = treeView.state.selectedIDs;
+            if (selected.Count > 0)
+            {
+                var first = selected[0];
+                var item = treeView.CurrentBindingItems.FirstOrDefault(x => x.id == first) as UniTaskTrackerViewItem;
+                if (item != null)
+                {
+                    message = item.Position;
+                }
+            }
+
             detailsScroll = EditorGUILayout.BeginScrollView(this.detailsScroll, EmptyLayoutOption);
-            var vector = detailsStyle.CalcSize(new GUIContent("hogehogehugahuga"));
-            EditorGUILayout.SelectableLabel("hogehogehugahuga", detailsStyle, new GUILayoutOption[]
+            var vector = detailsStyle.CalcSize(new GUIContent(message));
+            EditorGUILayout.SelectableLabel(message, detailsStyle, new GUILayoutOption[]
             {
                 GUILayout.ExpandHeight(true),
                 GUILayout.ExpandWidth(true),
@@ -155,60 +206,6 @@ namespace UniRx.Async.Editor
 
         #endregion
     }
-
-
-    public class ExampleTreeView : TreeView
-    {
-        public ExampleTreeView(TreeViewState state)
-            : this(state, new MultiColumnHeader(new MultiColumnHeaderState(new[]
-            {
-                new MultiColumnHeaderState.Column() { headerContent = new GUIContent("TaskType"), autoResize = true, canSort = true },
-                new MultiColumnHeaderState.Column() { headerContent = new GUIContent("Elapsed"), autoResize = true, canSort = true },
-                new MultiColumnHeaderState.Column() { headerContent = new GUIContent("Status"), autoResize = true, canSort = true },
-                new MultiColumnHeaderState.Column() { headerContent = new GUIContent("Position"), autoResize = true, canSort = true },
-            })))
-        {
-        }
-
-        ExampleTreeView(TreeViewState state, MultiColumnHeader header)
-            : base(state, header)
-        {
-            rowHeight = 20;
-            showAlternatingRowBackgrounds = true;
-            showBorder = true;
-            header.sortingChanged += Header_sortingChanged;
-
-            header.ResizeToFit();
-            Reload();
-        }
-
-        private void Header_sortingChanged(MultiColumnHeader multiColumnHeader)
-        {
-            // throw new NotImplementedException();
-        }
-
-        protected override TreeViewItem BuildRoot()
-        {
-            var root = new TreeViewItem(id: 1, depth: -1, displayName: "Root");
-
-            root.children = new List<TreeViewItem>
-            {
-                new TreeViewItem(id: 2, depth: 0, displayName: "Abcde"),
-                new TreeViewItem(id: 3, depth: 1, displayName: "Fghij"), // depth 1?
-            };
-
-            return root;
-        }
-    }
-
-
-
-
-
-
-
-
-
 }
 
 #endif

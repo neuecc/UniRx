@@ -28,6 +28,8 @@ namespace UniRx
         {
             this.RegisteredCancelationToken = cancellationToken;
             this.status = AwaiterStatus.Pending;
+
+            TaskTracker.TrackActiveTask(this, 3);
         }
 
         public T GetResult()
@@ -45,6 +47,8 @@ namespace UniRx
         {
             status = AwaiterStatus.Canceled;
             // run rest continuation.
+            TaskTracker.RemoveTracking(this);
+
             result = default(T);
             InvokeContinuation(ref result);
             // clear

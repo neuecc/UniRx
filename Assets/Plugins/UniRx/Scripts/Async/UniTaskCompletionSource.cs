@@ -58,7 +58,7 @@ namespace UniRx.Async
 
         public UniTaskCompletionSource()
         {
-            TaskTracker.TrackActiveTask(this);
+            TaskTracker.TrackActiveTask(this, 2);
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -227,7 +227,7 @@ namespace UniRx.Async
 
         public UniTaskCompletionSource()
         {
-            TaskTracker.TrackActiveTask(this);
+            TaskTracker.TrackActiveTask(this, 2);
         }
 
         [Conditional("UNITY_EDITOR")]

@@ -61,7 +61,7 @@ namespace UniRx.Async
         class YieldPromise : PlayerLoopReusablePromiseBase
         {
             public YieldPromise(PlayerLoopTiming timing, CancellationToken cancellationToken)
-                : base(timing, cancellationToken, 1)
+                : base(timing, cancellationToken, 2)
             {
             }
 
@@ -91,7 +91,7 @@ namespace UniRx.Async
             int currentFrameCount;
 
             public DelayFramePromise(int delayFrameCount, PlayerLoopTiming timing, CancellationToken cancellationToken)
-                : base(timing, cancellationToken, 1)
+                : base(timing, cancellationToken, 2)
             {
                 this.delayFrameCount = delayFrameCount;
                 this.currentFrameCount = 0;
@@ -129,7 +129,7 @@ namespace UniRx.Async
             float elapsed;
 
             public DelayPromise(TimeSpan delayFrameTimeSpan, PlayerLoopTiming timing, CancellationToken cancellationToken)
-                : base(timing, cancellationToken, 1)
+                : base(timing, cancellationToken, 2)
             {
                 this.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
             }
@@ -166,7 +166,7 @@ namespace UniRx.Async
             float elapsed;
 
             public DelayIgnoreTimeScalePromise(TimeSpan delayFrameTimeSpan, PlayerLoopTiming timing, CancellationToken cancellationToken)
-                : base(timing, cancellationToken, 1)
+                : base(timing, cancellationToken, 2)
             {
                 this.delayFrameTimeSpan = (float)delayFrameTimeSpan.TotalSeconds;
             }
