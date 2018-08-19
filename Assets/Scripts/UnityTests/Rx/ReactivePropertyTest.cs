@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace UniRx.Tests
@@ -357,7 +356,7 @@ namespace UniRx.Tests
                 // immediate
                 {
 
-                    var ex = new Exception();
+                    // var ex = new Exception();
                     var source = new Subject<int>();
                     var rxProp = source.ToReadOnlyReactiveProperty();
 

@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace UniRx.Tests
 {
@@ -14,9 +13,9 @@ namespace UniRx.Tests
         public void SelectSelect()
         {
             // Combine selector currently disabled.
-            var selectselect = Observable.Range(1, 10)
-                .Select(x => x)
-                .Select(x => x * -1);
+            //var selectselect = Observable.Range(1, 10)
+            //    .Select(x => x)
+            //    .Select(x => x * -1);
         }
 
         [Test]

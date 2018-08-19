@@ -104,6 +104,8 @@ namespace UniRx
         }
 #endif
 
+#if UNITY_5_3_OR_NEWER
+
         /// <summary>Observe onValueChanged with current `value` on subscribe.</summary>
         public static IObservable<int> OnValueChangedAsObservable(this Dropdown dropdown)
         {
@@ -113,6 +115,8 @@ namespace UniRx
                 return d.onValueChanged.AsObservable().Subscribe(observer);
             });
         }
+
+#endif
     }
 }
 

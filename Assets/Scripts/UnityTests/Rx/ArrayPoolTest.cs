@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿#if CSHARP_7_OR_LATER
+using NUnit.Framework;
 using System;
 using UniRx.Async.Internal;
 using System.Collections.Generic;
@@ -33,3 +34,5 @@ namespace UniRx.Tests
         }
     }
 }
+
+#endif

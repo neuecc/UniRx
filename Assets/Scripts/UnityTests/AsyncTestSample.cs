@@ -1,4 +1,5 @@
-﻿#pragma warning disable CS1591
+﻿#if CSHARP_7_OR_LATER
+#pragma warning disable CS1591
 
 using UnityEngine.TestTools;
 using System.Collections;
@@ -11,6 +12,8 @@ using UnityEngine.Networking;
 
 public class AsyncTestSample
 {
+#if ENABLE_WWW
+
     [UnityTest]
     public IEnumerator AsyncTest() => UniTask.ToCoroutine(async () =>
     {
@@ -30,4 +33,8 @@ public class AsyncTestSample
         var req = await UnityWebRequest.Get("http://google.co.jp/").SendWebRequest();
         req.downloadHandler.text.Contains("<title>Google</title>").IsTrue();
     });
+
+#endif
 }
+
+#endif

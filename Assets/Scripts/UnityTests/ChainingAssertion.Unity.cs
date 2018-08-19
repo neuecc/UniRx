@@ -1,9 +1,6 @@
-﻿#pragma warning disable CS1591
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 
@@ -12,7 +9,6 @@ using UnityEngine.Assertions; // use UnityEngineAssertion.
 // no namespace.
 
 [System.Diagnostics.DebuggerStepThroughAttribute]
-[ContractVerification(false)]
 public static partial class ChainingAssertion
 {
     /// <summary>Assert.AreEqual, if T is IEnumerable then CollectionAssert.AreEqual</summary>
@@ -219,7 +215,7 @@ public static partial class ChainingAssertion
         if (!r.IsEquals)
         {
             var msg = string.Format("is not structural equal, failed at {0}, actual = {1} expected = {2}",
-                string.Join(".", r.Names), r.Left, r.Right);
+                string.Join(".", r.Names.ToArray()), r.Left, r.Right);
             throw new AssertionException(msg, message);
         }
     }
@@ -318,9 +314,9 @@ public static partial class ChainingAssertion
         // is object
         var fields = left.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
         var properties = left.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(x => x.GetGetMethod(false) != null);
-        var members = fields.Cast<MemberInfo>().Concat(properties);
+        var members = fields.Cast<MemberInfo>().Concat(properties.Cast<MemberInfo>());
 
-        foreach (var mi in fields.Cast<MemberInfo>().Concat(properties))
+        foreach (var mi in members)
         {
             var concatNames = names.Concat(new[] { (string)mi.Name });
 
@@ -336,8 +332,8 @@ public static partial class ChainingAssertion
             else
             {
                 var i = mi as PropertyInfo;
-                lv = i.GetValue(left);
-                rv = i.GetValue(right);
+                lv = i.GetValue(left, null);
+                rv = i.GetValue(right, null);
             }
 
             var result = StructuralEqual(lv, rv, concatNames);

@@ -1,4 +1,4 @@
-﻿#if UNITY_2018_1_OR_NEWER
+﻿#if CSHARP_7_OR_LATER
 
 using System;
 using UnityEngine;

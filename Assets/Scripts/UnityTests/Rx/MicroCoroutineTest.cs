@@ -25,9 +25,9 @@ namespace UniRx.Tests
                 return null;
             }
         }
-        public int OriginalCount => original;
+        public int OriginalCount { get { return original; } }
 
-        public int Count => count;
+        public int Count { get { return count; } }
 
         public bool MoveNext()
         {
@@ -41,7 +41,7 @@ namespace UniRx.Tests
 
         public override string ToString()
         {
-            return $"{count}/{original}";
+            return count + "/" + "original";
         }
     }
 
