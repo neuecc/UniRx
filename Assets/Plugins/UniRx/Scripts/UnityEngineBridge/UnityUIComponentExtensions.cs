@@ -103,6 +103,16 @@ namespace UniRx
             });
         }
 #endif
+
+        /// <summary>Observe onValueChanged with current `value` on subscribe.</summary>
+        public static IObservable<int> OnValueChangedAsObservable(this Dropdown dropdown)
+        {
+            return Observable.CreateWithState<int, Dropdown>(dropdown, (d, observer) =>
+            {
+                observer.OnNext(d.value);
+                return d.onValueChanged.AsObservable().Subscribe(observer);
+            });
+        }
     }
 }
 

@@ -104,6 +104,19 @@ namespace UniRx.Async
                 return await handler.OnEndEditAsync();
             }
         }
+
+        public static IAsyncValueChangedEventHandler<int> GetAsyncValueChangedEventHandler(this Dropdown dropdown)
+        {
+            return new AsyncUnityEventHandler<int>(dropdown.onValueChanged, dropdown.GetCancellationTokenOnDestroy());
+        }
+
+        public static async UniTask<int> OnValueChanged(this Dropdown dropdown)
+        {
+            using (var handler = dropdown.GetAsyncValueChangedEventHandler())
+            {
+                return await handler.OnValueChangedAsync();
+            }
+        }
     }
 
     public interface IAsyncClickEventHandler : IDisposable
