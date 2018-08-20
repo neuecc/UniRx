@@ -25,6 +25,18 @@ public class SandboxScene : MonoBehaviour
         SingleClick(cts.Token).Forget();
         MultiClick(cts.Token).Forget();
         DestroyA(cts).Forget();
+
+        DoUpdate().Forget();
+    }
+
+    async UniTaskVoid DoUpdate()
+    {
+        var trigger = buttonA.GetAsyncUpdateTrigger();
+        while (true)
+        {
+            await trigger.UpdateAsync(this.GetCancellationTokenOnDestroy());
+            UnityEngine.Debug.Log("Update!");
+        }
     }
 
     async UniTask SingleClick(CancellationToken ct)

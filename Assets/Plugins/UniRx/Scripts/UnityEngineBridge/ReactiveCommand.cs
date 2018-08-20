@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 #if CSHARP_7_OR_LATER
 using UniRx.Async;
+using UniRx.Async.Internal;
 #endif
 
 namespace UniRx
@@ -108,10 +109,7 @@ namespace UniRx
                 commonPromise?.InvokeContinuation(ref parameter);
                 if (removablePromises != null)
                 {
-                    foreach (var item in removablePromises)
-                    {
-                        item.Value.InvokeContinuation(ref parameter);
-                    }
+                    PromiseHelper.TrySetResultAll(removablePromises.Values, parameter);
                 }
 #endif
 
@@ -309,10 +307,7 @@ namespace UniRx
                         commonPromise?.InvokeContinuation(ref parameter);
                         if (removablePromises != null)
                         {
-                            foreach (var item in removablePromises)
-                            {
-                                item.Value.InvokeContinuation(ref parameter);
-                            }
+                            PromiseHelper.TrySetResultAll(removablePromises.Values, parameter);
                         }
 #endif
 
@@ -334,10 +329,7 @@ namespace UniRx
                         commonPromise?.InvokeContinuation(ref parameter);
                         if (removablePromises != null)
                         {
-                            foreach (var item in removablePromises)
-                            {
-                                item.Value.InvokeContinuation(ref parameter);
-                            }
+                            PromiseHelper.TrySetResultAll(removablePromises.Values, parameter);
                         }
 #endif
 

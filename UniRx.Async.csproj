@@ -82,6 +82,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\LazyPromise.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\MinimumQueue.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\PlayerLoopRunner.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\PromiseHelper.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ReusablePromise.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\RuntimeHelpersAbstraction.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\TaskTracker.cs" />
@@ -758,7 +759,7 @@
   <PropertyGroup>
     <IncrementalCompiler>true</IncrementalCompiler>
     <CscToolPath>C:\Users\neuecc\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.incrementalcompiler@0.0.42-preview.19\.bin</CscToolPath>
-    <DocumentationFile>62044</DocumentationFile>
+    <DocumentationFile>16970</DocumentationFile>
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
   </PropertyGroup>
 </Project>

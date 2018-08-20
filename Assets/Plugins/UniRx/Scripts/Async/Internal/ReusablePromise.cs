@@ -155,6 +155,13 @@ namespace UniRx.Async.Internal
         // can override for control 'start/reset' timing.
         public virtual bool IsCompleted => status.IsCompleted();
 
+        protected T RawResult => result;
+
+        protected void ForceSetResult(T result)
+        {
+            this.result = result;
+        }
+
         public virtual T GetResult()
         {
             switch (status)
@@ -227,7 +234,7 @@ namespace UniRx.Async.Internal
             return false;
         }
 
-        void TryInvokeContinuation()
+        protected void TryInvokeContinuation()
         {
             if (continuation == null) return;
 

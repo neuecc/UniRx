@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace UniRx.Async.Internal
 {
-    internal static class ArrayPoolUtil
+    public static class ArrayPoolUtil
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void EnsureCapacity<T>(ref T[] array, int index, ArrayPool<T> pool)
@@ -44,6 +44,10 @@ namespace UniRx.Async.Internal
             if (source is ICollection<T> coll)
             {
                 defaultCount = coll.Count;
+                var pool = ArrayPool<T>.Shared;
+                var buffer = pool.Rent(defaultCount);
+                coll.CopyTo(buffer, 0);
+                return new RentArray<T>(buffer, coll.Count, pool);
             }
             else if (source is IReadOnlyCollection<T> rcoll)
             {
@@ -55,17 +59,19 @@ namespace UniRx.Async.Internal
                 return new RentArray<T>(Array.Empty<T>(), 0, null);
             }
 
-            var pool = ArrayPool<T>.Shared;
-
-            var index = 0;
-            var buffer = pool.Rent(defaultCount);
-            foreach (var item in source)
             {
-                EnsureCapacity(ref buffer, index, pool);
-                buffer[index++] = item;
-            }
+                var pool = ArrayPool<T>.Shared;
 
-            return new RentArray<T>(buffer, index, pool);
+                var index = 0;
+                var buffer = pool.Rent(defaultCount);
+                foreach (var item in source)
+                {
+                    EnsureCapacity(ref buffer, index, pool);
+                    buffer[index++] = item;
+                }
+
+                return new RentArray<T>(buffer, index, pool);
+            }
         }
 
         public struct RentArray<T> : IDisposable
@@ -83,10 +89,14 @@ namespace UniRx.Async.Internal
 
             public void Dispose()
             {
+                DisposeManually(!RuntimeHelpersAbstraction.IsWellKnownNoReferenceContainsType<T>());
+            }
+
+            public void DisposeManually(bool clearArray)
+            {
                 if (pool != null)
                 {
-                    // clear manually(length optimize)
-                    if (!RuntimeHelpersAbstraction.IsWellKnownNoReferenceContainsType<T>())
+                    if (clearArray)
                     {
                         System.Array.Clear(Array, 0, Length);
                     }

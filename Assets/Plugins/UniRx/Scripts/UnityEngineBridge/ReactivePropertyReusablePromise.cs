@@ -9,7 +9,7 @@ using UniRx.Async.Internal;
 
 namespace UniRx
 {
-    internal class ReactivePropertyReusablePromise<T> : IAwaiter<T>
+    internal class ReactivePropertyReusablePromise<T> : IAwaiter<T>, IResolvePromise<T>
     {
         T result;
         object continuation; // Action or Queue<Action>
@@ -127,6 +127,12 @@ namespace UniRx
                     waitingContinuationCount++;
                 }
             }
+        }
+
+        bool IResolvePromise<T>.TrySetResult(T value)
+        {
+            InvokeContinuation(ref value);
+            return true;
         }
     }
 }

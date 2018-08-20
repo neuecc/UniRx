@@ -37,7 +37,35 @@ namespace UniRx.Async
         }
     }
 
-    public class UniTaskCompletionSource : IAwaiter
+    public interface IResolvePromise
+    {
+        bool TrySetResult();
+    }
+
+    public interface IResolvePromise<T>
+    {
+        bool TrySetResult(T value);
+    }
+
+    public interface IRejectPromise
+    {
+        bool TrySetException(Exception exception);
+    }
+
+    public interface ICancelPromise
+    {
+        bool TrySetCanceled();
+    }
+
+    public interface IPromise<T> : IResolvePromise<T>, IRejectPromise, ICancelPromise
+    {
+    }
+
+    public interface IPromise : IResolvePromise, IRejectPromise, ICancelPromise
+    {
+    }
+
+    public class UniTaskCompletionSource : IAwaiter, IPromise
     {
         // State(= AwaiterStatus)
         const int Pending = 0;
@@ -204,7 +232,7 @@ namespace UniRx.Async
         }
     }
 
-    public class UniTaskCompletionSource<T> : IAwaiter<T>
+    public class UniTaskCompletionSource<T> : IAwaiter<T>, IPromise<T>
     {
         // State(= AwaiterStatus)
         const int Pending = 0;

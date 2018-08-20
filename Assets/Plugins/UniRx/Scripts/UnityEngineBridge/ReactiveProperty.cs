@@ -8,6 +8,7 @@ using UnityEngine;
 #endif
 #if CSHARP_7_OR_LATER
 using UniRx.Async;
+using UniRx.Async.Internal;
 #endif
 
 namespace UniRx
@@ -158,10 +159,7 @@ namespace UniRx
             commonPromise?.InvokeContinuation(ref value);
             if (removablePromises != null)
             {
-                foreach (var item in removablePromises)
-                {
-                    item.Value.InvokeContinuation(ref value);
-                }
+                PromiseHelper.TrySetResultAll(removablePromises.Values, value);
             }
 #endif
         }
@@ -526,10 +524,7 @@ namespace UniRx
             commonPromise?.InvokeContinuation(ref value);
             if (removablePromises != null)
             {
-                foreach (var item in removablePromises)
-                {
-                    item.Value.InvokeContinuation(ref value);
-                }
+                PromiseHelper.TrySetResultAll(removablePromises.Values, value);
             }
 #endif
         }
@@ -541,7 +536,7 @@ namespace UniRx
             // call source.OnError
             var node = root;
             while (node != null)
-            {
+            { 
                 node.OnError(error);
                 node = node.Next;
             }

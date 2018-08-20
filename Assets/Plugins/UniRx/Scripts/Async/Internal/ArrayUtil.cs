@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace UniRx.Async.Internal
 {
-    internal static class ArrayUtil
+    public static class ArrayUtil
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void EnsureCapacity<T>(ref T[] array, int index)
@@ -43,6 +43,9 @@ namespace UniRx.Async.Internal
             if (source is ICollection<T> coll)
             {
                 defaultCount = coll.Count;
+                var buffer = new T[defaultCount];
+                coll.CopyTo(buffer, 0);
+                return (buffer, defaultCount);
             }
             else if (source is IReadOnlyCollection<T> rcoll)
             {
@@ -54,15 +57,17 @@ namespace UniRx.Async.Internal
                 return (Array.Empty<T>(), 0);
             }
 
-            var index = 0;
-            var buffer = new T[defaultCount];
-            foreach (var item in source)
             {
-                EnsureCapacity(ref buffer, index);
-                buffer[index++] = item;
-            }
+                var index = 0;
+                var buffer = new T[defaultCount];
+                foreach (var item in source)
+                {
+                    EnsureCapacity(ref buffer, index);
+                    buffer[index++] = item;
+                }
 
-            return (buffer, index);
+                return (buffer, index);
+            }
         }
     }
 }

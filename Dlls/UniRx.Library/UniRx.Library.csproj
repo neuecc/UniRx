@@ -99,6 +99,9 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\MinimumQueue.cs">
       <Link>Async\Internal\MinimumQueue.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\PromiseHelper.cs">
+      <Link>Async\Internal\PromiseHelper.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\ReusablePromise.cs">
       <Link>Async\Internal\ReusablePromise.cs</Link>
     </Compile>

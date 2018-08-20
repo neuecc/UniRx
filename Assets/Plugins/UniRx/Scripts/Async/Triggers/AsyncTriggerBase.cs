@@ -15,7 +15,7 @@ namespace UniRx.Async.Triggers
         bool TrySetCanceled();
     }
 
-    public class AsyncTriggerPromise<T> : ReusablePromise<T>, ICancelablePromise
+    public class AsyncTriggerPromise<T> : ReusablePromise<T>, IPromise<T>, ICancelablePromise
     {
         public CancellationToken RegisteredCancellationToken { get; private set; }
 
@@ -28,6 +28,24 @@ namespace UniRx.Async.Triggers
         {
             this.RegisteredCancellationToken = cancellationToken;
             TaskTracker.TrackActiveTask(this);
+        }
+
+        public override T GetResult()
+        {
+            if (Status == AwaiterStatus.Pending) return RawResult;
+            return base.GetResult();
+        }
+
+        public override bool TrySetResult(T result)
+        {
+            if (Status == AwaiterStatus.Pending)
+            {
+                // keep status as Pending.
+                this.ForceSetResult(result);
+                TryInvokeContinuation();
+                return true;
+            }
+            return false;
         }
 
         public override bool TrySetCanceled()
@@ -157,14 +175,20 @@ namespace UniRx.Async.Triggers
             }
 
             if (promises == null) promises = new AsyncTriggerPromiseDictionary<T>();
-            var cancellablePromise = new AsyncTriggerPromise<T>();
+
+            if (promises.TryGetValue(cancellationToken, out var cancellablePromise))
+            {
+                return cancellablePromise.Task;
+            }
+
+            cancellablePromise = new AsyncTriggerPromise<T>();
             promises.Add(cancellationToken, cancellablePromise);
             if (!calledAwake)
             {
                 PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
             }
 
-            var registrationToken = cancellationToken.Register(Callback, Tuple.Create(promises, cancellablePromise));
+            var registrationToken = cancellationToken.Register(Callback, Tuple.Create((ICancellationTokenKeyDictionary)promises, (ICancelablePromise)cancellablePromise));
             if (registeredCancellations == null)
             {
                 registeredCancellations = ArrayPool<CancellationTokenRegistration>.Shared.Rent(4);
@@ -193,10 +217,7 @@ namespace UniRx.Async.Triggers
             }
             if (promises != null)
             {
-                foreach (var item in promises.Values)
-                {
-                    item.TrySetResult(value);
-                }
+                PromiseHelper.TrySetResultAll(promises.Values, value);
             }
         }
 
