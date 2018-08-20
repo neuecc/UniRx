@@ -29,6 +29,11 @@ namespace UniRx.Async
             return new AsyncUnityEventHandler(button.onClick, button.GetCancellationTokenOnDestroy(), false);
         }
 
+        public static IAsyncClickEventHandler GetAsyncClickEventHandler(this Button button, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler(button.onClick, cancellationToken, false);
+        }
+
         public static UniTask OnClickAsync(this Button button)
         {
             return new AsyncUnityEventHandler(button.onClick, button.GetCancellationTokenOnDestroy(), true).OnInvokeAsync();
@@ -42,6 +47,11 @@ namespace UniRx.Async
         public static IAsyncValueChangedEventHandler<bool> GetAsyncValueChangedEventHandler(this Toggle toggle)
         {
             return new AsyncUnityEventHandler<bool>(toggle.onValueChanged, toggle.GetCancellationTokenOnDestroy(), false);
+        }
+
+        public static IAsyncValueChangedEventHandler<bool> GetAsyncValueChangedEventHandler(this Toggle toggle, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<bool>(toggle.onValueChanged, cancellationToken, false);
         }
 
         public static UniTask<bool> OnValueChangedAsync(this Toggle toggle)
@@ -59,6 +69,11 @@ namespace UniRx.Async
             return new AsyncUnityEventHandler<float>(scrollbar.onValueChanged, scrollbar.GetCancellationTokenOnDestroy(), false);
         }
 
+        public static IAsyncValueChangedEventHandler<float> GetAsyncValueChangedEventHandler(this Scrollbar scrollbar, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<float>(scrollbar.onValueChanged, cancellationToken, false);
+        }
+
         public static UniTask<float> OnValueChangedAsync(this Scrollbar scrollbar)
         {
             return new AsyncUnityEventHandler<float>(scrollbar.onValueChanged, scrollbar.GetCancellationTokenOnDestroy(), true).OnInvokeAsync();
@@ -72,6 +87,11 @@ namespace UniRx.Async
         public static IAsyncValueChangedEventHandler<Vector2> GetAsyncValueChangedEventHandler(this ScrollRect scrollRect)
         {
             return new AsyncUnityEventHandler<Vector2>(scrollRect.onValueChanged, scrollRect.GetCancellationTokenOnDestroy(), false);
+        }
+
+        public static IAsyncValueChangedEventHandler<Vector2> GetAsyncValueChangedEventHandler(this ScrollRect scrollRect, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<Vector2>(scrollRect.onValueChanged, cancellationToken, false);
         }
 
         public static UniTask<Vector2> OnValueChangedAsync(this ScrollRect scrollRect)
@@ -89,6 +109,11 @@ namespace UniRx.Async
             return new AsyncUnityEventHandler<float>(slider.onValueChanged, slider.GetCancellationTokenOnDestroy(), false);
         }
 
+        public static IAsyncValueChangedEventHandler<float> GetAsyncValueChangedEventHandler(this Slider slider, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<float>(slider.onValueChanged, cancellationToken, false);
+        }
+
         public static UniTask<float> OnValueChangedAsync(this Slider slider)
         {
             return new AsyncUnityEventHandler<float>(slider.onValueChanged, slider.GetCancellationTokenOnDestroy(), true).OnInvokeAsync();
@@ -102,6 +127,11 @@ namespace UniRx.Async
         public static IAsyncEndEditEventHandler<string> GetAsyncEndEditEventHandler(this InputField inputField)
         {
             return new AsyncUnityEventHandler<string>(inputField.onEndEdit, inputField.GetCancellationTokenOnDestroy(), false);
+        }
+
+        public static IAsyncEndEditEventHandler<string> GetAsyncEndEditEventHandler(this InputField inputField, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<string>(inputField.onEndEdit, cancellationToken, false);
         }
 
         public static UniTask<string> OnEndEditAsync(this InputField inputField)
@@ -119,6 +149,11 @@ namespace UniRx.Async
             return new AsyncUnityEventHandler<int>(dropdown.onValueChanged, dropdown.GetCancellationTokenOnDestroy(), false);
         }
 
+        public static IAsyncValueChangedEventHandler<int> GetAsyncValueChangedEventHandler(this Dropdown dropdown, CancellationToken cancellationToken)
+        {
+            return new AsyncUnityEventHandler<int>(dropdown.onValueChanged, cancellationToken, false);
+        }
+
         public static UniTask<int> OnValueChanged(this Dropdown dropdown)
         {
             return new AsyncUnityEventHandler<int>(dropdown.onValueChanged, dropdown.GetCancellationTokenOnDestroy(), true).OnInvokeAsync();
@@ -133,16 +168,19 @@ namespace UniRx.Async
     public interface IAsyncClickEventHandler : IDisposable
     {
         UniTask OnClickAsync();
+        UniTask<bool> OnClickAsyncSuppressCancellationThrow();
     }
 
     public interface IAsyncValueChangedEventHandler<T> : IDisposable
     {
         UniTask<T> OnValueChangedAsync();
+        UniTask<(bool IsCanceled, T Result)> OnValueChangedAsyncSuppressCancellationThrow();
     }
 
     public interface IAsyncEndEditEventHandler<T> : IDisposable
     {
         UniTask<T> OnEndEditAsync();
+        UniTask<(bool IsCanceled, T Result)> OnEndEditAsyncSuppressCancellationThrow();
     }
 
     // event handler is reusable when callOnce = false.
@@ -156,6 +194,7 @@ namespace UniRx.Async
         CancellationTokenRegistration registration;
         bool isDisposed;
         bool callOnce;
+        UniTask<bool>? suppressCancellationThrowTask;
 
         public AsyncUnityEventHandler(UnityEvent unityEvent, CancellationToken cancellationToken, bool callOnce)
         {
@@ -183,6 +222,15 @@ namespace UniRx.Async
         {
             // zero allocation wait handler.
             return new UniTask(this);
+        }
+
+        public UniTask<bool> OnInvokeAsyncSuppressCancellationThrow()
+        {
+            if (suppressCancellationThrowTask == null)
+            {
+                suppressCancellationThrowTask = OnInvokeAsync().SuppressCancellationThrow();
+            }
+            return suppressCancellationThrowTask.Value;
         }
 
         void Invoke()
@@ -241,6 +289,11 @@ namespace UniRx.Async
         {
             return OnInvokeAsync();
         }
+
+        UniTask<bool> IAsyncClickEventHandler.OnClickAsyncSuppressCancellationThrow()
+        {
+            return OnInvokeAsyncSuppressCancellationThrow();
+        }
     }
 
     // event handler is reusable when callOnce = false.
@@ -255,6 +308,7 @@ namespace UniRx.Async
         bool isDisposed;
         T eventValue;
         bool callOnce;
+        UniTask<(bool, T)>? suppressCancellationThrowTask;
 
         public AsyncUnityEventHandler(UnityEvent<T> unityEvent, CancellationToken cancellationToken, bool callOnce)
         {
@@ -282,6 +336,15 @@ namespace UniRx.Async
         {
             // zero allocation wait handler.
             return new UniTask<T>(this);
+        }
+
+        public UniTask<(bool IsCanceled, T Result)> OnInvokeAsyncSuppressCancellationThrow()
+        {
+            if (suppressCancellationThrowTask == null)
+            {
+                suppressCancellationThrowTask = OnInvokeAsync().SuppressCancellationThrow();
+            }
+            return suppressCancellationThrowTask.Value;
         }
 
         void Invoke(T value)
@@ -351,9 +414,19 @@ namespace UniRx.Async
             return OnInvokeAsync();
         }
 
+        UniTask<(bool IsCanceled, T Result)> IAsyncValueChangedEventHandler<T>.OnValueChangedAsyncSuppressCancellationThrow()
+        {
+            return OnInvokeAsyncSuppressCancellationThrow();
+        }
+
         UniTask<T> IAsyncEndEditEventHandler<T>.OnEndEditAsync()
         {
             return OnInvokeAsync();
+        }
+
+        UniTask<(bool IsCanceled, T Result)> IAsyncEndEditEventHandler<T>.OnEndEditAsyncSuppressCancellationThrow()
+        {
+            return OnInvokeAsyncSuppressCancellationThrow();
         }
     }
 }

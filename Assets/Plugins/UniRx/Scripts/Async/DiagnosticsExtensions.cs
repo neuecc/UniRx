@@ -236,6 +236,10 @@ namespace UniRx.Async
             {
                 return true;
             }
+            else if (declareType.StartsWith("UniRx.Async.CompilerServices"))
+            {
+                return true;
+            }
             else if (declareType == "System.Threading.Tasks.AwaitTaskContinuation")
             {
                 return true;

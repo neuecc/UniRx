@@ -19,24 +19,49 @@ public class SandboxScene : MonoBehaviour
 
     void Start()
     {
-        //for (int i = 0; i < 3; i++)
-        {
-            DelayForever().Forget();
-            HandleEventA().Forget();
-            HandleEventB().Forget();
-            DoAsync().Forget();
-        }
-        //var promise = new UniTaskCompletionSource();
+        UniTaskScheduler.PropagateOperationCanceledException = true;
+
+        var cts = new CancellationTokenSource();
+        SingleClick(cts.Token).Forget();
+        MultiClick(cts.Token).Forget();
+        DestroyA(cts).Forget();
     }
 
-    async UniTaskVoid DoAsync()
+    async UniTask SingleClick(CancellationToken ct)
     {
-        while (true)
+        var click = buttonA.OnClickAsync(ct);
+        await click;
+
+        Debug.Log("After Single Clicked");
+    }
+
+    async UniTask MultiClick(CancellationToken ct)
+    {
+        try
         {
-            await rp.WaitUntilValueChangedAsync(this.GetCancellationTokenOnDestroy());
+            using (var handler = buttonA.GetAsyncClickEventHandler(CancellationToken.None))
+            {
+                while (true)
+                {
+                    var supress = await handler.OnClickAsyncSuppressCancellationThrow();
+                    if (supress) return;
+                    Debug.Log("MultilLicked");
+                }
+            }
+        }
+        finally
+        {
+            Debug.Log("Finished");
         }
     }
 
+    async UniTask DestroyA(CancellationTokenSource cts)
+    {
+        await buttonB.OnClickAsync();
+        cts.Cancel();
+        cts.Dispose();
+        Destroy(buttonA.gameObject);
+    }
 
 
     async UniTask DelayForever()
