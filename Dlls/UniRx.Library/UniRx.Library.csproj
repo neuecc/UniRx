@@ -99,9 +99,6 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\MinimumQueue.cs">
       <Link>Async\Internal\MinimumQueue.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\PlayerLoopRunner.cs">
-      <Link>Async\Internal\PlayerLoopRunner.cs</Link>
-    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\ReusablePromise.cs">
       <Link>Async\Internal\ReusablePromise.cs</Link>
     </Compile>
@@ -113,9 +110,6 @@
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Internal\WeakDictionary.cs">
       <Link>InternalUtil\WeakDictionary.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\PlayerLoopHelper.cs">
-      <Link>Async\PlayerLoopHelper.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Async\Progress.cs">
       <Link>Async\Progress.cs</Link>
