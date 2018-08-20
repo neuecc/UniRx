@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{089999BB-1900-31E8-673F-067C92198C6A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -69,6 +70,7 @@
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\AsyncUniTaskVoidMethodBuilder.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\CompilerServices\MoveNextRunner.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\DiagnosticsExtensions.cs" />
+    <Compile Include="Assets\Plugins\UniRx\Scripts\Async\EnumerableAsyncExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\EnumeratorAsyncExtensions.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\IAwaiter.cs" />
     <Compile Include="Assets\Plugins\UniRx\Scripts\Async\Internal\ArrayPool.cs" />
