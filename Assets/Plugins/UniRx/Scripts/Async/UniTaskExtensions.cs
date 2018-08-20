@@ -112,6 +112,7 @@ namespace UniRx.Async
                 if (taskCancellationTokenSource != null)
                 {
                     taskCancellationTokenSource.Cancel();
+                    taskCancellationTokenSource.Dispose();
                 }
 
                 throw new TimeoutException("Exceed Timeout:" + timeout);
@@ -119,6 +120,7 @@ namespace UniRx.Async
             else
             {
                 delayCancellationTokenSource.Cancel();
+                delayCancellationTokenSource.Dispose();
             }
 
             if (value.IsCanceled)
@@ -156,6 +158,7 @@ namespace UniRx.Async
                 if (taskCancellationTokenSource != null)
                 {
                     taskCancellationTokenSource.Cancel();
+                    taskCancellationTokenSource.Dispose();
                 }
 
                 return (true, default(T));
@@ -163,6 +166,7 @@ namespace UniRx.Async
             else
             {
                 delayCancellationTokenSource.Cancel();
+                delayCancellationTokenSource.Dispose();
             }
 
             if (value.IsCanceled)

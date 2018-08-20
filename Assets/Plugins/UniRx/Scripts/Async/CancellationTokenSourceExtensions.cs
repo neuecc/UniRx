@@ -12,20 +12,24 @@ namespace UniRx.Async
     {
         public static void CancelAfterSlim(this CancellationTokenSource cts, int millisecondsDelay, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)
         {
-            var delay = UniTask.Delay(millisecondsDelay, ignoreTimeScale, delayTiming);
+            var delay = UniTask.Delay(millisecondsDelay, ignoreTimeScale, delayTiming, cts.Token);
             CancelAfterCore(cts, delay).Forget();
         }
 
         public static void CancelAfterSlim(this CancellationTokenSource cts, TimeSpan delayTimeSpan, bool ignoreTimeScale = false, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)
         {
-            var delay = UniTask.Delay(delayTimeSpan, ignoreTimeScale, delayTiming);
+            var delay = UniTask.Delay(delayTimeSpan, ignoreTimeScale, delayTiming, cts.Token);
             CancelAfterCore(cts, delay).Forget();
         }
 
         static async UniTaskVoid CancelAfterCore(CancellationTokenSource cts, UniTask delayTask)
         {
-            await delayTask;
-            cts.Cancel();
+            var alreadyCanceled = await delayTask.SuppressCancellationThrow();
+            if (!alreadyCanceled)
+            {
+                cts.Cancel();
+                cts.Dispose();
+            }
         }
 
         public static void RegisterRaiseCancelOnDestroy(this CancellationTokenSource cts, Component component)
