@@ -61,14 +61,21 @@ namespace UniRx
                 hv = hasValue;
             }
 
-            if (hv)
+            try
             {
-                old.OnNext(v);
-                old.OnCompleted();
+                if (hv)
+                {
+                    old.OnNext(v);
+                    old.OnCompleted();
+                }
+                else
+                {
+                    old.OnCompleted();
+                }                
             }
-            else
+            catch (Exception ex)
             {
-                old.OnCompleted();
+                old.OnError(ex);
             }
         }
 
