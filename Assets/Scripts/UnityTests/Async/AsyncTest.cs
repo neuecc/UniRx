@@ -12,7 +12,7 @@ using UnityEngine.Scripting;
 using UniRx;
 using UniRx.Async;
 using UnityEngine.SceneManagement;
-#if CSHARP_7_OR_LATER
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 using System.Threading.Tasks;
 #endif
 using UnityEngine.Networking;
@@ -29,7 +29,7 @@ namespace UniRx.AsyncTests
 {
     public class AsyncTest
     {
-#if CSHARP_7_OR_LATER
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 #if !UNITY_WSA
 
         public struct MyJob : IJob

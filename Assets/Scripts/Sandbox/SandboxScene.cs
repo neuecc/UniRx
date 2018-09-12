@@ -1,5 +1,5 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-#if CSHARP_7_OR_LATER
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +14,7 @@ public class SandboxScene : MonoBehaviour
 {
     public Button buttonA;
     public Button buttonB;
-    MyMyClass mc;
+    // MyMyClass mc;
     ReactiveProperty<int> rp = new ReactiveProperty<int>();
 
     void Start()
@@ -129,14 +129,6 @@ public class SandboxScene : MonoBehaviour
                 {
                     await handlerA.OnClickAsync();
                     UnityEngine.Debug.Log("OK");
-                    if (mc != null)
-                    {
-                        mc.MyProperty++;
-                    }
-                    else
-                    {
-                        GC.Collect();
-                    }
                 }
             }
         }
