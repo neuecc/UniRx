@@ -6,7 +6,9 @@ using UnityEngine;
 using ObservableUnity = UniRx.Observable;
 #endif
 
+#if UNITY_2018_3_OR_NEWER
 #pragma warning disable CS0618
+#endif
 
 namespace UniRx
 {
@@ -435,4 +437,6 @@ namespace UniRx
     }
 }
 
+#if UNITY_2018_3_OR_NEWER
 #pragma warning restore CS0618
+#endif

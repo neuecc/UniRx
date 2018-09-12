@@ -61,7 +61,9 @@ namespace UniRx.Async
 
 #if ENABLE_WWW
 
+#if UNITY_2018_3_OR_NEWER
 #pragma warning disable CS0618
+#endif
 
         public static IAwaiter GetAwaiter(this WWW www)
         {
@@ -99,7 +101,9 @@ namespace UniRx.Async
             return new UniTask(awaiter);
         }
 
+#if UNITY_2018_3_OR_NEWER
 #pragma warning restore CS0618
+#endif
 
 #endif
 
@@ -434,7 +438,9 @@ namespace UniRx.Async
 
 #if ENABLE_WWW
 
+#if UNITY_2018_3_OR_NEWER
 #pragma warning disable CS0618
+#endif
 
         class WWWConfiguredAwaiter : IAwaiter, IPlayerLoopItem
         {
@@ -526,7 +532,9 @@ namespace UniRx.Async
             }
         }
 
+#if UNITY_2018_3_OR_NEWER
 #pragma warning restore CS0618
+#endif
 
 #endif
 

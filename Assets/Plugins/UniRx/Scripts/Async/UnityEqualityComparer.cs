@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#endif
 
 using System;
 using System.Collections.Generic;
@@ -80,6 +82,7 @@ namespace UniRx
             if (t.Equals(vector3Type)) return (object)UnityEqualityComparer.Vector3;
             if (t.Equals(vector4Type)) return (object)UnityEqualityComparer.Vector4;
             if (t.Equals(colorType)) return (object)UnityEqualityComparer.Color;
+            if (t.Equals(color32Type)) return (object)UnityEqualityComparer.Color32;
             if (t.Equals(rectType)) return (object)UnityEqualityComparer.Rect;
             if (t.Equals(boundsType)) return (object)UnityEqualityComparer.Bounds;
             if (t.Equals(quaternionType)) return (object)UnityEqualityComparer.Quaternion;

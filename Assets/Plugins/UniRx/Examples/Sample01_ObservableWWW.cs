@@ -1,5 +1,8 @@
 ﻿#if !(UNITY_METRO || UNITY_WP8)
+
+#if UNITY_2018_3_OR_NEWER
 #pragma warning disable CS0618
+#endif
 
 using UnityEngine;
 
@@ -81,4 +84,7 @@ namespace UniRx.Examples
 }
 
 #endif
+
+#if UNITY_2018_3_OR_NEWER
 #pragma warning restore CS0618
+#endif
