@@ -61,6 +61,8 @@ namespace UniRx.Async
 
 #if ENABLE_WWW
 
+#pragma warning disable CS0618
+
         public static IAwaiter GetAwaiter(this WWW www)
         {
             Error.ThrowArgumentNullException(www, nameof(www));
@@ -96,6 +98,8 @@ namespace UniRx.Async
             }
             return new UniTask(awaiter);
         }
+
+#pragma warning restore CS0618
 
 #endif
 
@@ -430,6 +434,8 @@ namespace UniRx.Async
 
 #if ENABLE_WWW
 
+#pragma warning disable CS0618
+
         class WWWConfiguredAwaiter : IAwaiter, IPlayerLoopItem
         {
             WWW asyncOperation;
@@ -519,6 +525,8 @@ namespace UniRx.Async
                 this.continuation = continuation;
             }
         }
+
+#pragma warning restore CS0618
 
 #endif
 

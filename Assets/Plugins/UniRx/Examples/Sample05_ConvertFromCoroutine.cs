@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Threading;
 using UnityEngine;
+#pragma warning disable CS0618
 
 namespace UniRx.Examples
 {
@@ -37,3 +38,4 @@ namespace UniRx.Examples
         }
     }
 }
+#pragma warning restore CS0618

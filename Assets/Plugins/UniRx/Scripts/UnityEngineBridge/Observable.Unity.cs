@@ -229,7 +229,9 @@ namespace UniRx
     {
         readonly static HashSet<Type> YieldInstructionTypes = new HashSet<Type>
         {
+            #pragma warning disable CS0618
             typeof(WWW),
+            #pragma warning restore CS0618
             typeof(WaitForEndOfFrame),
             typeof(WaitForFixedUpdate),
             typeof(WaitForSeconds),

@@ -6,6 +6,8 @@ using UnityEngine;
 using ObservableUnity = UniRx.Observable;
 #endif
 
+#pragma warning disable CS0618
+
 namespace UniRx
 {
     using System.Threading;
@@ -21,6 +23,9 @@ namespace UniRx
     using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
 #endif
 
+#if UNITY_2018_3_OR_NEWER
+    [Obsolete("Use UnityWebRequest, a fully featured replacement which is more efficient and has additional features")]
+#endif
     public static partial class ObservableWWW
     {
         public static IObservable<string> Get(string url, Hash headers = null, IProgress<float> progress = null)
@@ -429,3 +434,5 @@ namespace UniRx
         }
     }
 }
+
+#pragma warning restore CS0618

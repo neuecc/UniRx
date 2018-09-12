@@ -31,6 +31,7 @@ namespace UniRx.Examples
         // You can use ToYieldInstruction.
 
 #if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2)
+#pragma warning disable CS0618
 
         IEnumerator TestNewCustomYieldInstruction()
         {
@@ -50,7 +51,7 @@ namespace UniRx.Examples
             // other sample(wait until transform.position.y >= 100) 
             yield return this.ObserveEveryValueChanged(x => x.transform).FirstOrDefault(x => x.position.y >= 100).ToYieldInstruction();
         }
-
+#pragma warning restore CS0618
 #endif
 
     }

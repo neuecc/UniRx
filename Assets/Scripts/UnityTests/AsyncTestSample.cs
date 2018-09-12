@@ -13,6 +13,7 @@ using UnityEngine.Networking;
 public class AsyncTestSample
 {
 #if ENABLE_WWW
+#pragma warning disable CS0618
 
     [UnityTest]
     public IEnumerator AsyncTest() => UniTask.ToCoroutine(async () =>
@@ -34,6 +35,7 @@ public class AsyncTestSample
         req.downloadHandler.text.Contains("<title>Google</title>").IsTrue();
     });
 
+#pragma warning restore CS0618
 #endif
 }
 
