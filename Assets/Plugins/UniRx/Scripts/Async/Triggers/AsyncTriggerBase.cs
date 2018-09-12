@@ -188,7 +188,7 @@ namespace UniRx.Async.Triggers
                 PlayerLoopHelper.AddAction(PlayerLoopTiming.Update, new AwakeMonitor(this));
             }
 
-            var registrationToken = cancellationToken.Register(Callback, Tuple.Create((ICancellationTokenKeyDictionary)promises, (ICancelablePromise)cancellablePromise));
+            var registrationToken = cancellationToken.RegisterWithoutCaptureExecutionContext(Callback, Tuple.Create((ICancellationTokenKeyDictionary)promises, (ICancelablePromise)cancellablePromise));
             if (registeredCancellations == null)
             {
                 registeredCancellations = ArrayPool<CancellationTokenRegistration>.Shared.Rent(4);

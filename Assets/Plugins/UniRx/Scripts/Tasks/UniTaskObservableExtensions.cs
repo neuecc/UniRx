@@ -116,7 +116,7 @@ namespace UniRx
 
                 if (this.cancellationToken.CanBeCanceled)
                 {
-                    this.registration = this.cancellationToken.Register(callback, this, false);
+                    this.registration = this.cancellationToken.RegisterWithoutCaptureExecutionContext(callback, this);
                 }
             }
 
@@ -186,7 +186,7 @@ namespace UniRx
 
                 if (this.cancellationToken.CanBeCanceled)
                 {
-                    this.registration = this.cancellationToken.Register(callback, this, false);
+                    this.registration = this.cancellationToken.RegisterWithoutCaptureExecutionContext(callback, this);
                 }
             }
 

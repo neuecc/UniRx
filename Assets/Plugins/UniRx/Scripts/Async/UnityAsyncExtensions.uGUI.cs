@@ -212,7 +212,7 @@ namespace UniRx.Async
 
             if (cancellationToken.CanBeCanceled)
             {
-                registration = cancellationToken.Register(cancellationCallback, this, false);
+                registration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
             }
 
             TaskTracker.TrackActiveTask(this, 3);
@@ -326,7 +326,7 @@ namespace UniRx.Async
 
             if (cancellationToken.CanBeCanceled)
             {
-                registration = cancellationToken.Register(cancellationCallback, this, false);
+                registration = cancellationToken.RegisterWithoutCaptureExecutionContext(cancellationCallback, this);
             }
 
             TaskTracker.TrackActiveTask(this, 3);

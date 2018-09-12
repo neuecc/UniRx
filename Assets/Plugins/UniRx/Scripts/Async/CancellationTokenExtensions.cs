@@ -18,13 +18,57 @@ namespace UniRx.Async
             }
 
             var promise = new UniTaskCompletionSource<AsyncUnit>();
-            return (promise.Task, cts.Register(cancellationTokenCallback, promise, false));
+            return (promise.Task, cts.RegisterWithoutCaptureExecutionContext(cancellationTokenCallback, promise));
         }
 
         static void Callback(object state)
         {
             var promise = (UniTaskCompletionSource<AsyncUnit>)state;
             promise.TrySetResult(AsyncUnit.Default);
+        }
+
+        public static CancellationTokenRegistration RegisterWithoutCaptureExecutionContext(this CancellationToken cancellationToken, Action callback)
+        {
+            var restoreFlow = false;
+            if (!ExecutionContext.IsFlowSuppressed())
+            {
+                ExecutionContext.SuppressFlow();
+                restoreFlow = true;
+            }
+
+            try
+            {
+                return cancellationToken.Register(callback, false);
+            }
+            finally
+            {
+                if (restoreFlow)
+                {
+                    ExecutionContext.RestoreFlow();
+                }
+            }
+        }
+
+        public static CancellationTokenRegistration RegisterWithoutCaptureExecutionContext(this CancellationToken cancellationToken, Action<object> callback, object state)
+        {
+            var restoreFlow = false;
+            if (!ExecutionContext.IsFlowSuppressed())
+            {
+                ExecutionContext.SuppressFlow();
+                restoreFlow = true;
+            }
+
+            try
+            {
+                return cancellationToken.Register(callback, state, false);
+            }
+            finally
+            {
+                if (restoreFlow)
+                {
+                    ExecutionContext.RestoreFlow();
+                }
+            }
         }
     }
 }
