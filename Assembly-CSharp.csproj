@@ -61,9 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Sandbox\SandboxScene.cs" />
-    <None Include="Assets\gmcs.rsp" />
     <None Include="Assets\Resources\te.txt" />
-    <None Include="Assets\mcs.rsp" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/neuecc/Documents/Git/neuecc/UniRx/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
