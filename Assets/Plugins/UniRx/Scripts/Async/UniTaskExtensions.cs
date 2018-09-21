@@ -476,7 +476,7 @@ namespace UniRx.Async
 
             public bool MoveNext()
             {
-                if (isStarted)
+                if (!isStarted)
                 {
                     isStarted = true;
                     RunTask(task).Forget();
