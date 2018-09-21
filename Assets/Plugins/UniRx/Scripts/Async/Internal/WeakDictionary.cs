@@ -46,6 +46,7 @@ namespace UniRx.Async.Internal
             bool lockTaken = false;
             try
             {
+                gate.Enter(ref lockTaken);
                 if (TryGetEntry(key, out _, out var entry))
                 {
                     value = entry.Value;
@@ -66,6 +67,7 @@ namespace UniRx.Async.Internal
             bool lockTaken = false;
             try
             {
+                gate.Enter(ref lockTaken);
                 if (TryGetEntry(key, out var hashIndex, out var entry))
                 {
                     Remove(hashIndex, entry);
