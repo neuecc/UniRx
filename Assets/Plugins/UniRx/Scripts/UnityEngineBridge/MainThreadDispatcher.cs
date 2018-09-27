@@ -445,6 +445,13 @@ namespace UniRx
                 // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
                 if (!ScenePlaybackDetector.IsPlaying) return;
 #endif
+                if (isQuitting)
+                {
+                    // don't create new instance after quitting
+                    // avoid "Some objects were not cleaned up when closing the scene find target" error.
+                    return;
+                }
+	            
                 MainThreadDispatcher dispatcher = null;
 
                 try
@@ -457,13 +464,6 @@ namespace UniRx
                     var ex = new Exception("UniRx requires a MainThreadDispatcher component created on the main thread. Make sure it is added to the scene before calling UniRx from a worker thread.");
                     UnityEngine.Debug.LogException(ex);
                     throw ex;
-                }
-
-                if (isQuitting)
-                {
-                    // don't create new instance after quitting
-                    // avoid "Some objects were not cleaned up when closing the scene find target" error.
-                    return;
                 }
 
                 if (dispatcher == null)
