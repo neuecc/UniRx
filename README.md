@@ -1353,10 +1353,11 @@ How to integrate with PlayFab API
 What game or library is using UniRx?
 ---
 Games
-- [Farm Away!][(http://www.farmawaygame.com/)
+- [Farm Away!](http://www.farmawaygame.com/)
 - [Build Away!](http://www.buildawaygame.com/)
 - [AdVenture Capitalist](http://hyperhippo.ca/games/adventure-capitalist/)
 - [AdVenture Communist](http://hyperhippo.ca/games/adventure-communist/)
+- [Survival Ball](https://survivalball.com/)
 
 Libraries
 
