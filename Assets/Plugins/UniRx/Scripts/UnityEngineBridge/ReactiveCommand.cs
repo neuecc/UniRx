@@ -279,7 +279,7 @@ namespace UniRx
         public AsyncReactiveCommand(IObservable<bool> canExecuteSource)
         {
             this.canExecuteSource = new ReactiveProperty<bool>(true);
-            this.canExecute = canExecute.CombineLatest(canExecuteSource, (x, y) => x && y).ToReactiveProperty();
+            this.canExecute = this.canExecuteSource.CombineLatest(canExecuteSource, (x, y) => x && y).ToReactiveProperty();
         }
 
         /// <summary>
