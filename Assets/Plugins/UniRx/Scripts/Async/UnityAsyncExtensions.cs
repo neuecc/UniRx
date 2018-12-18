@@ -168,13 +168,13 @@ namespace UniRx.Async
                     }
                 }
 
-                asyncOperation = null; // remove reference.
-
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
                     continuationAction = null;
                 }
+                asyncOperation = null; // remove reference.
+
             }
 
             public void OnCompleted(Action continuation)
@@ -316,13 +316,13 @@ namespace UniRx.Async
                 }
 
                 this.result = asyncOperation.asset;
-                asyncOperation = null; // remove reference.
 
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
                     continuationAction = null;
                 }
+                asyncOperation = null; // remove reference.
 
                 return this.result;
             }
@@ -576,13 +576,13 @@ namespace UniRx.Async
                 }
 
                 this.result = asyncOperation.webRequest;
-                asyncOperation = null; // remove reference.
 
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
                     continuationAction = null;
                 }
+                asyncOperation = null; // remove reference.
 
                 return this.result;
             }
