@@ -22,7 +22,7 @@ namespace UniRx.Tests.Operators
         }
 
         [Test]
-        public void ContinueWith()
+        public void ContinueWith_PublishesLastValueAndCompletes()
         {
             var subject = new Subject<int>();
 
@@ -38,9 +38,9 @@ namespace UniRx.Tests.Operators
             record.Values[0].Is(100);
             record.Notifications.Last().Kind.Is(NotificationKind.OnCompleted);
         }
-
+        
         [Test]
-        public void ContinueWith2()
+        public void ContinueWith_PublishesLastValueAndCompletes_WithDelay()
         {
             var subject = new Subject<int>();
 
@@ -56,6 +56,47 @@ namespace UniRx.Tests.Operators
             Thread.Sleep(TimeSpan.FromMilliseconds(500));
             record.Values[0].Is(100);
             record.Notifications.Last().Kind.Is(NotificationKind.OnCompleted);
+        }
+
+        [Test]
+        public void ContinueWith_Throws_WhenErrorOriginatesFromOnCompleted()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+                PublishErrorInOnCompleted().Subscribe());
+        }
+
+        [Test]
+        public void ContinueWith_PublishesError_WhenErrorOriginatesFromOnCompleted()
+        {
+            Exception ex = null;
+            PublishErrorInOnCompleted().Subscribe(_ => { }, e => ex = e);
+            Assert.IsNotNull(ex);
+        }
+
+        [Test]
+        public void ContinueWith_PublishesError_WhenTrowingFromSelector()
+        {
+            Exception ex = null;
+            Observable
+                .ReturnUnit()
+                .ContinueWith<Unit, Unit>(
+                    _ =>
+                    {
+                        throw new NotImplementedException();
+                    })
+                .Subscribe(_ => { }, e => ex = e);
+            Assert.IsNotNull(ex);
+        }
+
+        private IObservable<Unit> PublishErrorInOnCompleted()
+        {
+            // This is a special case where calling OnCompleted will publish an error.
+            // Using Empty and Single here was the simplest solution, but something else could
+            // be used also.
+            return Observable
+                .ReturnUnit()
+                .ContinueWith(_ => Observable.Empty<Unit>())
+                .Single();
         }
     }
 }
