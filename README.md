@@ -831,7 +831,7 @@ Generic ReactiveProperties are not serializable or inspecatble in the Unity edit
 
 If you needs `[Multiline]` or `[Range]` attach to ReactiveProperty, you can use `MultilineReactivePropertyAttribute` and `RangeReactivePropertyAttribute` instead of `Multiline` and `Range`.
 
-The provided derived InpsectableReactiveProperties are displayed in the inspector naturally and notify when their value is changed even when it is changed in the inspector.
+The provided derived InspectableReactiveProperties are displayed in the inspector naturally and notify when their value is changed even when it is changed in the inspector.
 
 ![](StoreDocument/RxPropInspector.png)
 
@@ -1299,7 +1299,7 @@ You can convert Task -> UniTask: `AsUniTask`, `UniTask` -> `UniTask<AsyncUnit>`:
 
 If you want to convert async to coroutine, you can use `UniTask.ToCoroutine`, this is useful to use only allow coroutine system.
 
-Ofcourse, IObservable is awaitable.
+Of course, IObservable is awaitable.
 
 ```csharp
 // You can use Task(C# 6) or UniTask(C# 7)
