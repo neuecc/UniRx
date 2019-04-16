@@ -168,13 +168,13 @@ namespace UniRx.Async
                     }
                 }
 
-                asyncOperation = null; // remove reference.
-
                 if (continuationAction != null)
                 {
                     asyncOperation.completed -= continuationAction;
                     continuationAction = null;
                 }
+
+                asyncOperation = null; // remove reference.
             }
 
             public void OnCompleted(Action continuation)
