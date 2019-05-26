@@ -132,7 +132,7 @@ namespace UniRx.Async
         }
 
         /// <summary>
-        /// Timeout with suppress OperationCanceledException. Returns (bool, IsCacneled).
+        /// Timeout with suppress TimeoutException. Returns (bool, IsCacneled).
         /// </summary>
         public static async UniTask<bool> TimeoutWithoutException(this UniTask task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
@@ -142,7 +142,7 @@ namespace UniRx.Async
 
 
         /// <summary>
-        /// Timeout with suppress OperationCanceledException. Returns (bool IsTimeout, T Result).
+        /// Timeout with suppress TimeoutException. Returns (bool IsTimeout, T Result).
         /// </summary>
         public static async UniTask<(bool IsTimeout, T Result)> TimeoutWithoutException<T>(this UniTask<T> task, TimeSpan timeout, bool ignoreTimeScale = true, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
         {
