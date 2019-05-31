@@ -4,7 +4,11 @@
 using System;
 using System.Linq;
 using UnityEngine;
+#if UNITY_2019_3_OR_NEWER
+using UnityEngine.LowLevel;
+#else
 using UnityEngine.Experimental.LowLevel;
+#endif
 using UniRx.Async.Internal;
 using System.Threading;
 
