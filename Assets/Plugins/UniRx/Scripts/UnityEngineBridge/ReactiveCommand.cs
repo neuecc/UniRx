@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-using UniRx.Async;
-using UniRx.Async.Internal;
-#endif
 
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
+using System.Threading.Tasks;
+#endif
 namespace UniRx
 {
     public interface IReactiveCommand<T> : IObservable<T>
@@ -14,7 +13,7 @@ namespace UniRx
         bool Execute(T parameter);
 
 #if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-        UniTask<T> WaitUntilExecuteAsync(CancellationToken cancellationToken);
+        Task<T> WaitUntilExecuteAsync(CancellationToken cancellationToken);
 #endif
     }
 
@@ -25,7 +24,7 @@ namespace UniRx
         IDisposable Subscribe(Func<T, IObservable<Unit>> asyncAction);
 
 #if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-        UniTask<T> WaitUntilExecuteAsync(CancellationToken cancellationToken);
+        Task<T> WaitUntilExecuteAsync(CancellationToken cancellationToken);
 #endif
     }
 

@@ -5,12 +5,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using UniRx.InternalUtil;
 #if !UniRxLibrary
 using UnityEngine;
 #endif
 #if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-using UniRx.Async;
-using UniRx.Async.Internal;
+using System.Threading.Tasks;
 #endif
 
 namespace UniRx
@@ -21,7 +21,7 @@ namespace UniRx
         bool HasValue { get; }
 
 #if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
-        UniTask<T> WaitUntilValueChangedAsync(CancellationToken cancellationToken);
+        Task<T> WaitUntilValueChangedAsync(CancellationToken cancellationToken);
 #endif
     }
 
@@ -275,10 +275,9 @@ namespace UniRx
 #if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 
         static readonly Action<object> Callback = CancelCallback;
-        ReactivePropertyReusablePromise<T> commonPromise;
-        Dictionary<CancellationToken, ReactivePropertyReusablePromise<T>> removablePromises;
+        Dictionary<CancellationToken, TaskCompletionSource<T>> removablePromises;
 
-        public UniTask<T> WaitUntilValueChangedAsync(CancellationToken cancellationToken)
+        public Task<T> WaitUntilValueChangedAsync(CancellationToken cancellationToken)
         {
             if (isDisposed) throw new ObjectDisposedException("ReactiveProperty");
 
