@@ -69,13 +69,16 @@
      <Compile Include="Assets\Plugins\UniRx\Scripts\Disposables\StableCompositeDisposable.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\EventPattern.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\AscynLock.cs" />
+     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\CancellableTaskCompletionSource.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\ExceptionExtensions.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\ImmutableList.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\ListObserver.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\MicroCoroutine.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\PriorityQueue.cs" />
+     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\PromiseHelper.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\ScheduledItem.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\ThreadSafeQueueWorker.cs" />
+     <Compile Include="Assets\Plugins\UniRx\Scripts\InternalUtil\UnityEqualityComparer.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\Notification.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\Notifiers\BooleanNotifier.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\Notifiers\CountNotifier.cs" />
@@ -194,7 +197,6 @@
      <Compile Include="Assets\Plugins\UniRx\Scripts\System\Tuple.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\System\Unit.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\Tasks\TaskObservableExtensions.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Scripts\Tasks\UniTaskObservableExtensions.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\TimeInterval.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\Timestamped.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\AsyncOperationExtensions.cs" />
@@ -231,7 +233,6 @@
      <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveCommand.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveDictionary.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactiveProperty.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ReactivePropertyReusablePromise.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\ScenePlaybackDetector.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Toolkit\ObjectPool.cs" />
      <Compile Include="Assets\Plugins\UniRx\Scripts\UnityEngineBridge\Triggers\ObservableAnimatorTrigger.cs" />
@@ -472,9 +473,6 @@
  <Reference Include="AssetStoreToolsExtra">
  <HintPath>C:/GitHubRepositories/UniRx/Assets/AssetStoreTools/Editor/AssetStoreToolsExtra.dll</HintPath>
  </Reference>
- <Reference Include="UnityEngine.Advertisements">
- <HintPath>C:/GitHubRepositories/UniRx/Library/PackageCache/com.unity.ads@2.0.8/UnityEngine.Advertisements.dll</HintPath>
- </Reference>
  <Reference Include="UnityEditor.Advertisements">
  <HintPath>C:/GitHubRepositories/UniRx/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
  </Reference>
@@ -486,9 +484,6 @@
  </Reference>
  <Reference Include="Unity.Analytics.Tracker">
  <HintPath>C:/GitHubRepositories/UniRx/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.Purchasing">
- <HintPath>C:/GitHubRepositories/UniRx/Library/PackageCache/com.unity.purchasing@2.0.6/UnityEngine.Purchasing.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Purchasing">
  <HintPath>C:/GitHubRepositories/UniRx/Library/PackageCache/com.unity.purchasing@2.0.6/Editor/UnityEditor.Purchasing.dll</HintPath>

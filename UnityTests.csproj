@@ -53,13 +53,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\UnityTests\Async\AsyncTest.cs" />
-     <Compile Include="Assets\Scripts\UnityTests\Async\RunTest.cs" />
-     <Compile Include="Assets\Scripts\UnityTests\Async\WhenAnyTest.cs" />
-     <Compile Include="Assets\Scripts\UnityTests\AsyncTestSample.cs" />
      <Compile Include="Assets\Scripts\UnityTests\ChainingAssertion.Unity.cs" />
      <Compile Include="Assets\Scripts\UnityTests\Rx\AggregateTest.cs" />
-     <Compile Include="Assets\Scripts\UnityTests\Rx\ArrayPoolTest.cs" />
      <Compile Include="Assets\Scripts\UnityTests\Rx\ContinueWithTest.cs" />
      <Compile Include="Assets\Scripts\UnityTests\Rx\ConversionTest.cs" />
      <Compile Include="Assets\Scripts\UnityTests\Rx\DisposableTest.cs" />
