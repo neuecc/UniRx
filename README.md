@@ -17,7 +17,9 @@ Support thread on the Unity Forums: Ask me any question - http://forum.unity3d.c
 
 Release Notes, see [UniRx/releases](https://github.com/neuecc/UniRx/releases)
 
-UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/etc) + async/await integration(UniRx.Async)
+UniRx is Core Library (Port of Rx) + Platform Adaptor (MainThreadScheduler/FromCoroutine/etc) + Framework (ObservableTriggers/ReactiveProeperty/etc).
+
+> Note: async/await integration(UniRx.Async) is separated to [Cysharp/UniTask](https://github.com/Cysharp/UniTask) after ver. 7.0.
 
 Why Rx?
 ---
@@ -36,7 +38,7 @@ Unity is generally single threaded but UniRx facilitates multithreading for join
 
 UniRx helps UI programming with uGUI. All UI events (clicked, valuechanged, etc) can be converted to UniRx event streams. 
 
-Unity supports async/await from 2017 with C# upgrades, UniRx provides more lightweight, more powerful async/await integration with Unity. Please see [UniRx.Async](https://github.com/neuecc/UniRx/#unirxasync) section.
+Unity supports async/await from 2017 with C# upgrades, UniRx family prjects provides more lightweight, more powerful async/await integration with Unity. Please see  [Cysharp/UniTask](https://github.com/Cysharp/UniTask).
 
 Introduction
 ---
@@ -1188,132 +1190,6 @@ Windows Store/Phone App (NETFX_CORE)
 Some interfaces, such as  `UniRx.IObservable<T>` and `System.IObservable<T>`, cause conflicts when submitting to the Windows Store App.
 Therefore, when using NETFX_CORE, please refrain from using such constructs as `UniRx.IObservable<T>` and refer to the UniRx components by their short name, without adding the namespace. This solves the conflicts.
 
-UniRx.Async
----
-`UniRx.Async` is the custom async/await support utilities.
-
-```csharp
-// extension awaiter/methods can be used by this namespace
-using UniRx.Async;
-
-// You can return type as struct UniTask<T>, it is unity specialized lightweight alternative of Task<T>
-// no(or less) allocation and fast excution for zero overhead async/await integrate with Unity
-async UniTask<string> DemoAsync()
-{
-    // You can await Unity's AsyncObject
-    var asset = await Resources.LoadAsync<TextAsset>("foo");
-
-    // .ConfigureAwait accepts progress callback
-    await SceneManager.LoadSceneAsync("scene2").ConfigureAwait(new Progress<float>(x => Debug.Log(x)));
-
-    // await frame-based operation(you can also await frame count by DelayFrame)
-    await UniTask.Delay(TimeSpan.FromSeconds(3));
-
-    // like 'yield return WaitForEndOfFrame', or Rx's ObserveOn(scheduler)
-    await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
-
-    // You can await standard task
-    await Task.Run(() => 100);
-
-    // You can await IEnumerator coroutine
-    await ToaruCoroutineEnumerator();
-
-    // get async webrequest
-    async UniTask<string> GetTextAsync(UnityWebRequest req)
-    {
-        var op = await req.SendWebRequest();
-        return op.downloadHandler.text;
-    }
-
-    var task1 = GetTextAsync(UnityWebRequest.Get("http://google.com"));
-    var task2 = GetTextAsync(UnityWebRequest.Get("http://bing.com"));
-    var task3 = GetTextAsync(UnityWebRequest.Get("http://yahoo.com"));
-
-    // concurrent async-wait and get result easily by tuple syntax
-    var (google, bing, yahoo) = await UniTask.WhenAll(task1, task2, task3);
-
-    // You can handle timeout easily
-    await GetTextAsync(UnityWebRequest.Get("http://unity.com")).Timeout(TimeSpan.FromMilliseconds(300));
-
-    // return async-value.(or you can use `UniTask`(no result), `UniTaskVoid`(fire and forget)).
-    return (asset as TextAsset)?.text ?? throw new InvalidOperationException("Asset not found");
-}
-```
-
-This module does not depend on `UniRx` so you can use separate `UniRx.Async` package without `UniRx`(You can download from [UniRx/releases](https://github.com/neuecc/UniRx/releases) page).
-
-UniTask feature rely on C# 7.0([task-like custom async method builder feature](https://github.com/dotnet/roslyn/blob/master/docs/features/task-types.md)) so you should enable Unity Incremental C# Compiler at first.
-
-![image](https://user-images.githubusercontent.com/46207/42524447-7586b728-84ab-11e8-8b3d-f48b73db3ae4.png)
-
-Why UniTask(custom task-like object) is required? Because Task is too heavy, not matched to Unity threading(single-thread). UniTask does not use thread and SynchronizationContext because almost Unity's asynchronous object is automaticaly dispatched by Unity's engine layer. It acquires more fast and more less allocation, completely integrated with Unity.
-
-You can await `AsyncOperation`, `ResourceRequest`, `UnityWebRequestAsyncOperation`, `IEnumerator` when using `UniRx.Async`.
-
- `UniTask.Delay`, `UniTask.Yield`, `UniTask.Timeout` that is frame-based timer operators(no uses thread so works on WebGL publish) driven by custom PlayerLoop(Unity 2018 experimental feature). In default, UniTask initialize automatically when application begin, but it is override all. If you want to append PlayerLoop, please call `PlayerLoopHelper.Initialize(ref yourCustomizedPlayerLoop)` manually.
-
-`UniTask.WhenAll`, `UniTask.WhenAny` is like Task.WhenAll/WhenAny but return type is more useful.
-
-`UniTask.ctor(Func<UniTask>)` is like the embeded [`AsyncLazy<T>`](https://blogs.msdn.microsoft.com/pfxteam/2011/01/15/asynclazyt/)
-
-```csharp
-public class SceneAssets
-{
-    public readonly UniTask<Sprite> Front;
-    public readonly UniTask<Sprite> Background;
-    public readonly UniTask<Sprite> Effect;
-
-    public SceneAssets()
-    {
-        // ctor(Func) overload is AsyncLazy, initialized once when await.
-        // and after it, await returns zero-allocation value immediately.
-        Front = new UniTask<Sprite>(() => LoadAsSprite("foo"));
-        Background = new UniTask<Sprite>(() => LoadAsSprite("bar"));
-        Effect = new UniTask<Sprite>(() => LoadAsSprite("baz"));
-    }
-
-    async UniTask<Sprite> LoadAsSprite(string path)
-    {
-        var resource = await Resources.LoadAsync<Sprite>(path);
-        return (resource as Sprite);
-    }
-}
-```
-
-If you want to convert callback to UniTask, you can use `UniTaskCompletionSource<T>` that is the lightweight edition of `TaskCompletionSource<T>`. 
-
-```csharp
-public UniTask<int> WrapByUniTaskCompletionSource()
-{
-    var utcs = new UniTaskCompletionSource<int>();
-
-    // when complete, call utcs.TrySetResult();
-    // when failed, call utcs.TrySetException();
-    // when cancel, call utcs.TrySetCanceled();
-
-    return utcs.Task; //return UniTask<int>
-}
-```
-
-You can convert Task -> UniTask: `AsUniTask`, `UniTask` -> `UniTask<AsyncUnit>`: `AsAsyncUnitUniTask`(this is useful to use WhenAll/WhenAny), `UniTask<T>` -> `UniTask`: `AsUniTask`.
-
-If you want to convert async to coroutine, you can use `UniTask.ToCoroutine`, this is useful to use only allow coroutine system.
-
-Ofcourse, IObservable is awaitable.
-
-```csharp
-// You can use Task(C# 6) or UniTask(C# 7)
-async Task AwaitObservable()
-{
-    Debug.Log("start await observable");
-
-    await Observable.NextFrame();   // like yield return null
-    await Observable.TimerFrame(5); // await 5 frame
-
-    Debug.Log("end await observable");
-}
-```
-
 DLL Separation
 ---
 If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx`, it is fullset separated project of UniRx. You should define compile symbol like  `UNITY;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol. We can not provides pre-build binary to release page, asset store because compile symbol is different each other.
@@ -1349,25 +1225,6 @@ Intro slide and sample game by [@Xerios](https://github.com/Xerios)
 * [GDC 2016 Sessions of Adventure Capialist](https://www.youtube.com/watch?v=j3YhG91mPsU&feature=youtu.be&t=9m12s)
 
 How to integrate with PlayFab API
-
-What game or library is using UniRx?
----
-Games
-- [Farm Away!][(http://www.farmawaygame.com/)
-- [Build Away!](http://www.buildawaygame.com/)
-- [AdVenture Capitalist](http://hyperhippo.ca/games/adventure-capitalist/)
-- [AdVenture Communist](http://hyperhippo.ca/games/adventure-communist/)
-
-Libraries
-
-- [PhotonWire](https://github.com/neuecc/PhotonWire) - Typed Asynchronous RPC Layer for Photon Server + Unity.
-- [uFrame Game Framework](https://www.assetstore.unity3d.com/en/#!/content/14381) - MVVM/MV* framework designed for the Unity Engine.
-- [EcsRx](https://github.com/grofit/ecsrx) - A simple framework for unity using the ECS paradigm but with unirx for fully reactive systems.
-- [ActionStreetMap Demo](https://github.com/ActionStreetMap/demo) - ASM is an engine for building real city environment dynamically using OSM data.
-- [utymap](https://github.com/reinterpretcat/utymap) - UtyMap is library for building real city environment dynamically using various data sources (mostly, OpenStreetMap and Natural Earth).
-- [Submarine](https://github.com/shiwano/submarine) - A mobile game that is made with Unity3D and RoR, WebSocket server written in Go.
-
-If you use UniRx, please comment to [UniRx/issues/152](https://github.com/neuecc/UniRx/issues/152).
 
 Help & Contribute
 ---
