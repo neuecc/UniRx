@@ -9,10 +9,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{68836B28-4FE0-EEFA-9992-195D65092AD5}</ProjectGuid>
+    <ProjectGuid>{1E3311C2-2F9C-3153-5981-699605B16915}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>UniRx.Examples</AssemblyName>
+    <AssemblyName>RuntimeUnitTestToolkit</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -53,20 +53,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample01_ObservableWWW.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample02_ObservableTriggers.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample03_GameObjectAsObservable.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample04_ConvertFromUnityCallback.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample05_ConvertFromCoroutine.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample06_ConvertToCoroutine.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample07_OrchestratIEnumerator.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample08_DetectDoubleClick.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample09_EventHandling.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample10_MainThreadDispatcher.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample11_Logger.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample12_ReactiveProperty.cs" />
-     <Compile Include="Assets\Plugins\UniRx\Examples\Sample13_ToDoApp.cs" />
-     <None Include="Assets\Plugins\UniRx\Examples\UniRx.Examples.asmdef" />
+     <Compile Include="Assets\RuntimeUnitTestToolkit\Editor\HierarchyTreeBuilder.cs" />
+     <Compile Include="Assets\RuntimeUnitTestToolkit\Editor\UnitTestBuilder.MenuItems.cs" />
+     <Compile Include="Assets\RuntimeUnitTestToolkit\Editor\UnitTestBuilder.cs" />
+     <Compile Include="Assets\RuntimeUnitTestToolkit\UnitTestRunner.cs" />
+     <None Include="Assets\RuntimeUnitTestToolkit\RuntimeUnitTestToolkit.asmdef" />
  <Reference Include="UnityEngine.TestRunner">
  <HintPath>C:/GitHubRepositories/UniRx/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
  </Reference>
@@ -604,12 +595,6 @@
  <Reference Include="Boo.Lang">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.0a2/Editor/Data/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
  </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="UniRx.csproj">
-      <Project>{DA6F13A8-9704-59D0-8E13-D8BA6037F97A}</Project>
-      <Name>UniRx</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
