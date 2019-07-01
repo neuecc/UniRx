@@ -12,9 +12,23 @@ public class SandboxScene : MonoBehaviour
     public Button buttonA;
     public Button buttonB;
     // MyMyClass mc;
-    ReactiveProperty<int> rp = new ReactiveProperty<int>();
+    //ReactiveProperty<int> rp = new ReactiveProperty<int>();
 
-  
+
+    //public async void Start()
+    //{
+    //    rp.Value = 10;
+
+    //    buttonA.onClick.AddListener(() =>
+    //    {
+    //        rp.Value = 99;
+    //    });
+
+    //    Debug.Log("Begin:" + rp.Value);
+    //    var v= await rp;
+    //    Debug.Log("End:" + v);
+    //}
+
 }
 
 public class MyMyClass

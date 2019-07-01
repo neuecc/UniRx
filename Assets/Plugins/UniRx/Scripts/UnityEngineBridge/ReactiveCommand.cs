@@ -337,8 +337,14 @@ namespace UniRx
         {
             var tcs = new CancellableTaskCompletionSource<T>();
 
-            var subscription = source.Subscribe(x => tcs.TrySetResult(x), ex => tcs.TrySetException(ex), () => tcs.TrySetCanceled());
-            cancellationToken.Register(Callback, Tuple.Create(tcs, subscription), false);
+            var disposable = new SingleAssignmentDisposable();
+            disposable.Disposable = source.Subscribe(x =>
+            {
+                disposable.Dispose(); // finish subscription.
+                tcs.TrySetResult(x);
+            }, ex => tcs.TrySetException(ex), () => tcs.TrySetCanceled());
+
+            cancellationToken.Register(Callback, Tuple.Create(tcs, disposable.Disposable), false);
 
             return tcs.Task;
         }
