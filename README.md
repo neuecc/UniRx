@@ -2,7 +2,7 @@ UniRx - Reactive Extensions for Unity
 ===
 Created by Yoshifumi Kawai(neuecc)
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/neuecc/UniRx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)  
+[![CircleCI](https://circleci.com/gh/neuecc/UniRx.svg?style=svg)](https://circleci.com/gh/neuecc/UniRx)  
 [![Become as Backer](https://opencollective.com/unirx/tiers/backer.svg?avatarHeight=50)](https://opencollective.com/unirx) [![Become as Sponsor](https://opencollective.com/unirx/tiers/sponsor.svg?avatarHeight=50)](https://opencollective.com/unirx)
 
 What is UniRx?
