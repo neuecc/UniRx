@@ -1,8 +1,7 @@
 {
     "name": "UniRx.Examples",
     "references": [
-        "UniRx",
-        "UniRx.Async"
+        "UniRx"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"
