@@ -133,19 +133,43 @@ namespace RuntimeUnitTestToolkit
                 {
                     foreach (var method in item.GetMethods())
                     {
-                        var t1 = method.GetCustomAttribute<TestAttribute>(true);
+                        TestAttribute t1 = null;
+                        try
+                        {
+                            t1 = method.GetCustomAttribute<TestAttribute>(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogException(ex);
+                            Debug.Log("TestAttribute Fail, Assembly:" + assembly.FullName);
+                            goto NEXT_ASSEMBLY;
+                        }
                         if (t1 != null)
                         {
                             yield return item;
                             break;
                         }
-                        var t2 = method.GetCustomAttribute<UnityTestAttribute>(true);
+
+                        UnityTestAttribute t2 = null;
+                        try
+                        {
+                            t2 = method.GetCustomAttribute<UnityTestAttribute>(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogException(ex);
+                            Debug.Log("UnityTestAttribute Fail, Assembly:" + assembly.FullName);
+                            goto NEXT_ASSEMBLY;
+                        }
                         if (t2 != null)
                         {
                             yield return item;
                             break;
                         }
                     }
+
+                    NEXT_ASSEMBLY:
+                    continue;
                 }
             }
         }
