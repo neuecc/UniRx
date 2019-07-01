@@ -14,7 +14,7 @@ namespace RuntimeUnitTestToolkit
     public class UnitTestRunner : MonoBehaviour
     {
         // object is IEnumerator or Func<IEnumerator>
-        Dictionary<string, List<KeyValuePair<string, object>>> tests = new Dictionary<string, List<KeyValuePair<string, object>>>();
+        Dictionary<string, List<TestKeyValuePair>> tests = new Dictionary<string, List<TestKeyValuePair>>();
 
         List<Pair> additionalActionsOnFirst = new List<Pair>();
 
@@ -174,28 +174,28 @@ namespace RuntimeUnitTestToolkit
             }
         }
 
-        public void AddTest(string group, string title, Action test)
+        public void AddTest(string group, string title, Action test, List<Action> setups, List<Action> teardowns)
         {
-            List<KeyValuePair<string, object>> list;
+            List<TestKeyValuePair> list;
             if (!tests.TryGetValue(group, out list))
             {
-                list = new List<KeyValuePair<string, object>>();
+                list = new List<TestKeyValuePair>();
                 tests[group] = list;
             }
 
-            list.Add(new KeyValuePair<string, object>(title, test));
+            list.Add(new TestKeyValuePair(title, test, setups, teardowns));
         }
 
-        public void AddAsyncTest(string group, string title, Func<IEnumerator> asyncTestCoroutine)
+        public void AddAsyncTest(string group, string title, Func<IEnumerator> asyncTestCoroutine, List<Action> setups, List<Action> teardowns)
         {
-            List<KeyValuePair<string, object>> list;
+            List<TestKeyValuePair> list;
             if (!tests.TryGetValue(group, out list))
             {
-                list = new List<KeyValuePair<string, object>>();
+                list = new List<TestKeyValuePair>();
                 tests[group] = list;
             }
 
-            list.Add(new KeyValuePair<string, object>(title, asyncTestCoroutine));
+            list.Add(new TestKeyValuePair(title, asyncTestCoroutine, setups, teardowns));
         }
 
         public void AddCutomAction(string name, UnityAction action)
@@ -217,6 +217,29 @@ namespace RuntimeUnitTestToolkit
                 var test = Activator.CreateInstance(testType);
 
                 var methods = testType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                List<Action> setups = new List<Action>();
+                List<Action> teardowns = new List<Action>();
+                foreach (var item in methods)
+                {
+                    try
+                    {
+                        var setup = item.GetCustomAttribute<NUnit.Framework.SetUpAttribute>(true);
+                        if (setup != null)
+                        {
+                            setups.Add((Action)Delegate.CreateDelegate(typeof(Action), test, item));
+                        }
+                        var teardown = item.GetCustomAttribute<NUnit.Framework.TearDownAttribute>(true);
+                        if (teardown != null)
+                        {
+                            teardowns.Add((Action)Delegate.CreateDelegate(typeof(Action), test, item));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        UnityEngine.Debug.LogError(testType.Name + "." + item.Name + " failed to register setup/teardown method, exception: " + e.ToString());
+                    }
+                }
+
                 foreach (var item in methods)
                 {
                     try
@@ -227,7 +250,7 @@ namespace RuntimeUnitTestToolkit
                             if (item.GetParameters().Length == 0 && item.ReturnType == typeof(IEnumerator))
                             {
                                 var factory = (Func<IEnumerator>)Delegate.CreateDelegate(typeof(Func<IEnumerator>), test, item);
-                                AddAsyncTest(factory.Target.GetType().Name, factory.Method.Name, factory);
+                                AddAsyncTest(factory.Target.GetType().Name, factory.Method.Name, factory, setups, teardowns);
                             }
                             else
                             {
@@ -241,7 +264,7 @@ namespace RuntimeUnitTestToolkit
                             if (item.GetParameters().Length == 0 && item.ReturnType == typeof(void))
                             {
                                 var invoke = (Action)Delegate.CreateDelegate(typeof(Action), test, item);
-                                AddTest(invoke.Target.GetType().Name, invoke.Method.Name, invoke);
+                                AddTest(invoke.Target.GetType().Name, invoke.Method.Name, invoke, setups, teardowns);
                             }
                             else
                             {
@@ -268,7 +291,7 @@ namespace RuntimeUnitTestToolkit
             logScrollBar.value = 0;
         }
 
-        IEnumerator RunTestInCoroutine(KeyValuePair<string, List<KeyValuePair<string, object>>> actionList)
+        IEnumerator RunTestInCoroutine(KeyValuePair<string, List<TestKeyValuePair>> actionList)
         {
             Button self = null;
             foreach (var btn in list.GetComponentsInChildren<Button>())
@@ -290,66 +313,81 @@ namespace RuntimeUnitTestToolkit
             var totalExecutionTime = new List<double>();
             foreach (var item2 in actionList.Value)
             {
-                // before start, cleanup
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-
-                logText.text += "<color=teal>" + item2.Key + "</color>\n";
-                yield return null;
-
-                var v = item2.Value;
-
-                var methodStopwatch = System.Diagnostics.Stopwatch.StartNew();
-                Exception exception = null;
-                if (v is Action)
+                // setup
+                try
                 {
-                    try
+                    foreach (var setup in item2.Setups)
                     {
-                        ((Action)v).Invoke();
+                        setup();
                     }
-                    catch (Exception ex)
+
+                    // before start, cleanup
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+
+                    logText.text += "<color=teal>" + item2.Key + "</color>\n";
+                    yield return null;
+
+                    var v = item2.Value;
+
+                    var methodStopwatch = System.Diagnostics.Stopwatch.StartNew();
+                    Exception exception = null;
+                    if (v is Action)
                     {
-                        exception = ex;
-                    }
-                }
-                else
-                {
-                    var coroutineFactory = (Func<IEnumerator>)v;
-                    IEnumerator coroutine = null;
-                    try
-                    {
-                        coroutine = coroutineFactory();
-                    }
-                    catch (Exception ex)
-                    {
-                        exception = ex;
-                    }
-                    if (exception == null)
-                    {
-                        yield return StartCoroutine(UnwrapEnumerator(coroutine, ex =>
+                        try
+                        {
+                            ((Action)v).Invoke();
+                        }
+                        catch (Exception ex)
                         {
                             exception = ex;
-                        }));
+                        }
+                    }
+                    else
+                    {
+                        var coroutineFactory = (Func<IEnumerator>)v;
+                        IEnumerator coroutine = null;
+                        try
+                        {
+                            coroutine = coroutineFactory();
+                        }
+                        catch (Exception ex)
+                        {
+                            exception = ex;
+                        }
+                        if (exception == null)
+                        {
+                            yield return StartCoroutine(UnwrapEnumerator(coroutine, ex =>
+                            {
+                                exception = ex;
+                            }));
+                        }
+                    }
+                    methodStopwatch.Stop();
+                    totalExecutionTime.Add(methodStopwatch.Elapsed.TotalMilliseconds);
+                    if (exception == null)
+                    {
+                        logText.text += "OK, " + methodStopwatch.Elapsed.TotalMilliseconds.ToString("0.00") + "ms\n";
+                        WriteToConsoleResult(item2.Key + ", " + methodStopwatch.Elapsed.TotalMilliseconds.ToString("0.00") + "ms", true);
+                    }
+                    else
+                    {
+                        // found match line...
+                        var line = string.Join("\n", exception.StackTrace.Split('\n').Where(x => x.Contains(actionList.Key) || x.Contains(item2.Key)).ToArray());
+                        logText.text += "<color=red>" + exception.Message + "\n" + line + "</color>\n";
+                        WriteToConsoleResult(item2.Key + ", " + exception.Message, false);
+                        WriteToConsole(line);
+                        allGreen = false;
+                        allTestGreen = false;
                     }
                 }
-
-                methodStopwatch.Stop();
-                totalExecutionTime.Add(methodStopwatch.Elapsed.TotalMilliseconds);
-                if (exception == null)
+                finally
                 {
-                    logText.text += "OK, " + methodStopwatch.Elapsed.TotalMilliseconds.ToString("0.00") + "ms\n";
-                    WriteToConsoleResult(item2.Key + ", " + methodStopwatch.Elapsed.TotalMilliseconds.ToString("0.00") + "ms", true);
-                }
-                else
-                {
-                    // found match line...
-                    var line = string.Join("\n", exception.StackTrace.Split('\n').Where(x => x.Contains(actionList.Key) || x.Contains(item2.Key)).ToArray());
-                    logText.text += "<color=red>" + exception.Message + "\n" + line + "</color>\n";
-                    WriteToConsoleResult(item2.Key + ", " + exception.Message, false);
-                    WriteToConsole(line);
-                    allGreen = false;
-                    allTestGreen = false;
+                    foreach (var teardown in item2.Teardowns)
+                    {
+                        teardown();
+                    }
                 }
             }
 
@@ -469,6 +507,23 @@ namespace RuntimeUnitTestToolkit
         {
             public string Name;
             public UnityAction Action;
+        }
+    }
+
+    public class TestKeyValuePair
+    {
+        public string Key;
+        /// <summary>IEnumerator or Func[IEnumerator]</summary>
+        public object Value;
+        public List<Action> Setups;
+        public List<Action> Teardowns;
+
+        public TestKeyValuePair(string key, object value, List<Action> setups, List<Action> teardowns)
+        {
+            this.Key = key;
+            this.Value = value;
+            this.Setups = setups;
+            this.Teardowns = teardowns;
         }
     }
 }

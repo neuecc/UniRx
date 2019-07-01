@@ -24,6 +24,8 @@ namespace UniRx.Tests
         [Test]
         public void ObserveOnTest()
         {
+            Init();
+
             var xs = Observable.Range(1, 10)
                 .ObserveOn(Scheduler.ThreadPool)
                 .ToArrayWait();
@@ -49,15 +51,8 @@ namespace UniRx.Tests
         [Test]
         public void AmbTest()
         {
-            var xs = Observable.Return(10).Delay(TimeSpan.FromSeconds(1)).Concat(Observable.Range(1, 3));
-
-            var xss = Observable.Return(10).Concat(Observable.Range(1, 3));
-            xss.ToArray().Wait();
-            xss.ToArray().Wait();
-            xss.ToArray().Wait();
-
-
-            var ys = Observable.Return(30).Delay(TimeSpan.FromSeconds(2)).Concat(Observable.Range(5, 3));
+            var xs = Observable.Return(10).Delay(TimeSpan.FromSeconds(1), Scheduler.ThreadPool).Concat(Observable.Range(1, 3));
+            var ys = Observable.Return(30).Delay(TimeSpan.FromSeconds(2), Scheduler.ThreadPool).Concat(Observable.Range(5, 3));
 
             // win left
             var result = xs.Amb(ys).ToArray().Wait();
@@ -79,9 +74,9 @@ namespace UniRx.Tests
         [Test]
         public void AmbMultiTest()
         {
-            var xs = Observable.Return(10).Delay(TimeSpan.FromSeconds(5)).Concat(Observable.Range(1, 3));
-            var ys = Observable.Return(30).Delay(TimeSpan.FromSeconds(1)).Concat(Observable.Range(5, 3));
-            var zs = Observable.Return(50).Delay(TimeSpan.FromSeconds(3)).Concat(Observable.Range(9, 3));
+            var xs = Observable.Return(10).Delay(TimeSpan.FromSeconds(5), Scheduler.ThreadPool).Concat(Observable.Range(1, 3));
+            var ys = Observable.Return(30).Delay(TimeSpan.FromSeconds(1), Scheduler.ThreadPool).Concat(Observable.Range(5, 3));
+            var zs = Observable.Return(50).Delay(TimeSpan.FromSeconds(3), Scheduler.ThreadPool).Concat(Observable.Range(9, 3));
 
             // win center
             var result = Observable.Amb(xs, ys, zs).ToArray().Wait();
