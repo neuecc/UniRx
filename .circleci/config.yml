@@ -60,9 +60,9 @@ workflows:
   version: 2
   build-unity:
     jobs:
-      # - build-and-test:
-      #     unity_version: 2019.1.2f1
-      #     unity_license: ${UNITY_LICENSE_2019_1}
+      - build-and-test:
+          unity_version: 2019.1.2f1
+          unity_license: ${UNITY_LICENSE_2019_1}
       - build-and-create-package:
           unity_version: 2019.1.2f1
           unity_license: ${UNITY_LICENSE_2019_1}
