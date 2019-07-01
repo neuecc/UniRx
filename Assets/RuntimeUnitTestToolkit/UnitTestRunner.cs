@@ -140,8 +140,8 @@ namespace RuntimeUnitTestToolkit
                         }
                         catch (Exception ex)
                         {
+                            Debug.Log("TestAttribute Load Fail, Assembly:" + assembly.FullName);
                             Debug.LogException(ex);
-                            Debug.Log("TestAttribute Fail, Assembly:" + assembly.FullName);
                             goto NEXT_ASSEMBLY;
                         }
                         if (t1 != null)
@@ -157,8 +157,8 @@ namespace RuntimeUnitTestToolkit
                         }
                         catch (Exception ex)
                         {
+                            Debug.Log("UnityTestAttribute Load Fail, Assembly:" + assembly.FullName);
                             Debug.LogException(ex);
-                            Debug.Log("UnityTestAttribute Fail, Assembly:" + assembly.FullName);
                             goto NEXT_ASSEMBLY;
                         }
                         if (t2 != null)
@@ -167,10 +167,10 @@ namespace RuntimeUnitTestToolkit
                             break;
                         }
                     }
-
-                    NEXT_ASSEMBLY:
-                    continue;
                 }
+
+                NEXT_ASSEMBLY:
+                continue;
             }
         }
 
