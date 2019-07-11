@@ -417,6 +417,9 @@ namespace UniRx
         public static IDisposable Subscribe<T, T1, T2>(this IObservable<T> source, Action<T1, T2> onNext)
             where T : Tuple<T1, T2> => source.Subscribe((T data) => onNext(data.Item1, data.Item2));
 
+        public static IDisposable Subscribe<T1, T2>(this IObservable<(T1, T2)> source, Action<T1, T2> onNext) =>
+            source.Subscribe(((T1, T2) data) => onNext(data.Item1, data.Item2));
+
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError)
         {
             return source.Subscribe(Observer.CreateSubscribeObserver(onNext, onError, Stubs.Nop));
@@ -424,6 +427,9 @@ namespace UniRx
 
         public static IDisposable Subscribe<T, T1, T2>(this IObservable<T> source, Action<T1, T2> onNext, Action<Exception> onError)
             where T : Tuple<T1, T2> => source.Subscribe((T data) => onNext(data.Item1, data.Item2), onError);
+
+        public static IDisposable Subscribe<T1, T2>(this IObservable<(T1, T2)> source, Action<T1, T2> onNext, Action<Exception> onError) =>
+            source.Subscribe(((T1, T2) data) => onNext(data.Item1, data.Item2), onError);
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action onCompleted)
         {
@@ -433,6 +439,9 @@ namespace UniRx
         public static IDisposable Subscribe<T, T1, T2>(this IObservable<T> source, Action<T1, T2> onNext, Action onCompleted)
             where T : Tuple<T1, T2> => source.Subscribe((T data) => onNext(data.Item1, data.Item2), onCompleted);
 
+        public static IDisposable Subscribe<T1, T2>(this IObservable<(T1, T2)> source, Action<T1, T2> onNext, Action onCompleted) =>
+            source.Subscribe(((T1, T2) data) => onNext(data.Item1, data.Item2), onCompleted);
+
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError, Action onCompleted)
         {
             return source.Subscribe(Observer.CreateSubscribeObserver(onNext, onError, onCompleted));
@@ -440,6 +449,9 @@ namespace UniRx
 
         public static IDisposable Subscribe<T, T1, T2>(this IObservable<T> source, Action<T1, T2> onNext, Action<Exception> onError, Action onCompleted)
             where T : Tuple<T1, T2> => source.Subscribe((T data) => onNext(data.Item1, data.Item2), onError, onCompleted);
+
+        public static IDisposable Subscribe<T1, T2>(this IObservable<(T1, T2)> source, Action<T1, T2> onNext, Action<Exception> onError, Action onCompleted) =>
+            source.Subscribe(((T1, T2) data) => onNext(data.Item1, data.Item2), onError, onCompleted);
 
         public static IDisposable SubscribeWithState<T, TState>(this IObservable<T> source, TState state, Action<T, TState> onNext)
         {
