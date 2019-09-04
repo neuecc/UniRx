@@ -2,7 +2,6 @@
 using System.Linq;
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace UniRx.Tests
 {

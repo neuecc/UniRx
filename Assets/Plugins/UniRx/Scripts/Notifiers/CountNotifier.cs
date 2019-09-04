@@ -1,8 +1,6 @@
 ﻿﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace UniRx
+ namespace UniRx
 {
     /// <summary>Event kind of CountNotifier.</summary>
     public enum CountChangedStatus

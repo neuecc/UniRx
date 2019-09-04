@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UniRx.Diagnostics;
 using UnityEngine;
 

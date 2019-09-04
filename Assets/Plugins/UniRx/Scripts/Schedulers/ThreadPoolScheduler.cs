@@ -1,9 +1,7 @@
 ﻿#if !UNITY_METRO
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UniRx.InternalUtil;
 
 namespace UniRx

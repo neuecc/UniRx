@@ -2,7 +2,6 @@
 using System.Reflection;
 using UnityEngine;
 using System.Text.RegularExpressions;
-using System.Collections;
 using System.Linq;
 
 #if UNITY_EDITOR
