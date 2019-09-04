@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservableMoveTrigger : ObservableTriggerBase, IEventSystemHandler, IMoveHandler
+    public class ObservableMoveTrigger : ObservableTriggerBase, IMoveHandler
     {
         Subject<AxisEventData> onMove;
 

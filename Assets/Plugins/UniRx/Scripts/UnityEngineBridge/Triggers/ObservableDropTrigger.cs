@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservableDropTrigger : ObservableTriggerBase, IEventSystemHandler, IDropHandler
+    public class ObservableDropTrigger : ObservableTriggerBase, IDropHandler
     {
         Subject<PointerEventData> onDrop;
 

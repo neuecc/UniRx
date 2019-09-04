@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservableCancelTrigger : ObservableTriggerBase, IEventSystemHandler, ICancelHandler
+    public class ObservableCancelTrigger : ObservableTriggerBase, ICancelHandler
     {
         Subject<BaseEventData> onCancel;
 

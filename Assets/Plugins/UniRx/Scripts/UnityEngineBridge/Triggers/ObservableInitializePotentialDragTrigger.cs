@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservableInitializePotentialDragTrigger : ObservableTriggerBase, IEventSystemHandler, IInitializePotentialDragHandler
+    public class ObservableInitializePotentialDragTrigger : ObservableTriggerBase, IInitializePotentialDragHandler
     {
         Subject<PointerEventData> onInitializePotentialDrag;
 

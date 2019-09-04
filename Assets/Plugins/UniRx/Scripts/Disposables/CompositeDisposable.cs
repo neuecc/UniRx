@@ -6,7 +6,7 @@ namespace UniRx
 {
     // copy, modified from Rx Official
 
-    public sealed class CompositeDisposable : ICollection<IDisposable>, IDisposable, ICancelable
+    public sealed class CompositeDisposable : ICollection<IDisposable>, ICancelable
     {
         private readonly object _gate = new object();
 

@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservableDeselectTrigger : ObservableTriggerBase, IEventSystemHandler, IDeselectHandler
+    public class ObservableDeselectTrigger : ObservableTriggerBase, IDeselectHandler
     {
         Subject<BaseEventData> onDeselect;
 
