@@ -11,7 +11,7 @@ namespace UniRx.Examples
         {
             public string Condition;
             public string StackTrace;
-            public UnityEngine.LogType LogType;
+            public LogType LogType;
         }
 
         static class LogHelper

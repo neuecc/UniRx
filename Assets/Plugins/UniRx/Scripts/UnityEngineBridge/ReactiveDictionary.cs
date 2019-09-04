@@ -297,7 +297,7 @@ namespace UniRx
             var subject = countChanged ?? (countChanged = new Subject<int>());
             if (notifyCurrentCount)
             {
-                return subject.StartWith(() => this.Count);
+                return subject.StartWith(() => Count);
             }
             else
             {

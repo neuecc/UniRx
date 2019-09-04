@@ -16,7 +16,7 @@ namespace UniRx.Operators
 
             public MyEventArgs(int x)
             {
-                this.MyProperty = x;
+                MyProperty = x;
             }
         }
 

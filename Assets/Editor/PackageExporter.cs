@@ -21,14 +21,14 @@ public static class PackageExporter
             .Select(x => "Assets" + x.Replace(Application.dataPath, "").Replace(@"\", "/"))
             .ToArray();
 
-        UnityEngine.Debug.Log("Export below files" + Environment.NewLine + string.Join(Environment.NewLine, assets));
+        Debug.Log("Export below files" + Environment.NewLine + string.Join(Environment.NewLine, assets));
 
         AssetDatabase.ExportPackage(
             assets,
             exportPath,
             ExportPackageOptions.Default);
 
-        UnityEngine.Debug.Log("Export complete: " + Path.GetFullPath(exportPath));
+        Debug.Log("Export complete: " + Path.GetFullPath(exportPath));
     }
 }
 

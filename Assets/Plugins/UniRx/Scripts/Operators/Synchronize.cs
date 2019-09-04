@@ -32,7 +32,7 @@ namespace UniRx.Operators
             {
                 lock (parent.gate)
                 {
-                    base.observer.OnNext(value);
+                    observer.OnNext(value);
                 }
             }
 

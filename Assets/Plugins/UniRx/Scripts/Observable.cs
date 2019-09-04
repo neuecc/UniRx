@@ -26,7 +26,7 @@ namespace UniRx
             //}
 
             // optimized path
-            var whereObservable = source as UniRx.Operators.WhereObservable<T>;
+            var whereObservable = source as WhereObservable<T>;
             if (whereObservable != null)
             {
                 return whereObservable.CombineSelector<TR>(selector);
@@ -43,13 +43,13 @@ namespace UniRx
         public static IObservable<T> Where<T>(this IObservable<T> source, Func<T, bool> predicate)
         {
             // optimized path
-            var whereObservable = source as UniRx.Operators.WhereObservable<T>;
+            var whereObservable = source as WhereObservable<T>;
             if (whereObservable != null)
             {
                 return whereObservable.CombinePredicate(predicate);
             }
 
-            var selectObservable = source as UniRx.Operators.ISelect<T>;
+            var selectObservable = source as ISelect<T>;
             if (selectObservable != null)
             {
                 return selectObservable.CombinePredicate(predicate);

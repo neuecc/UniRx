@@ -25,7 +25,7 @@ namespace UniRx.Operators
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.selectorWithIndex = selector;
+            selectorWithIndex = selector;
         }
 
         // sometimes cause "which no ahead of time (AOT) code was generated." on IL2CPP...
@@ -44,9 +44,9 @@ namespace UniRx.Operators
 
         public IObservable<TR> CombinePredicate(Func<TR, bool> predicate)
         {
-            if (this.selector != null)
+            if (selector != null)
             {
-                return new SelectWhereObservable<T, TR>(this.source, this.selector, predicate);
+                return new SelectWhereObservable<T, TR>(source, selector, predicate);
             }
             else
             {
@@ -113,7 +113,7 @@ namespace UniRx.Operators
                 : base(observer, cancel)
             {
                 this.parent = parent;
-                this.index = 0;
+                index = 0;
             }
 
             public override void OnNext(T value)

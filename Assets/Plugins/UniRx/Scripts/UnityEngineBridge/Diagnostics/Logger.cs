@@ -13,8 +13,8 @@ namespace UniRx.Diagnostics
 
         public Logger(string loggerName)
         {
-            this.Name = loggerName;
-            this.logPublisher = ObservableLogger.RegisterLogger(this);
+            Name = loggerName;
+            logPublisher = ObservableLogger.RegisterLogger(this);
         }
 
         /// <summary>Output LogType.Log but only enables isDebugBuild</summary>

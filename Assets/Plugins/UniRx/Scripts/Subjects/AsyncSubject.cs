@@ -97,8 +97,8 @@ namespace UniRx
                 ThrowIfDisposed();
                 if (isStopped) return;
 
-                this.hasValue = true;
-                this.lastValue = value;
+                hasValue = true;
+                lastValue = value;
             }
         }
 
@@ -247,7 +247,7 @@ namespace UniRx
             //
             // [OK] Use of unsafe Subscribe: this type's Subscribe implementation is safe.
             //
-            this.Subscribe/*Unsafe*/(new AwaitObserver(continuation, originalContext));
+            Subscribe/*Unsafe*/(new AwaitObserver(continuation, originalContext));
         }
 
         class AwaitObserver : IObserver<T>

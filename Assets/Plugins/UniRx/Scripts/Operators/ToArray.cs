@@ -58,7 +58,7 @@ namespace UniRx.Operators
                     return;
                 }
 
-                base.observer.OnNext(result);
+                observer.OnNext(result);
                 try { observer.OnCompleted(); } finally { Dispose(); };
             }
         }

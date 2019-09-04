@@ -13,7 +13,7 @@ namespace UniRx
             {
                 get
                 {
-                    return constantTime ?? (constantTime = Scheduler.Immediate);
+                    return constantTime ?? (constantTime = Immediate);
                 }
                 set
                 {
@@ -26,7 +26,7 @@ namespace UniRx
             {
                 get
                 {
-                    return tailRecursion ?? (tailRecursion = Scheduler.Immediate);
+                    return tailRecursion ?? (tailRecursion = Immediate);
                 }
                 set
                 {
@@ -39,7 +39,7 @@ namespace UniRx
             {
                 get
                 {
-                    return iteration ?? (iteration = Scheduler.CurrentThread);
+                    return iteration ?? (iteration = CurrentThread);
                 }
                 set
                 {
@@ -55,7 +55,7 @@ namespace UniRx
 #if UniRxLibrary
                     return timeBasedOperations ?? (timeBasedOperations = Scheduler.ThreadPool);
 #else
-                    return timeBasedOperations ?? (timeBasedOperations = Scheduler.MainThread); // MainThread as default for TimeBased Operation
+                    return timeBasedOperations ?? (timeBasedOperations = MainThread); // MainThread as default for TimeBased Operation
 #endif
                 }
                 set
@@ -73,7 +73,7 @@ namespace UniRx
                     // WebGL does not support threadpool
                     return asyncConversions ?? (asyncConversions = Scheduler.MainThread);
 #else
-                    return asyncConversions ?? (asyncConversions = Scheduler.ThreadPool);
+                    return asyncConversions ?? (asyncConversions = ThreadPool);
 #endif
                 }
                 set
@@ -84,11 +84,11 @@ namespace UniRx
 
             public static void SetDotNetCompatible()
             {
-                ConstantTimeOperations = Scheduler.Immediate;
-                TailRecursion = Scheduler.Immediate;
-                Iteration = Scheduler.CurrentThread;
-                TimeBasedOperations = Scheduler.ThreadPool;
-                AsyncConversions = Scheduler.ThreadPool;
+                ConstantTimeOperations = Immediate;
+                TailRecursion = Immediate;
+                Iteration = CurrentThread;
+                TimeBasedOperations = ThreadPool;
+                AsyncConversions = ThreadPool;
             }
         }
 

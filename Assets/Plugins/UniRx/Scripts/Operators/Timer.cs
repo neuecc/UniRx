@@ -12,7 +12,7 @@ namespace UniRx.Operators
         public TimerObservable(DateTimeOffset dueTime, TimeSpan? period, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
-            this.dueTimeA = dueTime;
+            dueTimeA = dueTime;
             this.period = period;
             this.scheduler = scheduler;
         }
@@ -20,7 +20,7 @@ namespace UniRx.Operators
         public TimerObservable(TimeSpan dueTime, TimeSpan? period, IScheduler scheduler)
             : base(scheduler == Scheduler.CurrentThread)
         {
-            this.dueTimeB = dueTime;
+            dueTimeB = dueTime;
             this.period = period;
             this.scheduler = scheduler;
         }
@@ -94,7 +94,7 @@ namespace UniRx.Operators
             {
                 try
                 {
-                    base.observer.OnNext(index++);
+                    observer.OnNext(index++);
                 }
                 catch
                 {

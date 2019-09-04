@@ -189,7 +189,7 @@ public static partial class ChainingAssertion
         {
             return (comparison != null)
                 ? comparison((T)x, (T)y) ? 0 : -1
-                : object.Equals(x, y) ? 0 : -1;
+                : Equals(x, y) ? 0 : -1;
         }
     }
 
@@ -200,7 +200,7 @@ public static partial class ChainingAssertion
     public static void IsStructuralEqual(this object actual, object expected, string message = "")
     {
         message = (string.IsNullOrEmpty(message) ? "" : ", " + message);
-        if (object.ReferenceEquals(actual, expected)) return;
+        if (ReferenceEquals(actual, expected)) return;
 
         if (actual == null) throw new AssertionException("actual is null", message);
         if (expected == null) throw new AssertionException("actual is not null", message);
@@ -224,7 +224,7 @@ public static partial class ChainingAssertion
     public static void IsNotStructuralEqual(this object actual, object expected, string message = "")
     {
         message = (string.IsNullOrEmpty(message) ? "" : ", " + message);
-        if (object.ReferenceEquals(actual, expected)) throw new AssertionException("actual is same reference", message);
+        if (ReferenceEquals(actual, expected)) throw new AssertionException("actual is same reference", message);
 
         if (actual == null) return;
         if (expected == null) return;
@@ -283,7 +283,7 @@ public static partial class ChainingAssertion
     static EqualInfo StructuralEqual(object left, object right, IEnumerable<string> names)
     {
         // type and basic checks
-        if (object.ReferenceEquals(left, right)) return new EqualInfo { IsEquals = true, Left = left, Right = right, Names = names };
+        if (ReferenceEquals(left, right)) return new EqualInfo { IsEquals = true, Left = left, Right = right, Names = names };
         if (left == null || right == null) return new EqualInfo { IsEquals = false, Left = left, Right = right, Names = names };
         var lType = left.GetType();
         var rType = right.GetType();

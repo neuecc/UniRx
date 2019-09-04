@@ -51,7 +51,7 @@ namespace UniRx.Operators
 
         public void OnError(Exception error)
         {
-            this.ex = error;
+            ex = error;
             semaphore.Set();
         }
 

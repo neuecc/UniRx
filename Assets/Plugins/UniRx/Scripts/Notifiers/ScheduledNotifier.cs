@@ -15,7 +15,7 @@ namespace UniRx
         /// </summary>
         public ScheduledNotifier()
         {
-            this.scheduler = Scheduler.DefaultSchedulers.ConstantTimeOperations;
+            scheduler = Scheduler.DefaultSchedulers.ConstantTimeOperations;
         }
         /// <summary>
         /// Use scheduler is argument's scheduler.

@@ -173,7 +173,7 @@ namespace UniRx.Tests
 
             public IdDisp(int id)
             {
-                this.Id = id;
+                Id = id;
             }
 
 

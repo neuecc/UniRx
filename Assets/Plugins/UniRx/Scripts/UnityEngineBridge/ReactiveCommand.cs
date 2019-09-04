@@ -74,8 +74,8 @@ namespace UniRx
         /// </summary>
         public ReactiveCommand()
         {
-            this.canExecute = new ReactiveProperty<bool>(true);
-            this.canExecuteSubscription = Disposable.Empty;
+            canExecute = new ReactiveProperty<bool>(true);
+            canExecuteSubscription = Disposable.Empty;
         }
 
         /// <summary>
@@ -83,8 +83,8 @@ namespace UniRx
         /// </summary>
         public ReactiveCommand(IObservable<bool> canExecuteSource, bool initialValue = true)
         {
-            this.canExecute = new ReactiveProperty<bool>(initialValue);
-            this.canExecuteSubscription = canExecuteSource
+            canExecute = new ReactiveProperty<bool>(initialValue);
+            canExecuteSubscription = canExecuteSource
                 .DistinctUntilChanged()
                 .SubscribeWithState(canExecute, (b, c) => c.Value = b);
         }
@@ -172,7 +172,7 @@ namespace UniRx
     /// </summary>
     public class AsyncReactiveCommand<T> : IAsyncReactiveCommand<T>
     {
-        UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>> asyncActions = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
+        ImmutableList<Func<T, IObservable<Unit>>> asyncActions = ImmutableList<Func<T, IObservable<Unit>>>.Empty;
 
         readonly object gate = new object();
         readonly IReactiveProperty<bool> canExecuteSource;
@@ -193,8 +193,8 @@ namespace UniRx
         /// </summary>
         public AsyncReactiveCommand()
         {
-            this.canExecuteSource = new ReactiveProperty<bool>(true);
-            this.canExecute = canExecuteSource;
+            canExecuteSource = new ReactiveProperty<bool>(true);
+            canExecute = canExecuteSource;
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace UniRx
         public AsyncReactiveCommand(IObservable<bool> canExecuteSource)
         {
             this.canExecuteSource = new ReactiveProperty<bool>(true);
-            this.canExecute = this.canExecuteSource.CombineLatest(canExecuteSource, (x, y) => x && y).ToReactiveProperty();
+            canExecute = this.canExecuteSource.CombineLatest(canExecuteSource, (x, y) => x && y).ToReactiveProperty();
         }
 
         /// <summary>
@@ -212,8 +212,8 @@ namespace UniRx
         /// </summary>
         public AsyncReactiveCommand(IReactiveProperty<bool> sharedCanExecute)
         {
-            this.canExecuteSource = sharedCanExecute;
-            this.canExecute = sharedCanExecute;
+            canExecuteSource = sharedCanExecute;
+            canExecute = sharedCanExecute;
         }
 
         /// <summary>Push parameter to subscribers when CanExecute.</summary>
@@ -280,7 +280,7 @@ namespace UniRx
             if (IsDisposed) return;
 
             IsDisposed = true;
-            asyncActions = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
+            asyncActions = ImmutableList<Func<T, IObservable<Unit>>>.Empty;
         }
         class Subscription : IDisposable
         {

@@ -17,7 +17,7 @@ namespace UniRx.Examples
                 .Subscribe(x => Debug.Log("cube"), () => Debug.Log("destroy"));
 
             // destroy after 3 second:)
-            GameObject.Destroy(cube, 3f);
+            Destroy(cube, 3f);
         }
     }
 }

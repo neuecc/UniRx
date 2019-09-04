@@ -44,7 +44,7 @@ namespace UniRx.Operators
             public Last(LastObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.notPublished = true;
+                notPublished = true;
             }
 
             public override void OnNext(T value)
@@ -100,7 +100,7 @@ namespace UniRx.Operators
             public Last_(LastObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.notPublished = true;
+                notPublished = true;
             }
 
             public override void OnNext(T value)

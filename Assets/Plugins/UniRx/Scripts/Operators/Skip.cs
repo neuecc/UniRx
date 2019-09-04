@@ -66,14 +66,14 @@ namespace UniRx.Operators
 
             public Skip(SkipObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
-                this.remaining = parent.count;
+                remaining = parent.count;
             }
 
             public override void OnNext(T value)
             {
                 if (remaining <= 0)
                 {
-                    base.observer.OnNext(value);
+                    observer.OnNext(value);
                 }
                 else
                 {
@@ -119,7 +119,7 @@ namespace UniRx.Operators
             {
                 if (open)
                 {
-                    base.observer.OnNext(value);
+                    observer.OnNext(value);
                 }
             }
 

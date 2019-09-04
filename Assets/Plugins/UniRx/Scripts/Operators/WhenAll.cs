@@ -17,14 +17,14 @@ namespace UniRx.Operators
         public WhenAllObservable(IEnumerable<IObservable<T>> sources)
             : base(false)
         {
-            this.sourcesEnumerable = sources;
+            sourcesEnumerable = sources;
         }
 
         protected override IDisposable SubscribeCore(IObserver<T[]> observer, IDisposable cancel)
         {
             if (sources != null)
             {
-                return new WhenAll(this.sources, observer, cancel).Run();
+                return new WhenAll(sources, observer, cancel).Run();
             }
             else
             {
@@ -79,7 +79,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T[] value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -187,7 +187,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T[] value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -268,14 +268,14 @@ namespace UniRx.Operators
         public WhenAllObservable(IEnumerable<IObservable<Unit>> sources)
             : base(false)
         {
-            this.sourcesEnumerable = sources;
+            sourcesEnumerable = sources;
         }
 
         protected override IDisposable SubscribeCore(IObserver<Unit> observer, IDisposable cancel)
         {
             if (sources != null)
             {
-                return new WhenAll(this.sources, observer, cancel).Run();
+                return new WhenAll(sources, observer, cancel).Run();
             }
             else
             {
@@ -328,7 +328,7 @@ namespace UniRx.Operators
 
             public override void OnNext(Unit value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -425,7 +425,7 @@ namespace UniRx.Operators
 
             public override void OnNext(Unit value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)

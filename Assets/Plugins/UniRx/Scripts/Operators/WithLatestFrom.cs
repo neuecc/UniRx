@@ -45,7 +45,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TResult value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -119,7 +119,7 @@ namespace UniRx.Operators
                 public RightObserver(WithLatestFrom parent, IDisposable subscription)
                 {
                     this.parent = parent;
-                    this.selfSubscription = subscription;
+                    selfSubscription = subscription;
                 }
 
                 public void OnNext(TRight value)

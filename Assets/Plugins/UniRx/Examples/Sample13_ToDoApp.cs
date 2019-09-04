@@ -46,7 +46,7 @@ namespace UniRx.Examples
             });
             toDos.ObserveRemove().Subscribe(x =>
             {
-                GameObject.Destroy(x.Value);
+                Destroy(x.Value);
             });
 
             // Clear

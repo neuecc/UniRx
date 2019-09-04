@@ -8,17 +8,17 @@ namespace UniRx
 {
     public static partial class UnityEventExtensions
     {
-        public static IObservable<Unit> AsObservable(this UnityEngine.Events.UnityEvent unityEvent)
+        public static IObservable<Unit> AsObservable(this UnityEvent unityEvent)
         {
             return Observable.FromEvent<UnityAction>(h => new UnityAction(h), h => unityEvent.AddListener(h), h => unityEvent.RemoveListener(h));
         }
 
-        public static IObservable<T> AsObservable<T>(this UnityEngine.Events.UnityEvent<T> unityEvent)
+        public static IObservable<T> AsObservable<T>(this UnityEvent<T> unityEvent)
         {
             return Observable.FromEvent<UnityAction<T>, T>(h => new UnityAction<T>(h), h => unityEvent.AddListener(h), h => unityEvent.RemoveListener(h));
         }
 
-        public static IObservable<Tuple<T0, T1>> AsObservable<T0, T1>(this UnityEngine.Events.UnityEvent<T0, T1> unityEvent)
+        public static IObservable<Tuple<T0, T1>> AsObservable<T0, T1>(this UnityEvent<T0, T1> unityEvent)
         {
             return Observable.FromEvent<UnityAction<T0, T1>, Tuple<T0, T1>>(h =>
             {
@@ -29,7 +29,7 @@ namespace UniRx
             }, h => unityEvent.AddListener(h), h => unityEvent.RemoveListener(h));
         }
 
-        public static IObservable<Tuple<T0, T1, T2>> AsObservable<T0, T1, T2>(this UnityEngine.Events.UnityEvent<T0, T1, T2> unityEvent)
+        public static IObservable<Tuple<T0, T1, T2>> AsObservable<T0, T1, T2>(this UnityEvent<T0, T1, T2> unityEvent)
         {
             return Observable.FromEvent<UnityAction<T0, T1, T2>, Tuple<T0, T1, T2>>(h =>
             {
@@ -40,7 +40,7 @@ namespace UniRx
             }, h => unityEvent.AddListener(h), h => unityEvent.RemoveListener(h));
         }
 
-        public static IObservable<Tuple<T0, T1, T2, T3>> AsObservable<T0, T1, T2, T3>(this UnityEngine.Events.UnityEvent<T0, T1, T2, T3> unityEvent)
+        public static IObservable<Tuple<T0, T1, T2, T3>> AsObservable<T0, T1, T2, T3>(this UnityEvent<T0, T1, T2, T3> unityEvent)
         {
             return Observable.FromEvent<UnityAction<T0, T1, T2, T3>, Tuple<T0, T1, T2, T3>>(h =>
             {

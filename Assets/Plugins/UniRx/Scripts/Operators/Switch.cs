@@ -81,7 +81,7 @@ namespace UniRx.Operators
 
                 public Switch(SwitchObserver observer, ulong id)
                 {
-                    this.parent = observer;
+                    parent = observer;
                     this.id = id;
                 }
 

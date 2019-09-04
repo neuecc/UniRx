@@ -59,7 +59,7 @@
                 statusChanged.OnNext(CountChangedStatus.Increment);
                 if (Count == Max) statusChanged.OnNext(CountChangedStatus.Max);
 
-                return Disposable.Create(() => this.Decrement(incrementCount));
+                return Disposable.Create(() => Decrement(incrementCount));
             }
         }
 

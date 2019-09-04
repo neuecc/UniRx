@@ -22,38 +22,38 @@ namespace UniRx.Operators
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.selectorWithIndex = selector;
+            selectorWithIndex = selector;
         }
 
         public SelectManyObservable(IObservable<TSource> source, Func<TSource, IEnumerable<TResult>> selector)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.selectorEnumerable = selector;
+            selectorEnumerable = selector;
         }
 
         public SelectManyObservable(IObservable<TSource> source, Func<TSource, int, IEnumerable<TResult>> selector)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.selectorEnumerableWithIndex = selector;
+            selectorEnumerableWithIndex = selector;
         }
 
         protected override IDisposable SubscribeCore(IObserver<TResult> observer, IDisposable cancel)
         {
-            if (this.selector != null)
+            if (selector != null)
             {
                 return new SelectManyOuterObserver(this, observer, cancel).Run();
             }
-            else if (this.selectorWithIndex != null)
+            else if (selectorWithIndex != null)
             {
                 return new SelectManyObserverWithIndex(this, observer, cancel).Run();
             }
-            else if (this.selectorEnumerable != null)
+            else if (selectorEnumerable != null)
             {
                 return new SelectManyEnumerableObserver(this, observer, cancel).Run();
             }
-            else if (this.selectorEnumerableWithIndex != null)
+            else if (selectorEnumerableWithIndex != null)
             {
                 return new SelectManyEnumerableObserverWithIndex(this, observer, cancel).Run();
             }
@@ -146,7 +146,7 @@ namespace UniRx.Operators
                 {
                     lock (parent.gate)
                     {
-                        base.observer.OnNext(value);
+                        observer.OnNext(value);
                     }
                 }
 
@@ -256,7 +256,7 @@ namespace UniRx.Operators
                 {
                     lock (parent.gate)
                     {
-                        base.observer.OnNext(value);
+                        observer.OnNext(value);
                     }
                 }
 
@@ -459,15 +459,15 @@ namespace UniRx.Operators
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.collectionSelectorWithIndex = collectionSelector;
-            this.resultSelectorWithIndex = resultSelector;
+            collectionSelectorWithIndex = collectionSelector;
+            resultSelectorWithIndex = resultSelector;
         }
 
         public SelectManyObservable(IObservable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.collectionSelectorEnumerable = collectionSelector;
+            collectionSelectorEnumerable = collectionSelector;
             this.resultSelector = resultSelector;
         }
 
@@ -475,8 +475,8 @@ namespace UniRx.Operators
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.collectionSelectorEnumerableWithIndex = collectionSelector;
-            this.resultSelectorWithIndex = resultSelector;
+            collectionSelectorEnumerableWithIndex = collectionSelector;
+            resultSelectorWithIndex = resultSelector;
         }
 
         protected override IDisposable SubscribeCore(IObserver<TResult> observer, IDisposable cancel)
@@ -580,7 +580,7 @@ namespace UniRx.Operators
                     : base(parent.observer, cancel)
                 {
                     this.parent = parent;
-                    this.sourceValue = value;
+                    sourceValue = value;
                     this.cancel = cancel;
                 }
 
@@ -599,7 +599,7 @@ namespace UniRx.Operators
 
                     lock (parent.gate)
                     {
-                        base.observer.OnNext(resultValue);
+                        observer.OnNext(resultValue);
                     }
                 }
 
@@ -706,8 +706,8 @@ namespace UniRx.Operators
                     : base(parent.observer, cancel)
                 {
                     this.parent = parent;
-                    this.sourceValue = value;
-                    this.sourceIndex = index;
+                    sourceValue = value;
+                    sourceIndex = index;
                     this.cancel = cancel;
                 }
 
@@ -726,7 +726,7 @@ namespace UniRx.Operators
 
                     lock (parent.gate)
                     {
-                        base.observer.OnNext(resultValue);
+                        observer.OnNext(resultValue);
                     }
                 }
 

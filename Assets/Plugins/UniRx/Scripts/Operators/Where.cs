@@ -26,9 +26,9 @@ namespace UniRx.Operators
 
         public IObservable<T> CombinePredicate(Func<T, bool> combinePredicate)
         {
-            if (this.predicate != null)
+            if (predicate != null)
             {
-                return new WhereObservable<T>(source, x => this.predicate(x) && combinePredicate(x));
+                return new WhereObservable<T>(source, x => predicate(x) && combinePredicate(x));
             }
             else
             {
@@ -40,7 +40,7 @@ namespace UniRx.Operators
 
         public IObservable<TR> CombineSelector<TR>(Func<T, TR> selector)
         {
-            if (this.predicate != null)
+            if (predicate != null)
             {
                 return new WhereSelectObservable<T, TR>(source, predicate, selector);
             }
@@ -111,7 +111,7 @@ namespace UniRx.Operators
                 : base(observer, cancel)
             {
                 this.parent = parent;
-                this.index = 0;
+                index = 0;
             }
 
             public override void OnNext(T value)

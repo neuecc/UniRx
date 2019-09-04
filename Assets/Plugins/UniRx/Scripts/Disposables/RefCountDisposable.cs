@@ -139,7 +139,7 @@ namespace UniRx
     {
         static IObservable<T> AddRef<T>(IObservable<T> xs, RefCountDisposable r)
         {
-            return Observable.Create<T>((IObserver<T> observer) => new CompositeDisposable(new IDisposable[]
+            return Create<T>((IObserver<T> observer) => new CompositeDisposable(new IDisposable[]
 	        {
 		        r.GetDisposable(),
 		        xs.Subscribe(observer)

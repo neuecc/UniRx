@@ -40,8 +40,8 @@ namespace UniRx.Tests
         public RecordObserver(IDisposable subscription)
         {
             this.subscription = subscription;
-            this.Values = new List<T>();
-            this.Notifications = new List<Notification<T>>();
+            Values = new List<T>();
+            Notifications = new List<Notification<T>>();
         }
 
         public void DisposeSubscription()

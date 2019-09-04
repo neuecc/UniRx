@@ -99,7 +99,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TResult value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -300,7 +300,7 @@ namespace UniRx.Operators
 
             public override void OnNext(IList<T> value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -416,7 +416,7 @@ namespace UniRx.Operators
 
             public IDisposable Run()
             {
-                base.SetQueue(new System.Collections.ICollection[] { q1, q2, q3 });
+                SetQueue(new System.Collections.ICollection[] { q1, q2, q3 });
                 var s1 = parent.source1.Subscribe(new ZipObserver<T1>(gate, this, 0, q1));
                 var s2 = parent.source2.Subscribe(new ZipObserver<T2>(gate, this, 1, q2));
                 var s3 = parent.source3.Subscribe(new ZipObserver<T3>(gate, this, 2, q3));
@@ -437,7 +437,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TR value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -505,7 +505,7 @@ namespace UniRx.Operators
 
             public IDisposable Run()
             {
-                base.SetQueue(new System.Collections.ICollection[] { q1, q2, q3, q4 });
+                SetQueue(new System.Collections.ICollection[] { q1, q2, q3, q4 });
                 var s1 = parent.source1.Subscribe(new ZipObserver<T1>(gate, this, 0, q1));
                 var s2 = parent.source2.Subscribe(new ZipObserver<T2>(gate, this, 1, q2));
                 var s3 = parent.source3.Subscribe(new ZipObserver<T3>(gate, this, 2, q3));
@@ -527,7 +527,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TR value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -600,7 +600,7 @@ namespace UniRx.Operators
 
             public IDisposable Run()
             {
-                base.SetQueue(new System.Collections.ICollection[] { q1, q2, q3, q4, q5 });
+                SetQueue(new System.Collections.ICollection[] { q1, q2, q3, q4, q5 });
                 var s1 = parent.source1.Subscribe(new ZipObserver<T1>(gate, this, 0, q1));
                 var s2 = parent.source2.Subscribe(new ZipObserver<T2>(gate, this, 1, q2));
                 var s3 = parent.source3.Subscribe(new ZipObserver<T3>(gate, this, 2, q3));
@@ -623,7 +623,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TR value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -701,7 +701,7 @@ namespace UniRx.Operators
 
             public IDisposable Run()
             {
-                base.SetQueue(new System.Collections.ICollection[] { q1, q2, q3, q4, q5, q6 });
+                SetQueue(new System.Collections.ICollection[] { q1, q2, q3, q4, q5, q6 });
                 var s1 = parent.source1.Subscribe(new ZipObserver<T1>(gate, this, 0, q1));
                 var s2 = parent.source2.Subscribe(new ZipObserver<T2>(gate, this, 1, q2));
                 var s3 = parent.source3.Subscribe(new ZipObserver<T3>(gate, this, 2, q3));
@@ -725,7 +725,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TR value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -808,7 +808,7 @@ namespace UniRx.Operators
 
             public IDisposable Run()
             {
-                base.SetQueue(new System.Collections.ICollection[] { q1, q2, q3, q4, q5, q6, q7 });
+                SetQueue(new System.Collections.ICollection[] { q1, q2, q3, q4, q5, q6, q7 });
                 var s1 = parent.source1.Subscribe(new ZipObserver<T1>(gate, this, 0, q1));
                 var s2 = parent.source2.Subscribe(new ZipObserver<T2>(gate, this, 1, q2));
                 var s3 = parent.source3.Subscribe(new ZipObserver<T3>(gate, this, 2, q3));
@@ -833,7 +833,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TR value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -874,8 +874,8 @@ namespace UniRx.Operators
         protected void SetQueue(System.Collections.ICollection[] queues)
         {
             this.queues = queues;
-            this.length = queues.Length;
-            this.isDone = new bool[length];
+            length = queues.Length;
+            isDone = new bool[length];
         }
 
         public abstract T GetResult();

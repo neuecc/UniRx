@@ -10,7 +10,7 @@ using UnityEditor;
 
 namespace UniRx
 {
-    [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
     public class InspectorDisplayAttribute : PropertyAttribute
     {
         public string FieldName { get; private set; }
@@ -26,7 +26,7 @@ namespace UniRx
     /// <summary>
     /// Enables multiline input field for StringReactiveProperty. Default line is 3.
     /// </summary>
-    [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
     public class MultilineReactivePropertyAttribute : PropertyAttribute
     {
         public int Lines { get; private set; }
@@ -38,14 +38,14 @@ namespace UniRx
 
         public MultilineReactivePropertyAttribute(int lines)
         {
-            this.Lines = lines;
+            Lines = lines;
         }
     }
 
     /// <summary>
     /// Enables range input field for Int/FloatReactiveProperty.
     /// </summary>
-    [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
     public class RangeReactivePropertyAttribute : PropertyAttribute
     {
         public float Min { get; private set; }
@@ -53,8 +53,8 @@ namespace UniRx
 
         public RangeReactivePropertyAttribute(float min, float max)
         {
-            this.Min = min;
-            this.Max = max;
+            Min = min;
+            Max = max;
         }
     }
 
@@ -66,30 +66,30 @@ namespace UniRx
     // [UnityEditor.CustomPropertyDrawer(typeof(YourSpecializedReactiveProperty))]
     // public class ExtendInspectorDisplayDrawer : InspectorDisplayDrawer { } 
 
-    [UnityEditor.CustomPropertyDrawer(typeof(InspectorDisplayAttribute))]
-    [UnityEditor.CustomPropertyDrawer(typeof(IntReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(LongReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(ByteReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(FloatReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(DoubleReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(StringReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(BoolReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(Vector2ReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(Vector3ReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(Vector4ReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(ColorReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(RectReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(AnimationCurveReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(BoundsReactiveProperty))]
-    [UnityEditor.CustomPropertyDrawer(typeof(QuaternionReactiveProperty))]
-    public class InspectorDisplayDrawer : UnityEditor.PropertyDrawer
+    [CustomPropertyDrawer(typeof(InspectorDisplayAttribute))]
+    [CustomPropertyDrawer(typeof(IntReactiveProperty))]
+    [CustomPropertyDrawer(typeof(LongReactiveProperty))]
+    [CustomPropertyDrawer(typeof(ByteReactiveProperty))]
+    [CustomPropertyDrawer(typeof(FloatReactiveProperty))]
+    [CustomPropertyDrawer(typeof(DoubleReactiveProperty))]
+    [CustomPropertyDrawer(typeof(StringReactiveProperty))]
+    [CustomPropertyDrawer(typeof(BoolReactiveProperty))]
+    [CustomPropertyDrawer(typeof(Vector2ReactiveProperty))]
+    [CustomPropertyDrawer(typeof(Vector3ReactiveProperty))]
+    [CustomPropertyDrawer(typeof(Vector4ReactiveProperty))]
+    [CustomPropertyDrawer(typeof(ColorReactiveProperty))]
+    [CustomPropertyDrawer(typeof(RectReactiveProperty))]
+    [CustomPropertyDrawer(typeof(AnimationCurveReactiveProperty))]
+    [CustomPropertyDrawer(typeof(BoundsReactiveProperty))]
+    [CustomPropertyDrawer(typeof(QuaternionReactiveProperty))]
+    public class InspectorDisplayDrawer : PropertyDrawer
     {
-        public override void OnGUI(Rect position, UnityEditor.SerializedProperty property, GUIContent label)
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             string fieldName;
             bool notifyPropertyChanged;
             {
-                var attr = this.attribute as InspectorDisplayAttribute;
+                var attr = attribute as InspectorDisplayAttribute;
                 fieldName = (attr == null) ? "value" : attr.FieldName;
                 notifyPropertyChanged = (attr == null) ? true : attr.NotifyPropertyChanged;
             }
@@ -101,7 +101,7 @@ namespace UniRx
             var targetSerializedProperty = property.FindPropertyRelative(fieldName);
             if (targetSerializedProperty == null)
             {
-                UnityEditor.EditorGUI.LabelField(position, label, new GUIContent() { text = "InspectorDisplay can't find target:" + fieldName });
+                EditorGUI.LabelField(position, label, new GUIContent() { text = "InspectorDisplay can't find target:" + fieldName });
                 if (notifyPropertyChanged)
                 {
                     EditorGUI.EndChangeCheck();
@@ -201,7 +201,7 @@ namespace UniRx
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            var attr = this.attribute as InspectorDisplayAttribute;
+            var attr = attribute as InspectorDisplayAttribute;
             var fieldName = (attr == null) ? "value" : attr.FieldName;
 
             var height = base.GetPropertyHeight(property, label);
@@ -239,7 +239,7 @@ namespace UniRx
             return height;
         }
 
-        protected virtual void EmitPropertyField(Rect position, UnityEditor.SerializedProperty targetSerializedProperty, GUIContent label)
+        protected virtual void EmitPropertyField(Rect position, SerializedProperty targetSerializedProperty, GUIContent label)
         {
             var multiline = GetMultilineAttribute();
             if (multiline == null)
@@ -247,7 +247,7 @@ namespace UniRx
                 var range = GetRangeAttribute();
                 if (range == null)
                 {
-                    UnityEditor.EditorGUI.PropertyField(position, targetSerializedProperty, label, includeChildren: true);
+                    EditorGUI.PropertyField(position, targetSerializedProperty, label, includeChildren: true);
                 }
                 else
                 {
@@ -288,14 +288,14 @@ namespace UniRx
 
         MultilineReactivePropertyAttribute GetMultilineAttribute()
         {
-            var fi = this.fieldInfo;
+            var fi = fieldInfo;
             if (fi == null) return null;
             return fi.GetCustomAttributes(false).OfType<MultilineReactivePropertyAttribute>().FirstOrDefault();
         }
 
         RangeReactivePropertyAttribute GetRangeAttribute()
         {
-            var fi = this.fieldInfo;
+            var fi = fieldInfo;
             if (fi == null) return null;
             return fi.GetCustomAttributes(false).OfType<RangeReactivePropertyAttribute>().FirstOrDefault();
         }

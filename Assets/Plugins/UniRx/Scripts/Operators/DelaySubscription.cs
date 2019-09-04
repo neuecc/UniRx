@@ -14,7 +14,7 @@ namespace UniRx.Operators
         {
             this.source = source;
             this.scheduler = scheduler;
-            this.dueTimeT = dueTime;
+            dueTimeT = dueTime;
         }
 
         public DelaySubscriptionObservable(IObservable<T> source, DateTimeOffset dueTime, IScheduler scheduler)
@@ -22,7 +22,7 @@ namespace UniRx.Operators
         {
             this.source = source;
             this.scheduler = scheduler;
-            this.dueTimeD = dueTime;
+            dueTimeD = dueTime;
         }
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)

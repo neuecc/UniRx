@@ -35,7 +35,7 @@ namespace UniRx
             var result = source.Catch((TException ex) =>
             {
                 errorAction(ex);
-                return Observable.Empty<TSource>();
+                return Empty<TSource>();
             });
             return result;
         }
@@ -108,7 +108,7 @@ namespace UniRx
             this IObservable<TSource> source, Action<TException> onError, int retryCount, TimeSpan delay, IScheduler delayScheduler)
             where TException : Exception
         {
-            var result = Observable.Defer(() =>
+            var result = Defer(() =>
             {
                 var dueTime = (delay.Ticks < 0) ? TimeSpan.Zero : delay;
                 var count = 0;
@@ -122,7 +122,7 @@ namespace UniRx
                         ? (dueTime == TimeSpan.Zero)
                             ? self.SubscribeOn(Scheduler.CurrentThread)
                             : self.DelaySubscription(dueTime, delayScheduler).SubscribeOn(Scheduler.CurrentThread)
-                        : Observable.Throw<TSource>(ex);
+                        : Throw<TSource>(ex);
                 });
                 return self;
             });

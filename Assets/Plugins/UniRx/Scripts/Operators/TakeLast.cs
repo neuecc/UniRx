@@ -50,7 +50,7 @@ namespace UniRx.Operators
             public TakeLast(TakeLastObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.q = new Queue<T>();
+                q = new Queue<T>();
             }
 
             public IDisposable Run()
@@ -92,7 +92,7 @@ namespace UniRx.Operators
             public TakeLast_(TakeLastObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.q = new Queue<TimeInterval<T>>();
+                q = new Queue<TimeInterval<T>>();
             }
 
             public IDisposable Run()

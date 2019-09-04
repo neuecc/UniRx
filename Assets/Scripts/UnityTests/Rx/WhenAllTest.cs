@@ -15,7 +15,7 @@ namespace UniRx.Tests.Operators
         [TearDown]
         public void Dispose()
         {
-            UniRx.Scheduler.SetDefaultForUnity();
+            Scheduler.SetDefaultForUnity();
         }
 
         [Test]

@@ -9,7 +9,7 @@ namespace UniRx.Tests
         [Test]
         public void Enq()
         {
-            var q = new UniRx.InternalUtil.ThreadSafeQueueWorker();
+            var q = new InternalUtil.ThreadSafeQueueWorker();
 
             var l = new List<int>();
             q.Enqueue(x => l.Add((int)x), 1);

@@ -43,7 +43,7 @@ namespace UniRx.Operators
             public First(FirstObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.notPublished = true;
+                notPublished = true;
             }
 
             public override void OnNext(T value)
@@ -100,7 +100,7 @@ namespace UniRx.Operators
             public First_(FirstObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.notPublished = true;
+                notPublished = true;
             }
 
             public override void OnNext(T value)

@@ -57,7 +57,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    this.nextSelf = self;
+                    nextSelf = self;
                     if (isDisposed) return;
 
                     var current = default(IObservable<T>);
@@ -107,7 +107,7 @@ namespace UniRx.Operators
             public override void OnNext(T value)
             {
                 isRunNext = true;
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
             public override void OnError(Exception error)
             {
@@ -120,7 +120,7 @@ namespace UniRx.Operators
                 if (isRunNext && !isDisposed)
                 {
                     isRunNext = false;
-                    this.nextSelf();
+                    nextSelf();
                 }
                 else
                 {

@@ -29,7 +29,7 @@ namespace UniRx
                 }
                 catch (Exception exception)
                 {
-                    return Observable.Throw<TResult>(exception, Scheduler.DefaultSchedulers.AsyncConversions);
+                    return Throw<TResult>(exception, Scheduler.DefaultSchedulers.AsyncConversions);
                 }
                 return subject.AsObservable();
             };
@@ -60,7 +60,7 @@ namespace UniRx
                 }
                 catch (Exception exception)
                 {
-                    return Observable.Throw<TResult>(exception, Scheduler.DefaultSchedulers.AsyncConversions);
+                    return Throw<TResult>(exception, Scheduler.DefaultSchedulers.AsyncConversions);
                 }
                 return subject.AsObservable();
             };
@@ -91,7 +91,7 @@ namespace UniRx
                 }
                 catch (Exception exception)
                 {
-                    return Observable.Throw<TResult>(exception, Scheduler.DefaultSchedulers.AsyncConversions);
+                    return Throw<TResult>(exception, Scheduler.DefaultSchedulers.AsyncConversions);
                 }
                 return subject.AsObservable();
             };

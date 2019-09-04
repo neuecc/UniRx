@@ -26,7 +26,7 @@
         /// </summary>
         public BooleanNotifier(bool initialValue = false)
         {
-            this.Value = initialValue;
+            Value = initialValue;
         }
 
         /// <summary>

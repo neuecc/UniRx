@@ -102,7 +102,7 @@ public static partial class UnitTestBuilder
             }
             catch
             {
-                UnityEngine.Debug.LogError("Fail to load RuntimeUnitTest settings");
+                Debug.LogError("Fail to load RuntimeUnitTest settings");
                 EditorPrefs.SetString(key, null);
             }
         }
@@ -151,7 +151,7 @@ public static partial class UnitTestBuilder
         }
         catch
         {
-            UnityEngine.Debug.LogError("Fail to load RuntimeUnitTest settings");
+            Debug.LogError("Fail to load RuntimeUnitTest settings");
             EditorPrefs.SetString(key, null);
             settings = null;
         }
@@ -395,7 +395,7 @@ public static partial class UnitTestBuilder
         var currentBackend = PlayerSettings.GetScriptingBackend(targetGroup);
         if (currentBackend != settings.ScriptBackend)
         {
-            UnityEngine.Debug.Log("Modify ScriptBackend to " + settings.ScriptBackend);
+            Debug.Log("Modify ScriptBackend to " + settings.ScriptBackend);
             PlayerSettings.SetScriptingBackend(targetGroup, settings.ScriptBackend);
         }
 
@@ -408,13 +408,13 @@ public static partial class UnitTestBuilder
             locationPathName = buildPath
         };
 
-        UnityEngine.Debug.Log("UnitTest Build Start, " + settings.ToString());
+        Debug.Log("UnitTest Build Start, " + settings.ToString());
 
         var buildReport = BuildPipeline.BuildPlayer(buildOptions);
 
         if (currentBackend != settings.ScriptBackend)
         {
-            UnityEngine.Debug.Log("Restore ScriptBackend to " + currentBackend);
+            Debug.Log("Restore ScriptBackend to " + currentBackend);
             PlayerSettings.SetScriptingBackend(targetGroup, currentBackend);
         }
 
@@ -422,11 +422,11 @@ public static partial class UnitTestBuilder
         {
             // Note: show error summary?
             // Debug.LogError(buildReport.SummarizeErrors());
-            UnityEngine.Debug.LogError("UnitTest Build Failed.");
+            Debug.LogError("UnitTest Build Failed.");
         }
         else
         {
-            UnityEngine.Debug.Log("UnitTest Build Completed, binary located: " + buildOptions.locationPathName);
+            Debug.Log("UnitTest Build Completed, binary located: " + buildOptions.locationPathName);
         }
     }
 
