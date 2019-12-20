@@ -404,10 +404,26 @@ namespace UniRx
                     }
                     else
                     {
-                        yield return enumerator.Current; // yield inner YieldInstruction
+                        // yield inner YieldInstruction
+                        if (enumerator.Current is IEnumerator) 
+                        {
+                            yield return WrapEnumerator(enumerator.Current as IEnumerator, observer, cancellationToken, publishEveryYield);
+                        } 
+                        else 
+                        {
+                            yield return enumerator.Current;
+                        }
                     }
 #else
-                    yield return enumerator.Current; // yield inner YieldInstruction
+                    // yield inner YieldInstruction
+                    if (enumerator.Current is IEnumerator) 
+                    {
+                        yield return WrapEnumerator(enumerator.Current as IEnumerator, observer, cancellationToken, publishEveryYield);
+                    } 
+                    else 
+                    {
+                        yield return enumerator.Current;
+                    }
 #endif
                 }
             } while (hasNext && !cancellationToken.IsCancellationRequested);
