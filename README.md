@@ -38,7 +38,7 @@ Unity is generally single threaded but UniRx facilitates multithreading for join
 
 UniRx helps UI programming with uGUI. All UI events (clicked, valuechanged, etc) can be converted to UniRx event streams. 
 
-Unity supports async/await from 2017 with C# upgrades, UniRx family prjects provides more lightweight, more powerful async/await integration with Unity. Please see  [Cysharp/UniTask](https://github.com/Cysharp/UniTask).
+Unity supports async/await from 2017 with C# upgrades, UniRx family projects provides more lightweight, more powerful async/await integration with Unity. Please see  [Cysharp/UniTask](https://github.com/Cysharp/UniTask).
 
 Introduction
 ---
