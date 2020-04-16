@@ -1,0 +1,9 @@
+{
+    "name": "com.neuecc.unirx",
+    "displayName": "UniRx",
+    "version": "7.1.0",
+    "unity": "2018.3",
+    "description": "Reactive Extensions for Unity",
+    "license": "MIT",
+    "dependencies": {}
+}
