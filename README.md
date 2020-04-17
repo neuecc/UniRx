@@ -1194,6 +1194,12 @@ DLL Separation
 ---
 If you want to pre-build UniRx, you can build own dll. clone project and open `UniRx.sln`, you can see `UniRx`, it is fullset separated project of UniRx. You should define compile symbol like  `UNITY;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;` + `UNITY_EDITOR`, `UNITY_IPHONE` or other platform symbol. We can not provides pre-build binary to release page, asset store because compile symbol is different each other.
 
+UPM Package
+---
+After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of git package. You can add `https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts` to Package Manager
+
+or add `"com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts"` to `Packages/manifest.json`.
+
 Reference
 ---
 * [UniRx/wiki](https://github.com/neuecc/UniRx/wiki)
