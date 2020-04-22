@@ -457,5 +457,11 @@ namespace UniRx.Triggers
 #endif
 
         #endregion
+
+        public static IObservable<float> OnJointBreakAsObservable(this Joint joint)
+        {
+            if (joint == null || joint.gameObject == null) return Observable.Empty<float>();
+            return GetOrAddComponent<ObservableJointTrigger>(joint.gameObject).OnJointBreakAsObservable();
+        }
     }
 }
