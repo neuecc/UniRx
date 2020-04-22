@@ -246,6 +246,13 @@ namespace UniRx.Triggers
             return GetOrAddComponent<ObservableUpdateTrigger>(gameObject).UpdateAsObservable();
         }
 
+        /// <summary>Call on Awake.</summary>
+        public static IObservable<Unit> AwakeAsObservable(this GameObject gameObject)
+        {
+            if (gameObject == null) return Observable.Empty<Unit>();
+            return GetOrAddComponent<ObservableAwakeTrigger>(gameObject).AwakeAsObservable();
+        }
+
         #endregion
 
         #region ObservableVisibleTrigger
