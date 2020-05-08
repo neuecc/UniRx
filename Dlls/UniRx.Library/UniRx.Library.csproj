@@ -528,8 +528,14 @@
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Schedulers\Scheduler.cs">
       <Link>Schedulers\Scheduler.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Schedulers\TestScheduler.cs">
+      <Link>Schedulers\TestScheduler.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Schedulers\ThreadPoolScheduler.cs">
       <Link>Schedulers\ThreadPoolScheduler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Schedulers\VirtualTimeScheduler.cs">
+      <Link>Schedulers\VirtualTimeScheduler.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\Plugins\UniRx\Scripts\Subjects\AsyncSubject.cs">
       <Link>Subjects\AsyncSubject.cs</Link>

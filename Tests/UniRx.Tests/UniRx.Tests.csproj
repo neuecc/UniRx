@@ -80,6 +80,7 @@
     <Compile Include="ReactivePropertyTest.cs" />
     <Compile Include="ContinueWithTest.cs" />
     <Compile Include="SelectWhereOptimizeTest.cs" />
+    <Compile Include="TestSchedulerTest.cs" />
     <Compile Include="Tools\ChainingAssertion.Unity.cs" />
     <Compile Include="Tools\Init.cs" />
     <Compile Include="Observable.ConcurrencyTest.cs" />
