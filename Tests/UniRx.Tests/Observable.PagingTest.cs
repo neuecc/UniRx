@@ -388,6 +388,74 @@ namespace UniRx.Tests
         }
 
         [TestMethod]
+        public void FirstOrEmpty()
+        {
+            var s = new Subject<int>();
+
+            var l = new List<Notification<int>>();
+            {
+                s.FirstOrEmpty().Materialize().Subscribe(l.Add);
+
+                s.OnNext(10);
+                s.OnError(new Exception());
+
+                l[0].Value.Is(10);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.FirstOrEmpty().Materialize().Subscribe(l.Add);
+
+                s.OnError(new Exception());
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.FirstOrEmpty().Materialize().Subscribe(l.Add);
+
+                s.OnCompleted();
+
+                l[0].Kind.Is(NotificationKind.OnCompleted);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.FirstOrEmpty(x => x % 2 == 0).Materialize().Subscribe(l.Add);
+                s.OnNext(9);
+                s.OnCompleted();
+
+                l[0].Kind.Is(NotificationKind.OnCompleted);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.FirstOrEmpty(x => x % 2 == 0).Materialize().Subscribe(l.Add);
+                s.OnNext(9);
+                s.OnNext(10);
+
+                l[0].Value.Is(10);
+                l[1].Kind.Is(NotificationKind.OnCompleted);
+            }
+
+            s = new Subject<int>();
+            l.Clear();
+            {
+                s.FirstOrEmpty(x => x % 2 == 0).Materialize().Subscribe(l.Add);
+                s.OnNext(9);
+                s.OnError(new Exception());
+
+                l[0].Kind.Is(NotificationKind.OnError);
+            }
+        }
+
+        [TestMethod]
         public void Last()
         {
             var s = new Subject<int>();
