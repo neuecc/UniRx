@@ -6,7 +6,7 @@ using System.Threading;
 namespace UniRx.Tests
 {
     
-    public class SubjectTests
+    public class SubjectTest
     {
         [Test]
         public void Subject()
@@ -401,6 +401,7 @@ namespace UniRx.Tests
             }
         }
 
+        [Test]
         public void ReplaySubjectBufferReplay()
         {
             var subject = new ReplaySubject<int>(bufferSize: 3);
@@ -415,7 +416,7 @@ namespace UniRx.Tests
             subject.OnNext(100);
             subject.OnNext(1000);
             subject.OnNext(10000);
-            onNext.Is(100, 1000, 10000);  // cut 1, 10
+            onNext.Is(1, 10, 100, 1000, 10000);
 
             // replay subscription
             onNext.Clear();
@@ -424,7 +425,7 @@ namespace UniRx.Tests
             onNext.Is(100, 1000, 10000);
 
             subject.OnNext(20000);
-            onNext.Is(1000, 10000, 20000);
+            onNext.Is(100, 1000, 10000, 20000);
 
             subject.OnCompleted();
             onCompletedCallCount.Is(1);
