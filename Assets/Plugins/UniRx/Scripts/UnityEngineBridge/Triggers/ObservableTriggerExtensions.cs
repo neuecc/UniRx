@@ -106,6 +106,24 @@ namespace UniRx.Triggers
 
         #endregion
 
+        #region ObservableMonoEnableTrigger
+
+        /// <summary>This function is called when the object becomes enabled and active.</summary>
+        public static IObservable<Unit> OnMonoEnableAsObservable(this MonoBehaviour behaviour)
+        {
+            if (behaviour == null || behaviour.gameObject == null) return Observable.Empty<Unit>();
+            return GetOrAddComponent<ObservableMonoEnableTrigger>(behaviour.gameObject).OnMonoEnableAsObservable(behaviour);
+        }
+
+        /// <summary>This function is called when the behaviour becomes disabled () or inactive.</summary>
+        public static IObservable<Unit> OnMonoDisableAsObservable(this MonoBehaviour behaviour)
+        {
+            if (behaviour == null || behaviour.gameObject == null) return Observable.Empty<Unit>();
+            return GetOrAddComponent<ObservableMonoEnableTrigger>(behaviour.gameObject).OnMonoDisableAsObservable(behaviour);
+        }
+
+        #endregion
+
         #region ObservableFixedUpdateTrigger
 
         /// <summary>This function is called every fixed framerate frame, if the MonoBehaviour is enabled.</summary>
