@@ -14,6 +14,12 @@ namespace UniRx.Triggers
             if (onEnable != null) onEnable.OnNext(Unit.Default);
         }
 
+        /// <summary>This function is called when this trigger is first instantiated, one frame after onEnable and onDisable are allocated.</summary>
+        void Start()
+        {
+            if (onEnable != null) onEnable.OnNext(Unit.Default);
+        }
+
         /// <summary>This function is called when the object becomes enabled and active.</summary>
         public IObservable<Unit> OnEnableAsObservable()
         {
