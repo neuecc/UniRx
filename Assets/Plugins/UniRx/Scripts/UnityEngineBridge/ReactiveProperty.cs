@@ -534,7 +534,7 @@ namespace UniRx
                 }, ex => tcs.TrySetException(ex), () => tcs.TrySetCanceled());
             }
 
-            cancellationToken.Register(Callback, Tuple.Create(tcs, disposable.Disposable), false);
+            cancellationToken.Register(Callback, Tuple.Create((ICancellableTaskCompletionSource) tcs, disposable.Disposable), false);
 
             return tcs.Task;
         }
