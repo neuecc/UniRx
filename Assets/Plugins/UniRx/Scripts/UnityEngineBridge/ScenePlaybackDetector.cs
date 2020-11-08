@@ -38,8 +38,13 @@ namespace UniRx
             }
         }
 
+#if UNITY_2019_3_OR_NEWER && UNITY_EDITOR
+        // This callback is notified when Unity initializes subsystems
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+#else
         // This callback is notified after scripts have been reloaded.
         [DidReloadScripts]
+#endif
         public static void OnDidReloadScripts()
         {
             // Filter DidReloadScripts callbacks to the moment where playmodeState transitions into isPlaying.

@@ -437,6 +437,17 @@ namespace UniRx
             }
         }
 
+#if UNITY_2019_3_OR_NEWER && UNITY_EDITOR
+        // Clean up static properties for times when Domain Reload is disabled.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void DomainCleanup()
+        {
+            initialized = false;
+            isQuitting = false;
+            instance = null;
+        }
+#endif
+
         public static void Initialize()
         {
             if (!initialized)
