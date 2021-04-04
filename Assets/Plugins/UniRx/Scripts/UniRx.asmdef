@@ -10,6 +10,11 @@
     "defineConstraints": [],
     "versionDefines": [
         {
+            "name": "com.unity.modules.animation",
+            "expression": "",
+            "define": "UNIRX_ANIMATION_SUPPORT"
+        },
+        {
             "name": "com.unity.ugui",
             "expression": "",
             "define": "UNIRX_UGUI_SUPPORT"

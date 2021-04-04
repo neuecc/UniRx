@@ -6,6 +6,9 @@ namespace UniRx.Triggers
     // for GameObject
     public static partial class ObservableTriggerExtensions
     {
+
+#if !UNITY_2019_1_OR_NEWER || UNIRX_ANIMATION_SUPPORT
+
         #region ObservableAnimatorTrigger
 
         /// <summary>Callback for setting up animation IK (inverse kinematics).</summary>
@@ -23,6 +26,8 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#endif
 
         #region ObservableCollision2DTrigger
 
