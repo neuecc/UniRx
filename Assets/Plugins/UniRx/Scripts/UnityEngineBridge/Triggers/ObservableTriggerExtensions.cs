@@ -55,6 +55,8 @@ namespace UniRx.Triggers
 
         #endregion
 
+#if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS_SUPPORT
+
         #region ObservableCollisionTrigger
 
         /// <summary>OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider.</summary>
@@ -80,6 +82,8 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#endif
 
         #region ObservableDestroyTrigger
 
@@ -216,6 +220,8 @@ namespace UniRx.Triggers
 
         #endregion
 
+#if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS_SUPPORT
+
         #region ObservableTriggerTrigger
 
         /// <summary>OnTriggerEnter is called when the Collider other enters the trigger.</summary>
@@ -241,6 +247,8 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#endif
 
         #region ObservableUpdateTrigger
 

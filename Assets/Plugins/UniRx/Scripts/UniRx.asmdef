@@ -15,6 +15,11 @@
             "define": "UNIRX_ANIMATION_SUPPORT"
         },
         {
+            "name": "com.unity.modules.physics",
+            "expression": "",
+            "define": "UNIRX_PHYSICS_SUPPORT"
+        },
+        {
             "name": "com.unity.ugui",
             "expression": "",
             "define": "UNIRX_UGUI_SUPPORT"
