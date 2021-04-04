@@ -8,5 +8,11 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [
+        {
+            "name": "com.unity.ugui",
+            "expression": "",
+            "define": "UNIRX_UGUI_SUPPORT"
+        }
+    ]
 }
