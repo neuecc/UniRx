@@ -117,6 +117,7 @@ namespace UniRx
                     }
 
                     var type = current.GetType();
+#if !UNITY_2019_1_OR_NEWER || UNIRX_WWW_SUPPORT
 #if UNITY_2018_3_OR_NEWER
 #pragma warning disable CS0618
 #endif
@@ -126,10 +127,12 @@ namespace UniRx
                         editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitWWW(www, routine)), null);
                         return;
                     }
+                    else
 #if UNITY_2018_3_OR_NEWER
 #pragma warning restore CS0618
 #endif
-                    else if (type == typeof(AsyncOperation))
+#endif
+                    if (type == typeof(AsyncOperation))
                     {
                         var asyncOperation = (AsyncOperation)current;
                         editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitAsyncOperation(asyncOperation, routine)), null);
@@ -162,6 +165,7 @@ namespace UniRx
                 }
             }
 
+#if !UNITY_2019_1_OR_NEWER || UNIRX_WWW_SUPPORT
 #if UNITY_2018_3_OR_NEWER
 #pragma warning disable CS0618
 #endif
@@ -175,6 +179,7 @@ namespace UniRx
             }
 #if UNITY_2018_3_OR_NEWER
 #pragma warning restore CS0618
+#endif
 #endif
 
             IEnumerator UnwrapWaitAsyncOperation(AsyncOperation asyncOperation, IEnumerator continuation)

@@ -229,12 +229,14 @@ namespace UniRx
     {
         readonly static HashSet<Type> YieldInstructionTypes = new HashSet<Type>
         {
+            #if !UNITY_2019_1_OR_NEWER || UNIRX_WWW_SUPPORT
             #if UNITY_2018_3_OR_NEWER
 #pragma warning disable CS0618
 #endif
             typeof(WWW),
             #if UNITY_2018_3_OR_NEWER
 #pragma warning restore CS0618
+#endif
 #endif
             typeof(WaitForEndOfFrame),
             typeof(WaitForFixedUpdate),

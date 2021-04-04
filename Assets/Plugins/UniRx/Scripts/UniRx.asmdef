@@ -25,6 +25,11 @@
             "define": "UNIRX_PHYSICS2D_SUPPORT"
         },
         {
+            "name": "com.unity.modules.unitywebrequestwww",
+            "expression": "",
+            "define": "UNIRX_WWW_SUPPORT"
+        },
+        {
             "name": "com.unity.ugui",
             "expression": "",
             "define": "UNIRX_UGUI_SUPPORT"
