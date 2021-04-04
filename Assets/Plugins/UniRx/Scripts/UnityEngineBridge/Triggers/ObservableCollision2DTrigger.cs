@@ -1,4 +1,6 @@
-﻿using System; // require keep for Windows Universal App
+﻿#if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS2D_SUPPORT
+
+using System; // require keep for Windows Universal App
 using UnityEngine;
 
 namespace UniRx.Triggers
@@ -65,3 +67,5 @@ namespace UniRx.Triggers
         }
     }
 }
+
+#endif

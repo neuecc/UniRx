@@ -20,6 +20,11 @@
             "define": "UNIRX_PHYSICS_SUPPORT"
         },
         {
+            "name": "com.unity.modules.physics2d",
+            "expression": "",
+            "define": "UNIRX_PHYSICS2D_SUPPORT"
+        },
+        {
             "name": "com.unity.ugui",
             "expression": "",
             "define": "UNIRX_UGUI_SUPPORT"

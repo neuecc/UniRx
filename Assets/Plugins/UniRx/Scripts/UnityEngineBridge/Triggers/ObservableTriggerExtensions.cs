@@ -29,6 +29,8 @@ namespace UniRx.Triggers
 
 #endif
 
+#if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS2D_SUPPORT
+
         #region ObservableCollision2DTrigger
 
         /// <summary>Sent when an incoming collider makes contact with this object's collider (2D physics only).</summary>
@@ -54,6 +56,8 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#endif
 
 #if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS_SUPPORT
 
@@ -194,6 +198,8 @@ namespace UniRx.Triggers
 
 #endif
 
+#if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS2D_SUPPORT
+
         #region ObservableTrigger2DTrigger
 
         /// <summary>Sent when another object enters a trigger collider attached to this object (2D physics only).</summary>
@@ -219,6 +225,8 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#endif
 
 #if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS_SUPPORT
 
