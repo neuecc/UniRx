@@ -669,6 +669,12 @@ namespace UniRx
 
         Subject<Unit> onApplicationQuit;
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        public static void OnRuntimeInitializeOnLoadMethod()
+        {
+            isQuitting = false;
+        }
+
         void OnApplicationQuit()
         {
             isQuitting = true;

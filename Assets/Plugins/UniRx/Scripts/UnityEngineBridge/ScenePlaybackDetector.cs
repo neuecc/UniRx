@@ -38,6 +38,15 @@ namespace UniRx
             }
         }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        public static void OnRuntimeInitializeOnLoadMethod()
+        {
+            if (AboutToStartScene)
+            {
+                IsPlaying = true;
+            }
+        }
+
         // This callback is notified after scripts have been reloaded.
         [DidReloadScripts]
         public static void OnDidReloadScripts()
@@ -54,9 +63,23 @@ namespace UniRx
         {
 #if UNITY_2017_2_OR_NEWER
             EditorApplication.playModeStateChanged += e =>
+            {
+                if (e == PlayModeStateChange.ExitingEditMode)
+                {
+                    AboutToStartScene = true;
+                }
+                else
+                {
+                    AboutToStartScene = false;
+                }
+
+                if (e == PlayModeStateChange.ExitingPlayMode)
+                {
+                    IsPlaying = false;
+                }
+            };
 #else
             EditorApplication.playmodeStateChanged += () =>
-#endif
             {
                 // Before scene start:          isPlayingOrWillChangePlaymode = false;  isPlaying = false
                 // Pressed Playback button:     isPlayingOrWillChangePlaymode = true;   isPlaying = false
@@ -77,6 +100,7 @@ namespace UniRx
                     IsPlaying = false;
                 }
             };
+#endif
         }
     }
 }
