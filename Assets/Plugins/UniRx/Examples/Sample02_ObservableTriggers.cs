@@ -17,7 +17,7 @@ namespace UniRx.Examples
                 .SampleFrame(30)
                 .Subscribe(x => Debug.Log("cube"), () => Debug.Log("destroy"));
 
-            // destroy after 3 second:)
+            // destroy after 3 seconds :)
             GameObject.Destroy(cube, 3f);
         }
     }
