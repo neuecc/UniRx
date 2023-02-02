@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using UniRx.InternalUtil;
+using UnityEditor;
 using UnityEngine;
 
 namespace UniRx
@@ -407,6 +408,14 @@ namespace UniRx
         static MainThreadDispatcher instance;
         static bool initialized;
         static bool isQuitting = false;
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void OnEnterPlayMode()
+        {
+            isQuitting = false;
+        }
+#endif
 
         public static string InstanceName
         {
