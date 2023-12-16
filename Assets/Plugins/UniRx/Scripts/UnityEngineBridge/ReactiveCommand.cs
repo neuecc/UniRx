@@ -344,7 +344,7 @@ namespace UniRx
                 tcs.TrySetResult(x);
             }, ex => tcs.TrySetException(ex), () => tcs.TrySetCanceled());
 
-            cancellationToken.Register(Callback, Tuple.Create(tcs, disposable.Disposable), false);
+            cancellationToken.Register(Callback, Tuple.Create((ICancellableTaskCompletionSource) tcs, disposable.Disposable), false);
 
             return tcs.Task;
         }
@@ -424,7 +424,7 @@ namespace UniRx
             var tcs = new CancellableTaskCompletionSource<T>();
 
             var subscription = source.Subscribe(x => { tcs.TrySetResult(x); return Observable.ReturnUnit(); });
-            cancellationToken.Register(Callback, Tuple.Create(tcs, subscription), false);
+            cancellationToken.Register(Callback, Tuple.Create((ICancellableTaskCompletionSource) tcs, subscription), false);
 
             return tcs.Task;
         }
