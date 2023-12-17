@@ -113,7 +113,11 @@ public static partial class UnitTestBuilder
         }
         if (settings.UseCurrentScriptBackend)
         {
+#if UNITY_2021_2_OR_NEWER
+            settings.ScriptBackend = PlayerSettings.GetScriptingBackend(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(ToBuildTargetGroup(settings.BuildTarget)));
+#else
             settings.ScriptBackend = PlayerSettings.GetScriptingBackend(ToBuildTargetGroup(settings.BuildTarget));
+#endif
         }
 
         if (buildPath == null)
@@ -386,17 +390,27 @@ public static partial class UnitTestBuilder
         {
             options |= BuildOptions.AutoRunPlayer;
         }
+#if !UNITY_2021_2_OR_NEWER
         if (settings.Headless)
         {
             options |= BuildOptions.EnableHeadlessMode;
         }
+#endif
 
         var targetGroup = ToBuildTargetGroup(settings.BuildTarget);
+#if UNITY_2021_2_OR_NEWER
+        var currentBackend = PlayerSettings.GetScriptingBackend(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(targetGroup));
+#else
         var currentBackend = PlayerSettings.GetScriptingBackend(targetGroup);
+#endif
         if (currentBackend != settings.ScriptBackend)
         {
             UnityEngine.Debug.Log("Modify ScriptBackend to " + settings.ScriptBackend);
+#if UNITY_2021_2_OR_NEWER
+            PlayerSettings.SetScriptingBackend(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(targetGroup), settings.ScriptBackend);
+#else
             PlayerSettings.SetScriptingBackend(targetGroup, settings.ScriptBackend);
+#endif
         }
 
         var buildOptions = new BuildPlayerOptions
@@ -407,6 +421,12 @@ public static partial class UnitTestBuilder
             scenes = new[] { sceneName },
             locationPathName = buildPath
         };
+#if UNITY_2021_2_OR_NEWER
+        if (settings.Headless)
+        {
+            buildOptions.subtarget = (int)StandaloneBuildSubtarget.Server;
+        }
+#endif
 
         UnityEngine.Debug.Log("UnitTest Build Start, " + settings.ToString());
 
@@ -415,7 +435,11 @@ public static partial class UnitTestBuilder
         if (currentBackend != settings.ScriptBackend)
         {
             UnityEngine.Debug.Log("Restore ScriptBackend to " + currentBackend);
+#if UNITY_2021_2_OR_NEWER
+            PlayerSettings.SetScriptingBackend(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(targetGroup), currentBackend);
+#else
             PlayerSettings.SetScriptingBackend(targetGroup, currentBackend);
+#endif
         }
 
         if (buildReport.summary.result != BuildResult.Succeeded)
