@@ -33,7 +33,7 @@ namespace UniRx.Toolkit
         protected abstract T CreateInstance();
 
         /// <summary>
-        /// Called before return to pool, useful for set active object(it is default behavior).
+        /// Called before taking from pool, useful for set active object(it is default behavior).
         /// </summary>
         protected virtual void OnBeforeRent(T instance)
         {
@@ -258,7 +258,7 @@ namespace UniRx.Toolkit
         protected abstract IObservable<T> CreateInstanceAsync();
 
         /// <summary>
-        /// Called before return to pool, useful for set active object(it is default behavior).
+        /// Called before taking from pool, useful for set active object(it is default behavior).
         /// </summary>
         protected virtual void OnBeforeRent(T instance)
         {
