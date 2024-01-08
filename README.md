@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> I have started distributing an evolved version of UniRx in [Cysharp/R3](https://github.com/Cysharp/R3)(This is a temporary name and may be changed to UniRx). It's still in preview, but eventually, UniRx will be archived. Since R3 has some incompatible parts, for continuous use, please fork UniRx or try R3.
+
 UniRx - Reactive Extensions for Unity
 ===
 Created by Yoshifumi Kawai(neuecc)
