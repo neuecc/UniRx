@@ -113,7 +113,7 @@ namespace UniRx.Operators
                 {
                     lock (parent.gate)
                     {
-                        try { observer.OnError(error); } finally { Dispose(); };
+                        parent.OnError(error);
                     }
                 }
 
@@ -234,7 +234,7 @@ namespace UniRx.Operators
                 {
                     lock (parent.gate)
                     {
-                        try { observer.OnError(error); } finally { Dispose(); };
+                        parent.OnError(error);
                     }
                 }
 

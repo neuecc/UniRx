@@ -105,7 +105,7 @@ namespace UniRx.Operators
                     {
                         if (parent.latest == id)
                         {
-                            parent.observer.OnError(error);
+                            parent.OnError(error);
                         }
                     }
                 }
