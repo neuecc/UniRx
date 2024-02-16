@@ -1,7 +1,7 @@
 ﻿using System; // require keep for Windows Universal App
 using UnityEngine;
 
-#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5) && (!UNITY_2019_1_OR_NEWER || UNIRX_UGUI_SUPPORT)
 using UnityEngine.EventSystems;
 #endif
 
@@ -10,6 +10,9 @@ namespace UniRx.Triggers
     // for Component
     public static partial class ObservableTriggerExtensions
     {
+
+#if !UNITY_2019_1_OR_NEWER || UNIRX_ANIMATION_SUPPORT
+
         #region ObservableAnimatorTrigger
 
         /// <summary>Callback for setting up animation IK (inverse kinematics).</summary>
@@ -27,6 +30,10 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#endif
+
+#if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS2D_SUPPORT
 
         #region ObservableCollision2DTrigger
 
@@ -54,6 +61,10 @@ namespace UniRx.Triggers
 
         #endregion
 
+#endif
+
+#if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS_SUPPORT
+
         #region ObservableCollisionTrigger
 
         /// <summary>OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider.</summary>
@@ -79,6 +90,8 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#endif
 
         #region ObservableDestroyTrigger
 
@@ -189,6 +202,8 @@ namespace UniRx.Triggers
 
 #endif
 
+#if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS2D_SUPPORT
+
         #region ObservableTrigger2DTrigger
 
         /// <summary>Sent when another object enters a trigger collider attached to this object (2D physics only).</summary>
@@ -215,6 +230,10 @@ namespace UniRx.Triggers
 
         #endregion
 
+#endif
+
+#if !UNITY_2019_1_OR_NEWER || UNIRX_PHYSICS_SUPPORT
+
         #region ObservableTriggerTrigger
 
         /// <summary>OnTriggerEnter is called when the Collider other enters the trigger.</summary>
@@ -240,6 +259,8 @@ namespace UniRx.Triggers
         }
 
         #endregion
+
+#endif
 
         #region ObservableUpdateTrigger
 
@@ -326,6 +347,7 @@ namespace UniRx.Triggers
 
         #endregion
 
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5) && (!UNITY_2019_1_OR_NEWER || UNIRX_UGUI_SUPPORT)
         // uGUI
 
         #region ObservableEventTrigger classes
@@ -433,6 +455,7 @@ namespace UniRx.Triggers
         }
 
         #endregion
+#endif
 
 #endif
 
