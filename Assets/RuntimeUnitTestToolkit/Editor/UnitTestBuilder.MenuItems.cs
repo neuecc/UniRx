@@ -169,6 +169,7 @@ Switch,
         SaveSettings(settings);
     }
 
+#if !UNITY_2019_2_OR_NEWER
     [MenuItem("Test/Settings/BuildTarget/StandaloneLinux", validate = true, priority = 3)]
     static bool ValidateBuildTargetStandaloneLinux()
     {
@@ -184,6 +185,7 @@ Switch,
         settings.BuildTarget = BuildTarget.StandaloneLinux;
         SaveSettings(settings);
     }
+#endif
 
     [MenuItem("Test/Settings/BuildTarget/StandaloneLinux64", validate = true, priority = 4)]
     static bool ValidateBuildTargetStandaloneLinux64()
