@@ -129,7 +129,7 @@ namespace UniRx
 #if UNITY_2018_3_OR_NEWER
 #pragma warning restore CS0618
 #endif
-                    else if (type == typeof(AsyncOperation))
+                    else if (typeof(AsyncOperation).IsAssignableFrom(type))
                     {
                         var asyncOperation = (AsyncOperation)current;
                         editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitAsyncOperation(asyncOperation, routine)), null);
