@@ -327,7 +327,7 @@ namespace UniRx
             return FromMicroCoroutine<Unit>((observer, cancellationToken) => WrapEnumerator(coroutine(cancellationToken), observer, cancellationToken, publishEveryYield), frameCountType);
         }
 
-        static IEnumerator WrapEnumerator(IEnumerator enumerator, IObserver<Unit> observer, CancellationToken cancellationToken, bool publishEveryYield)
+        static IEnumerator WrapEnumerator(IEnumerator enumerator, IObserver<Unit> observer, CancellationToken cancellationToken, bool publishEveryYield, bool publishOnComplete = true)
         {
             var hasNext = default(bool);
             var raisedError = false;
@@ -404,10 +404,26 @@ namespace UniRx
                     }
                     else
                     {
-                        yield return enumerator.Current; // yield inner YieldInstruction
+                        // yield inner YieldInstruction
+                        if (enumerator.Current is IEnumerator) 
+                        {
+                            yield return WrapEnumerator(enumerator.Current as IEnumerator, observer, cancellationToken, publishEveryYield, false);
+                        } 
+                        else 
+                        {
+                            yield return enumerator.Current;
+                        }
                     }
 #else
-                    yield return enumerator.Current; // yield inner YieldInstruction
+                    // yield inner YieldInstruction
+                    if (enumerator.Current is IEnumerator) 
+                    {
+                        yield return WrapEnumerator(enumerator.Current as IEnumerator, observer, cancellationToken, publishEveryYield, false);
+                    } 
+                    else 
+                    {
+                        yield return enumerator.Current;
+                    }
 #endif
                 }
             } while (hasNext && !cancellationToken.IsCancellationRequested);
@@ -417,7 +433,10 @@ namespace UniRx
                 if (!raisedError && !cancellationToken.IsCancellationRequested)
                 {
                     observer.OnNext(Unit.Default); // last one
-                    observer.OnCompleted();
+                    if (publishOnComplete)
+                    {
+                        observer.OnCompleted();
+                    }
                 }
             }
             finally
