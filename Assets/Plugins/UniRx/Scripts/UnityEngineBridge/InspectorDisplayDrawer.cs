@@ -122,7 +122,11 @@ namespace UniRx
 
                     var paths = property.propertyPath.Split('.'); // X.Y.Z...
                     var attachedComponent = property.serializedObject.targetObject;
-
+                    
+#if ODIN_INSPECTOR
+                    var fieldInfo = attachedComponent.GetType().GetField(this.fieldInfo.Name, BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+#endif
+                    
                     var targetProp = (paths.Length == 1)
                         ? fieldInfo.GetValue(attachedComponent)
                         : GetValueRecursive(attachedComponent, 0, paths);
