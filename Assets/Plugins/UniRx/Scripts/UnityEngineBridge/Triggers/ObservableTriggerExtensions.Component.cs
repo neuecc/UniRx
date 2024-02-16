@@ -98,14 +98,14 @@ namespace UniRx.Triggers
         public static IObservable<Unit> OnEnableAsObservable(this Component component)
         {
             if (component == null || component.gameObject == null) return Observable.Empty<Unit>();
-            return GetOrAddComponent<ObservableEnableTrigger>(component.gameObject).OnEnableAsObservable();
+            return GetOrAddComponent<ObservableEnableTrigger>(component.gameObject).OnEnableAsObservable(component as MonoBehaviour);
         }
 
         /// <summary>This function is called when the behaviour becomes disabled () or inactive.</summary>
         public static IObservable<Unit> OnDisableAsObservable(this Component component)
         {
             if (component == null || component.gameObject == null) return Observable.Empty<Unit>();
-            return GetOrAddComponent<ObservableEnableTrigger>(component.gameObject).OnDisableAsObservable();
+            return GetOrAddComponent<ObservableEnableTrigger>(component.gameObject).OnDisableAsObservable(component as MonoBehaviour);
         }
 
         #endregion
