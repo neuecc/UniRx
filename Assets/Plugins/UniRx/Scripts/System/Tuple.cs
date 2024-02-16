@@ -135,7 +135,7 @@ namespace UniRx
     }
 
     [Serializable]
-    public struct Tuple<T1> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1>>
+    public class Tuple<T1> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1>>
     {
         T1 item1;
 
@@ -206,7 +206,7 @@ namespace UniRx
     }
 
     [Serializable]
-    public struct Tuple<T1, T2> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2>>
+    public class Tuple<T1, T2> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2>>
     {
         T1 item1;
         T2 item2;
@@ -301,7 +301,7 @@ namespace UniRx
     }
 
     [Serializable]
-    public struct Tuple<T1, T2, T3> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2, T3>>
+    public class Tuple<T1, T2, T3> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2, T3>>
     {
         T1 item1;
         T2 item2;
@@ -411,7 +411,7 @@ namespace UniRx
     }
 
     [Serializable]
-    public struct Tuple<T1, T2, T3, T4> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2, T3, T4>>
+    public class Tuple<T1, T2, T3, T4> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2, T3, T4>>
     {
         T1 item1;
         T2 item2;
@@ -538,7 +538,7 @@ namespace UniRx
     }
 
     [Serializable]
-    public struct Tuple<T1, T2, T3, T4, T5> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2, T3, T4, T5>>
+    public class Tuple<T1, T2, T3, T4, T5> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2, T3, T4, T5>>
     {
         T1 item1;
         T2 item2;
@@ -680,7 +680,7 @@ namespace UniRx
     }
 
     [Serializable]
-    public struct Tuple<T1, T2, T3, T4, T5, T6> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2, T3, T4, T5, T6>>
+    public class Tuple<T1, T2, T3, T4, T5, T6> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2, T3, T4, T5, T6>>
     {
         T1 item1;
         T2 item2;
@@ -839,7 +839,7 @@ namespace UniRx
     }
 
     [Serializable]
-    public struct Tuple<T1, T2, T3, T4, T5, T6, T7> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2, T3, T4, T5, T6, T7>>
+    public class Tuple<T1, T2, T3, T4, T5, T6, T7> : IStructuralEquatable, IStructuralComparable, IComparable, ITuple, IEquatable<Tuple<T1, T2, T3, T4, T5, T6, T7>>
     {
         T1 item1;
         T2 item2;
