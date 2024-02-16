@@ -1,12 +1,9 @@
 > [!IMPORTANT]
-> I have started distributing an evolved version of UniRx in [Cysharp/R3](https://github.com/Cysharp/R3)(This is a temporary name and may be changed to UniRx). It's still in preview, but eventually, UniRx will be archived. Since R3 has some incompatible parts, for continuous use, please fork UniRx or try R3.
+> I have started distributing an evolved version of UniRx in [Cysharp/R3](https://github.com/Cysharp/R3), please use it instead of UniRx.
 
 UniRx - Reactive Extensions for Unity
 ===
 Created by Yoshifumi Kawai(neuecc)
-
-[![CircleCI](https://circleci.com/gh/neuecc/UniRx.svg?style=svg)](https://circleci.com/gh/neuecc/UniRx)  
-[![Become as Backer](https://opencollective.com/unirx/tiers/backer.svg?avatarHeight=50)](https://opencollective.com/unirx) [![Become as Sponsor](https://opencollective.com/unirx/tiers/sponsor.svg?avatarHeight=50)](https://opencollective.com/unirx)
 
 What is UniRx?
 ---
@@ -1238,8 +1235,6 @@ How to integrate with PlayFab API
 Help & Contribute
 ---
 Support thread on the Unity forum. Ask me any question - [http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity](http://forum.unity3d.com/threads/248535-UniRx-Reactive-Extensions-for-Unity)  
-
-Become a backer, Sponsored, one time donation are welcome, we're using [Open Collective - UniRx](https://opencollective.com/unirx/#)
 
 We welcome any contributions, be they bug reports, requests or pull request.  
 Please consult and submit your reports or requests on GitHub issues.  
