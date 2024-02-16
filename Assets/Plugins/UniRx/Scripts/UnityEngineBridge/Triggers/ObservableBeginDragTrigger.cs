@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(ObservableDragTrigger))]
     public class ObservableBeginDragTrigger : ObservableTriggerBase, IEventSystemHandler, IBeginDragHandler
     {
         Subject<PointerEventData> onBeginDrag;
