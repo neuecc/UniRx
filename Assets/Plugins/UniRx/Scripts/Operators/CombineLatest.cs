@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace UniRx.Operators
 {
@@ -89,7 +87,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TResult value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -287,7 +285,7 @@ namespace UniRx.Operators
 
             public override void OnNext(IList<T> value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -422,7 +420,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TR value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -510,7 +508,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TR value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -605,7 +603,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TR value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -707,7 +705,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TR value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -816,7 +814,7 @@ namespace UniRx.Operators
 
             public override void OnNext(TR value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -854,9 +852,9 @@ namespace UniRx.Operators
         public NthCombineLatestObserverBase(int length, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
         {
             this.length = length;
-            this.isAllValueStarted = false;
-            this.isStarted = new bool[length];
-            this.isCompleted = new bool[length];
+            isAllValueStarted = false;
+            isStarted = new bool[length];
+            isCompleted = new bool[length];
         }
 
         public abstract T GetResult();

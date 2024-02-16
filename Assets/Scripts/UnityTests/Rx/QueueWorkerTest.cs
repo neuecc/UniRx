@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace UniRx.Tests
@@ -12,7 +9,7 @@ namespace UniRx.Tests
         [Test]
         public void Enq()
         {
-            var q = new UniRx.InternalUtil.ThreadSafeQueueWorker();
+            var q = new InternalUtil.ThreadSafeQueueWorker();
 
             var l = new List<int>();
             q.Enqueue(x => l.Add((int)x), 1);

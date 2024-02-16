@@ -1,5 +1,4 @@
 ﻿using System;
-using UniRx.Operators;
 
 namespace UniRx.Operators
 {
@@ -69,7 +68,7 @@ namespace UniRx.Operators
 
             public Take(TakeObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
-                this.rest = parent.count;
+                rest = parent.count;
             }
 
             public override void OnNext(T value)
@@ -77,7 +76,7 @@ namespace UniRx.Operators
                 if (rest > 0)
                 {
                     rest -= 1;
-                    base.observer.OnNext(value);
+                    observer.OnNext(value);
                     if (rest == 0)
                     {
                         try { observer.OnCompleted(); } finally { Dispose(); };
@@ -126,7 +125,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    base.observer.OnNext(value);
+                    observer.OnNext(value);
                 }
             }
 

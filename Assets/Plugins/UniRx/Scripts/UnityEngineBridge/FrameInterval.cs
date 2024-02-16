@@ -85,7 +85,7 @@ namespace UniRx
                 return false;
 
             var other = (FrameInterval<T>)obj;
-            return this.Equals(other);
+            return Equals(other);
         }
 
         /// <summary>

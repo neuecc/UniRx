@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace UniRx.Operators
 {
@@ -22,7 +21,7 @@ namespace UniRx.Operators
 
         public void Dispose()
         {
-            observer = UniRx.InternalUtil.EmptyObserver<TResult>.Instance;
+            observer = InternalUtil.EmptyObserver<TResult>.Instance;
             var target = System.Threading.Interlocked.Exchange(ref cancel, null);
             if (target != null)
             {

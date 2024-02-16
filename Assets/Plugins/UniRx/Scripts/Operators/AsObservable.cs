@@ -1,5 +1,4 @@
 ﻿using System;
-using UniRx.Operators;
 
 namespace UniRx.Operators
 {
@@ -26,7 +25,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)

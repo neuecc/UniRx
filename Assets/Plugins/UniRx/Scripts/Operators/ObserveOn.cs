@@ -166,8 +166,8 @@ namespace UniRx.Operators
             {
                 this.parent = parent;
                 this.scheduler = scheduler;
-                this.isDisposed = new BooleanDisposable();
-                this.onNext = new Action<T>(OnNext_); // cache delegate
+                isDisposed = new BooleanDisposable();
+                onNext = new Action<T>(OnNext_); // cache delegate
             }
 
             public IDisposable Run()
@@ -178,7 +178,7 @@ namespace UniRx.Operators
 
             void OnNext_(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             void OnError_(Exception error)

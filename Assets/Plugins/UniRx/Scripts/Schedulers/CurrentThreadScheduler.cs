@@ -5,10 +5,8 @@
 using System.ComponentModel;
 using System.Threading;
 using UniRx.InternalUtil;
-using UniRx;
 using System;
 using System.Diagnostics;
-using System.Collections.Generic;
 
 namespace UniRx
 {
@@ -74,7 +72,7 @@ namespace UniRx
                 if (action == null)
                     throw new ArgumentNullException("action");
 
-                var dt = Time + Scheduler.Normalize(dueTime);
+                var dt = Time + Normalize(dueTime);
 
                 var si = new ScheduledItem(action, dt);
 
@@ -85,14 +83,14 @@ namespace UniRx
                     queue = new SchedulerQueue(4);
                     queue.Enqueue(si);
 
-                    CurrentThreadScheduler.SetQueue(queue);
+                    SetQueue(queue);
                     try
                     {
                         Trampoline.Run(queue);
                     }
                     finally
                     {
-                        CurrentThreadScheduler.SetQueue(null);
+                        SetQueue(null);
                     }
                 }
                 else
@@ -112,7 +110,7 @@ namespace UniRx
                         var item = queue.Dequeue();
                         if (!item.IsCanceled)
                         {
-                            var wait = item.DueTime - CurrentThreadScheduler.Time;
+                            var wait = item.DueTime - Time;
                             if (wait.Ticks > 0)
                             {
                                 Thread.Sleep(wait);

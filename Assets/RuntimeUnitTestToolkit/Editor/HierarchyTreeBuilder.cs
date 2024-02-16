@@ -26,7 +26,7 @@ namespace RuntimeUnitTestToolkit.Editor
         {
             set
             {
-                value(this.GameObject);
+                value(GameObject);
             }
         }
 
@@ -52,20 +52,20 @@ namespace RuntimeUnitTestToolkit.Editor
 
         public Builder(string name)
         {
-            this.GameObject = new GameObject(name);
-            this.Component1 = GameObject.AddComponent<T>();
+            GameObject = new GameObject(name);
+            Component1 = GameObject.AddComponent<T>();
         }
 
         public Builder(string name, out T referenceSelf) // out primary reference.
         {
-            this.GameObject = new GameObject(name);
-            this.Component1 = GameObject.AddComponent<T>();
-            referenceSelf = this.Component1;
+            GameObject = new GameObject(name);
+            Component1 = GameObject.AddComponent<T>();
+            referenceSelf = Component1;
         }
 
         public TComponent GetComponent<TComponent>()
         {
-            return this.GameObject.GetComponent<TComponent>();
+            return GameObject.GetComponent<TComponent>();
         }
     }
 
@@ -78,13 +78,13 @@ namespace RuntimeUnitTestToolkit.Editor
         public Builder(string name)
             : base(name)
         {
-            this.Component2 = GameObject.AddComponent<T2>();
+            Component2 = GameObject.AddComponent<T2>();
         }
 
         public Builder(string name, out T1 referenceSelf)
             : base(name, out referenceSelf)
         {
-            this.Component2 = GameObject.AddComponent<T2>();
+            Component2 = GameObject.AddComponent<T2>();
         }
     }
 
@@ -98,13 +98,13 @@ namespace RuntimeUnitTestToolkit.Editor
         public Builder(string name)
             : base(name)
         {
-            this.Component3 = GameObject.AddComponent<T3>();
+            Component3 = GameObject.AddComponent<T3>();
         }
 
         public Builder(string name, out T1 referenceSelf)
             : base(name, out referenceSelf)
         {
-            this.Component3 = GameObject.AddComponent<T3>();
+            Component3 = GameObject.AddComponent<T3>();
         }
     }
 
@@ -119,13 +119,13 @@ namespace RuntimeUnitTestToolkit.Editor
         public Builder(string name)
             : base(name)
         {
-            this.Component4 = GameObject.AddComponent<T4>();
+            Component4 = GameObject.AddComponent<T4>();
         }
 
         public Builder(string name, out T1 referenceSelf)
             : base(name, out referenceSelf)
         {
-            this.Component4 = GameObject.AddComponent<T4>();
+            Component4 = GameObject.AddComponent<T4>();
         }
     }
 }

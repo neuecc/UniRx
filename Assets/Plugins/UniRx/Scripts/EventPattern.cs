@@ -86,9 +86,9 @@ namespace UniRx
         /// <returns>true if both EventPattern&lt;TSender, TEventArgs&gt; objects represent the same event; otherwise, false.</returns>
         public bool Equals(EventPattern<TSender, TEventArgs> other)
         {
-            if (object.ReferenceEquals(null, other))
+            if (ReferenceEquals(null, other))
                 return false;
-            if (object.ReferenceEquals(this, other))
+            if (ReferenceEquals(this, other))
                 return true;
 
             return EqualityComparer<TSender>.Default.Equals(Sender, other.Sender) && EqualityComparer<TEventArgs>.Default.Equals(EventArgs, other.EventArgs);
@@ -123,7 +123,7 @@ namespace UniRx
         /// <returns>true if both EventPattern&lt;TSender, TEventArgs&gt; objects represent the same event; otherwise, false.</returns>
         public static bool operator ==(EventPattern<TSender, TEventArgs> first, EventPattern<TSender, TEventArgs> second)
         {
-            return object.Equals(first, second);
+            return Equals(first, second);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace UniRx
         /// <returns>true if both EventPattern&lt;TSender, TEventArgs&gt; objects don't represent the same event; otherwise, false.</returns>
         public static bool operator !=(EventPattern<TSender, TEventArgs> first, EventPattern<TSender, TEventArgs> second)
         {
-            return !object.Equals(first, second);
+            return !Equals(first, second);
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace UniRx.Operators
 {
@@ -103,7 +101,7 @@ namespace UniRx.Operators
 
                 if (shouldRun)
                 {
-                    try { base.observer.OnError(error); } finally { Dispose(); }
+                    try { observer.OnError(error); } finally { Dispose(); }
                 }
             }
 
@@ -200,18 +198,18 @@ namespace UniRx.Operators
 
                     if (hasValue)
                     {
-                        base.observer.OnNext(value);
+                        observer.OnNext(value);
                         shouldYield = true;
                     }
                     else
                     {
                         if (hasCompleted)
                         {
-                            try { base.observer.OnCompleted(); } finally { Dispose(); }
+                            try { observer.OnCompleted(); } finally { Dispose(); }
                         }
                         else if (hasFailed)
                         {
-                            try { base.observer.OnError(error); } finally { Dispose(); }
+                            try { observer.OnError(error); } finally { Dispose(); }
                         }
                         else if (shouldRecurse)
                         {

@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservableUpdateSelectedTrigger : ObservableTriggerBase, IEventSystemHandler, IUpdateSelectedHandler
+    public class ObservableUpdateSelectedTrigger : ObservableTriggerBase, IUpdateSelectedHandler
     {
         Subject<BaseEventData> onUpdateSelected;
 

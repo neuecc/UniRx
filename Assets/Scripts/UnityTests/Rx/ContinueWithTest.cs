@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
@@ -18,7 +17,7 @@ namespace UniRx.Tests.Operators
         [TearDown]
         public void Dispose()
         {
-            UniRx.Scheduler.SetDefaultForUnity();
+            Scheduler.SetDefaultForUnity();
         }
 
         [Test]

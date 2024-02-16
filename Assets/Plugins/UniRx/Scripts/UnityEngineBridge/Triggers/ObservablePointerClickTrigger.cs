@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservablePointerClickTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerClickHandler
+    public class ObservablePointerClickTrigger : ObservableTriggerBase, IPointerClickHandler
     {
         Subject<PointerEventData> onPointerClick;
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using UniRx.Operators;
 
 namespace UniRx.Operators
 {
@@ -20,7 +19,7 @@ namespace UniRx.Operators
             : base(source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.onNextWithIndex = onNext;
+            onNextWithIndex = onNext;
         }
 
         protected override IDisposable SubscribeCore(IObserver<Unit> observer, IDisposable cancel)

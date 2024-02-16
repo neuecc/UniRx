@@ -2,7 +2,7 @@
 
 namespace UniRx.Operators
 {
-    internal class FrameIntervalObservable<T> : OperatorObservableBase<UniRx.FrameInterval<T>>
+    internal class FrameIntervalObservable<T> : OperatorObservableBase<FrameInterval<T>>
     {
         readonly IObservable<T> source;
 
@@ -12,19 +12,19 @@ namespace UniRx.Operators
             this.source = source;
         }
 
-        protected override IDisposable SubscribeCore(IObserver<UniRx.FrameInterval<T>> observer, IDisposable cancel)
+        protected override IDisposable SubscribeCore(IObserver<FrameInterval<T>> observer, IDisposable cancel)
         {
             return source.Subscribe(new FrameInterval(observer, cancel));
         }
 
-        class FrameInterval : OperatorObserverBase<T, UniRx.FrameInterval<T>>
+        class FrameInterval : OperatorObserverBase<T, FrameInterval<T>>
         {
             int lastFrame;
 
-            public FrameInterval(IObserver<UniRx.FrameInterval<T>> observer, IDisposable cancel)
+            public FrameInterval(IObserver<FrameInterval<T>> observer, IDisposable cancel)
                 : base(observer, cancel)
             {
-                this.lastFrame = UnityEngine.Time.frameCount;
+                lastFrame = UnityEngine.Time.frameCount;
             }
 
             public override void OnNext(T value)
@@ -33,7 +33,7 @@ namespace UniRx.Operators
                 var span = now - lastFrame;
                 lastFrame = now;
 
-                base.observer.OnNext(new UniRx.FrameInterval<T>(value, span));
+                observer.OnNext(new FrameInterval<T>(value, span));
             }
 
             public override void OnError(Exception error)

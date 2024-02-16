@@ -35,16 +35,16 @@ namespace UniRx.Operators
 
             public IDisposable Run()
             {
-                this.sourceSubscription = new SingleAssignmentDisposable();
-                this.exceptionSubscription = new SingleAssignmentDisposable();
+                sourceSubscription = new SingleAssignmentDisposable();
+                exceptionSubscription = new SingleAssignmentDisposable();
 
-                this.sourceSubscription.Disposable = parent.source.Subscribe(this);
+                sourceSubscription.Disposable = parent.source.Subscribe(this);
                 return StableCompositeDisposable.Create(sourceSubscription, exceptionSubscription);
             }
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -130,8 +130,8 @@ namespace UniRx.Operators
                 {
                     lock (gate)
                     {
-                        this.isDisposed = true;
-                        this.e.Dispose();
+                        isDisposed = true;
+                        e.Dispose();
                     }
                 }));
             }
@@ -197,7 +197,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)

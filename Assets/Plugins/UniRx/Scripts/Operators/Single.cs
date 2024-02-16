@@ -44,7 +44,7 @@ namespace UniRx.Operators
             public Single(SingleObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.seenValue = false;
+                seenValue = false;
             }
 
             public override void OnNext(T value)
@@ -108,7 +108,7 @@ namespace UniRx.Operators
             public Single_(SingleObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.seenValue = false;
+                seenValue = false;
             }
 
             public override void OnNext(T value)

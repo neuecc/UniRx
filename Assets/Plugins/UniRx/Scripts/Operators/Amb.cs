@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace UniRx.Operators
 {
@@ -92,7 +91,7 @@ namespace UniRx.Operators
                     }
                     finally
                     {
-                        targetObserver = UniRx.InternalUtil.EmptyObserver<T>.Instance;
+                        targetObserver = InternalUtil.EmptyObserver<T>.Instance;
                         targetDisposable.Dispose();
                     }
                 }
@@ -105,7 +104,7 @@ namespace UniRx.Operators
                     }
                     finally
                     {
-                        targetObserver = UniRx.InternalUtil.EmptyObserver<T>.Instance;
+                        targetObserver = InternalUtil.EmptyObserver<T>.Instance;
                         targetDisposable.Dispose();
                     }
                 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 
 namespace UniRx
 {
@@ -8,7 +7,7 @@ namespace UniRx
     // AOT...
     // use lock instead
 
-    public sealed class SingleAssignmentDisposable : IDisposable, ICancelable
+    public sealed class SingleAssignmentDisposable : ICancelable
     {
         readonly object gate = new object();
         IDisposable current;

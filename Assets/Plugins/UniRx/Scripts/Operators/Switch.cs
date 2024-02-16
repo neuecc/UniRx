@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace UniRx.Operators
 {
@@ -84,7 +81,7 @@ namespace UniRx.Operators
 
                 public Switch(SwitchObserver observer, ulong id)
                 {
-                    this.parent = observer;
+                    parent = observer;
                     this.id = id;
                 }
 

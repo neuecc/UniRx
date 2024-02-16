@@ -1,8 +1,6 @@
 ﻿﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace UniRx
+ namespace UniRx
 {
     /// <summary>
     /// Notify boolean flag.
@@ -28,7 +26,7 @@ namespace UniRx
         /// </summary>
         public BooleanNotifier(bool initialValue = false)
         {
-            this.Value = initialValue;
+            Value = initialValue;
         }
 
         /// <summary>

@@ -80,7 +80,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    this.nextSelf = self;
+                    nextSelf = self;
                     if (isDisposed) return;
                     if (isStopped) return;
 
@@ -148,7 +148,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -161,7 +161,7 @@ namespace UniRx.Operators
             {
                 if (!isDisposed)
                 {
-                    this.nextSelf();
+                    nextSelf();
                 }
                 else
                 {

@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservableEndDragTrigger : ObservableTriggerBase, IEventSystemHandler, IEndDragHandler
+    public class ObservableEndDragTrigger : ObservableTriggerBase, IEndDragHandler
     {
         Subject<PointerEventData> onEndDrag;
 

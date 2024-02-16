@@ -17,7 +17,7 @@ namespace UniRx.Operators
 
         public IObservable<T> Combine(IEnumerable<IObservable<T>> combineSources)
         {
-            return new ConcatObservable<T>(CombineSources(this.sources, combineSources));
+            return new ConcatObservable<T>(CombineSources(sources, combineSources));
         }
 
         static IEnumerable<IObservable<T>> CombineSources(IEnumerable<IObservable<T>> first, IEnumerable<IObservable<T>> second)
@@ -65,8 +65,8 @@ namespace UniRx.Operators
                {
                    lock (gate)
                    {
-                       this.isDisposed = true;
-                       this.e.Dispose();
+                       isDisposed = true;
+                       e.Dispose();
                    }
                }));
             }
@@ -75,7 +75,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    this.nextSelf = self;
+                    nextSelf = self;
                     if (isDisposed) return;
 
                     var current = default(IObservable<T>);
@@ -124,7 +124,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -135,7 +135,7 @@ namespace UniRx.Operators
 
             public override void OnCompleted()
             {
-                this.nextSelf();
+                nextSelf();
             }
         }
     }

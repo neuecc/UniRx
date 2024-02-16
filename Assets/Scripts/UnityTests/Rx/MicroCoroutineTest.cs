@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using System.Collections;
 using System.Linq;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace UniRx.Tests
@@ -14,7 +13,7 @@ namespace UniRx.Tests
 
         public DecrementEnumerator(int count)
         {
-            this.original = count;
+            original = count;
             this.count = count;
         }
 
@@ -48,12 +47,12 @@ namespace UniRx.Tests
     
     public class MicroCoroutineTest
     {
-        static UniRx.InternalUtil.MicroCoroutine Create()
+        static InternalUtil.MicroCoroutine Create()
         {
             return new InternalUtil.MicroCoroutine(ex => Console.WriteLine(ex));
         }
 
-        static int FindLast(UniRx.InternalUtil.MicroCoroutine mc)
+        static int FindLast(InternalUtil.MicroCoroutine mc)
         {
             var coroutines = mc.GetType().GetField("coroutines", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
             var enumerators = (IEnumerator[])coroutines.GetValue(mc);
@@ -81,7 +80,7 @@ namespace UniRx.Tests
             return tail;
         }
 
-        static int GetTailDynamic(UniRx.InternalUtil.MicroCoroutine mc)
+        static int GetTailDynamic(InternalUtil.MicroCoroutine mc)
         {
             var tail = mc.GetType().GetField("tail", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
             return (int)tail.GetValue(mc);
@@ -199,7 +198,7 @@ namespace UniRx.Tests
         public void EnumerationCycleRandom()
         {
             // pattern for shuffle
-            var rand = new System.Random();
+            var rand = new Random();
             // large number
             {
                 for (int i = 0; i < 1000; i++)

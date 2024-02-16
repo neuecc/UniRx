@@ -26,7 +26,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(Unit.Default);
+                observer.OnNext(Unit.Default);
             }
 
             public override void OnError(Exception error)

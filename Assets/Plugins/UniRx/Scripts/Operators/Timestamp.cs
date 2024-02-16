@@ -31,7 +31,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(new Timestamped<T>(value, parent.scheduler.Now));
+                observer.OnNext(new Timestamped<T>(value, parent.scheduler.Now));
             }
 
             public override void OnError(Exception error)

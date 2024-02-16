@@ -1,5 +1,4 @@
 ﻿using System;
-using UniRx.Operators;
 
 namespace UniRx.Operators
 {
@@ -29,7 +28,7 @@ namespace UniRx.Operators
             public Aggregate(AggregateObservable<TSource> parent, IObserver<TSource> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.seenValue = false;
+                seenValue = false;
             }
 
             public override void OnNext(TSource value)
@@ -101,7 +100,7 @@ namespace UniRx.Operators
             public Aggregate(AggregateObservable<TSource, TAccumulate> parent, IObserver<TAccumulate> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.accumulation = parent.seed;
+                accumulation = parent.seed;
             }
 
             public override void OnNext(TSource value)
@@ -162,7 +161,7 @@ namespace UniRx.Operators
             public Aggregate(AggregateObservable<TSource, TAccumulate, TResult> parent, IObserver<TResult> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.accumulation = parent.seed;
+                accumulation = parent.seed;
             }
 
             public override void OnNext(TSource value)

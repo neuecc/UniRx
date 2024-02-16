@@ -1,9 +1,4 @@
-﻿using System;
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading;
-
-namespace UniRx.Tests
+﻿namespace UniRx.Tests
 {
     // Move to Unity Tests...
 

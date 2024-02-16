@@ -35,7 +35,7 @@ namespace RuntimeUnitTestToolkit
         {
             try
             {
-                UnityEngine.Application.logMessageReceived += (a, b, c) =>
+                Application.logMessageReceived += (a, b, c) =>
                 {
                     logText.text += "[" + c + "]" + a + "\n";
                 };
@@ -64,7 +64,7 @@ namespace RuntimeUnitTestToolkit
                 additionalActionsOnFirst.Reverse();
                 foreach (var item in additionalActionsOnFirst)
                 {
-                    var newButton = GameObject.Instantiate(clearButton);
+                    var newButton = Instantiate(clearButton);
                     newButton.name = item.Name;
                     newButton.onClick.RemoveAllListeners();
                     newButton.GetComponentInChildren<Text>().text = item.Name;
@@ -110,7 +110,7 @@ namespace RuntimeUnitTestToolkit
 
         Button Add(string title, UnityAction test)
         {
-            var newButton = GameObject.Instantiate(clearButton);
+            var newButton = Instantiate(clearButton);
             newButton.name = title;
             newButton.onClick.RemoveAllListeners();
             newButton.GetComponentInChildren<Text>().text = title;
@@ -216,19 +216,19 @@ namespace RuntimeUnitTestToolkit
             {
                 var test = Activator.CreateInstance(testType);
 
-                var methods = testType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                var methods = testType.GetMethods(BindingFlags.Instance | BindingFlags.Public);
                 List<Action> setups = new List<Action>();
                 List<Action> teardowns = new List<Action>();
                 foreach (var item in methods)
                 {
                     try
                     {
-                        var setup = item.GetCustomAttribute<NUnit.Framework.SetUpAttribute>(true);
+                        var setup = item.GetCustomAttribute<SetUpAttribute>(true);
                         if (setup != null)
                         {
                             setups.Add((Action)Delegate.CreateDelegate(typeof(Action), test, item));
                         }
-                        var teardown = item.GetCustomAttribute<NUnit.Framework.TearDownAttribute>(true);
+                        var teardown = item.GetCustomAttribute<TearDownAttribute>(true);
                         if (teardown != null)
                         {
                             teardowns.Add((Action)Delegate.CreateDelegate(typeof(Action), test, item));
@@ -236,7 +236,7 @@ namespace RuntimeUnitTestToolkit
                     }
                     catch (Exception e)
                     {
-                        UnityEngine.Debug.LogError(testType.Name + "." + item.Name + " failed to register setup/teardown method, exception: " + e.ToString());
+                        Debug.LogError(testType.Name + "." + item.Name + " failed to register setup/teardown method, exception: " + e.ToString());
                     }
                 }
 
@@ -244,7 +244,7 @@ namespace RuntimeUnitTestToolkit
                 {
                     try
                     {
-                        var iteratorTest = item.GetCustomAttribute<UnityEngine.TestTools.UnityTestAttribute>(true);
+                        var iteratorTest = item.GetCustomAttribute<UnityTestAttribute>(true);
                         if (iteratorTest != null)
                         {
                             if (item.GetParameters().Length == 0 && item.ReturnType == typeof(IEnumerator))
@@ -254,11 +254,11 @@ namespace RuntimeUnitTestToolkit
                             }
                             else
                             {
-                                UnityEngine.Debug.Log(testType.Name + "." + item.Name + " currently does not supported in RuntumeUnitTestToolkit(multiple parameter or return type is invalid).");
+                                Debug.Log(testType.Name + "." + item.Name + " currently does not supported in RuntumeUnitTestToolkit(multiple parameter or return type is invalid).");
                             }
                         }
 
-                        var standardTest = item.GetCustomAttribute<NUnit.Framework.TestAttribute>(true);
+                        var standardTest = item.GetCustomAttribute<TestAttribute>(true);
                         if (standardTest != null)
                         {
                             if (item.GetParameters().Length == 0 && item.ReturnType == typeof(void))
@@ -268,13 +268,13 @@ namespace RuntimeUnitTestToolkit
                             }
                             else
                             {
-                                UnityEngine.Debug.Log(testType.Name + "." + item.Name + " currently does not supported in RuntumeUnitTestToolkit(multiple parameter or return type is invalid).");
+                                Debug.Log(testType.Name + "." + item.Name + " currently does not supported in RuntumeUnitTestToolkit(multiple parameter or return type is invalid).");
                             }
                         }
                     }
                     catch (Exception e)
                     {
-                        UnityEngine.Debug.LogError(testType.Name + "." + item.Name + " failed to register method, exception: " + e.ToString());
+                        Debug.LogError(testType.Name + "." + item.Name + " failed to register method, exception: " + e.ToString());
                     }
                 }
             }
@@ -284,7 +284,7 @@ namespace RuntimeUnitTestToolkit
             }
         }
 
-        System.Collections.IEnumerator ScrollLogToEndNextFrame()
+        IEnumerator ScrollLogToEndNextFrame()
         {
             yield return null;
             yield return null;
@@ -499,7 +499,7 @@ namespace RuntimeUnitTestToolkit
                     Console.ForegroundColor = currentForeground;
                 }
 
-                System.Console.WriteLine(msg);
+                Console.WriteLine(msg);
             }
         }
 
@@ -520,10 +520,10 @@ namespace RuntimeUnitTestToolkit
 
         public TestKeyValuePair(string key, object value, List<Action> setups, List<Action> teardowns)
         {
-            this.Key = key;
-            this.Value = value;
-            this.Setups = setups;
-            this.Teardowns = teardowns;
+            Key = key;
+            Value = value;
+            Setups = setups;
+            Teardowns = teardowns;
         }
     }
 }

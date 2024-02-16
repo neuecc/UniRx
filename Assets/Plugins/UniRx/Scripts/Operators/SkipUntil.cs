@@ -63,7 +63,7 @@ namespace UniRx.Operators
                 public SkipUntil(SkipUntilOuterObserver parent, IDisposable subscription)
                 {
                     this.parent = parent;
-                    observer = UniRx.InternalUtil.EmptyObserver<T>.Instance;
+                    observer = InternalUtil.EmptyObserver<T>.Instance;
                     this.subscription = subscription;
                 }
 

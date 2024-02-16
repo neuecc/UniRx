@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace UniRx.Operators
 {
@@ -106,7 +103,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    try { base.observer.OnError(error); } finally { Dispose(); }
+                    try { observer.OnError(error); } finally { Dispose(); }
                 }
             }
 
@@ -159,7 +156,7 @@ namespace UniRx.Operators
                 sourceSubscription = new SingleAssignmentDisposable();
                 sourceSubscription.Disposable = parent.source.Subscribe(this);
 
-                var scheduling = this.parent.intervalSource.Subscribe(new SampleTick(this));
+                var scheduling = parent.intervalSource.Subscribe(new SampleTick(this));
 
                 return StableCompositeDisposable.Create(sourceSubscription, scheduling);
             }
@@ -177,7 +174,7 @@ namespace UniRx.Operators
             {
                 lock (gate)
                 {
-                    try { base.observer.OnError(error); } finally { Dispose(); }
+                    try { observer.OnError(error); } finally { Dispose(); }
                 }
             }
 

@@ -1,9 +1,7 @@
 ﻿#if !UNITY_METRO
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UniRx.InternalUtil;
 
 namespace UniRx
@@ -152,9 +150,9 @@ namespace UniRx
 
                 public PeriodicTimer(TimeSpan period, Action action)
                 {
-                    this._action = action;
-                    this._timer = new System.Threading.Timer(Tick, null, period, period);
-                    this._gate = new AsyncLock();
+                    _action = action;
+                    _timer = new System.Threading.Timer(Tick, null, period, period);
+                    _gate = new AsyncLock();
 
                     lock (s_timers)
                     {

@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservableSubmitTrigger : ObservableTriggerBase, IEventSystemHandler, ISubmitHandler
+    public class ObservableSubmitTrigger : ObservableTriggerBase, ISubmitHandler
     {
         Subject<BaseEventData> onSubmit;
 

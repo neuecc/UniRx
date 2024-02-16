@@ -1,11 +1,7 @@
 ﻿#if (NET_4_6 || NET_STANDARD_2_0)
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace UniRx
 {

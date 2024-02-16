@@ -36,17 +36,17 @@ namespace UniRx
 
         public static IObserver<T> Create<T>(Action<T> onNext)
         {
-            return Create<T>(onNext, UniRx.Stubs.Throw, UniRx.Stubs.Nop);
+            return Create<T>(onNext, Stubs.Throw, Stubs.Nop);
         }
 
         public static IObserver<T> Create<T>(Action<T> onNext, Action<Exception> onError)
         {
-            return Create<T>(onNext, onError, UniRx.Stubs.Nop);
+            return Create<T>(onNext, onError, Stubs.Nop);
         }
 
         public static IObserver<T> Create<T>(Action<T> onNext, Action onCompleted)
         {
-            return Create<T>(onNext, UniRx.Stubs.Throw, onCompleted);
+            return Create<T>(onNext, Stubs.Throw, onCompleted);
         }
 
         public static IObserver<T> Create<T>(Action<T> onNext, Action<Exception> onError, Action onCompleted)
@@ -354,7 +354,7 @@ namespace UniRx
             }
         }
 
-        class AutoDetachObserver<T> : UniRx.Operators.OperatorObserverBase<T, T>
+        class AutoDetachObserver<T> : Operators.OperatorObserverBase<T, T>
         {
             public AutoDetachObserver(IObserver<T> observer, IDisposable cancel)
                 : base(observer, cancel)
@@ -366,7 +366,7 @@ namespace UniRx
             {
                 try
                 {
-                    base.observer.OnNext(value);
+                    observer.OnNext(value);
                 }
                 catch
                 {
@@ -393,12 +393,12 @@ namespace UniRx
     {
         public static IObserver<T> Synchronize<T>(this IObserver<T> observer)
         {
-            return new UniRx.Operators.SynchronizedObserver<T>(observer, new object());
+            return new Operators.SynchronizedObserver<T>(observer, new object());
         }
 
         public static IObserver<T> Synchronize<T>(this IObserver<T> observer, object gate)
         {
-            return new UniRx.Operators.SynchronizedObserver<T>(observer, gate);
+            return new Operators.SynchronizedObserver<T>(observer, gate);
         }
     }
 
@@ -406,7 +406,7 @@ namespace UniRx
     {
         public static IDisposable Subscribe<T>(this IObservable<T> source)
         {
-            return source.Subscribe(UniRx.InternalUtil.ThrowObserver<T>.Instance);
+            return source.Subscribe(ThrowObserver<T>.Instance);
         }
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext)

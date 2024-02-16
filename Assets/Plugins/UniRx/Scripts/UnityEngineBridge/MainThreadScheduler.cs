@@ -1,8 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using UnityEngine;
 
 namespace UniRx
@@ -15,11 +12,11 @@ namespace UniRx
     {
         public static void SetDefaultForUnity()
         {
-            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
-            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
-            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
-            Scheduler.DefaultSchedulers.TimeBasedOperations = MainThread;
-            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+            DefaultSchedulers.ConstantTimeOperations = Immediate;
+            DefaultSchedulers.TailRecursion = Immediate;
+            DefaultSchedulers.Iteration = CurrentThread;
+            DefaultSchedulers.TimeBasedOperations = MainThread;
+            DefaultSchedulers.AsyncConversions = ThreadPool;
         }
 #endif
         static IScheduler mainThread;
@@ -159,7 +156,7 @@ namespace UniRx
             public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
                 var d = new BooleanDisposable();
-                var time = Scheduler.Normalize(dueTime);
+                var time = Normalize(dueTime);
 
                 MainThreadDispatcher.SendStartCoroutine(DelayAction(time, action, d));
 
@@ -169,7 +166,7 @@ namespace UniRx
             public IDisposable SchedulePeriodic(TimeSpan period, Action action)
             {
                 var d = new BooleanDisposable();
-                var time = Scheduler.Normalize(period);
+                var time = Normalize(period);
 
                 MainThreadDispatcher.SendStartCoroutine(PeriodicAction(time, action, d));
 
@@ -305,7 +302,7 @@ namespace UniRx
             public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
                 var d = new BooleanDisposable();
-                var time = Scheduler.Normalize(dueTime);
+                var time = Normalize(dueTime);
 
                 MainThreadDispatcher.SendStartCoroutine(DelayAction(time, action, d));
 
@@ -315,7 +312,7 @@ namespace UniRx
             public IDisposable SchedulePeriodic(TimeSpan period, Action action)
             {
                 var d = new BooleanDisposable();
-                var time = Scheduler.Normalize(period);
+                var time = Normalize(period);
 
                 MainThreadDispatcher.SendStartCoroutine(PeriodicAction(time, action, d));
 
@@ -437,7 +434,7 @@ namespace UniRx
             public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
                 var d = new BooleanDisposable();
-                var time = Scheduler.Normalize(dueTime);
+                var time = Normalize(dueTime);
 
                 MainThreadDispatcher.StartFixedUpdateMicroCoroutine(DelayAction(time, action, d));
 
@@ -447,7 +444,7 @@ namespace UniRx
             public IDisposable SchedulePeriodic(TimeSpan period, Action action)
             {
                 var d = new BooleanDisposable();
-                var time = Scheduler.Normalize(period);
+                var time = Normalize(period);
 
                 MainThreadDispatcher.StartFixedUpdateMicroCoroutine(PeriodicAction(time, action, d));
 
@@ -553,7 +550,7 @@ namespace UniRx
             public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
                 var d = new BooleanDisposable();
-                var time = Scheduler.Normalize(dueTime);
+                var time = Normalize(dueTime);
 
                 MainThreadDispatcher.StartEndOfFrameMicroCoroutine(DelayAction(time, action, d));
 
@@ -563,7 +560,7 @@ namespace UniRx
             public IDisposable SchedulePeriodic(TimeSpan period, Action action)
             {
                 var d = new BooleanDisposable();
-                var time = Scheduler.Normalize(period);
+                var time = Normalize(period);
 
                 MainThreadDispatcher.StartEndOfFrameMicroCoroutine(PeriodicAction(time, action, d));
 

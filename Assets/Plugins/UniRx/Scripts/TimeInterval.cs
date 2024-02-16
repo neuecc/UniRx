@@ -91,7 +91,7 @@ namespace UniRx
                 return false;
 
             var other = (TimeInterval<T>)obj;
-            return this.Equals(other);
+            return Equals(other);
         }
 
         /// <summary>

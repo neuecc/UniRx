@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
-
-namespace UniRx
+﻿namespace UniRx
 {
-    public sealed class BooleanDisposable : IDisposable, ICancelable
+    public sealed class BooleanDisposable : ICancelable
     {
         public bool IsDisposed { get; private set; }
 

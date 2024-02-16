@@ -1,5 +1,4 @@
 ﻿using System;
-using UniRx.Operators;
 
 namespace UniRx.Operators
 {
@@ -28,7 +27,7 @@ namespace UniRx.Operators
             public DefaultIfEmpty(DefaultIfEmptyObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.hasValue = false;
+                hasValue = false;
             }
 
             public override void OnNext(T value)

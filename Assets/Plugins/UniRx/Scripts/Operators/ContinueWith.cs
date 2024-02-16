@@ -43,8 +43,8 @@ namespace UniRx.Operators
 
             public override void OnNext(TSource value)
             {
-                this.seenValue = true;
-                this.lastValue = value;
+                seenValue = true;
+                lastValue = value;
             }
 
             public override void OnError(Exception error)

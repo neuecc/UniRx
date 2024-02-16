@@ -21,7 +21,7 @@ namespace UniRx.Operators
             : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
-            this.dueTimeDT = dueTime;
+            dueTimeDT = dueTime;
             this.scheduler = scheduler;
         }
 

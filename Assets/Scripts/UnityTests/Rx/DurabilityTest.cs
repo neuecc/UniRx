@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 
 namespace UniRx.Operators
@@ -18,7 +16,7 @@ namespace UniRx.Operators
 
             public MyEventArgs(int x)
             {
-                this.MyProperty = x;
+                MyProperty = x;
             }
         }
 

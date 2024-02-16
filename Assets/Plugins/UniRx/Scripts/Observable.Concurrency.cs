@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using UniRx.Operators;
 
 namespace UniRx
@@ -54,7 +53,7 @@ namespace UniRx
 
         public static IObservable<T> Amb<T>(IEnumerable<IObservable<T>> sources)
         {
-            var result = Observable.Never<T>();
+            var result = Never<T>();
             foreach (var item in sources)
             {
                 var second = item;

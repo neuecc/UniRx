@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservablePointerUpTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerUpHandler
+    public class ObservablePointerUpTrigger : ObservableTriggerBase, IPointerUpHandler
     {
         Subject<PointerEventData> onPointerUp;
 

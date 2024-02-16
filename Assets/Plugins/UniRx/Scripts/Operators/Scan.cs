@@ -1,5 +1,4 @@
 ﻿using System;
-using UniRx.Operators;
 
 namespace UniRx.Operators
 {
@@ -29,7 +28,7 @@ namespace UniRx.Operators
             public Scan(ScanObservable<TSource> parent, IObserver<TSource> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.isFirst = true;
+                isFirst = true;
             }
 
             public override void OnNext(TSource value)
@@ -98,7 +97,7 @@ namespace UniRx.Operators
             public Scan(ScanObservable<TSource, TAccumulate> parent, IObserver<TAccumulate> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.isFirst = true;
+                isFirst = true;
             }
 
             public override void OnNext(TSource value)

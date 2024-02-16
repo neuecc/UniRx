@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using UniRx.Operators;
 
@@ -238,7 +237,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<T[]> WhenAll<T>(params IObservable<T>[] sources)
         {
-            if (sources.Length == 0) return Observable.Return(new T[0]);
+            if (sources.Length == 0) return Return(new T[0]);
 
             return new WhenAllObservable<T>(sources);
         }
@@ -248,7 +247,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<Unit> WhenAll(params IObservable<Unit>[] sources)
         {
-            if (sources.Length == 0) return Observable.ReturnUnit();
+            if (sources.Length == 0) return ReturnUnit();
 
             return new WhenAllObservable(sources);
         }
@@ -298,7 +297,7 @@ namespace UniRx
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, T value)
         {
-            return Observable.Return(value, scheduler).Concat(source);
+            return Return(value, scheduler).Concat(source);
         }
 
         public static IObservable<T> StartWith<T>(this IObservable<T> source, IScheduler scheduler, IEnumerable<T> values)

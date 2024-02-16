@@ -58,12 +58,12 @@ namespace UniRx.Operators
                 }
 
                 OnNext(t);
-                return parent.source.Subscribe(base.observer); // good bye StartWithObserver
+                return parent.source.Subscribe(observer); // good bye StartWithObserver
             }
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)

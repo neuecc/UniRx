@@ -32,7 +32,7 @@ namespace UniRx.Operators
             {
                 if (scheduler == Scheduler.Immediate)
                 {
-                    var count = this.repeatCount.Value;
+                    var count = repeatCount.Value;
                     for (int i = 0; i < count; i++)
                     {
                         observer.OnNext(value);
@@ -42,7 +42,7 @@ namespace UniRx.Operators
                 }
                 else
                 {
-                    var currentCount = this.repeatCount.Value;
+                    var currentCount = repeatCount.Value;
                     return scheduler.Schedule((Action self) =>
                     {
                         if (currentCount > 0)
@@ -74,7 +74,7 @@ namespace UniRx.Operators
             {
                 try
                 {
-                    base.observer.OnNext(value);
+                    observer.OnNext(value);
                 }
                 catch
                 {

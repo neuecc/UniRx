@@ -118,7 +118,7 @@ namespace UniRx
 
         public IObservable<Unit> PublishAsync<T>(T message)
         {
-            UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>> notifier;
+            ImmutableList<Func<T, IObservable<Unit>>> notifier;
             lock (notifiers)
             {
                 if (isDisposed) throw new ObjectDisposedException("AsyncMessageBroker");
@@ -126,7 +126,7 @@ namespace UniRx
                 object _notifier;
                 if (notifiers.TryGetValue(typeof(T), out _notifier))
                 {
-                    notifier = (UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>)_notifier;
+                    notifier = (ImmutableList<Func<T, IObservable<Unit>>>)_notifier;
                 }
                 else
                 {
@@ -152,7 +152,7 @@ namespace UniRx
                 object _notifier;
                 if (!notifiers.TryGetValue(typeof(T), out _notifier))
                 {
-                    var notifier = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
+                    var notifier = ImmutableList<Func<T, IObservable<Unit>>>.Empty;
                     notifier = notifier.Add(asyncMessageReceiver);
                     notifiers.Add(typeof(T), notifier);
                 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace UniRx.Diagnostics
@@ -27,14 +25,14 @@ namespace UniRx.Diagnostics
         public LogEntry(string loggerName, LogType logType, DateTime timestamp, string message, UnityEngine.Object context = null, Exception exception = null, string stackTrace = null, object state = null)
             : this()
         {
-            this.LoggerName = loggerName;
-            this.LogType = logType;
-            this.Timestamp = timestamp;
-            this.Message = message;
-            this.Context = context;
-            this.Exception = exception;
-            this.StackTrace = stackTrace;
-            this.State = state;
+            LoggerName = loggerName;
+            LogType = logType;
+            Timestamp = timestamp;
+            Message = message;
+            Context = context;
+            Exception = exception;
+            StackTrace = stackTrace;
+            State = state;
         }
 
         public override string ToString()

@@ -296,28 +296,28 @@ namespace UniRx
 
         public ReadOnlyReactiveProperty(IObservable<T> source)
         {
-            this.sourceConnection = source.Subscribe(this);
+            sourceConnection = source.Subscribe(this);
         }
 
         public ReadOnlyReactiveProperty(IObservable<T> source, bool distinctUntilChanged)
         {
             this.distinctUntilChanged = distinctUntilChanged;
-            this.sourceConnection = source.Subscribe(this);
+            sourceConnection = source.Subscribe(this);
         }
 
         public ReadOnlyReactiveProperty(IObservable<T> source, T initialValue)
         {
-            this.latestValue = initialValue;
-            this.canPublishValueOnSubscribe = true;
-            this.sourceConnection = source.Subscribe(this);
+            latestValue = initialValue;
+            canPublishValueOnSubscribe = true;
+            sourceConnection = source.Subscribe(this);
         }
 
         public ReadOnlyReactiveProperty(IObservable<T> source, T initialValue, bool distinctUntilChanged)
         {
             this.distinctUntilChanged = distinctUntilChanged;
-            this.latestValue = initialValue;
-            this.canPublishValueOnSubscribe = true;
-            this.sourceConnection = source.Subscribe(this);
+            latestValue = initialValue;
+            canPublishValueOnSubscribe = true;
+            sourceConnection = source.Subscribe(this);
         }
 
         public IDisposable Subscribe(IObserver<T> observer)
@@ -419,7 +419,7 @@ namespace UniRx
 
             if (canPublishValueOnSubscribe)
             {
-                if (distinctUntilChanged && EqualityComparer.Equals(this.latestValue, value))
+                if (distinctUntilChanged && EqualityComparer.Equals(latestValue, value))
                 {
                     return;
                 }
@@ -428,7 +428,7 @@ namespace UniRx
             canPublishValueOnSubscribe = true;
 
             // SetValue
-            this.latestValue = value;
+            latestValue = value;
 
             // call source.OnNext
             var node = root;

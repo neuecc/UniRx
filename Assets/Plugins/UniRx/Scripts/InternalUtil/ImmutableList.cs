@@ -53,7 +53,7 @@ namespace UniRx.InternalUtil
             for (var i = 0; i < data.Length; ++i)
             {
                 // ImmutableList only use for IObserver(no worry for boxed)
-                if (object.Equals(data[i], value)) return i;
+                if (Equals(data[i], value)) return i;
             }
             return -1;
         }

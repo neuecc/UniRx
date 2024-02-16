@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace UniRx.Operators
 {
@@ -227,7 +224,7 @@ namespace UniRx.Operators
             {
                 this.parent = parent;
                 this.observer = observer;
-                this.handler = OnNext;
+                handler = OnNext;
             }
 
             public bool Register()
@@ -288,7 +285,7 @@ namespace UniRx.Operators
             {
                 this.parent = parent;
                 this.observer = observer;
-                this.handler = OnNext;
+                handler = OnNext;
             }
 
             public bool Register()

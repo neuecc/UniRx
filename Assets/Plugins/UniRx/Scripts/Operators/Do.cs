@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace UniRx.Operators
 {
@@ -53,7 +50,7 @@ namespace UniRx.Operators
                     try { observer.OnError(ex); } finally { Dispose(); };
                     return;
                 }
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -78,7 +75,7 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    base.observer.OnError(ex);
+                    observer.OnError(ex);
                     Dispose();
                     return;
                 }
@@ -130,7 +127,7 @@ namespace UniRx.Operators
                     finally { Dispose(); }
                     return;
                 }
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -202,7 +199,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -264,7 +261,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -281,7 +278,7 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    base.observer.OnError(ex);
+                    observer.OnError(ex);
                     Dispose();
                     return;
                 }
@@ -323,7 +320,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -349,7 +346,7 @@ namespace UniRx.Operators
                 }
                 catch (Exception ex)
                 {
-                    base.observer.OnError(ex);
+                    observer.OnError(ex);
                     Dispose();
                     return;
                 }
@@ -402,7 +399,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)
@@ -458,7 +455,7 @@ namespace UniRx.Operators
 
             public override void OnNext(T value)
             {
-                base.observer.OnNext(value);
+                observer.OnNext(value);
             }
 
             public override void OnError(Exception error)

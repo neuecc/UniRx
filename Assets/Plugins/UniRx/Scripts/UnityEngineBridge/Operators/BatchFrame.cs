@@ -35,7 +35,7 @@ namespace UniRx.Operators
             public BatchFrame(BatchFrameObservable<T> parent, IObserver<IList<T>> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.timer = new ReusableEnumerator(this);
+                timer = new ReusableEnumerator(this);
             }
 
             public IDisposable Run()
@@ -177,7 +177,7 @@ namespace UniRx.Operators
             public BatchFrame(BatchFrameObservable parent, IObserver<Unit> observer, IDisposable cancel) : base(observer, cancel)
             {
                 this.parent = parent;
-                this.timer = new ReusableEnumerator(this);
+                timer = new ReusableEnumerator(this);
             }
 
             public IDisposable Run()

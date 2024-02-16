@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace UniRx.Triggers
 {
     [DisallowMultipleComponent]
-    public class ObservablePointerExitTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerExitHandler
+    public class ObservablePointerExitTrigger : ObservableTriggerBase, IPointerExitHandler
     {
         Subject<PointerEventData> onPointerExit;
 

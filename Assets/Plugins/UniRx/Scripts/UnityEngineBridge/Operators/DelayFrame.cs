@@ -187,7 +187,7 @@ namespace UniRx.Operators
                 }
 
                 cancelationToken.Dispose();
-                try { base.observer.OnError(error); } finally { Dispose(); }
+                try { observer.OnError(error); } finally { Dispose(); }
             }
 
             public override void OnCompleted()

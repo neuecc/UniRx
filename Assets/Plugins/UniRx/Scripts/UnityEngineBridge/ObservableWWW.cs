@@ -404,11 +404,11 @@ namespace UniRx
         // cache the text because if www was disposed, can't access it.
         public WWWErrorException(WWW www, string text)
         {
-            this.WWW = www;
-            this.RawErrorMessage = www.error;
-            this.ResponseHeaders = www.responseHeaders;
-            this.HasResponse = false;
-            this.Text = text; 
+            WWW = www;
+            RawErrorMessage = www.error;
+            ResponseHeaders = www.responseHeaders;
+            HasResponse = false;
+            Text = text; 
 
             var splitted = RawErrorMessage.Split(' ', ':');
             if (splitted.Length != 0)
@@ -416,15 +416,15 @@ namespace UniRx
                 int statusCode;
                 if (int.TryParse(splitted[0], out statusCode))
                 {
-                    this.HasResponse = true;
-                    this.StatusCode = (System.Net.HttpStatusCode)statusCode;
+                    HasResponse = true;
+                    StatusCode = (System.Net.HttpStatusCode)statusCode;
                 }
             }
         }
 
         public override string ToString()
         {
-            var text = this.Text;
+            var text = Text;
             if (string.IsNullOrEmpty(text))
             {
                 return RawErrorMessage;

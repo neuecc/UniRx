@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace UniRx
 {
@@ -8,7 +6,7 @@ namespace UniRx
     {
     }
 
-    public interface ISubject<T> : ISubject<T, T>, IObserver<T>, IObservable<T>
+    public interface ISubject<T> : ISubject<T, T>
     {
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UniRx.Diagnostics;
 using UnityEngine;
 
@@ -9,7 +8,7 @@ namespace UniRx.Examples
     {
         // UniRx.Diagnostics.Logger
         // logger is threadsafe, define per class with name.
-		static readonly UniRx.Diagnostics.Logger logger = new UniRx.Diagnostics.Logger("Sample11");
+		static readonly Diagnostics.Logger logger = new Diagnostics.Logger("Sample11");
 
         // call once at applicationinit
         public void ApplicationInitialize()

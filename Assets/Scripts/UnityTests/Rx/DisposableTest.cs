@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 
 namespace UniRx.Tests
@@ -176,7 +173,7 @@ namespace UniRx.Tests
 
             public IdDisp(int id)
             {
-                this.Id = id;
+                Id = id;
             }
 
 

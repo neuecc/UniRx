@@ -1,8 +1,6 @@
 ﻿﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace UniRx
+ namespace UniRx
 {
     /// <summary>Event kind of CountNotifier.</summary>
     public enum CountChangedStatus
@@ -61,7 +59,7 @@ namespace UniRx
                 statusChanged.OnNext(CountChangedStatus.Increment);
                 if (Count == Max) statusChanged.OnNext(CountChangedStatus.Max);
 
-                return Disposable.Create(() => this.Decrement(incrementCount));
+                return Disposable.Create(() => Decrement(incrementCount));
             }
         }
 

@@ -167,9 +167,9 @@ namespace UniRx
             /// </summary>
             public override bool Equals(Notification<T> other)
             {
-                if (Object.ReferenceEquals(this, other))
+                if (ReferenceEquals(this, other))
                     return true;
-                if (Object.ReferenceEquals(other, null))
+                if (ReferenceEquals(other, null))
                     return false;
                 if (other.Kind != NotificationKind.OnNext)
                     return false;
@@ -301,9 +301,9 @@ namespace UniRx
             /// </summary>
             public override bool Equals(Notification<T> other)
             {
-                if (Object.ReferenceEquals(this, other))
+                if (ReferenceEquals(this, other))
                     return true;
-                if (Object.ReferenceEquals(other, null))
+                if (ReferenceEquals(other, null))
                     return false;
                 if (other.Kind != NotificationKind.OnError)
                     return false;
@@ -428,9 +428,9 @@ namespace UniRx
             /// </summary>
             public override bool Equals(Notification<T> other)
             {
-                if (Object.ReferenceEquals(this, other))
+                if (ReferenceEquals(this, other))
                     return true;
-                if (Object.ReferenceEquals(other, null))
+                if (ReferenceEquals(other, null))
                     return false;
                 return other.Kind == NotificationKind.OnCompleted;
             }
@@ -531,7 +531,7 @@ namespace UniRx
         /// </remarks>
         public static bool operator ==(Notification<T> left, Notification<T> right)
         {
-            if (object.ReferenceEquals(left, right))
+            if (ReferenceEquals(left, right))
                 return true;
 
             if ((object)left == null || (object)right == null)
@@ -609,7 +609,7 @@ namespace UniRx
         /// <returns>The observable sequence that surfaces the behavior of the notification upon subscription.</returns>
         public IObservable<T> ToObservable()
         {
-            return this.ToObservable(Scheduler.Immediate);
+            return ToObservable(Scheduler.Immediate);
         }
 
         /// <summary>
@@ -624,8 +624,8 @@ namespace UniRx
 
             return Observable.Create<T>(observer => scheduler.Schedule(() =>
             {
-                this.Accept(observer);
-                if (this.Kind == NotificationKind.OnNext)
+                Accept(observer);
+                if (Kind == NotificationKind.OnNext)
                     observer.OnCompleted();
             }));
         }

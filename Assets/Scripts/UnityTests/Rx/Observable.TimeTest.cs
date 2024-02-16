@@ -1,6 +1,5 @@
 ﻿using System;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace UniRx.Tests
 {
@@ -16,7 +15,7 @@ namespace UniRx.Tests
         [TearDown]
         public void Dispose()
         {
-            UniRx.Scheduler.SetDefaultForUnity();
+            Scheduler.SetDefaultForUnity();
         }
 
         [Test]
