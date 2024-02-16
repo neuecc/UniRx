@@ -40,7 +40,7 @@ namespace UniRx.Examples
             }
 
 #else
-            // If standard evetns, you can use Observable.FromEvent.
+            // If standard events, you can use Observable.FromEvent.
 
             public static IObservable<LogCallback> LogCallbackAsObservable()
             {
