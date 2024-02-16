@@ -25,7 +25,7 @@ namespace UniRx.Operators
             // does not make the safe observer, it breaks exception durability.
             // var safeObserver = Observer.CreateAutoDetachObserver<T>(observer, subscription);
 
-            if (isRequiredSubscribeOnCurrentThread && Scheduler.IsCurrentThreadSchedulerScheduleRequired)
+            if (isRequiredSubscribeOnCurrentThread || Scheduler.IsCurrentThreadSchedulerScheduleRequired)
             {
                 Scheduler.CurrentThread.Schedule(() => subscription.Disposable = SubscribeCore(observer, subscription));
             }
