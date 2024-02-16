@@ -73,7 +73,7 @@ namespace UniRx
             {
                 get
                 {
-#if WEB_GL
+#if UNITY_WEBGL
                     // WebGL does not support threadpool
                     return asyncConversions ?? (asyncConversions = Scheduler.MainThread);
 #else
