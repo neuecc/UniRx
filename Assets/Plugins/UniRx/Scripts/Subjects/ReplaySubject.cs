@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx.InternalUtil;
 
 namespace UniRx
@@ -167,7 +168,7 @@ namespace UniRx
 
                 ex = lastError;
                 Trim();
-                foreach (var item in queue)
+                foreach (var item in queue.ToList())
                 {
                     observer.OnNext(item.Value);
                 }

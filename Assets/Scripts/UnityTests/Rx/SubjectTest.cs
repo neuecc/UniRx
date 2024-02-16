@@ -6,7 +6,7 @@ using System.Threading;
 namespace UniRx.Tests
 {
     
-    public class SubjectTests
+    public class SubjectTest
     {
         [Test]
         public void Subject()
@@ -401,6 +401,7 @@ namespace UniRx.Tests
             }
         }
 
+        [Test]
         public void ReplaySubjectBufferReplay()
         {
             var subject = new ReplaySubject<int>(bufferSize: 3);
@@ -415,7 +416,7 @@ namespace UniRx.Tests
             subject.OnNext(100);
             subject.OnNext(1000);
             subject.OnNext(10000);
-            onNext.Is(100, 1000, 10000);  // cut 1, 10
+            onNext.Is(1, 10, 100, 1000, 10000);
 
             // replay subscription
             onNext.Clear();
@@ -424,7 +425,7 @@ namespace UniRx.Tests
             onNext.Is(100, 1000, 10000);
 
             subject.OnNext(20000);
-            onNext.Is(1000, 10000, 20000);
+            onNext.Is(100, 1000, 10000, 20000);
 
             subject.OnCompleted();
             onCompletedCallCount.Is(1);
@@ -475,6 +476,40 @@ namespace UniRx.Tests
             onNext.Clear();
             subject.Subscribe(x => onNext.Add(x), x => exception.Add(x), () => onCompletedCallCount++);
             onNext.Is(10000, 2, 20);
+        }
+
+        ///<Summary>
+        /// Regression test for previous InvalidOperationException
+        /// UniRx issue <a href="https://github.com/neuecc/UniRx/issues/292">#292</a>
+        ///</Summary>
+        [Test]
+        public void ReplaySubject_Take_GivesCorrectResult()
+        {
+            var subject = new ReplaySubject<int>(1);
+
+            var onNext = new List<int>();
+            
+            subject.OnNext(1);
+
+            var _ = subject
+                .Take(1)
+                .Do(subject.OnNext)
+                .Subscribe(onNext.Add);
+            
+            onNext.Is(1);
+            
+            _.Dispose();
+            onNext.Clear();
+            
+            subject.OnNext(2);
+            subject.OnNext(3);
+            
+            _ = subject
+                .Take(1)
+                .Do(subject.OnNext)
+                .Subscribe(onNext.Add);
+            
+            onNext.Is(3);
         }
     }
 }
