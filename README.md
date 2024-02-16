@@ -899,6 +899,7 @@ public class ReactivePresenter : MonoBehaviour
     // Presenter is aware of its View (binded in the inspector)
     public Button MyButton;
     public Toggle MyToggle;
+    public Text MyText;
     
     // State-Change-Events from Model by ReactiveProperty
     Enemy enemy = new Enemy(1000);
@@ -924,7 +925,7 @@ public class Enemy
 {
     public ReactiveProperty<long> CurrentHp { get; private set; }
 
-    public ReactiveProperty<bool> IsDead { get; private set; }
+    public IReadOnlyReactiveProperty<bool> IsDead { get; private set; }
 
     public Enemy(int initialHp)
     {
