@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using UnityEditor;
 using UnityEngine;
 
 namespace UniRx
@@ -20,6 +21,17 @@ namespace UniRx
             Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
             Scheduler.DefaultSchedulers.TimeBasedOperations = MainThread;
             Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+#endif
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void OnEnterPlayMode()
+        {
+            mainThread = null;
+            mainThreadIgnoreTimeScale = null;
+            mainThreadEndOfFrame = null;
+            mainThreadFixedUpdate = null;
         }
 #endif
         static IScheduler mainThread;
