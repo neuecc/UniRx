@@ -311,6 +311,8 @@ namespace UniRx
             return new StartObservable<Unit>(action, timeSpan, scheduler);
         }
 
+        #region Async
+
         public static Func<IObservable<T>> ToAsync<T>(Func<T> function)
         {
             return ToAsync(function, Scheduler.DefaultSchedulers.AsyncConversions);
@@ -338,6 +340,122 @@ namespace UniRx
                     subject.OnCompleted();
                 });
 
+                return subject.AsObservable();
+            };
+        }
+
+        public static Func<T, IObservable<TResult>> ToAsync<T, TResult>(Func<T, TResult> function)
+        {
+            return ToAsync(function, Scheduler.DefaultSchedulers.AsyncConversions);
+        }
+
+        public static Func<T, IObservable<TResult>> ToAsync<T, TResult>(Func<T, TResult> function, IScheduler scheduler)
+        {
+            return first =>
+            {
+                var subject = new AsyncSubject<TResult>();
+                scheduler.Schedule(() =>
+                {
+                    TResult result = default(TResult); ;
+                    try
+                    {
+                        result = function(first);
+                    }
+                    catch (Exception ex)
+                    {
+                        subject.OnError(ex);
+                        return;
+                    }
+                    subject.OnNext(result);
+                    subject.OnCompleted();
+                });
+                return subject.AsObservable();
+            };
+        }
+
+        public static Func<T1, T2, IObservable<TResult>> ToAsync<T1, T2, TResult>(Func<T1, T2, TResult> function)
+        {
+            return ToAsync<T1, T2, TResult>(function, Scheduler.DefaultSchedulers.AsyncConversions);
+        }
+
+        public static Func<T1, T2, IObservable<TResult>> ToAsync<T1, T2, TResult>(Func<T1, T2, TResult> function, IScheduler scheduler)
+        {
+            return (first, second) =>
+            {
+                AsyncSubject<TResult> subject = new AsyncSubject<TResult>();
+                scheduler.Schedule(() =>
+                {
+                    TResult result = default(TResult);
+                    try
+                    {
+                        result = function(first, second);
+                    }
+                    catch (Exception ex)
+                    {
+                        subject.OnError(ex);
+                        return;
+                    }
+                    subject.OnNext(result);
+                    subject.OnCompleted();
+                });
+                return subject.AsObservable();
+            };
+        }
+
+        public static Func<T1, T2, T3, IObservable<TResult>> ToAsync<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> function)
+        {
+            return ToAsync<T1, T2, T3, TResult>(function, Scheduler.DefaultSchedulers.AsyncConversions);
+        }
+
+        public static Func<T1, T2, T3, IObservable<TResult>> ToAsync<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> function, IScheduler scheduler)
+        {
+            return (first, second, third) =>
+            {
+                AsyncSubject<TResult> subject = new AsyncSubject<TResult>();
+                scheduler.Schedule(() =>
+                {
+                    TResult result = default(TResult);
+                    try
+                    {
+                        result = function(first, second, third);
+                    }
+                    catch (Exception ex)
+                    {
+                        subject.OnError(ex);
+                        return;
+                    }
+                    subject.OnNext(result);
+                    subject.OnCompleted();
+                });
+                return subject.AsObservable();
+            };
+        }
+
+        public static Func<T1, T2, T3, T4, IObservable<TResult>> ToAsync<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> function)
+        {
+            return ToAsync<T1, T2, T3, T4, TResult>(function, Scheduler.DefaultSchedulers.AsyncConversions);
+        }
+
+        public static Func<T1, T2, T3, T4, IObservable<TResult>> ToAsync<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> function, IScheduler scheduler)
+        {
+            return (first, second, third, fourth) =>
+            {
+                AsyncSubject<TResult> subject = new AsyncSubject<TResult>();
+                scheduler.Schedule(() =>
+                {
+                    TResult result = default(TResult);
+                    try
+                    {
+                        result = function(first, second, third, fourth);
+                    }
+                    catch (Exception ex)
+                    {
+                        subject.OnError(ex);
+                        return;
+                    }
+                    subject.OnNext(result);
+                    subject.OnCompleted();
+                });
                 return subject.AsObservable();
             };
         }
@@ -371,5 +489,92 @@ namespace UniRx
                 return subject.AsObservable();
             };
         }
+
+        public static Func<T1, T2, IObservable<Unit>> ToAsync<T1, T2>(Action<T1, T2> action)
+        {
+            return ToAsync<T1, T2>(action, Scheduler.DefaultSchedulers.AsyncConversions);
+        }
+
+        public static Func<T1, T2, IObservable<Unit>> ToAsync<T1, T2>(Action<T1, T2> action, IScheduler scheduler)
+        {
+            return (first, second) =>
+            {
+                var subject = new AsyncSubject<Unit>();
+                scheduler.Schedule(() =>
+                {
+                    try
+                    {
+                        action(first, second);
+                    }
+                    catch (Exception ex)
+                    {
+                        subject.OnError(ex);
+                        return;
+                    }
+                    subject.OnNext(Unit.Default);
+                    subject.OnCompleted();
+                });
+                return subject.AsObservable();
+            };
+        }
+
+        public static Func<T1, T2, T3, IObservable<Unit>> ToAsync<T1, T2, T3>(Action<T1, T2, T3> action)
+        {
+            return ToAsync<T1, T2, T3>(action, Scheduler.DefaultSchedulers.AsyncConversions);
+        }
+
+        public static Func<T1, T2, T3, IObservable<Unit>> ToAsync<T1, T2, T3>(Action<T1, T2, T3> action, IScheduler scheduler)
+        {
+            return (first, second, third) =>
+            {
+                var subject = new AsyncSubject<Unit>();
+                scheduler.Schedule(() =>
+                {
+                    try
+                    {
+                        action(first, second, third);
+                    }
+                    catch (Exception ex)
+                    {
+                        subject.OnError(ex);
+                        return;
+                    }
+                    subject.OnNext(Unit.Default);
+                    subject.OnCompleted();
+                });
+                return subject.AsObservable();
+            };
+        }
+
+        public static Func<T1, T2, T3, T4, IObservable<Unit>> ToAsync<T1, T2, T3, T4>(Action<T1, T2, T3, T4> action)
+        {
+            return ToAsync<T1, T2, T3, T4>(action, Scheduler.DefaultSchedulers.AsyncConversions);
+        }
+
+        public static Func<T1, T2, T3, T4, IObservable<Unit>> ToAsync<T1, T2, T3, T4>(Action<T1, T2, T3, T4> action, IScheduler scheduler)
+        {
+            return (first, second, third, fourth) =>
+            {
+                var subject = new AsyncSubject<Unit>();
+                scheduler.Schedule(() =>
+                {
+                    try
+                    {
+                        action(first, second, third, fourth);
+                    }
+                    catch (Exception ex)
+                    {
+                        subject.OnError(ex);
+                        return;
+                    }
+                    subject.OnNext(Unit.Default);
+                    subject.OnCompleted();
+                });
+                return subject.AsObservable();
+            };
+        }
+
+
+        #endregion
     }
 }
