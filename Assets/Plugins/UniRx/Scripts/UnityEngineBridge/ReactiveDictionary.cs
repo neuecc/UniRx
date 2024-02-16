@@ -123,6 +123,11 @@ namespace UniRx
         [UnityEngine.SerializeField]
 #endif
         readonly Dictionary<TKey, TValue> inner;
+        
+        public bool IsNull()
+        {
+            return inner == null;
+        }
 
         public ReactiveDictionary()
         {
